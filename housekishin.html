@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>宝石タイプ恋愛診断</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fdf6f0;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #b86b77;
+    }
+    form {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #b86b77;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .question {
+      margin-bottom: 25px;
+    }
+    label {
+      margin-right: 10px;
+    }
+    #result {
+      text-align: center;
+      font-size: 1.5em;
+      margin-top: 30px;
+      color: #b86b77;
+    }
+    #link {
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💎 宝石タイプ 恋愛診断 💎</h1>
+  <form id="quizForm"></form>
+  <h2 id="result"></h2>
+  <div id="link"></div>
+  <script>
+    const questions = [
+      "恋愛は運命のようなものであると感じる", "一目惚れすることが多い", "恋愛中は理想を追い求めがち", "恋愛は感情がすべてだと思う",
+      "恋愛はゲームのような楽しさが大事", "複数の人に同時に好意を持つことがある", "恋愛に自由が必要だと思う", "深刻すぎる恋愛は苦手",
+      "恋愛は友情から始まるのが理想", "信頼関係を大事にしたい", "恋人とは長い時間をかけて関係を築きたい", "恋人と親友のような関係が理想",
+      "相手が自分をどう思っているか常に気になる", "恋人に不安を感じることが多い", "恋愛中は相手に依存しやすい", "少しの変化で不安になる",
+      "相手の条件（仕事・性格など）を重視する", "恋愛において損得を考えることがある", "安定した将来を想像できる相手を選ぶ", "恋人選びは計画的にしたい",
+      "相手の幸せを自分のことのように思う", "恋愛では自分を犠牲にしても構わない", "相手の成長を支えたいと思う", "恋人に無条件の愛を注ぐべきだと思う",
+      "恋人が離れていくのではと不安になる", "些細なことで嫌われたと感じてしまう", "恋人の返信が遅いと気になってしまう", "恋愛関係が壊れるのが怖い",
+      "人に頼ることが苦手", "恋愛に踏み込みすぎると不安になる", "親密になると逃げたくなる", "距離感を保った関係の方が落ち着く"
+    ];
+
+    const scaleLabels = [
+      "1（まったく当てはまらない）",
+      "2（あまり当てはまらない）",
+      "3（どちらともいえない）",
+      "4（やや当てはまる）",
+      "5（とても当てはまる）"
+    ];
+
+    const form = document.getElementById("quizForm");
+    questions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<p>Q${i + 1}. ${q}</p>` +
+        scaleLabels.map((label, n) => `
+          <label><input type="radio" name="q${i + 1}" value="${n + 1}"> ${label}</label>
+        `).join(" ");
+      form.appendChild(div);
+    });
+
+    const resultButton = document.createElement("button");
+    resultButton.type = "button";
+    resultButton.textContent = "診断する";
+    resultButton.onclick = calculate;
+    form.appendChild(resultButton);
+
+    function calculate() {
+      let scores = {
+        eros: 0, ludus: 0, storge: 0, mania: 0, pragma: 0, agape: 0,
+        anxiety: 0, avoidance: 0
+      };
+
+      for (let i = 1; i <= questions.length; i++) {
+        const val = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
+        if (!val) return alert("全ての質問に答えてください。");
+        if (i <= 4) scores.eros += val;
+        else if (i <= 8) scores.ludus += val;
+        else if (i <= 12) scores.storge += val;
+        else if (i <= 16) scores.mania += val;
+        else if (i <= 20) scores.pragma += val;
+        else if (i <= 24) scores.agape += val;
+        else if (i <= 28) scores.anxiety += val;
+        else scores.avoidance += val;
+      }
+
+      const loveType = Object.entries(scores)
+        .slice(0, 6)
+        .sort((a, b) => b[1] - a[1])[0][0];
+
+      let attachType = "secure";
+      if (scores.anxiety >= 11 && scores.avoidance >= 11) attachType = "fearful";
+      else if (scores.anxiety >= 11) attachType = "anxious";
+      else if (scores.avoidance >= 11) attachType = "avoidant";
+
+      const map = {
+        eros:     { anxious: "ファイアオパール", secure: "ガーネット", avoidant: "スピネル", fearful: "ルビー" },
+        ludus:    { anxious: "タンザナイト", secure: "シトリン", avoidant: "ターコイズ", fearful: "アパタイト" },
+        storge:   { anxious: "ムーンストーン", secure: "アクアマリン", avoidant: "ペリドット", fearful: "ラブラドライト" },
+        pragma:   { anxious: "ブルートパーズ", secure: "サファイア", avoidant: "ブラックオニキス", fearful: "スモーキークォーツ" },
+        mania:    { anxious: "エメラルド", secure: "アレキサンドライト", avoidant: "オブシディアン", fearful: "オパール" },
+        agape:    { anxious: "ピンクトルマリン", secure: "ダイヤモンド", avoidant: "モルガナイト", fearful: "ローズクォーツ" }
+      };
+
+      const gem = map[loveType]?.[attachType] || "不明";
+      document.getElementById("result").innerText = `あなたの宝石タイプは：${gem}`;
+
+      const styleToUrl = {
+        eros:   "https://seikaku.my.canva.site/houseki-eros",
+        ludus:  "https://seikaku.my.canva.site/houseki-ludus",
+        storge: "https://seikaku.my.canva.site/houseki-storge",
+        pragma: "https://seikaku.my.canva.site/houseki-pragma",
+        mania:  "https://seikaku.my.canva.site/houseki-mania",
+        agape:  "https://seikaku.my.canva.site/houseki-agape"
+      };
+
+      const resultLink = document.getElementById("link");
+      resultLink.innerHTML = `<a href="${styleToUrl[loveType]}" target="_blank">▶ あなたのタイプを詳しく見る</a>`;
+    }
+  </script>
+</body>
+</html>
