@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>飲み物でわかるサイコパス診断</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fdf6f0;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #b86b77;
+    }
+    form {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #b86b77;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .question {
+      margin-bottom: 30px;
+    }
+    .question p {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      background: #f4f4f4;
+      cursor: pointer;
+    }
+    #result {
+      text-align: center;
+      font-size: 1.5em;
+      margin-top: 30px;
+      color: #b86b77;
+      white-space: pre-line;
+    }
+    #link {
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🥤 飲み物でわかるサイコパス診断</h1>
+  <form id="quizForm"></form>
+  <h2 id="result"></h2>
+  <div id="link"></div>
+
+  <script>
+    const questions = [
+      "人の秘密を知ると、ちょっと嬉しくなる",
+      "謝るより、正当化するほうが得意だ",
+      "感情的な人を見ると、引いてしまう",
+      "本音よりも演技の方が人間関係はうまくいく",
+      "誰かのミスを利用するのは悪いことじゃない",
+      "『共感できる』と言いつつ内心冷めてることがある",
+      "倫理って、時と場合によっては無視していいと思う",
+      "自分のルールに従って動く方が正しいと思う",
+      "人を試すような言動をしてしまうことがある",
+      "他人の不安や弱みを察知するのが得意だ"
+    ];
+
+    const scaleLabels = [
+      "1（まったく当てはまらない）",
+      "2（あまり当てはまらない）",
+      "3（どちらともいえない）",
+      "4（やや当てはまる）",
+      "5（とても当てはまる）"
+    ];
+
+    const form = document.getElementById("quizForm");
+    questions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<p>Q${i + 1}. ${q}</p>` +
+        scaleLabels.map((label, n) => `
+          <label><input type="radio" name="q${i + 1}" value="${n + 1}"> ${label}</label>
+        `).join("");
+      form.appendChild(div);
+    });
+
+    const resultButton = document.createElement("button");
+    resultButton.type = "button";
+    resultButton.textContent = "診断する";
+    resultButton.onclick = calculate;
+    form.appendChild(resultButton);
+
+    function calculate() {
+      let total = 0;
+      for (let i = 1; i <= questions.length; i++) {
+        const val = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
+        if (!val) return alert(`全ての質問に答えてください。\n未回答の質問があります（Q${i}）。`);
+        total += val;
+      }
+
+      const percentage = Math.round((total - 10) / 40 * 100);  // 最低10〜最大50 → 0〜100%
+      let drink = "";
+      if (total <= 15) drink = "ストロベリーミルク🍓";
+      else if (total <= 25) drink = "ミルクココア🍫";
+      else if (total <= 35) drink = "カフェオレ☕️";
+      else if (total <= 42) drink = "アールグレイ🫖";
+      else drink = "ブラックコーヒー🖤";
+
+      document.getElementById("result").innerText =
+        `あなたのサイコパス度は ${percentage}% です。\n飲み物タイプは「${drink}」です。`;
+
+      document.getElementById("link").innerHTML =
+        `<a href="https://seikaku.my.canva.site/drinkshin" target="_blank">▶ あなたの診断タイプの解説を見る</a>`;
+    }
+  </script>
+</body>
+</html>
