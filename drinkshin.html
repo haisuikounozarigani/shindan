@@ -3,67 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <title>飲み物でわかるサイコパス診断</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    body {
-      font-family: sans-serif;
-      background: #fdf6f0;
-      color: #333;
-      padding: 20px;
+    :root{
+      --brand:#b86b77; --bg:#fdf6f0; --card:#ffffff; --muted:#666;
+      --chip:#fde9ee; --bar:#fdf1f3; --barfill:#b86b77;
     }
-    h1 {
-      text-align: center;
-      color: #b86b77;
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg); color:#333; margin:0; padding:22px;
     }
-    form {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
-    }
-    button {
-      display: block;
-      margin: 30px auto 0;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      background-color: #b86b77;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    .question {
-      margin-bottom: 30px;
-    }
-    .question p {
-      margin-bottom: 10px;
-    }
-    label {
-      display: block;
-      margin: 5px 0;
-      padding: 8px;
-      border-radius: 5px;
-      background: #f4f4f4;
-      cursor: pointer;
-    }
-    #result {
-      text-align: center;
-      font-size: 1.5em;
-      margin-top: 30px;
-      color: #b86b77;
-      white-space: pre-line;
-    }
-    #link {
-      text-align: center;
-      margin-top: 15px;
-    }
+    .wrap{max-width:900px;margin:0 auto}
+    h1{color:var(--brand); text-align:center; margin:6px 0 8px; font-size:clamp(20px,3.8vw,28px)}
+    .lead{text-align:center; color:var(--muted); margin:0 0 16px; font-size:14px}
+    .legend{display:inline-block;background:var(--chip); color:var(--brand); padding:6px 10px; border-radius:999px; font-size:12px; margin:0 auto 12px; text-align:center}
+    .card{background:var(--card); border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px}
+    .question{margin:18px 0 20px}
+    .question p{margin:0 0 10px}
+    .scale{display:grid; gap:8px}
+    .scale label{display:flex; align-items:center; gap:10px; background:#f6f3f1; border-radius:10px; padding:10px; cursor:pointer}
+    .scale input{accent-color:var(--brand)}
+    .meta{display:flex; justify-content:space-between; align-items:center; margin:6px 2px 0; color:var(--muted); font-size:12px}
+    .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px}
+    .btn{background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer}
+    .btn.secondary{background:#858585}
+    #resultBox{display:none; margin-top:18px}
+    .resultHead{font-size:1.2em; color:var(--brand); text-align:center; margin:0 0 8px}
+    .percent{font-size:2rem; font-weight:700; text-align:center}
+    .drink{font-size:1.2rem; text-align:center; margin-top:6px}
+    .bar{background:var(--bar); border-radius:999px; height:12px; overflow:hidden; margin:12px auto 0; max-width:460px}
+    .bar > span{display:block; height:100%; width:0%; background:var(--barfill); transition:width .5s ease}
+    .note{font-size:14px; color:#444; background:#fff7e6; border-left:6px solid #ffbf66; border-radius:8px; padding:10px 12px; margin:14px 0}
+    #link{text-align:center; margin-top:12px}
+    #link a{display:inline-block; background:var(--brand); color:#fff; text-decoration:none; padding:10px 16px; border-radius:10px}
   </style>
 </head>
 <body>
-  <h1>🥤 飲み物でわかるサイコパス診断</h1>
-  <form id="quizForm"></form>
-  <h2 id="result"></h2>
-  <div id="link"></div>
+  <div class="wrap">
+    <h1>🥤 飲み物でわかるサイコパス診断</h1>
+    <p class="lead">当てはまる度合いを5件法で答えてね（1=まったく〜5=とても）</p>
+    <div class="legend">最小10点〜最大50点 → 自動でサイコパス度（%）を算出</div>
+
+    <div class="card" id="formWrap">
+      <div class="meta"><span id="progress">未回答 10 / 10</span><span>5件法：1〜5</span></div>
+      <form id="quizForm"></form>
+      <div class="actions">
+        <button class="btn" type="button" onclick="calculate()">診断する</button>
+        <button class="btn secondary" type="button" onclick="resetForm()">リセット</button>
+      </div>
+    </div>
+
+    <div id="resultBox" class="card">
+      <p class="resultHead">診断結果</p>
+      <div class="percent" id="percentText">— %</div>
+      <div class="bar"><span id="barFill"></span></div>
+      <div class="drink" id="drinkText">飲み物タイプ：—</div>
+      <div class="note">スクショやメモで保存してから、下のボタンで解説へどうぞ。</div>
+      <div id="link">
+        <a href="https://seikaku.my.canva.site/drinkshin" target="_blank">▶ あなたの診断タイプの解説を見る</a>
+      </div>
+    </div>
+  </div>
 
   <script>
     const questions = [
@@ -88,21 +88,42 @@
     ];
 
     const form = document.getElementById("quizForm");
+    const progressEl = document.getElementById("progress");
+    // 質問描画
     questions.forEach((q, i) => {
       const div = document.createElement("div");
       div.className = "question";
       div.innerHTML = `<p>Q${i + 1}. ${q}</p>` +
-        scaleLabels.map((label, n) => `
-          <label><input type="radio" name="q${i + 1}" value="${n + 1}"> ${label}</label>
-        `).join("");
+        `<div class="scale">` +
+        scaleLabels.map((label, n) => {
+          const id = `q${i}_${n+1}`;
+          return `<label for="${id}">
+            <input id="${id}" type="radio" name="q${i + 1}" value="${n + 1}"> ${label}
+          </label>`;
+        }).join("") +
+        `</div>`;
       form.appendChild(div);
     });
 
-    const resultButton = document.createElement("button");
-    resultButton.type = "button";
-    resultButton.textContent = "診断する";
-    resultButton.onclick = calculate;
-    form.appendChild(resultButton);
+    // 進捗表示
+    function updateProgress(){
+      const answered = Array.from({length: questions.length})
+        .filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
+      progressEl.textContent = `未回答 ${questions.length - answered} / ${questions.length}`;
+    }
+    form.addEventListener("change", updateProgress);
+    updateProgress();
+
+    // リセット
+    function resetForm(){
+      form.reset();
+      updateProgress();
+      document.getElementById("resultBox").style.display="none";
+      document.getElementById("percentText").textContent="— %";
+      document.getElementById("drinkText").textContent="飲み物タイプ：—";
+      document.getElementById("barFill").style.width="0%";
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
 
     function calculate() {
       let total = 0;
@@ -112,19 +133,26 @@
         total += val;
       }
 
-      const percentage = Math.round((total - 10) / 40 * 100);  // 最低10〜最大50 → 0〜100%
+      // 最低10〜最大50 → 0〜100%
+      let percentage = Math.round((total - 10) / 40 * 100);
+      if (percentage < 0) percentage = 0;
+      if (percentage > 100) percentage = 100;
+
       let drink = "";
-      if (total <= 15) drink = "ストロベリーミルク🍓";
+      if (total <= 15)      drink = "ストロベリーミルク🍓";
       else if (total <= 25) drink = "ミルクココア🍫";
       else if (total <= 35) drink = "カフェオレ☕️";
       else if (total <= 42) drink = "アールグレイ🫖";
-      else drink = "ブラックコーヒー🖤";
+      else                  drink = "ブラックコーヒー🖤";
 
-      document.getElementById("result").innerText =
-        `あなたのサイコパス度は ${percentage}% です。\n飲み物タイプは「${drink}」です。`;
+      // 表示
+      document.getElementById("percentText").textContent = `サイコパス度 ${percentage}%`;
+      document.getElementById("drinkText").textContent = `飲み物タイプ：${drink}`;
+      document.getElementById("barFill").style.width = percentage + "%";
 
-      document.getElementById("link").innerHTML =
-        `<a href="https://seikaku.my.canva.site/drinkshin" target="_blank">▶ あなたの診断タイプの解説を見る</a>`;
+      const box = document.getElementById("resultBox");
+      box.style.display = "block";
+      window.scrollTo({top:box.offsetTop - 10, behavior:"smooth"});
     }
   </script>
 </body>
