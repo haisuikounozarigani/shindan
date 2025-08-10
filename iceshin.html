@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>冷酷アイスクリーム診断（Mach-IV準拠・20問）</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --brand:#b86b77;
+      --chip:#f4f1ef;
+      --bg:#fffaf6;
+      --ok:#fff0f3;
+    }
+    body{font-family:sans-serif;background:var(--bg);color:#333;padding:20px}
+    h1{text-align:center;color:var(--brand);margin:0 0 14px}
+    .legend{max-width:860px;margin:0 auto 16px;font-size:.95em;color:#555}
+    .progress-wrap{max-width:860px;margin:0 auto 18px}
+    .progress{height:10px;background:#eee;border-radius:999px;overflow:hidden}
+    .bar{height:100%;width:0;background:var(--brand);transition:width .2s}
+    .count{margin-top:6px;color:#666;font-size:.9em;text-align:right}
+
+    form{max-width:860px;margin:auto;background:#fff;padding:18px;border-radius:12px;box-shadow:0 0 12px #e5d4cf}
+    .question{margin:20px 0}
+    .qhead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:0 0 8px;font-weight:600}
+    .qstatus{font-weight:600;font-size:.85em;color:#888}
+    .qstatus.done{color:var(--brand)}
+    .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .chip{display:block;position:relative;border-radius:10px;background:var(--chip);text-align:center;padding:12px 8px;cursor:pointer;border:2px solid #e9e1de;user-select:none}
+    .chip input{position:absolute;inset:0;opacity:0}
+    .chip span{display:block}
+    .chip input:checked + span{
+      background:var(--brand);color:#fff;border-radius:8px;padding:8px 6px;
+      box-shadow:0 0 0 2px var(--brand) inset, 0 4px 10px rgba(184,107,119,.25);
+      transform:scale(1.02);
+    }
+    .chip input:checked + span::after{content:"✔"; margin-left:6px; font-weight:700;}
+    .chip:hover{border-color:#d7c6c2}
+    .chip input:focus-visible + span{outline:3px solid #ffd9e1;outline-offset:2px;border-radius:8px}
+    .btn{display:block;margin:22px auto 0;padding:12px 22px;font-size:1.1em;background:var(--brand);color:#fff;border:none;border-radius:10px}
+    #result{max-width:860px;margin:22px auto 0;background:var(--ok);border-left:6px solid var(--brand);padding:18px;border-radius:10px}
+    #result h2{margin:0 0 8px;color:var(--brand)}
+    .type{font-size:1.15em;margin-top:4px}
+    .tag{display:inline-block;background:#fff;border:1px solid #e7d4cf;border-radius:999px;padding:4px 10px;margin:6px 6px 0 0;font-size:.85em;color:#7b4d57}
+    .sec{margin-top:14px}
+    .sec h3{margin:0 0 8px;color:#7b4d57;font-size:1.05em}
+    .sec p{margin:0}
+    .sec ul{margin:6px 0 0 1.1em}
+    .note{font-size:.9em;color:#666;margin-top:10px}
+    a.back{display:block;text-align:center;margin:22px auto 0;color:var(--brand);text-decoration:none;font-weight:700}
+  </style>
+</head>
+<body>
+  <h1>🍦 冷酷アイスクリーム診断（Mach-IV準拠）</h1>
+
+  <div class="legend">5件法：1 まったく当てはまらない ／ 2 あまり当てはまらない ／ 3 どちらともいえない ／ 4 やや当てはまる ／ 5 とても当てはまる</div>
+
+  <div class="progress-wrap">
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div id="count" class="count">0 / 20 回答</div>
+  </div>
+
+  <form id="quizForm" aria-live="polite"></form>
+  <button class="btn" type="button" onclick="calculate()">診断する</button>
+
+  <div id="result" style="display:none;"></div>
+  <a class="back" href="https://seikaku.my.canva.site/shindan" target="_blank">🔙 心の標本に戻る</a>
+
+  <script>
+    // Mach-IV 20項目（日本語意訳）rev:true は逆転項目
+    const items = [
+      { text: "目的のためなら本音を隠すことも必要だと思う", rev: false },
+      { text: "道徳的に正しいと確信できないなら、行動すべきではない", rev: true },
+      { text: "出世する人の多くは、正直で潔白だと思う", rev: true },
+      { text: "重要人物にはお世辞を使うのが賢いやり方だ", rev: false },
+      { text: "たとえ不利でも、他人にうそをつくべきではない", rev: true },
+      { text: "人を動かすには、相手が聞きたいことを言うのが一番だ", rev: false },
+      { text: "誰かを完全に信頼するのは危険だと思う", rev: false },
+      { text: "近道を使わず努力すれば、必ず報われるものだ", rev: true },
+      { text: "人は基本的に善良で、公正に振る舞うと思う", rev: true },
+      { text: "成功には、時にルールを曲げることが欠かせない", rev: false },
+      { text: "チャンスがあっても、不公平な利得は絶対に得ない", rev: true },
+      { text: "うまく立ち回るには、多少の“操作”は必要だ", rev: false },
+      { text: "人前では、本心を見せない方が安全だと思う", rev: false },
+      { text: "たとえ損でも、正直さを最優先するべきだ", rev: true },
+      { text: "多くの人は、見返りがなければ協力しないと思う", rev: false },
+      { text: "人間関係では、誠意さえあれば十分うまくいく", rev: true },
+      { text: "交渉では“規範”より“結果”を重視するべきだ", rev: false },
+      { text: "人を利用するくらいなら、機会を逃してもよい", rev: true },
+      { text: "重要な情報は、有利になるまで伏せておくべきだ", rev: false },
+      { text: "約束は状況が変わっても、必ず守るべきだ", rev: true }
+    ];
+
+    const scaleLabels = [
+      "1（まったく当てはまらない）",
+      "2（あまり当てはまらない）",
+      "3（どちらともいえない）",
+      "4（やや当てはまる）",
+      "5（とても当てはまる）"
+    ];
+
+    // タイプごとの文言
+    const TYPE_INFO = {
+      "ソフトクリーム": {
+        tagline: "― 駆け引きゼロ、直球すぎて逆に最強 ―",
+        profile: "あなたは“正直”という最強カードを素で使う人。悪だくみの説明書を読んでも寝落ちするタイプです。",
+        strengths: ["信頼残高が高い","裏表がなく安心感がある","長期的な関係に強い","謝罪と軌道修正が早い"],
+        weaknesses: ["搦め手に弱い","強引な交渉相手が苦手","“少しは疑え”と言われがち"]
+      },
+      "バニラアイス": {
+        tagline: "― 基本は正攻法、ときどき小ワザ ―",
+        profile: "誠実ベースに少しだけ現実主義のスパイス。無駄な駆け引きは嫌いだけど、状況判断はできる人。",
+        strengths: ["安定と信頼の両立","チームで機能する協調性","境界線を守れる"],
+        weaknesses: ["尖りが弱く埋もれがち","攻めの交渉に押されやすい","公平さ重視で機会損失も"]
+      },
+      "ジェラート": {
+        tagline: "― 甘さと冷静さのスイッチャー ―",
+        profile: "空気を読みつつ展開を組み立てられる現実派。必要なときだけ戦術を使う“ほどよい策士”。",
+        strengths: ["状況対応力と交渉勘","境界の取り方が上手い","短期と長期のバランス感覚"],
+        weaknesses: ["計算高く見られることも","優柔不断に映る場面がある","腹の内を読まれやすい"]
+      },
+      "ソルベ": {
+        tagline: "― 氷点下の冷静、勝ち筋直行 ―",
+        profile: "結果重視・感情省エネのタクティシャン。盤面が見えているぶん、余計な消耗を嫌います。",
+        strengths: ["戦略設計と損益判断","交渉・駆け引きの強さ","プレッシャー耐性"],
+        weaknesses: ["冷たく誤解されやすい","信頼醸成に時間がかかる","短期志向に寄りがち"]
+      },
+      "クリスタルアイス": {
+        tagline: "― 氷の策士、最適解を取りにいく ―",
+        profile: "目的最優先の切れ者。場と人のレバー（てこ）を読むのが得意で、勝率を最大化します。",
+        strengths: ["高い状況掌握力","リスク管理と決断力","説得・影響力"],
+        weaknesses: ["共感不足で関係が摩耗","橋を焼きがちで長期信頼に弱い","疑心暗鬼モードに入りやすい"]
+      }
+    };
+
+    const form = document.getElementById("quizForm");
+    const bar  = document.getElementById("bar");
+    const count= document.getElementById("count");
+
+    // 質問を生成
+    items.forEach((it, i) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      const qid = `q${i}`;
+      let options = "";
+      for (let n = 0; n < 5; n++) {
+        const id = `${qid}_${n+1}`;
+        options += `
+          <label class="chip" for="${id}">
+            <input id="${id}" type="radio" name="${qid}" value="${n+1}" />
+            <span>${scaleLabels[n]}</span>
+          </label>`;
+      }
+      div.innerHTML = `
+        <p class="qhead"><span>Q${i+1}. ${it.text}</span><span id="${qid}_status" class="qstatus">未選択</span></p>
+        <div class="scale">${options}</div>`;
+      form.appendChild(div);
+    });
+
+    // 回答状況の可視化
+    document.addEventListener("change", (e) => {
+      if (!e.target.name || !e.target.name.startsWith("q")) return;
+      const qid = e.target.name;
+      const st = document.getElementById(`${qid}_status`);
+      if (st){ st.textContent = "選択済"; st.classList.add("done"); }
+      updateProgress();
+    });
+
+    function updateProgress(){
+      const checked = Array.from(document.querySelectorAll('input[type="radio"]:checked'));
+      const answeredQs = new Set(checked.map(i=>i.name)).size;
+      const totalQ = items.length;
+      const pct = Math.round(answeredQs/totalQ*100);
+      bar.style.width = pct + "%";
+      count.textContent = `${answeredQs} / ${totalQ} 回答`;
+    }
+
+    function calculate() {
+      // 未回答チェック
+      for (let i = 0; i < items.length; i++) {
+        if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+          alert(`未回答の設問があります（Q${i+1}）`);
+          return;
+        }
+      }
+      // 採点（逆転項目は 6 - v）
+      let sum = 0;
+      for (let i = 0; i < items.length; i++) {
+        let v = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+        if (items[i].rev) v = 6 - v;
+        sum += v;
+      }
+      // 合計 20〜100 → 0〜100% に換算
+      const machPct = Math.round((sum - 20) / 80 * 100);
+
+      // タイプ判定
+      let type="";
+      if (machPct <= 20) type="ソフトクリーム";
+      else if (machPct <= 40) type="バニラアイス";
+      else if (machPct <= 60) type="ジェラート";
+      else if (machPct <= 80) type="ソルベ";
+      else type="クリスタルアイス";
+
+      const info = TYPE_INFO[type];
+
+      // 結果描画
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      result.innerHTML = `
+        <h2>診断結果</h2>
+        <div class="type">冷酷度（Mach指数換算）：<strong>${machPct}%</strong></div>
+        <div class="type">あなたは <span class="tag">${type}</span> <span class="tag">${info.tagline}</span></div>
+
+        <div class="sec">
+          <h3>性格プロファイル</h3>
+          <p>${info.profile}</p>
+        </div>
+
+        <div class="sec">
+          <h3>強み</h3>
+          <ul>${info.strengths.map(s=>`<li>${s}</li>`).join("")}</ul>
+        </div>
+
+        <div class="sec">
+          <h3>弱み</h3>
+          <ul>${info.weaknesses.map(s=>`<li>${s}</li>`).join("")}</ul>
+        </div>
+
+        <p class="note">※この項目は Mach-IV（マキャベリズム尺度）の内容を日本語で意訳した簡易版です（研究利用の正式な翻訳ではありません）。</p>
+      `;
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  </script>
+</body>
+</html>
