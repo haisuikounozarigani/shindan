@@ -1,30 +1,130 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>診断セレクター</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body { font-family: sans-serif; background: #fffdf8; text-align: center; padding: 50px; }
-    h1 { color: #b86b77; }
-    a {
-      display: block;
-      margin: 20px auto;
-      padding: 15px 30px;
-      background-color: #b86b77;
-      color: white;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 1.2em;
-      max-width: 300px;
+    :root{
+      --brand:#b86b77;
+      --bg:#fffdf8;
+      --card:#ffffff;
+      --muted:#6b6b6b;
+      --chip:#f4ecea;
     }
+    *{box-sizing:border-box}
+    body{
+      font-family:sans-serif;background:var(--bg);color:#333;
+      margin:0; padding:32px 16px;
+    }
+    header{max-width:980px;margin:0 auto 22px;text-align:center}
+    h1{margin:0 0 6px;color:var(--brand);font-size:clamp(22px,3.8vw,32px)}
+    .sub{color:var(--muted);font-size:.95em}
+    .grid{
+      max-width:980px;margin:18px auto 0;
+      display:grid;gap:16px;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    }
+    a.card{
+      display:block; text-decoration:none; color:inherit;
+      background:var(--card); border-radius:14px; padding:18px;
+      box-shadow:0 4px 14px rgba(184,107,119,.12);
+      border:1px solid #efdedd; transition:.18s ease;
+    }
+    a.card:hover{ transform:translateY(-2px); box-shadow:0 10px 20px rgba(184,107,119,.16); }
+    a.card:focus-visible{ outline:3px solid #ffd9e1; outline-offset:3px; }
+    .emoji{font-size:26px}
+    .title{margin:8px 0 6px; font-weight:700; color:#503a40}
+    .desc{margin:0 0 10px; color:var(--muted); font-size:.95em; line-height:1.5}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{
+      display:inline-block; font-size:.8em; color:#7b525a;
+      background:var(--chip); border:1px solid #ead8d6;
+      border-radius:999px; padding:4px 8px;
+    }
+    footer{max-width:980px;margin:26px auto 0; text-align:center; color:#8b6a70; font-size:.9em}
   </style>
 </head>
 <body>
-  <h1>診断ページへようこそ</h1>
-  <a href="hanashin.html">🌸 花タイプ診断</a>
-  <a href="housekishin.html">💎 宝石タイプ診断</a>
-  <a href="drinkshin.html">☕ 飲み物サイコパス診断</a>
-  <a href="animalshin.html">🧠 心の中の性格動物診断</a>
-  <a href="sweetshin.html">🍰 7つの休息×スイーツ診断</a>
+  <header>
+    <h1>診断ページへようこそ</h1>
+    <p class="sub">気分に合わせて選んでね。すべてブラウザだけでサクッと診断できます。</p>
+  </header>
+
+  <main class="grid">
+    <!-- 花 -->
+    <a class="card" href="hanashin.html">
+      <div class="emoji">🌸</div>
+      <div class="title">花タイプ診断</div>
+      <p class="desc">感性の6問から、あなたを象徴する花と言葉へ案内します。</p>
+      <div class="chips">
+        <span class="chip">所要1–2分</span>
+        <span class="chip">6問</span>
+        <span class="chip">即時結果</span>
+      </div>
+    </a>
+
+    <!-- 宝石 × 恋愛スタイル（名称をわかりやすく変更） -->
+    <a class="card" href="housekishin.html">
+      <div class="emoji">💎</div>
+      <div class="title">宝石×恋愛スタイル診断</div>
+      <p class="desc">恋愛の傾向（Leeのラブスタイル＋愛着）を宝石にマッピング。タイプ別の相性も。</p>
+      <div class="chips">
+        <span class="chip">約32問</span>
+        <span class="chip">恋愛傾向＋愛着</span>
+        <span class="chip">詳細解説リンク</span>
+      </div>
+    </a>
+
+    <!-- 飲み物サイコパス -->
+    <a class="card" href="drinkshin.html">
+      <div class="emoji">☕</div>
+      <div class="title">飲み物サイコパス診断</div>
+      <p class="desc">ブラック？それともストロベリーミルク？10問で“毒気”をゆるっと判定。</p>
+      <div class="chips">
+        <span class="chip">10問</span>
+        <span class="chip">パーセンテージ表示</span>
+      </div>
+    </a>
+
+    <!-- 冷酷アイスクリーム（Mach-IV準拠） -->
+    <a class="card" href="iceshin.html">
+      <div class="emoji">❄️</div>
+      <div class="title">冷酷アイスクリーム診断（Mach-IV）</div>
+      <p class="desc">“駆け引き度”を20問でスコア化。ソフトクリーム〜クリスタルアイスで結果表示、強み/弱みも。</p>
+      <div class="chips">
+        <span class="chip">20問</span>
+        <span class="chip">Mach-IV準拠</span>
+        <span class="chip">強み・弱み解説</span>
+      </div>
+    </a>
+
+    <!-- 動物（ビッグファイブ短縮版） -->
+    <a class="card" href="animalshin.html">
+      <div class="emoji">🧠</div>
+      <div class="title">心の中の性格動物診断</div>
+      <p class="desc">ビッグファイブの5因子を、ナマケモノ・犬・イルカなど動物で直感表示。</p>
+      <div class="chips">
+        <span class="chip">10問</span>
+        <span class="chip">5因子×動物</span>
+        <span class="chip">即時結果</span>
+      </div>
+    </a>
+
+    <!-- 7つの休息（スイーツ） -->
+    <a class="card" href="sweetshin.html">
+      <div class="emoji">🍰</div>
+      <div class="title">7つの休息 × スイーツ診断</div>
+      <p class="desc">あなたに今必要な休息を、プリン・ドーナツ・マカロン…甘く楽しく提示。</p>
+      <div class="chips">
+        <span class="chip">複数該当OK</span>
+        <span class="chip">自己ケア提案</span>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    © 心の標本 / セレクター　—　気になる診断からどうぞ。
+  </footer>
 </body>
 </html>
