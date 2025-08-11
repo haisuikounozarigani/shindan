@@ -5,12 +5,7 @@
   <title>冷酷アイスクリーム診断（Mach-IV準拠・20問）</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    :root{
-      --brand:#b86b77;
-      --chip:#f4f1ef;
-      --bg:#fffaf6;
-      --ok:#fff0f3;
-    }
+    :root{ --brand:#b86b77; --chip:#f4f1ef; --bg:#fffaf6; }
     body{font-family:sans-serif;background:var(--bg);color:#333;padding:20px}
     h1{text-align:center;color:var(--brand);margin:0 0 14px}
     .legend{max-width:860px;margin:0 auto 16px;font-size:.95em;color:#555}
@@ -33,25 +28,22 @@
       box-shadow:0 0 0 2px var(--brand) inset, 0 4px 10px rgba(184,107,119,.25);
       transform:scale(1.02);
     }
-    .chip input:checked + span::after{content:"✔"; margin-left:6px; font-weight:700;}
     .chip:hover{border-color:#d7c6c2}
     .chip input:focus-visible + span{outline:3px solid #ffd9e1;outline-offset:2px;border-radius:8px}
     .btn{display:block;margin:22px auto 0;padding:12px 22px;font-size:1.1em;background:var(--brand);color:#fff;border:none;border-radius:10px}
-    #result{max-width:860px;margin:22px auto 0;background:var(--ok);border-left:6px solid var(--brand);padding:18px;border-radius:10px}
-    #result h2{margin:0 0 8px;color:var(--brand)}
-    .type{font-size:1.15em;margin-top:4px}
-    .tag{display:inline-block;background:#fff;border:1px solid #e7d4cf;border-radius:999px;padding:4px 10px;margin:6px 6px 0 0;font-size:.85em;color:#7b4d57}
-    .sec{margin-top:14px}
-    .sec h3{margin:0 0 8px;color:#7b4d57;font-size:1.05em}
-    .sec p{margin:0}
-    .sec ul{margin:6px 0 0 1.1em}
-    .note{font-size:.9em;color:#666;margin-top:10px}
-    a.back{display:block;text-align:center;margin:22px auto 0;color:var(--brand);text-decoration:none;font-weight:700}
+
+    #result{max-width:860px;margin:22px auto 0;background:#fff;border:1px solid #eadad6;padding:18px;border-radius:10px}
+    #result h2{margin:0 0 8px;color:#b16370}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .tag{display:inline-block;background:#f6eef0;border:1px solid #e0cfd0;border-radius:999px;padding:6px 12px;font-size:.9em;color:#7b4d57}
+    .lead{margin:8px 0 0;color:#555}
+    .actions{display:flex;gap:10px;margin-top:12px}
+    .a-btn{flex:1;text-align:center;text-decoration:none;background:#f7f2f1;border:1px solid #e3d2cd;padding:10px;border-radius:10px;color:#7b4d57;font-weight:700}
+    .a-btn:hover{background:#f1e7e5}
   </style>
 </head>
 <body>
   <h1>🍦 冷酷アイスクリーム診断（Mach-IV準拠）</h1>
-
   <div class="legend">5件法：1 まったく当てはまらない ／ 2 あまり当てはまらない ／ 3 どちらともいえない ／ 4 やや当てはまる ／ 5 とても当てはまる</div>
 
   <div class="progress-wrap">
@@ -63,10 +55,12 @@
   <button class="btn" type="button" onclick="calculate()">診断する</button>
 
   <div id="result" style="display:none;"></div>
-  <a class="back" href="https://seikaku.my.canva.site/shindan" target="_blank">🔙 心の標本に戻る</a>
 
   <script>
-    // Mach-IV 20項目（日本語意訳）rev:true は逆転項目
+    // ▼Canvaの詳しい解説ページ（必ず https:// から）
+    const CANVA_DETAIL_URL = "https://seikaku.my.canva.site/iceshin";
+
+    // Mach-IV 20項目（日本語意訳）rev:true は逆転
     const items = [
       { text: "目的のためなら本音を隠すことも必要だと思う", rev: false },
       { text: "道徳的に正しいと確信できないなら、行動すべきではない", rev: true },
@@ -91,52 +85,23 @@
     ];
 
     const scaleLabels = [
-      "1（まったく当てはまらない）",
-      "2（あまり当てはまらない）",
-      "3（どちらともいえない）",
-      "4（やや当てはまる）",
-      "5（とても当てはまる）"
+      "1（まったく当てはまらない）","2（あまり当てはまらない）","3（どちらともいえない）","4（やや当てはまる）","5（とても当てはまる）"
     ];
 
-    // タイプごとの文言
-    const TYPE_INFO = {
-      "ソフトクリーム": {
-        tagline: "― 駆け引きゼロ、直球すぎて逆に最強 ―",
-        profile: "あなたは“正直”という最強カードを素で使う人。悪だくみの説明書を読んでも寝落ちするタイプです。",
-        strengths: ["信頼残高が高い","裏表がなく安心感がある","長期的な関係に強い","謝罪と軌道修正が早い"],
-        weaknesses: ["搦め手に弱い","強引な交渉相手が苦手","“少しは疑え”と言われがち"]
-      },
-      "バニラアイス": {
-        tagline: "― 基本は正攻法、ときどき小ワザ ―",
-        profile: "誠実ベースに少しだけ現実主義のスパイス。無駄な駆け引きは嫌いだけど、状況判断はできる人。",
-        strengths: ["安定と信頼の両立","チームで機能する協調性","境界線を守れる"],
-        weaknesses: ["尖りが弱く埋もれがち","攻めの交渉に押されやすい","公平さ重視で機会損失も"]
-      },
-      "ジェラート": {
-        tagline: "― 甘さと冷静さのスイッチャー ―",
-        profile: "空気を読みつつ展開を組み立てられる現実派。必要なときだけ戦術を使う“ほどよい策士”。",
-        strengths: ["状況対応力と交渉勘","境界の取り方が上手い","短期と長期のバランス感覚"],
-        weaknesses: ["計算高く見られることも","優柔不断に映る場面がある","腹の内を読まれやすい"]
-      },
-      "ソルベ": {
-        tagline: "― 氷点下の冷静、勝ち筋直行 ―",
-        profile: "結果重視・感情省エネのタクティシャン。盤面が見えているぶん、余計な消耗を嫌います。",
-        strengths: ["戦略設計と損益判断","交渉・駆け引きの強さ","プレッシャー耐性"],
-        weaknesses: ["冷たく誤解されやすい","信頼醸成に時間がかかる","短期志向に寄りがち"]
-      },
-      "クリスタルアイス": {
-        tagline: "― 氷の策士、最適解を取りにいく ―",
-        profile: "目的最優先の切れ者。場と人のレバー（てこ）を読むのが得意で、勝率を最大化します。",
-        strengths: ["高い状況掌握力","リスク管理と決断力","説得・影響力"],
-        weaknesses: ["共感不足で関係が摩耗","橋を焼きがちで長期信頼に弱い","疑心暗鬼モードに入りやすい"]
-      }
+    const TAGLINE = {
+      "ソフトクリーム":"駆け引きゼロ、直球すぎて逆に最強",
+      "バニラアイス":"基本は正攻法、ときどき小ワザ",
+      "ジェラート":"甘さと冷静さのスイッチャー",
+      "ソルベ":"氷点下の冷静、勝ち筋直行",
+      "クリスタルアイス":"氷の策士、最適解を取りにいく"
     };
 
-    const form = document.getElementById("quizForm");
-    const bar  = document.getElementById("bar");
-    const count= document.getElementById("count");
+    const form   = document.getElementById("quizForm");
+    const bar    = document.getElementById("bar");
+    const count  = document.getElementById("count");
+    const result = document.getElementById("result");
 
-    // 質問を生成
+    // 質問生成（選択の視認性が高い“チップ”UI）
     items.forEach((it, i) => {
       const div = document.createElement("div");
       div.className = "question";
@@ -156,9 +121,9 @@
       form.appendChild(div);
     });
 
-    // 回答状況の可視化
+    // 進捗表示
     document.addEventListener("change", (e) => {
-      if (!e.target.name || !e.target.name.startsWith("q")) return;
+      if (!e.target.name?.startsWith("q")) return;
       const qid = e.target.name;
       const st = document.getElementById(`${qid}_status`);
       if (st){ st.textContent = "選択済"; st.classList.add("done"); }
@@ -182,17 +147,17 @@
           return;
         }
       }
-      // 採点（逆転項目は 6 - v）
+      // 採点（逆転項目は 6 - 値）
       let sum = 0;
       for (let i = 0; i < items.length; i++) {
-        let v = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+        let v = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value,10);
         if (items[i].rev) v = 6 - v;
         sum += v;
       }
-      // 合計 20〜100 → 0〜100% に換算
+      // 20〜100点 → 0〜100% に線形変換
       const machPct = Math.round((sum - 20) / 80 * 100);
 
-      // タイプ判定
+      // タイプ判定（ライト）
       let type="";
       if (machPct <= 20) type="ソフトクリーム";
       else if (machPct <= 40) type="バニラアイス";
@@ -200,32 +165,19 @@
       else if (machPct <= 80) type="ソルベ";
       else type="クリスタルアイス";
 
-      const info = TYPE_INFO[type];
-
-      // 結果描画
-      const result = document.getElementById("result");
+      const tagline = TAGLINE[type] || "";
       result.style.display = "block";
       result.innerHTML = `
-        <h2>診断結果</h2>
-        <div class="type">冷酷度（Mach指数換算）：<strong>${machPct}%</strong></div>
-        <div class="type">あなたは <span class="tag">${type}</span> <span class="tag">${info.tagline}</span></div>
-
-        <div class="sec">
-          <h3>性格プロファイル</h3>
-          <p>${info.profile}</p>
+        <h2>結果</h2>
+        <div class="row">
+          <span class="tag">冷酷度：${machPct}%</span>
+          <span class="tag">${type}</span>
         </div>
-
-        <div class="sec">
-          <h3>強み</h3>
-          <ul>${info.strengths.map(s=>`<li>${s}</li>`).join("")}</ul>
+        <p class="lead">一言まとめ：${tagline}</p>
+        <div class="actions">
+          <a class="a-btn" href="${CANVA_DETAIL_URL}" target="_blank">📖 詳しい解説（Canva）</a>
+          <a class="a-btn" href="https://seikaku.my.canva.site/shindan" target="_blank">🔙 心の標本に戻る</a>
         </div>
-
-        <div class="sec">
-          <h3>弱み</h3>
-          <ul>${info.weaknesses.map(s=>`<li>${s}</li>`).join("")}</ul>
-        </div>
-
-        <p class="note">※この項目は Mach-IV（マキャベリズム尺度）の内容を日本語で意訳した簡易版です（研究利用の正式な翻訳ではありません）。</p>
       `;
       window.scrollTo(0, document.body.scrollHeight);
     }
