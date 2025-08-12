@@ -1,126 +1,85 @@
 <!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>心の標本｜ゆめかわセレクター</title>
-<meta name="description" content="心の標本。やわらかな色で並べた診断の入口。">
+<meta name="description" content="心の標本。スプラッシュののち、やわらかな色で並べた診断の入口が開きます。">
 <meta name="theme-color" content="#ffeef7">
 <style>
-/* ===== YUME-KAWA THEME ===== */
 :root{
-  --bg1:#fff5fb;  /* うす桃 */
-  --bg2:#f3f4ff;  /* うすラベンダー */
-  --card:#ffffff;
-  --line:#f1d9e8;
-  --fg:#533e4a;   /* くすみブラウン */
-  --muted:#8b6c78;
-  --accent:#ff9ecf;  /* いちごミルク */
-  --accent2:#b69cff; /* ラベンダー */
-  --mint:#b8f0ea;    /* うすミント */
+  --bg1:#fff5fb; --bg2:#f3f4ff; --card:#fff; --line:#f1d9e8;
+  --fg:#533e4a; --muted:#8b6c78; --accent:#ff9ecf; --accent2:#b69cff;
 }
-*{box-sizing:border-box}
-body{
-  margin:0; color:var(--fg); font-family:"Noto Sans JP",system-ui,sans-serif;
-  background:linear-gradient(160deg,var(--bg1),var(--bg2));
-  min-height:100svh;
-}
-.wrap{max-width:860px;margin:20px auto 28px;padding:0 14px}
-h1{
-  margin:8px 0 6px; font-size:clamp(20px,4.6vw,30px); letter-spacing:.02em;
-  display:flex; align-items:center; gap:8px;
-}
-h1::before{
-  content:"✧"; color:var(--accent2); font-size:1.1em;
-}
-.lead{margin:0 0 14px;color:var(--muted)}
-.ribbon{
-  display:inline-block; padding:6px 12px; border-radius:999px;
-  background:linear-gradient(90deg,rgba(255,158,207,.25),rgba(182,156,255,.25));
-  border:1px dashed rgba(255,158,207,.6); color:#7a5c66; font-size:.9em;
-}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+.hidden{display:none!important}
 
-/* Links */
-.links{display:grid;gap:12px;margin-top:16px}
-a.link{
-  display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--fg);
-  background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px;
-  box-shadow:0 6px 18px rgba(255,158,207,.12);
-  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-}
-a.link:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(182,156,255,.18); border-color:#efd7ff }
-.emo{font-size:20px}
-.ttl{font-weight:700}
-.sub{color:var(--muted);font-size:.92em;margin-top:2px}
-.badge{
-  margin-left:auto; padding:7px 12px; border-radius:999px; font-weight:700; font-size:.9em;
-  background:linear-gradient(90deg,var(--accent),var(--accent2)); color:white;
-  box-shadow:0 2px 10px rgba(182,156,255,.35);
-}
+/* --- Splash --- */
+.splash{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden}
+.splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
+.splash .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
+.splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
+.splash .hero{position:relative;z-index:1;text-align:center;padding:22px}
+h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
+.sub{margin:0;color:var(--muted)}
+.cta{margin:16px auto 0;display:inline-block;padding:10px 16px;border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700;text-decoration:none;
+  box-shadow:0 6px 18px rgba(182,156,255,.25);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.skip{margin-top:10px;color:var(--muted);font-size:.9em}
+.skip input{vertical-align:middle;}
 
-/* Footer buttons */
-.footerbar{
-  position:sticky; bottom:0; display:flex; gap:10px; justify-content:center;
-  padding:10px; background:rgba(255,255,255,.7);
-  backdrop-filter:blur(6px) saturate(1.05); border-top:1px solid #f3e3f0;
-}
-.footerbar a{
-  padding:8px 12px; border:1px solid #f1d9e8; border-radius:999px; text-decoration:none; color:var(--fg); background:#fff;
-}
+/* --- Main list (yume-kawa) --- */
+.wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
+.wrap.show{opacity:1;transform:none}
+.links{display:grid;gap:12px;margin-top:10px}
+a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;
+  box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,.18);border-color:#efd7ff}
+.emo{font-size:20px}.ttl{font-weight:700}.sub2{color:var(--muted);font-size:.92em;margin-top:2px}
+.badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 10px rgba(182,156,255,.35)}
 
-/* 小さめ端末の余白最適化 */
-@media (max-width:360px){
-  .badge{display:none} /* 画面が狭いときはバッジ非表示で窮屈さ回避 */
-}
+.note{color:var(--muted);text-align:center;margin:18px 0}
+.footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;padding:10px;background:rgba(255,255,255,.82);
+  backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
+.footerbar a,.footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff}
+@media (max-width:360px){.badge{display:none}}
+@media (prefers-reduced-motion: reduce){.cta{animation:none}.wrap{transition:none}}
 </style>
-</head><body>
-<main class="wrap">
-  <span class="ribbon">やさしく、まぎれなく、まっすぐに。</span>
-  <h1>心の標本</h1>
-  <p class="lead">気になる入口からどうぞ。すべてブラウザだけでサクッと診断できます。</p>
+</head>
+<body>
 
+<!-- Splash（画像が無くてもグラデで表示される） -->
+<section id="splash" class="splash" aria-label="心の標本の入口">
+  <div class="fallback" aria-hidden="true"></div>
+  <img class="bg" alt=""
+       src="/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png"
+       onerror="this.classList.add('hidden')">
+  <!-- WebP を後で置くなら下記を有効化：
+  <picture>
+    <source srcset="/shindan/assets/hero/specimens-hero-1080.webp" type="image/webp">
+    <img class="bg" alt="" src="/shindan/assets/hero/specimens-hero-1080.png">
+  </picture> -->
+  <div class="hero">
+    <h1>心の標本</h1>
+    <p class="sub">タップするか、少し待つと入口が開きます。</p>
+    <a id="enterBtn" class="cta" href="#enter">ひらく</a>
+    <label class="skip"><input id="skipChk" type="checkbox"> 次回はこの画面をスキップ</label>
+  </div>
+</section>
+
+<main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1">
   <nav class="links">
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/hanashin.html?src=specimens">
-      <span class="emo">🌸</span>
-      <div><div class="ttl">花診断（オリジナル）</div><div class="sub">6問で象徴の花を提示</div></div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/housekishin.html?src=specimens">
-      <span class="emo">💎</span>
-      <div><div class="ttl">宝石×恋愛スタイル</div><div class="sub">Love Styles × 愛着で24タイプ</div></div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/drinkshin.html?src=specimens">
-      <span class="emo">☕</span>
-      <div><div class="ttl">飲み物サイコパス（LSRP簡易）</div><div class="sub">10問で“毒気”をライトに測定</div></div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/iceshin.html?src=specimens">
-      <span class="emo">🍦</span>
-      <div><div class="ttl">冷酷アイスクリーム（Mach‑IV簡易）</div><div class="sub">駆け引き度をスコア化</div></div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/mirorshin.html?src=specimens">
-      <span class="emo">🪞</span>
-      <div><div class="ttl">鏡ナルシスト（NARQ簡易）</div><div class="sub">14問でAdmiration/Rivalry傾向</div></div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/animalshin.html?src=specimens">
-      <span class="emo">🐾</span>
-      <div><div class="ttl">性格動物診断（SBF）</div><div class="sub">5因子を動物メタファで表示</div></div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/sweetshin.html?src=specimens">
-      <span class="emo">🍰</span>
-      <div><div class="ttl">7つの休息 × スイーツ診断</div><div class="sub">Saundra Dalton‑Smith提案の「7つの休息」に基づく</div></div>
-      <span class="badge">診断へ</span>
-    </a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/hanashin.html?src=specimens"><span class="emo">🌸</span><div><div class="ttl">花診断（オリジナル）</div><div class="sub2">6問で象徴の花を提示</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/housekishin.html?src=specimens"><span class="emo">💎</span><div><div class="ttl">宝石×恋愛スタイル</div><div class="sub2">Love Styles × 愛着で24タイプ</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/drinkshin.html?src=specimens"><span class="emo">☕</span><div><div class="ttl">飲み物サイコパス（LSRP簡易）</div><div class="sub2">10問で“毒気”をライトに測定</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/iceshin.html?src=specimens"><span class="emo">🍦</span><div><div class="ttl">冷酷アイスクリーム（Mach-IV簡易）</div><div class="sub2">駆け引き度をスコア化</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/mirorshin.html?src=specimens"><span class="emo">🪞</span><div><div class="ttl">鏡ナルシスト（NARQ簡易）</div><div class="sub2">14問でAdmiration/Rivalry傾向</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/animalshin.html?src=specimens"><span class="emo">🐾</span><div><div class="ttl">性格動物診断（SBF）</div><div class="sub2">5因子を動物メタファで表示</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/sweetshin.html?src=specimens"><span class="emo">🍰</span><div><div class="ttl">7つの休息 × スイーツ診断</div><div class="sub2">Saundra Dalton-Smithの提案に基づく</div></div><span class="badge">診断へ</span></a>
   </nav>
-
-  <p class="lead" style="text-align:center;margin-top:16px;color:#7f6a76">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
+  <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
 </main>
 
 <nav class="footerbar">
@@ -128,5 +87,50 @@ a.link:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(182,156,25
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
   <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
+  <button id="shareBtn" type="button">共有</button>
 </nav>
+
+<script>
+(function(){
+  const splash = document.getElementById('splash');
+  const content = document.getElementById('content');
+  const btn = document.getElementById('enterBtn');
+  const chk = document.getElementById('skipChk');
+
+  const reveal = ()=>{
+    if (chk && chk.checked) localStorage.setItem('specimensSeen','1');
+    splash.classList.add('hidden');
+    content.classList.add('show');
+    content.focus({preventScroll:true});
+  };
+
+  // 既訪 or ?skip=1 なら即表示
+  const p = new URLSearchParams(location.search);
+  if (p.get('skip')==='1' || localStorage.getItem('specimensSeen')==='1'){
+    reveal(); return;
+  }
+
+  // 自動オープン（動きが苦手設定なら無効）
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let timer = reduce ? null : setTimeout(reveal, 2200);
+
+  // タップ/クリックで即表示
+  btn.addEventListener('click', e=>{ e.preventDefault(); if (timer) clearTimeout(timer); reveal(); });
+  splash.addEventListener('click', e=>{
+    if (e.target.closest('a,button,label,input')) return;
+    if (timer) clearTimeout(timer); reveal();
+  });
+
+  // 共有ボタン（対応端末のみ）
+  const shareBtn = document.getElementById('shareBtn');
+  if (navigator.share){
+    shareBtn.addEventListener('click', ()=> navigator.share({
+      title:'心の標本', text:'診断の入口はこちら', url: location.href
+    }).catch(()=>{}));
+  }else{
+    shareBtn.style.display='none';
+  }
+})();
+</script>
+
 </body></html>
