@@ -1,34 +1,25 @@
 <!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>心の標本｜ゆめかわセレクター</title>
-<meta name="description" content="心の標本。スプラッシュののち、やわらかな色で並べた診断の入口が開きます。">
+<meta name="description" content="心の標本。タップで診断の入口が開きます。">
 <meta name="theme-color" content="#ffeef7">
 <style>
-:root{
-  --bg1:#fff5fb; --bg2:#f3f4ff; --card:#fff; --line:#f1d9e8;
-  --fg:#533e4a; --muted:#8b6c78; --accent:#ff9ecf; --accent2:#b69cff;
-}
+:root{--bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;--accent:#ff9ecf;--accent2:#b69cff}
 *{box-sizing:border-box} html,body{height:100%}
-body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;
-  background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
 .hidden{display:none!important}
 
-/* --- Splash --- */
-.splash{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden}
+/* Splash */
+.splash{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden;cursor:pointer}
 .splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
 .splash .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
 .splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
 .splash .hero{position:relative;z-index:1;text-align:center;padding:22px}
 h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 .sub{margin:0;color:var(--muted)}
-.cta{margin:16px auto 0;display:inline-block;padding:10px 16px;border-radius:999px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700;text-decoration:none;
-  box-shadow:0 6px 18px rgba(182,156,255,.25);animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-.skip{margin-top:10px;color:var(--muted);font-size:.9em}
-.skip input{vertical-align:middle;}
+.tap{margin-top:14px;font-size:.95em;color:#7a6a77}
 
-/* --- Main list (yume-kawa) --- */
+/* Main list */
 .wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
 .wrap.show{opacity:1;transform:none}
 .links{display:grid;gap:12px;margin-top:10px}
@@ -37,35 +28,29 @@ a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(-
   box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
 a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,.18);border-color:#efd7ff}
 .emo{font-size:20px}.ttl{font-weight:700}.sub2{color:var(--muted);font-size:.92em;margin-top:2px}
-.badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 10px rgba(182,156,255,.35)}
-
+.badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
 .note{color:var(--muted);text-align:center;margin:18px 0}
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
-.footerbar a,.footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff}
+.footerbar a{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff}
 @media (max-width:360px){.badge{display:none}}
-@media (prefers-reduced-motion: reduce){.cta{animation:none}.wrap{transition:none}}
 </style>
 </head>
 <body>
 
-<!-- Splash（画像が無くてもグラデで表示される） -->
-<section id="splash" class="splash" aria-label="心の標本の入口">
+<!-- Splash：タップ/クリック（またはEnter/Space）でだけ閉じる -->
+<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0">
   <div class="fallback" aria-hidden="true"></div>
+
+  <!-- いま置いてあるPNGをそのまま使用（スペースは%20でエンコード） -->
   <img class="bg" alt=""
        src="/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png"
        onerror="this.classList.add('hidden')">
-  <!-- WebP を後で置くなら下記を有効化：
-  <picture>
-    <source srcset="/shindan/assets/hero/specimens-hero-1080.webp" type="image/webp">
-    <img class="bg" alt="" src="/shindan/assets/hero/specimens-hero-1080.png">
-  </picture> -->
+
   <div class="hero">
     <h1>心の標本</h1>
-    <p class="sub">タップするか、少し待つと入口が開きます。</p>
-    <a id="enterBtn" class="cta" href="#enter">ひらく</a>
-    <label class="skip"><input id="skipChk" type="checkbox"> 次回はこの画面をスキップ</label>
+    <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
+    <p class="tap">✦ 開かないときは画像以外の余白をタップしてね</p>
   </div>
 </section>
 
@@ -87,49 +72,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
   <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
-  <button id="shareBtn" type="button">共有</button>
 </nav>
 
 <script>
 (function(){
   const splash = document.getElementById('splash');
   const content = document.getElementById('content');
-  const btn = document.getElementById('enterBtn');
-  const chk = document.getElementById('skipChk');
+  const reveal = ()=>{ splash.classList.add('hidden'); content.classList.add('show'); content.focus({preventScroll:true}); };
 
-  const reveal = ()=>{
-    if (chk && chk.checked) localStorage.setItem('specimensSeen','1');
-    splash.classList.add('hidden');
-    content.classList.add('show');
-    content.focus({preventScroll:true});
-  };
-
-  // 既訪 or ?skip=1 なら即表示
-  const p = new URLSearchParams(location.search);
-  if (p.get('skip')==='1' || localStorage.getItem('specimensSeen')==='1'){
-    reveal(); return;
-  }
-
-  // 自動オープン（動きが苦手設定なら無効）
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let timer = reduce ? null : setTimeout(reveal, 2200);
-
-  // タップ/クリックで即表示
-  btn.addEventListener('click', e=>{ e.preventDefault(); if (timer) clearTimeout(timer); reveal(); });
+  // タップ/クリックで開く（リンク等の誤作動は除外）
   splash.addEventListener('click', e=>{
     if (e.target.closest('a,button,label,input')) return;
-    if (timer) clearTimeout(timer); reveal();
+    reveal();
   });
-
-  // 共有ボタン（対応端末のみ）
-  const shareBtn = document.getElementById('shareBtn');
-  if (navigator.share){
-    shareBtn.addEventListener('click', ()=> navigator.share({
-      title:'心の標本', text:'診断の入口はこちら', url: location.href
-    }).catch(()=>{}));
-  }else{
-    shareBtn.style.display='none';
-  }
+  // キーボード（Enter/Space）でも開く
+  splash.addEventListener('keydown', e=>{
+    if (e.key==='Enter' || e.key===' '){ e.preventDefault(); reveal(); }
+  });
 })();
 </script>
 
