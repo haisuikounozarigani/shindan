@@ -1,115 +1,129 @@
 <!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>心の標本｜Specimens</title>
+<title>心の標本｜ゆめかわセレクター</title>
+<meta name="description" content="心の標本。やわらかな色で並べた診断の入口。">
+<meta name="theme-color" content="#ffeef7">
 <style>
-:root{--bg:#111;--fg:#f5f5f5;--muted:#9aa0a6;--card:#1a1a1a;--line:#2a2a2a;--accent:#0EA47A}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif}
-.wrap{max-width:1060px;margin:24px auto;padding:0 14px}
-h1{margin:6px 0 2px;font-weight:700} .sub{color:var(--muted);margin:0 0 18px;font-size:.95rem}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-.thumb{aspect-ratio:4/3;background:#000;display:block;width:100%;height:auto}
-.meta{padding:12px}
-.title{margin:2px 0 8px;font-weight:700}
-.btn{display:block;text-align:center;text-decoration:none;padding:10px 12px;border-radius:10px;background:var(--accent);color:#111;font-weight:700}
-.footer{opacity:.8;color:var(--muted);text-align:center;margin:18px 0}
-.iconbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;padding:10px;background:rgba(17,17,17,.8);backdrop-filter:saturate(1.2) blur(6px)}
-.iconbar a{padding:8px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--fg)}
-</style></head><body>
-<div class="wrap">
+/* ===== YUME-KAWA THEME ===== */
+:root{
+  --bg1:#fff5fb;  /* うす桃 */
+  --bg2:#f3f4ff;  /* うすラベンダー */
+  --card:#ffffff;
+  --line:#f1d9e8;
+  --fg:#533e4a;   /* くすみブラウン */
+  --muted:#8b6c78;
+  --accent:#ff9ecf;  /* いちごミルク */
+  --accent2:#b69cff; /* ラベンダー */
+  --mint:#b8f0ea;    /* うすミント */
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--fg); font-family:"Noto Sans JP",system-ui,sans-serif;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));
+  min-height:100svh;
+}
+.wrap{max-width:860px;margin:20px auto 28px;padding:0 14px}
+h1{
+  margin:8px 0 6px; font-size:clamp(20px,4.6vw,30px); letter-spacing:.02em;
+  display:flex; align-items:center; gap:8px;
+}
+h1::before{
+  content:"✧"; color:var(--accent2); font-size:1.1em;
+}
+.lead{margin:0 0 14px;color:var(--muted)}
+.ribbon{
+  display:inline-block; padding:6px 12px; border-radius:999px;
+  background:linear-gradient(90deg,rgba(255,158,207,.25),rgba(182,156,255,.25));
+  border:1px dashed rgba(255,158,207,.6); color:#7a5c66; font-size:.9em;
+}
+
+/* Links */
+.links{display:grid;gap:12px;margin-top:16px}
+a.link{
+  display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--fg);
+  background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px;
+  box-shadow:0 6px 18px rgba(255,158,207,.12);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+a.link:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(182,156,255,.18); border-color:#efd7ff }
+.emo{font-size:20px}
+.ttl{font-weight:700}
+.sub{color:var(--muted);font-size:.92em;margin-top:2px}
+.badge{
+  margin-left:auto; padding:7px 12px; border-radius:999px; font-weight:700; font-size:.9em;
+  background:linear-gradient(90deg,var(--accent),var(--accent2)); color:white;
+  box-shadow:0 2px 10px rgba(182,156,255,.35);
+}
+
+/* Footer buttons */
+.footerbar{
+  position:sticky; bottom:0; display:flex; gap:10px; justify-content:center;
+  padding:10px; background:rgba(255,255,255,.7);
+  backdrop-filter:blur(6px) saturate(1.05); border-top:1px solid #f3e3f0;
+}
+.footerbar a{
+  padding:8px 12px; border:1px solid #f1d9e8; border-radius:999px; text-decoration:none; color:var(--fg); background:#fff;
+}
+
+/* 小さめ端末の余白最適化 */
+@media (max-width:360px){
+  .badge{display:none} /* 画面が狭いときはバッジ非表示で窮屈さ回避 */
+}
+</style>
+</head><body>
+<main class="wrap">
+  <span class="ribbon">やさしく、まぎれなく、まっすぐに。</span>
   <h1>心の標本</h1>
-  <p class="sub">画像の標本アーカイブ。各カードから診断へ。</p>
+  <p class="lead">気になる入口からどうぞ。すべてブラウザだけでサクッと診断できます。</p>
 
-  <div class="grid">
-    <!-- 花診断 -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/hanashin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/hanashin.png" alt="花診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">花診断（オリジナル）</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/hanashin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
+  <nav class="links">
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/hanashin.html?src=specimens">
+      <span class="emo">🌸</span>
+      <div><div class="ttl">花診断（オリジナル）</div><div class="sub">6問で象徴の花を提示</div></div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <!-- 宝石恋愛スタイル -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/housekishin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/housekishin.png" alt="宝石恋愛スタイル診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">宝石恋愛スタイル（Love Styles×愛着）</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/housekishin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/housekishin.html?src=specimens">
+      <span class="emo">💎</span>
+      <div><div class="ttl">宝石×恋愛スタイル</div><div class="sub">Love Styles × 愛着で24タイプ</div></div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <!-- 飲み物サイコパス診断 -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/drinkshin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/drinkshin.png" alt="飲み物サイコパス診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">飲み物サイコパス診断（LSRP簡易）</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/drinkshin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/drinkshin.html?src=specimens">
+      <span class="emo">☕</span>
+      <div><div class="ttl">飲み物サイコパス（LSRP簡易）</div><div class="sub">10問で“毒気”をライトに測定</div></div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <!-- 冷酷アイスクリーム診断 -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/iceshin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/iceshin.png" alt="冷酷アイスクリーム診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">冷酷アイスクリーム（Mach-IV簡易）</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/iceshin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/iceshin.html?src=specimens">
+      <span class="emo">🍦</span>
+      <div><div class="ttl">冷酷アイスクリーム（Mach‑IV簡易）</div><div class="sub">駆け引き度をスコア化</div></div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <!-- 鏡ナルシスト診断 -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/mirorshin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/mirorshin.png" alt="鏡ナルシスト診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">鏡ナルシスト診断（NARQ簡易）</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/mirorshin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/mirorshin.html?src=specimens">
+      <span class="emo">🪞</span>
+      <div><div class="ttl">鏡ナルシスト（NARQ簡易）</div><div class="sub">14問でAdmiration/Rivalry傾向</div></div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <!-- 心の中の性格動物診断 -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/animalshin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/animalshin.png" alt="心の中の性格動物診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">心の中の性格動物診断（SBF）</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/animalshin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/animalshin.html?src=specimens">
+      <span class="emo">🐾</span>
+      <div><div class="ttl">性格動物診断（SBF）</div><div class="sub">5因子を動物メタファで表示</div></div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <!-- スイーツ診断 -->
-    <article class="card">
-      <picture>
-        <source srcset="/assets/specimens/sweetshin.webp" type="image/webp">
-        <img class="thumb" src="/assets/specimens/sweetshin.png" alt="スイーツ診断の標本画像" loading="lazy">
-      </picture>
-      <div class="meta">
-        <div class="title">スイーツ診断(Saundra Dalton-Smith)</div>
-        <a class="btn" href="https://haisuikounozarigani.github.io/shindan/sweetshin.html?src=specimens">診断へ</a>
-      </div>
-    </article>
-  </div>
+    <a class="link" href="https://haisuikounozarigani.github.io/shindan/sweetshin.html?src=specimens">
+      <span class="emo">🍰</span>
+      <div><div class="ttl">7つの休息 × スイーツ診断</div><div class="sub">Saundra Dalton‑Smith提案の「7つの休息」に基づく</div></div>
+      <span class="badge">診断へ</span>
+    </a>
+  </nav>
 
-  <p class="footer">※診断は傾向を示す参考情報です。断定は行いません。</p>
-</div>
+  <p class="lead" style="text-align:center;margin-top:16px;color:#7f6a76">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
+</main>
 
-<nav class="iconbar">
+<nav class="footerbar">
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
