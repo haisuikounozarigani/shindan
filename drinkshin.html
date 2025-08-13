@@ -27,22 +27,29 @@
     .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px}
     .btn{background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer}
     .btn.secondary{background:#858585}
+
+    /* 結果 */
     #resultBox{display:none; margin-top:18px}
     .resultHead{font-size:1.2em; color:var(--brand); text-align:center; margin:0 0 8px}
     .percent{font-size:2rem; font-weight:700; text-align:center}
     .drink{font-size:1.2rem; text-align:center; margin-top:6px}
     .bar{background:var(--bar); border-radius:999px; height:12px; overflow:hidden; margin:12px auto 0; max-width:460px}
     .bar > span{display:block; height:100%; width:0%; background:var(--barfill); transition:width .5s ease}
-    .note{font-size:14px; color:#444; background:#fff7e6; border-left:6px solid #ffbf66; border-radius:8px; padding:10px 12px; margin:14px 0}
-    #link{text-align:center; margin-top:12px}
-    #link a{display:inline-block; background:var(--brand); color:#fff; text-decoration:none; padding:10px 16px; border-radius:10px}
+
+    .imgWrap{display:grid; place-items:center; margin-top:14px}
+    .resultImg{width:min(820px,100%); height:auto; display:block; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.10)}
+    .small{color:#777; font-size:12px; text-align:center; margin-top:6px}
+
+    .ctaRow{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px}
+    .linkbtn{display:inline-block; background:#fff; color:#b86b77; border:1px solid #e7d9d9; text-decoration:none; padding:10px 14px; border-radius:999px}
+    .linkbtn.primary{background:#b86b77; color:#fff; border-color:transparent}
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>🥤 飲み物でわかるサイコパス診断</h1>
     <p class="lead">当てはまる度合いを5件法で答えてね（1=まったく〜5=とても）</p>
-    <div class="legend">最小10点〜最大50点 → 自動でサイコパス度（%）を算出</div>
+    <div class="legend">最小10点〜最大50点 → 自動でサイコパス度（%）＋サイト内の結果画像を表示</div>
 
     <div class="card" id="formWrap">
       <div class="meta"><span id="progress">未回答 10 / 10</span><span>5件法：1〜5</span></div>
@@ -53,19 +60,28 @@
       </div>
     </div>
 
-    <div id="resultBox" class="card">
+    <div id="resultBox" class="card" aria-live="polite">
       <p class="resultHead">診断結果</p>
       <div class="percent" id="percentText">— %</div>
       <div class="bar"><span id="barFill"></span></div>
       <div class="drink" id="drinkText">飲み物タイプ：—</div>
-      <div class="note">スクショやメモで保存してから、下のボタンで解説へどうぞ。</div>
-      <div id="link">
-        <a href="https://seikaku.my.canva.site/drinkshin" target="_blank">▶ あなたの診断タイプの解説を見る</a>
+
+      <!-- ここがサイト内画像 -->
+      <div class="imgWrap">
+        <img id="resultImg" class="resultImg" alt="診断結果画像" decoding="async">
+        <p class="small">画像が表示されない場合は、長押し/右クリックで再読み込みしてみてね。</p>
+      </div>
+
+      <div class="ctaRow">
+        <a id="openImg" class="linkbtn" href="#" target="_blank" rel="noopener">画像を新規タブで開く</a>
+        <a class="linkbtn" href="/shindan/">診断一覧へ戻る</a>
+        <button class="linkbtn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">もう一度やる</button>
       </div>
     </div>
   </div>
 
   <script>
+    // ===== 質問 =====
     const questions = [
       "人の秘密を知ると、ちょっと嬉しくなる",
       "謝るより、正当化するほうが得意だ",
@@ -89,11 +105,13 @@
 
     const form = document.getElementById("quizForm");
     const progressEl = document.getElementById("progress");
-    // 質問描画
+
+    // 設問描画
     questions.forEach((q, i) => {
       const div = document.createElement("div");
       div.className = "question";
-      div.innerHTML = `<p>Q${i + 1}. ${q}</p>` +
+      div.innerHTML =
+        `<p>Q${i + 1}. ${q}</p>` +
         `<div class="scale">` +
         scaleLabels.map((label, n) => {
           const id = `q${i}_${n+1}`;
@@ -114,6 +132,24 @@
     form.addEventListener("change", updateProgress);
     updateProgress();
 
+    // マッピング：合計スコア → 画像番号（01..05）
+    function bandToFile(total){
+      if (total <= 15) return "01";
+      if (total <= 25) return "02";
+      if (total <= 35) return "03";
+      if (total <= 42) return "04";
+      return "05";
+    }
+
+    // マッピング：合計スコア → 飲み物ラベル
+    function scoreToDrink(total){
+      if (total <= 15) return "ストロベリーミルク🍓";
+      if (total <= 25) return "ミルクココア🍫";
+      if (total <= 35) return "カフェオレ☕️";
+      if (total <= 42) return "アールグレイ🫖";
+      return "ブラックコーヒー🖤";
+    }
+
     // リセット
     function resetForm(){
       form.reset();
@@ -122,6 +158,9 @@
       document.getElementById("percentText").textContent="— %";
       document.getElementById("drinkText").textContent="飲み物タイプ：—";
       document.getElementById("barFill").style.width="0%";
+      const img = document.getElementById("resultImg");
+      img.removeAttribute("src");
+      img.alt = "診断結果画像";
       window.scrollTo({top:0,behavior:"smooth"});
     }
 
@@ -133,17 +172,16 @@
         total += val;
       }
 
-      // 最低10〜最大50 → 0〜100%
+      // 10〜50 → 0〜100%
       let percentage = Math.round((total - 10) / 40 * 100);
       if (percentage < 0) percentage = 0;
       if (percentage > 100) percentage = 100;
 
-      let drink = "";
-      if (total <= 15)      drink = "ストロベリーミルク🍓";
-      else if (total <= 25) drink = "ミルクココア🍫";
-      else if (total <= 35) drink = "カフェオレ☕️";
-      else if (total <= 42) drink = "アールグレイ🫖";
-      else                  drink = "ブラックコーヒー🖤";
+      const drink = scoreToDrink(total);
+      const fileNo = bandToFile(total);
+      const base = "/shindan/assets/results/drink/lsrp-total/";
+      const imgPathPng = `${base}${fileNo}.png`;
+      const imgPathWebp = `${base}${fileNo}.webp`; // もしWebPも置いてあれば自動フォールバック
 
       // 表示
       document.getElementById("percentText").textContent = `サイコパス度 ${percentage}%`;
@@ -151,6 +189,20 @@
       document.getElementById("barFill").style.width = percentage + "%";
 
       const box = document.getElementById("resultBox");
+      const img = document.getElementById("resultImg");
+      const openImg = document.getElementById("openImg");
+
+      // 画像読み込み（PNG→失敗時はWebPを試す）
+      img.onerror = null;
+      img.src = imgPathPng;
+      img.alt = `結果画像（${drink} / サイコパス度 ${percentage}%）`;
+      img.onerror = () => {
+        if (img.src.endsWith(".png")) img.src = imgPathWebp;
+      };
+
+      // 「画像を新規タブで開く」リンク
+      openImg.href = imgPathPng;
+
       box.style.display = "block";
       window.scrollTo({top:box.offsetTop - 10, behavior:"smooth"});
     }
