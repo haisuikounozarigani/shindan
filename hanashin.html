@@ -5,9 +5,7 @@
   <title>花タイプ診断</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    :root{
-      --brand:#8e5a5a; --bg1:#fffdf9; --bg2:#f3f0e7;
-    }
+    :root{ --brand:#8e5a5a; --bg1:#fffdf9; --bg2:#f3f0e7; --muted:#666; }
     body{
       font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
       background: linear-gradient(var(--bg1),var(--bg2));
@@ -16,7 +14,7 @@
     .wrap{max-width:720px;margin:0 auto}
     h1{color:var(--brand); text-align:center; margin:6px 0 10px; font-size:clamp(20px,3.8vw,28px)}
     .card{background:#fff; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.08)}
-    .meta{display:flex; justify-content:space-between; color:#666; font-size:12px; margin:0 2px 8px}
+    .meta{display:flex; justify-content:space-between; color:var(--muted); font-size:12px; margin:0 2px 8px}
     .question{margin:18px 0 20px}
     .question p{margin:0 0 10px}
     .scale{display:grid; gap:8px}
@@ -25,8 +23,15 @@
     .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px}
     .btn{background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer}
     .btn.secondary{background:#8a8a8a}
-    #result{margin-top:18px; text-align:center}
-    #result a{display:inline-block; margin-top:10px; background:var(--brand); color:#fff; text-decoration:none; padding:10px 16px; border-radius:10px}
+
+    /* result */
+    #result{margin-top:18px}
+    .result-head{ text-align:center; margin:0 0 10px; }
+    .result-img{ width:100%; height:auto; display:block; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.10) }
+    .result-ctas{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px }
+    .linkbtn{ display:inline-block; text-decoration:none; background:#fff; border:1px solid #e7d9d9; color:#533; padding:10px 14px; border-radius:999px }
+    .linkbtn.primary{ background:var(--brand); color:#fff; border-color:transparent }
+    .note{ color:var(--muted); text-align:center; margin-top:10px; font-size:.92em }
   </style>
 </head>
 <body>
@@ -41,103 +46,126 @@
         <button type="button" class="btn" onclick="calculate()">診断する</button>
         <button type="button" class="btn secondary" onclick="resetForm()">リセット</button>
       </div>
-      <div id="result"></div>
+
+      <div id="result" aria-live="polite"></div>
     </div>
   </div>
 
   <script>
-    // 設問テキスト
-    const items = [
-      "曇りの日の方が、気持ちが落ち着く",
-      "昔の写真や手紙を、ふと見返したくなる",
-      "世界の細部に『意味』を感じてしまう",
-      "音楽や匂いで、一瞬にして記憶が蘇る",
-      "自分の感情に敏感だ",
-      "季節の変わり目に、心が揺れる"
-    ];
-    // 5件法ラベル
-    const scaleLabels = [
-      "1（まったくそう思わない）",
-      "2（あまりそう思わない）",
-      "3（どちらともいえない）",
-      "4（少しそう思う）",
-      "5（とてもそう思う）"
-    ];
+  // 設問
+  const items = [
+    "曇りの日の方が、気持ちが落ち着く",
+    "昔の写真や手紙を、ふと見返したくなる",
+    "世界の細部に『意味』を感じてしまう",
+    "音楽や匂いで、一瞬にして記憶が蘇る",
+    "自分の感情に敏感だ",
+    "季節の変わり目に、心が揺れる"
+  ];
+  const scaleLabels = [
+    "1（まったくそう思わない）",
+    "2（あまりそう思わない）",
+    "3（どちらともいえない）",
+    "4（少しそう思う）",
+    "5（とてもそう思う）"
+  ];
 
-    // フォーム描画
-    const form = document.getElementById("quizForm");
-    const progressEl = document.getElementById("progress");
-    items.forEach((q, i) => {
-      const div = document.createElement("div");
-      div.className = "question";
-      div.innerHTML = `<p>Q${i+1}. ${q}</p>
-        <div class="scale">
-          ${scaleLabels.map((label, n) => {
-            const id = `q${i+1}_${n+1}`;
-            return `<label for="${id}">
-              <input id="${id}" type="radio" name="q${i+1}" value="${n+1}"> ${label}
-            </label>`;
-          }).join("")}
-        </div>`;
-      form.appendChild(div);
-    });
+  // 花タイプ定義（フォルダ名と表示名）
+  const FLOWERS = {
+    airisu:     { name:"アイリス（蒼の境界線）" },
+    ajisai:     { name:"アジサイ（水面の記憶）" },
+    suzuran:    { name:"スズラン（祈りの音）" },
+    sakura:     { name:"桜（散り際の美学）" },
+    shiroibara: { name:"白いバラ（静けさの誓い）" },
+    himawari:   { name:"ひまわり（向光のまなざし）" }
+  };
 
-    // 進捗
-    function updateProgress(){
-      const answered = items.filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
-      progressEl.textContent = `未回答 ${items.length - answered} / ${items.length}`;
+  // 相性の良いマップ
+  const BEST = {
+    airisu:     "shiroibara",
+    shiroibara: "himawari",
+    suzuran:    "ajisai",
+    ajisai:     "suzuran",
+    sakura:     "suzuran",
+    himawari:   "shiroibara"
+  };
+
+  // フォーム描画
+  const form = document.getElementById("quizForm");
+  const progressEl = document.getElementById("progress");
+  items.forEach((q, i) => {
+    const div = document.createElement("div");
+    div.className = "question";
+    div.innerHTML = `<p>Q${i+1}. ${q}</p>
+      <div class="scale">
+        ${scaleLabels.map((label, n) => {
+          const id = `q${i+1}_${n+1}`;
+          return `<label for="${id}">
+            <input id="${id}" type="radio" name="q${i+1}" value="${n+1}"> ${label}
+          </label>`;
+        }).join("")}
+      </div>`;
+    form.appendChild(div);
+  });
+
+  function updateProgress(){
+    const answered = items.filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
+    progressEl.textContent = `未回答 ${items.length - answered} / ${items.length}`;
+  }
+  form.addEventListener("change", updateProgress);
+  updateProgress();
+
+  // 合計点→タイプ判定（しきい値は従来どおり）
+  function judge(total){
+    if (total <= 10) return "airisu";
+    if (total <= 14) return "ajisai";
+    if (total <= 18) return "suzuran";
+    if (total <= 22) return "sakura";
+    if (total <= 26) return "shiroibara";
+    return "himawari";
+  }
+
+  function calculate(){
+    let total = 0;
+    for(let i=1;i<=items.length;i++){
+      const val = parseInt(document.querySelector(`input[name="q${i}"]:checked`)?.value);
+      if(!val){ alert(`すべての質問に答えてください。\n未回答の設問があります（Q${i}）。`); return; }
+      total += val;
     }
-    form.addEventListener("change", updateProgress);
+    const type = judge(total);
+    renderResult({ total, type });
+    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+  }
+
+  function resetForm(){
+    form.reset();
+    document.getElementById("result").innerHTML = "";
     updateProgress();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
 
-    // 診断
-    function calculate(){
-      let total = 0;
-      for(let i=1;i<=items.length;i++){
-        const val = parseInt(document.querySelector(`input[name="q${i}"]:checked`)?.value);
-        if(!val){
-          alert(`すべての質問に答えてください。\n未回答の設問があります（Q${i}）。`);
-          return;
-        }
-        total += val;
-      }
+  // 結果描画：画像表示＋相性リンク＋戻り導線
+  function renderResult({ total, type }){
+    const flowerName = FLOWERS[type].name;
+    const imgPath = `/shindan/assets/results/hana/${type}/01.png`;   // ここをフォルダ構成に合わせて保存済み
+    const bestType = BEST[type];
+    const bestName = FLOWERS[bestType]?.name;
 
-      // 分岐（合計最小6〜最大30）
-      let flower = "", link = "";
-      if (total <= 10) {
-        flower = "アイリス（蒼の境界線）";
-        link = "https://seikaku.my.canva.site/iris";
-      } else if (total <= 14) {
-        flower = "アジサイ（水面の記憶）";
-        link = "https://seikaku.my.canva.site/ajisai";
-      } else if (total <= 18) {
-        flower = "スズラン（祈りの音）";
-        link = "https://seikaku.my.canva.site/suzuran";
-      } else if (total <= 22) {
-        flower = "桜（散り際の美学）";
-        link = "https://seikaku.my.canva.site/sakura";
-      } else if (total <= 26) {
-        flower = "白いバラ（静けさの誓い）";
-        link = "https://seikaku.my.canva.site/siroibara";
-      } else {
-        flower = "ひまわり（向光のまなざし）";
-        link = "https://seikaku.my.canva.site/himawari";
-      }
-
-      document.getElementById("result").innerHTML =
-        `<p>あなたの合計は <strong>${total} 点</strong>。</p>
-         <p>あなたの花タイプは：<strong>${flower}</strong></p>
-         <a href="${link}" target="_blank" rel="noopener">▶ 結果ページを見る</a>`;
-      updateProgress();
-      window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"});
-    }
-
-    function resetForm(){
-      form.reset();
-      document.getElementById("result").innerHTML = "";
-      updateProgress();
-      window.scrollTo({top:0, behavior:"smooth"});
-    }
+    const html = `
+      <div class="result-head">
+        <p>あなたの合計は <strong>${total} 点</strong>。</p>
+        <p>花タイプ：<strong>${flowerName}</strong></p>
+      </div>
+      <img class="result-img" src="${imgPath}" alt="${flowerName} の結果画像" loading="eager"
+           onerror="this.alt='結果画像が見つかりません'; this.style.opacity=.3;">
+      <div class="result-ctas">
+        ${bestType ? `<a class="linkbtn" href="/shindan/guide/result.html?title=花診断：${encodeURIComponent(bestName)}&kind=hana&type=${bestType}&n=1&ext=png&back=/shindan/hanashin.html">相性の良い：${bestName}</a>` : ``}
+        <a class="linkbtn primary" href="/shindan/hanashin.html">もう一度診断</a>
+        <a class="linkbtn" href="/shindan/specimens/">診断一覧へ戻る</a>
+      </div>
+      <p class="note">※ 画像はサイト内に保存された結果イメージです（/assets/results/hana/...）。</p>
+    `;
+    document.getElementById("result").innerHTML = html;
+  }
   </script>
 </body>
 </html>
