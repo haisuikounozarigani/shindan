@@ -6,7 +6,7 @@
 <meta property="og:title" content="心の標本">
 <meta property="og:description" content="タップで診断の入口が開きます。">
 <meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/hero/specimens-hero-1080.png">
-<link rel="preload" as="image" href="../assets/hero/specimens-hero-1080.png">
+<link rel="preload" as="image" href="/shindan/assets/hero/specimens-hero-1080.png">
 <style>
 :root{--bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;--accent:#ff9ecf;--accent2:#b69cff}
 *{box-sizing:border-box} html,body{height:100%}
@@ -45,10 +45,10 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 <!-- Splash：タップ/クリック（またはEnter/Space）でだけ閉じる -->
 <section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0">
   <div class="fallback" aria-hidden="true"></div>
-  <!-- 画像は specimens/ から見た相対パス -->
+  <!-- 絶対パスで参照（どこからでも確実に読める） -->
   <img class="bg" alt="心の標本のキービジュアル"
-       src="../assets/hero/specimens-hero-1080.png"
-       onerror="this.classList.add('hidden')">
+       src="/shindan/assets/hero/specimens-hero-1080.png"
+       onerror="this.src='/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png'">
   <div class="hero">
     <h1>心の標本</h1>
     <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
@@ -58,13 +58,13 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 <main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1">
   <nav class="links">
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/hanashin.html?src=specimens"><span class="emo">🌸</span><div><div class="ttl">花診断（オリジナル）</div><div class="sub2">6問で象徴の花を提示</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/housekishin.html?src=specimens"><span class="emo">💎</span><div><div class="ttl">宝石×恋愛スタイル</div><div class="sub2">Love Styles × 愛着で24タイプ</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/drinkshin.html?src=specimens"><span class="emo">☕</span><div><div class="ttl">飲み物サイコパス（LSRP簡易）</div><div class="sub2">10問で“毒気”をライトに測定</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/iceshin.html?src=specimens"><span class="emo">🍦</span><div><div class="ttl">冷酷アイスクリーム（Mach-IV簡易）</div><div class="sub2">駆け引き度をスコア化</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/mirorshin.html?src=specimens"><span class="emo">🪞</span><div><div class="ttl">鏡ナルシスト（NARQ簡易）</div><div class="sub2">14問でAdmiration/Rivalry傾向</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/animalshin.html?src=specimens"><span class="emo">🐾</span><div><div class="ttl">性格動物診断（SBF）</div><div class="sub2">5因子を動物メタファで表示</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="https://haisuikounozarigani.github.io/shindan/sweetshin.html?src=specimens"><span class="emo">🍰</span><div><div class="ttl">7つの休息 × スイーツ診断</div><div class="sub2">Saundra Dalton-Smithの提案に基づく</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/hanashin.html?src=specimens"><span class="emo">🌸</span><div><div class="ttl">花診断（オリジナル）</div><div class="sub2">6問で象徴の花を提示</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/housekishin.html?src=specimens"><span class="emo">💎</span><div><div class="ttl">宝石×恋愛スタイル</div><div class="sub2">Love Styles × 愛着で24タイプ</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/drinkshin.html?src=specimens"><span class="emo">☕</span><div><div class="ttl">飲み物サイコパス（LSRP簡易）</div><div class="sub2">10問で“毒気”をライトに測定</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/iceshin.html?src=specimens"><span class="emo">🍦</span><div><div class="ttl">冷酷アイスクリーム（Mach-IV簡易）</div><div class="sub2">駆け引き度をスコア化</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/mirorshin.html?src=specimens"><span class="emo">🪞</span><div><div class="ttl">鏡ナルシスト（NARQ簡易）</div><div class="sub2">14問でAdmiration/Rivalry傾向</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/animalshin.html?src=specimens"><span class="emo">🐾</span><div><div class="ttl">性格動物診断（SBF）</div><div class="sub2">5因子を動物メタファで表示</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/sweetshin.html?src=specimens"><span class="emo">🍰</span><div><div class="ttl">7つの休息 × スイーツ診断</div><div class="sub2">Saundra Dalton-Smithの提案に基づく</div></div><span class="badge">診断へ</span></a>
   </nav>
   <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
 </main>
@@ -78,7 +78,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 <noscript>
   <div style="max-width:860px;margin:16px auto;padding:0 14px;color:#7a6a77">
-    JavaScriptが無効です。<a href="https://haisuikounozarigani.github.io/shindan/">診断一覧はこちら</a>。
+    JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
   </div>
 </noscript>
 
@@ -88,10 +88,12 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   const content = document.getElementById('content');
   const reveal = ()=>{ splash.classList.add('hidden'); content.classList.add('show'); content.focus({preventScroll:true}); };
 
+  // タップ/クリックで開く（リンク等の誤作動は除外）
   splash.addEventListener('click', e=>{
     if (e.target.closest('a,button,label,input')) return;
     reveal();
   });
+  // キーボード（Enter/Space）でも開く
   splash.addEventListener('keydown', e=>{
     if (e.key==='Enter' || e.key===' '){ e.preventDefault(); reveal(); }
   });
