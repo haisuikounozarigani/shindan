@@ -69,7 +69,7 @@
     "5（とてもそう思う）"
   ];
 
-  // 花タイプ定義（フォルダ名と表示名）
+  // 花タイプ定義（表示名）
   const FLOWERS = {
     airisu:     { name:"アイリス（蒼の境界線）" },
     ajisai:     { name:"アジサイ（水面の記憶）" },
@@ -77,16 +77,6 @@
     sakura:     { name:"桜（散り際の美学）" },
     shiroibara: { name:"白いバラ（静けさの誓い）" },
     himawari:   { name:"ひまわり（向光のまなざし）" }
-  };
-
-  // 相性の良いマップ
-  const BEST = {
-    airisu:     "shiroibara",
-    shiroibara: "himawari",
-    suzuran:    "ajisai",
-    ajisai:     "suzuran",
-    sakura:     "suzuran",
-    himawari:   "shiroibara"
   };
 
   // フォーム描画
@@ -114,7 +104,7 @@
   form.addEventListener("change", updateProgress);
   updateProgress();
 
-  // 合計点→タイプ判定（しきい値は従来どおり）
+  // 合計点→タイプ判定
   function judge(total){
     if (total <= 10) return "airisu";
     if (total <= 14) return "ajisai";
@@ -143,12 +133,10 @@
     window.scrollTo({top:0, behavior:"smooth"});
   }
 
-  // 結果描画：画像表示＋相性リンク＋戻り導線
+  // 結果描画：画像表示＋導線（再診断／一覧へ）
   function renderResult({ total, type }){
     const flowerName = FLOWERS[type].name;
-    const imgPath = `/shindan/assets/results/hana/${type}/01.png`;   // ここをフォルダ構成に合わせて保存済み
-    const bestType = BEST[type];
-    const bestName = FLOWERS[bestType]?.name;
+    const imgPath = `/shindan/assets/results/hana/${type}/01.png`; // 保存した画像へ
 
     const html = `
       <div class="result-head">
@@ -158,11 +146,10 @@
       <img class="result-img" src="${imgPath}" alt="${flowerName} の結果画像" loading="eager"
            onerror="this.alt='結果画像が見つかりません'; this.style.opacity=.3;">
       <div class="result-ctas">
-        ${bestType ? `<a class="linkbtn" href="/shindan/guide/result.html?title=花診断：${encodeURIComponent(bestName)}&kind=hana&type=${bestType}&n=1&ext=png&back=/shindan/hanashin.html">相性の良い：${bestName}</a>` : ``}
         <a class="linkbtn primary" href="/shindan/hanashin.html">もう一度診断</a>
         <a class="linkbtn" href="/shindan/specimens/">診断一覧へ戻る</a>
       </div>
-      <p class="note">※ 画像はサイト内に保存された結果イメージです（/assets/results/hana/...）。</p>
+      <p class="note">※ 画像はサイト内（/assets/results/hana/...）に保存された結果イメージです。</p>
     `;
     document.getElementById("result").innerHTML = html;
   }
