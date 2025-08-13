@@ -1,384 +1,265 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title>宝石タイプ恋愛診断</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<style>
-:root{
-  --brand:#b86b77; --card:#fff; --bg:#fdf6f0; --fg:#333; --muted:#6b6b6b;
-  --chip:#f7e8e4; --line:#eadad6;
-}
-*{box-sizing:border-box}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
-     background:var(--bg); color:var(--fg); margin:0; padding:22px;}
-.wrap{max-width:880px;margin:0 auto}
-h1{text-align:center;color:var(--brand);margin:4px 0 14px;font-size:clamp(20px,4vw,30px)}
-.card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-.meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;margin:0 2px 12px}
-.question{margin:22px 0}
-.question p{margin:0 0 10px;font-weight:600}
-.scale{display:grid;gap:8px}
-.scale label{display:flex;align-items:center;gap:10px;background:#f4f4f4;padding:10px;border-radius:10px;cursor:pointer}
-.scale input{accent-color:var(--brand)}
-.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
-.btn{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:16px;cursor:pointer}
-.btn.secondary{background:#8a8a8a}
-#resultArea{margin-top:20px}
-.result-head{text-align:center;margin:0 0 10px}
-.gem-name{font-size:1.1em;color:#8a545a;font-weight:700}
-.result-img{width:100%;height:auto;display:block;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.10)}
-.ctas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-.linkbtn{display:inline-block;text-decoration:none;background:#fff;border:1px solid var(--line);color:#533;padding:10px 14px;border-radius:999px}
-.linkbtn.primary{background:var(--brand);color:#fff;border-color:transparent}
-.note{color:var(--muted);text-align:center;margin-top:10px;font-size:.92em}
-
-/* 相性ボックス */
-.compat{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.badge{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--line);padding:8px 12px;border-radius:999px}
-.badge small{opacity:.8}
-
-/* 簡易ビューア（まとめ 01〜05 を軽く表示） */
-.viewer{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10}
-.viewer .inner{background:#fff;border-radius:12px;max-width:min(92vw,860px);max-height:86vh;display:flex;flex-direction:column}
-.viewer header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #eee}
-.viewer header strong{font-weight:700}
-.viewer .stage{position:relative;padding:10px}
-.viewer img{display:block;max-width:100%;max-height:68vh;margin:0 auto;border-radius:8px}
-.viewer .nav{display:flex;justify-content:space-between;gap:8px;padding:10px;border-top:1px solid #eee}
-.viewer .nav button{flex:1;padding:10px;border-radius:10px;border:1px solid #ddd;background:#fff;cursor:pointer}
-.viewer .close{border:none;background:#fff;padding:8px 10px;border-radius:8px;cursor:pointer}
-
-.footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;margin-top:14px;
-  padding:10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #efdeda}
-.footerbar a{padding:8px 12px;border:1px solid #eadad6;border-radius:999px;text-decoration:none;color:#533;background:#fff}
-
-@media (max-width:360px){ .linkbtn.share{display:none} }
-</style>
+  <meta charset="UTF-8" />
+  <title>宝石タイプ恋愛診断</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#fdf6f0">
+  <style>
+    :root{ --brand:#b86b77; --card:#fff; --bg:#fdf6f0; --muted:#7b6b6b; }
+    *{ box-sizing:border-box }
+    body{
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+      background: var(--bg); color:#333; margin:0; padding:22px;
+    }
+    .wrap{ max-width:960px; margin:0 auto }
+    h1{ text-align:center; color:var(--brand); margin:4px 0 14px; font-size:clamp(20px,4vw,30px) }
+    .card{ background:var(--card); padding:20px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.08) }
+    .meta{ display:flex; justify-content:space-between; gap:12px; color:#666; font-size:12px; margin:0 2px 12px }
+    .question{ margin:20px 0 }
+    .question p{ margin:0 0 10px; font-weight:600 }
+    .scale{ display:grid; gap:8px }
+    .scale label{ display:flex; align-items:center; gap:10px; background:#f4f4f4; padding:10px; border-radius:10px; cursor:pointer }
+    .scale input{ accent-color:var(--brand) }
+    .actions{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:18px }
+    .btn{ background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer }
+    .btn.secondary{ background:#8a8a8a }
+    .btn.linklike{ background:#fff; color:var(--brand); border:1px solid #e8d3d6 }
+    #resultArea{ margin-top:22px }
+    #resultTitle{ color:var(--brand); text-align:center; margin:0 0 10px; white-space:pre-line }
+    #resultImgWrap{ display:grid; place-items:center; gap:8px }
+    #resultImg{ width:min(780px,100%); height:auto; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.12) }
+    #tips{ color:var(--muted); font-size:12px; text-align:center }
+    .scores{ margin-top:16px; color:#555; font-size:14px }
+    .scores h3{ margin:8px 0 6px; font-size:15px; color:#6d5559 }
+    .scores .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px }
+    .scores .item{ background:#f7f3f1; border:1px solid #efe3e2; border-radius:10px; padding:8px 10px }
+    .footerActions{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin:18px 0 4px }
+    .note{ color:#766; text-align:center; font-size:12px; margin-top:10px }
+    a.inline{ color:var(--brand); text-decoration:none; border-bottom:1px dashed currentColor }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>💎 宝石タイプ 恋愛診断 💎</h1>
+  <div class="wrap">
+    <h1>💎 宝石タイプ 恋愛診断</h1>
 
-  <div class="card">
-    <div class="meta">
-      <span id="progress">未回答 32 / 32</span>
-      <span>5件法：1（まったく当てはまらない）〜5（とても当てはまる）</span>
+    <div class="card">
+      <div class="meta" role="status" aria-live="polite">
+        <span id="progress">未回答 32 / 32</span>
+        <span>5件法：1（まったく当てはまらない）〜5（とても当てはまる）</span>
+      </div>
+
+      <form id="quizForm"></form>
+
+      <div class="actions">
+        <button type="button" class="btn" onclick="calculate()">診断する</button>
+        <button type="button" class="btn secondary" onclick="resetForm()">リセット</button>
+      </div>
+
+      <!-- 結果表示 -->
+      <section id="resultArea" class="hidden" aria-label="診断結果">
+        <h2 id="resultTitle"></h2>
+
+        <div id="resultImgWrap">
+          <img id="resultImg" alt="診断結果画像" decoding="async">
+          <div class="actions">
+            <button id="showSummary" type="button" class="btn linklike">相性まとめ（05）を見る</button>
+            <button id="showMain" type="button" class="btn linklike hidden">診断結果（タイプ×愛着）に戻す</button>
+          </div>
+          <p id="tips">画像がうまく表示されない場合は、長押しで再読み込み・保存できます。</p>
+        </div>
+
+        <!-- スコアの概要（上位傾向を把握しやすくするオマケ） -->
+        <div class="scores" id="scoreBox" hidden>
+          <h3>あなたの傾向（スコア）</h3>
+          <div class="grid" id="scoreGrid"></div>
+        </div>
+
+        <div class="footerActions">
+          <a class="btn secondary" href="/shindan/" aria-label="診断一覧に戻る">診断一覧へ戻る</a>
+          <button class="btn linklike" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">ページ上部へ</button>
+        </div>
+
+        <p class="note">※ 本診断は傾向を示す参考情報です。医療・心理的アセスメントの代替ではありません。</p>
+      </section>
     </div>
-
-    <form id="quizForm"></form>
-
-    <div class="actions">
-      <button type="button" class="btn" onclick="calculate()">診断する</button>
-      <button type="button" class="btn secondary" onclick="resetForm()">リセット</button>
-    </div>
-
-    <section id="resultArea" aria-live="polite"></section>
   </div>
 
-  <p class="note">※ 本診断は傾向の目安です。断定は行いません。</p>
-</div>
+  <script>
+    // --- 質問（32問） ---
+    const questions = [
+      // Eros（情熱）
+      "恋愛は運命のようなものであると感じる",
+      "一目惚れすることが多い",
+      "恋愛中は理想を追い求めがち",
+      "恋愛は感情がすべてだと思う",
+      // Ludus（遊戯）
+      "恋愛はゲームのような楽しさが大事",
+      "複数の人に同時に好意を持つことがある",
+      "恋愛に自由が必要だと思う",
+      "深刻すぎる恋愛は苦手",
+      // Storge（友愛）
+      "恋愛は友情から始まるのが理想",
+      "信頼関係を大事にしたい",
+      "恋人とは長い時間をかけて関係を築きたい",
+      "恋人と親友のような関係が理想",
+      // Mania（熱狂）
+      "相手が自分をどう思っているか常に気になる",
+      "恋人に不安を感じることが多い",
+      "恋愛中は相手に依存しやすい",
+      "少しの変化で不安になる",
+      // Pragma（実利）
+      "相手の条件（仕事・性格など）を重視する",
+      "恋愛において損得を考えることがある",
+      "安定した将来を想像できる相手を選ぶ",
+      "恋人選びは計画的にしたい",
+      // Agape（無償）
+      "相手の幸せを自分のことのように思う",
+      "恋愛では自分を犠牲にしても構わない",
+      "相手の成長を支えたいと思う",
+      "恋人に無条件の愛を注ぐべきだと思う",
+      // 不安（Anxious）
+      "恋人が離れていくのではと不安になる",
+      "些細なことで嫌われたと感じてしまう",
+      "恋人の返信が遅いと気になってしまう",
+      "恋愛関係が壊れるのが怖い",
+      // 回避（Avoidant）
+      "人に頼ることが苦手",
+      "恋愛に踏み込みすぎると不安になる",
+      "親密になると逃げたくなる",
+      "距離感を保った関係の方が落ち着く"
+    ];
 
-<!-- SNSバー（固定導線） -->
-<nav class="footerbar">
-  <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
-  <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
-  <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
-  <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
-</nav>
+    const scaleLabels = [
+      "1（まったく当てはまらない）",
+      "2（あまり当てはまらない）",
+      "3（どちらともいえない）",
+      "4（やや当てはまる）",
+      "5（とても当てはまる）"
+    ];
 
-<!-- スタイルまとめの簡易ビューア -->
-<div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-label="スタイルまとめ画像">
-  <div class="inner">
-    <header>
-      <strong id="viewerTitle">まとめ</strong>
-      <button class="close" onclick="Viewer.hide()">閉じる ✕</button>
-    </header>
-    <div class="stage">
-      <img id="viewerImg" src="" alt="まとめ画像">
-    </div>
-    <div class="nav">
-      <button onclick="Viewer.prev()">◀ 前へ</button>
-      <button onclick="Viewer.next()">次へ ▶</button>
-    </div>
-  </div>
-</div>
+    // --- フォーム描画 ---
+    const form = document.getElementById("quizForm");
+    const progressEl = document.getElementById("progress");
+    questions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<p>Q${i + 1}. ${q}</p>
+        <div class="scale">
+          ${scaleLabels.map((label, n) => `
+            <label><input type="radio" name="q${i + 1}" value="${n + 1}"> ${label}</label>
+          `).join("")}
+        </div>`;
+      form.appendChild(div);
+    });
 
-<script>
-/* ===== 設問（32問） ===== */
-const questions = [
-  // Eros（情熱）
-  "恋愛は運命のようなものであると感じる",
-  "一目惚れすることが多い",
-  "恋愛中は理想を追い求めがち",
-  "恋愛は感情がすべてだと思う",
-  // Ludus（遊戯）
-  "恋愛はゲームのような楽しさが大事",
-  "複数の人に同時に好意を持つことがある",
-  "恋愛に自由が必要だと思う",
-  "深刻すぎる恋愛は苦手",
-  // Storge（友愛）
-  "恋愛は友情から始まるのが理想",
-  "信頼関係を大事にしたい",
-  "恋人とは長い時間をかけて関係を築きたい",
-  "恋人と親友のような関係が理想",
-  // Mania（熱狂）
-  "相手が自分をどう思っているか常に気になる",
-  "恋人に不安を感じることが多い",
-  "恋愛中は相手に依存しやすい",
-  "少しの変化で不安になる",
-  // Pragma（実利）
-  "相手の条件（仕事・性格など）を重視する",
-  "恋愛において損得を考えることがある",
-  "安定した将来を想像できる相手を選ぶ",
-  "恋人選びは計画的にしたい",
-  // Agape（無償）
-  "相手の幸せを自分のことのように思う",
-  "恋愛では自分を犠牲にしても構わない",
-  "相手の成長を支えたいと思う",
-  "恋人に無条件の愛を注ぐべきだと思う",
-  // 不安（Anxious）
-  "恋人が離れていくのではと不安になる",
-  "些細なことで嫌われたと感じてしまう",
-  "恋人の返信が遅いと気になってしまう",
-  "恋愛関係が壊れるのが怖い",
-  // 回避（Avoidant）
-  "人に頼ることが苦手",
-  "恋愛に踏み込みすぎると不安になる",
-  "親密になると逃げたくなる",
-  "距離感を保った関係の方が落ち着く"
-];
+    function updateProgress(){
+      const answered = Array.from({length: questions.length})
+        .filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
+      progressEl.textContent = `未回答 ${questions.length - answered} / ${questions.length}`;
+    }
+    form.addEventListener("change", updateProgress);
+    updateProgress();
 
-const scaleLabels = [
-  "1（まったく当てはまらない）",
-  "2（あまり当てはまらない）",
-  "3（どちらともいえない）",
-  "4（やや当てはまる）",
-  "5（とても当てはまる）"
-];
+    // --- ラベル・パス設定 ---
+    const loveJP = { eros:"情熱", ludus:"遊戯", storge:"友愛", mania:"熱狂", pragma:"実利", agape:"無償" };
+    const attachJP = { secure:"安定", anxious:"不安", avoidant:"回避", fearful:"恐れ回避" };
 
-/* ===== 定義：表示名／スラッグ ===== */
-const LOVE_JP = { eros:"情熱", ludus:"遊戯", storge:"友愛", mania:"熱狂", pragma:"実利", agape:"無償" };
-const ATTACH_JP = { secure:"安定", anxious:"不安", avoidant:"回避", fearful:"恐れ回避" };
+    // 画像は houseki-bundle/{style}/01..05.png を使用
+    const ATTACH_TO_NO = { secure:"01", avoidant:"02", anxious:"03", fearful:"04" }; // 05 はまとめ
 
-// 宝石のスラッグと日本語名（表記ゆれ防止）
-const GEM_DEFS = {
-  amethyst:"アメジスト",
-  spinel:"スピネル",
-  turquoise:"ターコイズ",
-  obsidian:"オブシディアン",
-  citrine:"シトリン",
-  apatite:"アパタイト",
-  emerald:"エメラルド",
-  rose_quartz:"ローズクォーツ",
-  peridot:"ペリドット",
-  opal:"オパール",
-  aquamarine:"アクアマリン",
-  fire_opal:"ファイアオパール",
-  black_onyx:"ブラックオニキス",
-  moonstone:"ムーンストーン",
-  labradorite:"ラブラドライト",
-  sapphire:"サファイア",
-  garnet:"ガーネット",
-  pink_tourmaline:"ピンクトルマリン",
-  diamond:"ダイヤモンド",
-  morganite:"モルガナイト",
-  smoky_quartz:"スモーキークォーツ",
-  tanzanite:"タンザナイト",
-  alexandrite:"アレキサンドライト",
-  blue_topaz:"ブルートパーズ",
-  ruby:"ルビー"
-};
-
-/* ===== love×attach → gem（スラッグ） ===== */
-const GEM_MAP = {
-  eros:   { anxious:"fire_opal", secure:"garnet",      avoidant:"spinel",        fearful:"ruby" },
-  ludus:  { anxious:"tanzanite", secure:"citrine",     avoidant:"turquoise",     fearful:"apatite" },
-  storge: { anxious:"moonstone", secure:"aquamarine",  avoidant:"peridot",       fearful:"labradorite" },
-  pragma: { anxious:"blue_topaz",secure:"sapphire",    avoidant:"black_onyx",    fearful:"smoky_quartz" },
-  mania:  { anxious:"emerald",   secure:"alexandrite", avoidant:"obsidian",      fearful:"opal" },
-  agape:  { anxious:"pink_tourmaline", secure:"diamond", avoidant:"morganite", fearful:"rose_quartz" }
-};
-
-// gem → love/attach（相互参照を作る：相性リンク等で使用）
-const REVERSE = {};
-for (const love in GEM_MAP){
-  for (const attach in GEM_MAP[love]){
-    const g = GEM_MAP[love][attach];
-    REVERSE[g] = { love, attach };
-  }
-}
-
-/* ===== 相性（あなたの表に完全準拠） ===== */
-const COMPAT = {
-  amethyst:        { good:"spinel",          bad:"turquoise" },
-  obsidian:        { good:"citrine",         bad:"apatite" },
-  emerald:         { good:"rose_quartz",     bad:"peridot" },
-  opal:            { good:"apatite",         bad:"ruby" },
-  aquamarine:      { good:"fire_opal",       bad:"black_onyx" },
-  peridot:         { good:"turquoise",       bad:"emerald" },
-  moonstone:       { good:"citrine",         bad:"smoky_quartz" },
-  labradorite:     { good:"rose_quartz",     bad:"alexandrite" },
-  sapphire:        { good:"garnet",          bad:"pink_tourmaline" },
-  black_onyx:      { good:"tanzanite",       bad:"aquamarine" },
-  blue_topaz:      { good:"morganite",       bad:"fire_opal" },
-  smoky_quartz:    { good:"labradorite",     bad:"moonstone" },
-  garnet:          { good:"sapphire",        bad:"turquoise" },
-  spinel:          { good:"amethyst",        bad:"ruby" },
-  fire_opal:       { good:"aquamarine",      bad:"spinel" },
-  ruby:            { good:"diamond",         bad:"opal" },
-  diamond:         { good:"ruby",            bad:"tanzanite" },
-  morganite:       { good:"labradorite",     bad:"sapphire" },
-  pink_tourmaline: { good:"apatite",         bad:"sapphire" },
-  rose_quartz:     { good:"emerald",         bad:"spinel" },
-  citrine:         { good:"moonstone",       bad:"obsidian" },
-  turquoise:       { good:"peridot",         bad:"garnet" },
-  tanzanite:       { good:"black_onyx",      bad:"emerald" },
-  apatite:         { good:"pink_tourmaline", bad:"opal" }
-};
-
-/* ===== 設問の描画と進捗 ===== */
-const form = document.getElementById("quizForm");
-const progressEl = document.getElementById("progress");
-questions.forEach((q, i) => {
-  const div = document.createElement("div");
-  div.className = "question";
-  div.innerHTML = `<p>Q${i+1}. ${q}</p>
-    <div class="scale">
-      ${scaleLabels.map((label, n)=>`<label><input type="radio" name="q${i+1}" value="${n+1}"> ${label}</label>`).join("")}
-    </div>`;
-  form.appendChild(div);
-});
-function updateProgress(){
-  const answered = questions.filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
-  progressEl.textContent = `未回答 ${questions.length - answered} / ${questions.length}`;
-}
-form.addEventListener("change", updateProgress);
-updateProgress();
-
-/* ===== スコア計算 → タイプ判定 ===== */
-function calculate(){
-  const scores = { eros:0,ludus:0,storge:0,mania:0,pragma:0,agape:0, anxiety:0,avoidance:0 };
-  for(let i=1;i<=questions.length;i++){
-    const v = parseInt(document.querySelector(`input[name="q${i}"]:checked`)?.value);
-    if(!v){ alert(`全ての質問に答えてください。\n未回答の設問があります（Q${i}）。`); return; }
-    if (i<=4) scores.eros+=v;
-    else if (i<=8) scores.ludus+=v;
-    else if (i<=12) scores.storge+=v;
-    else if (i<=16) scores.mania+=v;
-    else if (i<=20) scores.pragma+=v;
-    else if (i<=24) scores.agape+=v;
-    else if (i<=28) scores.anxiety+=v;
-    else scores.avoidance+=v;
-  }
-  // love 最大
-  const love = Object.entries(scores).slice(0,6).sort((a,b)=>b[1]-a[1])[0][0];
-  // attach 判定（閾値は暫定：各4問×平均2.75≒11）
-  let attach="secure";
-  if (scores.anxiety>=11 && scores.avoidance>=11) attach="fearful";
-  else if (scores.anxiety>=11) attach="anxious";
-  else if (scores.avoidance>=11) attach="avoidant";
-
-  const gem = GEM_MAP[love]?.[attach];
-  renderResult({ love, attach, gem, scores });
-  window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
-}
-
-/* ===== 結果描画 ===== */
-function renderResult({ love, attach, gem, scores }){
-  const result = document.getElementById("resultArea");
-  if (!gem){ result.innerHTML = `<p>判定できませんでした。</p>`; return; }
-
-  const gemJP = GEM_DEFS[gem];
-  const imgPath = `/shindan/assets/results/houseki/${love}-${attach}/01.png`;
-  const bundleBase = `/shindan/assets/results/houseki-bundle/${love}`;
-  const compat = COMPAT[gem];
-
-  // 共有リンク（深いリンク）
-  const shareURL = new URL(location.href);
-  shareURL.searchParams.set("love", love);
-  shareURL.searchParams.set("attach", attach);
-
-  result.innerHTML = `
-    <div class="result-head">
-      <p>あなたの宝石タイプは <span class="gem-name">「${gemJP}」</span></p>
-      <p>（恋愛スタイル：${LOVE_JP[love]} × 愛着：${ATTACH_JP[attach]}）</p>
-    </div>
-    <img class="result-img" src="${imgPath}" alt="${gemJP} の結果画像"
-         onerror="this.alt='結果画像が見つかりません';this.style.opacity=.35;">
-    <div class="ctas">
-      <button class="linkbtn" onclick="Viewer.show('${love}',1)" title="まとめ画像（01〜05）を見る">まとめ（01–05）を見る</button>
-      <a class="linkbtn primary" href="https://haisuikounozarigani.github.io/shindan/" target="_self">診断一覧へ戻る</a>
-      <button class="linkbtn share" onclick="copyShare('${shareURL.toString()}')">結果リンクをコピー</button>
-    </div>
-
-    ${compat ? `
-    <div class="compat">
-      <span class="badge">良い相性：<strong>${GEM_DEFS[compat.good]}</strong> <small>(好相性)</small></span>
-      <span class="badge">悪い相性：<strong>${GEM_DEFS[compat.bad]}</strong> <small>(相性に注意)</small></span>
-    </div>` : ``}
-
-    <p class="note">※ まとめ画像の分類：01 安定／02 回避／03 不安／04 恐れ回避／05 相性まとめ</p>
-  `;
-}
-
-/* ===== 共有コピー ===== */
-function copyShare(text){
-  navigator.clipboard?.writeText(text).then(()=>{
-    alert("結果リンクをコピーしました！");
-  }).catch(()=>{
-    prompt("コピーできない場合は、下のURLを手動でコピーしてください。", text);
-  });
-}
-
-/* ===== 簡易ビューア（houseki-bundle 用：01〜05） ===== */
-const Viewer = (()=> {
-  const el = document.getElementById('viewer');
-  const img = document.getElementById('viewerImg');
-  const title = document.getElementById('viewerTitle');
-  let style = "eros", page = 1, max = 5;
-
-  function srcOf(st, i){
-    // PNG優先、失敗したらwebpに自動切替
-    const png = `/shindan/assets/results/houseki-bundle/${st}/${String(i).padStart(2,"0")}.png`;
-    const webp= `/shindan/assets/results/houseki-bundle/${st}/${String(i).padStart(2,"0")}.webp`;
-    img.onerror = function(){
-      if (img.dataset.fallback!=="1"){ img.dataset.fallback="1"; img.src=webp; }
-      else { img.alt="画像が見つかりません"; }
+    // --- スタイル×愛着 → 宝石名（表示用） ---
+    const gemMap = {
+      eros:   { anxious:"ファイアオパール",   secure:"ガーネット",          avoidant:"スピネル",           fearful:"ルビー" },
+      ludus:  { anxious:"タンザナイト",       secure:"シトリン",            avoidant:"ターコイズ",         fearful:"アパタイト" },
+      storge: { anxious:"ムーンストーン",     secure:"アクアマリン",        avoidant:"ペリドット",         fearful:"ラブラドライト" },
+      pragma: { anxious:"ブルートパーズ",     secure:"サファイア",          avoidant:"ブラックオニキス",   fearful:"スモーキークォーツ" },
+      mania:  { anxious:"エメラルド",         secure:"アレキサンドライト", avoidant:"オブシディアン",     fearful:"オパール" },
+      agape:  { anxious:"ピンクトルマリン",   secure:"ダイヤモンド",        avoidant:"モルガナイト",       fearful:"ローズクォーツ" }
     };
-    return png;
-  }
-  function render(){
-    title.textContent = `まとめ：${LOVE_JP[style]}（${String(page).padStart(2,"0")} / 05）`;
-    img.dataset.fallback="0";
-    img.src = srcOf(style, page);
-  }
-  return {
-    show(st, start=1){ style=st; page=start; el.style.display="flex"; render(); },
-    hide(){ el.style.display="none"; },
-    next(){ page = page<max ? page+1 : 1; render(); },
-    prev(){ page = page>1 ? page-1 : max; render(); }
-  }
-})();
 
-/* ===== 深いリンク（?love=&attach=）での直接表示にも対応 ===== */
-(function deepLink(){
-  const p = new URLSearchParams(location.search);
-  const love = p.get("love");
-  const attach = p.get("attach");
-  if (love && attach && GEM_MAP[love]?.[attach]){
-    // 疑似的に結果だけ出す（設問スキップ）
-    renderResult({ love, attach, gem: GEM_MAP[love][attach], scores:{} });
-  }
-})();
+    // --- 診断処理 ---
+    function calculate() {
+      let s = {
+        eros:0, ludus:0, storge:0, mania:0, pragma:0, agape:0,
+        anxiety:0, avoidance:0
+      };
 
-/* ===== リセット ===== */
-function resetForm(){
-  form.reset();
-  document.getElementById("resultArea").innerHTML = "";
-  updateProgress();
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-</script>
+      for (let i = 1; i <= questions.length; i++) {
+        const v = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
+        if (!v) { alert(`全ての質問に答えてください。\n未回答の設問があります（Q${i}）。`); return; }
+        if (i <=  4) s.eros      += v;
+        else if (i <=  8) s.ludus  += v;
+        else if (i <= 12) s.storge += v;
+        else if (i <= 16) s.mania  += v;
+        else if (i <= 20) s.pragma += v;
+        else if (i <= 24) s.agape  += v;
+        else if (i <= 28) s.anxiety += v;
+        else              s.avoidance += v;
+      }
+
+      // 恋愛スタイル最大値
+      const loveType = Object.entries(s).slice(0,6).sort((a,b)=>b[1]-a[1])[0][0];
+
+      // 愛着タイプ判定（各4〜20点想定。しきい値は経験的に11）
+      let attachType = "secure";
+      if (s.anxiety >= 11 && s.avoidance >= 11) attachType = "fearful";
+      else if (s.anxiety >= 11) attachType = "anxious";
+      else if (s.avoidance >= 11) attachType = "avoidant";
+
+      // 表示
+      const gemName = gemMap[loveType]?.[attachType] || "（宝石名）";
+      const title = `あなたの宝石タイプは「${gemName}」\n（恋愛スタイル：${loveJP[loveType]} × 愛着：${attachJP[attachType]}）`;
+      const resultTitle = document.getElementById("resultTitle");
+      resultTitle.textContent = title;
+
+      // 画像パス（結果）
+      const base = "/shindan/assets/results/houseki-bundle";
+      const imgMain = `${base}/${loveType}/${ATTACH_TO_NO[attachType]}.png`; // 01..04
+      const imgSummary = `${base}/${loveType}/05.png`;
+
+      const img = document.getElementById("resultImg");
+      const area = document.getElementById("resultArea");
+      const showSummaryBtn = document.getElementById("showSummary");
+      const showMainBtn = document.getElementById("showMain");
+
+      // 画像読み込み（エラー時はまとめにフォールバック）
+      img.src = imgMain;
+      img.onerror = () => { img.onerror = null; img.src = imgSummary; };
+
+      // 切替ボタン
+      showSummaryBtn.onclick = () => { img.src = imgSummary; showSummaryBtn.classList.add("hidden"); showMainBtn.classList.remove("hidden"); };
+      showMainBtn.onclick    = () => { img.src = imgMain;    showMainBtn.classList.add("hidden");    showSummaryBtn.classList.remove("hidden"); };
+
+      area.classList.remove("hidden");
+
+      // スコア概観（上位2スタイルが分かる）
+      const sg = document.getElementById("scoreGrid");
+      const sb = document.getElementById("scoreBox");
+      const pairs = Object.entries({eros:s.eros,ludus:s.ludus,storge:s.storge,mania:s.mania,pragma:s.pragma,agape:s.agape})
+        .sort((a,b)=>b[1]-a[1]);
+      sg.innerHTML = pairs.map(([k,v],i)=>`<div class="item">${i<2?'⭐️':''}${loveJP[k]}：${v} 点</div>`).join("");
+      sb.hidden = false;
+
+      updateProgress();
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    function resetForm(){
+      form.reset();
+      document.getElementById("resultArea").classList.add("hidden");
+      document.getElementById("resultTitle").textContent = "";
+      document.getElementById("scoreGrid").innerHTML = "";
+      document.getElementById("scoreBox").hidden = true;
+      updateProgress();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    // small helper
+    function $(sel){ return document.querySelector(sel); }
+    // 初期 hidden 用
+    document.querySelectorAll('.hidden').forEach(()=>{});
+  </script>
+  <style>.hidden{ display:none !important }</style>
 </body>
 </html>
