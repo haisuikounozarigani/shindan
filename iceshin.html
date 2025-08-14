@@ -5,10 +5,12 @@
   <title>冷酷アイスクリーム診断（Mach-IV準拠・20問）</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    :root{ --brand:#b86b77; --chip:#f4f1ef; --bg:#fffaf6; }
-    body{font-family:sans-serif;background:var(--bg);color:#333;padding:20px}
+    :root{ --brand:#b86b77; --chip:#f4f1ef; --bg:#fffaf6; --hl:#ffe7ee }
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;background:var(--bg);color:#333;padding:20px;margin:0}
     h1{text-align:center;color:var(--brand);margin:0 0 14px}
     .legend{max-width:860px;margin:0 auto 16px;font-size:.95em;color:#555}
+
     .progress-wrap{max-width:860px;margin:0 auto 18px}
     .progress{height:10px;background:#eee;border-radius:999px;overflow:hidden}
     .bar{height:100%;width:0;background:var(--brand);transition:width .2s}
@@ -19,18 +21,23 @@
     .qhead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:0 0 8px;font-weight:600}
     .qstatus{font-weight:600;font-size:.85em;color:#888}
     .qstatus.done{color:var(--brand)}
-    .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-    .chip{display:block;position:relative;border-radius:10px;background:var(--chip);text-align:center;padding:12px 8px;cursor:pointer;border:2px solid #e9e1de;user-select:none}
-    .chip input{position:absolute;inset:0;opacity:0}
-    .chip span{display:block}
-    .chip input:checked + span{
-      background:var(--brand);color:#fff;border-radius:8px;padding:8px 6px;
-      box-shadow:0 0 0 2px var(--brand) inset, 0 4px 10px rgba(184,107,119,.25);
-      transform:scale(1.02);
+
+    .scale{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:560px){
+      .scale{grid-template-columns:1fr} /* 縦並びを固定（他診断と統一感） */
     }
-    .chip:hover{border-color:#d7c6c2}
-    .chip input:focus-visible + span{outline:3px solid #ffd9e1;outline-offset:2px;border-radius:8px}
-    .btn{display:block;margin:22px auto 0;padding:12px 22px;font-size:1.1em;background:var(--brand);color:#fff;border:none;border-radius:10px;cursor:pointer}
+
+    /* ラジオ＋行全体ハイライト（他診断と同じ挙動） */
+    .chip{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:10px;background:var(--chip);
+          border:1.5px solid #e9e1de; cursor:pointer; user-select:none; transition:.12s ease}
+    .chip input{appearance:none; inline-size:1.05em; block-size:1.05em; border-radius:50%;
+                border:2px solid #9d7a83; display:inline-block; position:relative; flex:0 0 auto; background:#fff}
+    .chip input:checked{border-color:var(--brand)}
+    .chip input:checked::after{content:""; position:absolute; inset:3px; border-radius:50%; background:var(--brand)}
+    .chip.on{border-color:#e3bcc6; background:var(--hl); box-shadow:0 6px 18px rgba(184,107,119,.12)}
+    .chip:focus-within{outline:3px solid #ffd9e1; outline-offset:2px}
+
+    .btn{display:block;margin:22px auto 0;padding:12px 22px;font-size:1.05em;background:var(--brand);color:#fff;border:none;border-radius:10px;cursor:pointer}
 
     #result{max-width:860px;margin:22px auto 0;background:#fff;border:1px solid #eadad6;padding:18px;border-radius:10px}
     #result h2{margin:0 0 8px;color:#b16370}
@@ -58,6 +65,24 @@
   <div id="result" style="display:none;"></div>
 
   <script>
+    // ▼タイプ→画像フォルダ（01のみ）
+    const TYPE_TO_SLUG = {
+      "ソフトクリーム":"softcream",
+      "バニラアイス":"vanilla",
+      "ジェラート":"gelato",
+      "ソルベ":"sorbet",
+      "クリスタルアイス":"crystalice"
+    };
+
+    // 一言
+    const TAGLINE = {
+      "ソフトクリーム":"駆け引きゼロ、直球すぎて逆に最強",
+      "バニラアイス":"基本は正攻法、ときどき小ワザ",
+      "ジェラート":"甘さと冷静さのスイッチャー",
+      "ソルベ":"氷点下の冷静、勝ち筋直行",
+      "クリスタルアイス":"氷の策士、最適解を取りにいく"
+    };
+
     // Mach-IV 20項目（rev:true は逆転）
     const items = [
       { text: "目的のためなら本音を隠すことも必要だと思う", rev: false },
@@ -83,92 +108,89 @@
     ];
 
     const scaleLabels = [
-      "1（まったく当てはまらない）","2（あまり当てはまらない）","3（どちらともいえない）","4（やや当てはまる）","5（とても当てはまる）"
+      "1（まったく当てはまらない）",
+      "2（あまり当てはまらない）",
+      "3（どちらともいえない）",
+      "4（やや当てはまる）",
+      "5（とても当てはまる）"
     ];
 
-    const TAGLINE = {
-      "ソフトクリーム":"駆け引きゼロ、直球すぎて逆に最強",
-      "バニラアイス":"基本は正攻法、ときどき小ワザ",
-      "ジェラート":"甘さと冷静さのスイッチャー",
-      "ソルベ":"氷点下の冷静、勝ち筋直行",
-      "クリスタルアイス":"氷の策士、最適解を取りにいく"
-    };
-
-    // タイプ → 画像フォルダのスラッグ
-    const TYPE_TO_SLUG = {
-      "ソフトクリーム":"softcream",
-      "バニラアイス":"vanilla",
-      "ジェラート":"gelato",
-      "ソルベ":"sorbet",
-      "クリスタルアイス":"crystalice"
-    };
-
-    const form   = document.getElementById("quizForm");
-    const bar    = document.getElementById("bar");
-    const count  = document.getElementById("count");
+    const form = document.getElementById("quizForm");
+    const bar  = document.getElementById("bar");
+    const count= document.getElementById("count");
     const result = document.getElementById("result");
 
-    // 質問生成
+    // 質問描画（fieldset/legendでA11y強化）
     items.forEach((it, i) => {
-      const div = document.createElement("div");
-      div.className = "question";
+      const fs = document.createElement("fieldset");
+      fs.className = "question";
       const qid = `q${i}`;
-      let options = "";
-      for (let n = 0; n < 5; n++) {
+      const legend = document.createElement("legend");
+      legend.className = "qhead";
+      legend.innerHTML = `<span>Q${i+1}. ${it.text}</span><span id="${qid}_status" class="qstatus">未選択</span>`;
+      fs.appendChild(legend);
+
+      const scale = document.createElement("div");
+      scale.className = "scale";
+
+      for (let n=0;n<5;n++){
         const id = `${qid}_${n+1}`;
-        options += `
-          <label class="chip" for="${id}">
-            <input id="${id}" type="radio" name="${qid}" value="${n+1}" />
-            <span>${scaleLabels[n]}</span>
-          </label>`;
+        const lab = document.createElement("label");
+        lab.className = "chip";
+        lab.innerHTML = `
+          <input id="${id}" type="radio" name="${qid}" value="${n+1}">
+          <span>${scaleLabels[n]}</span>
+        `;
+        scale.appendChild(lab);
       }
-      div.innerHTML = `
-        <p class="qhead"><span>Q${i+1}. ${it.text}</span><span id="${qid}_status" class="qstatus">未選択</span></p>
-        <div class="scale">${options}</div>`;
-      form.appendChild(div);
+      fs.appendChild(scale);
+      form.appendChild(fs);
     });
 
-    // 進捗表示
+    // 行ハイライト（他診断と同様の on 切替）
     document.addEventListener("change", (e) => {
-      if (!e.target.name?.startsWith("q")) return;
-      const qid = e.target.name;
-      const st = document.getElementById(`${qid}_status`);
+      if (!e.target.matches('input[type="radio"][name^="q"]')) return;
+      const name = e.target.name;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(inp=>{
+        inp.closest('.chip').classList.toggle('on', inp.checked);
+      });
+      const st = document.getElementById(`${name}_status`);
       if (st){ st.textContent = "選択済"; st.classList.add("done"); }
       updateProgress();
     });
+
     function updateProgress(){
-      const checked = Array.from(document.querySelectorAll('input[type="radio"]:checked'));
-      const answeredQs = new Set(checked.map(i=>i.name)).size;
+      const answered = new Set([...document.querySelectorAll('input[type="radio"]:checked')].map(i=>i.name)).size;
       const totalQ = items.length;
-      const pct = Math.round(answeredQs/totalQ*100);
+      const pct = Math.round(answered/totalQ*100);
       bar.style.width = pct + "%";
-      count.textContent = `${answeredQs} / ${totalQ} 回答`;
+      count.textContent = `${answered} / ${totalQ} 回答`;
     }
 
-    // 画像セット（01のみ）。PNG→だめならWebPにフォールバック
+    // 画像読込（PNG→だめならWebP）
     function setImage(imgEl, slug){
       const base = `/shindan/assets/results/ice/${slug}/01`;
       imgEl.onerror = null;
       imgEl.src = `${base}.png`;
-      imgEl.onerror = () => { if (imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`; };
+      imgEl.onerror = ()=>{ if(imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`; };
     }
 
-    function calculate() {
+    function calculate(){
       // 未回答チェック
-      for (let i = 0; i < items.length; i++) {
-        if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+      for (let i=0;i<items.length;i++){
+        if (!document.querySelector(`input[name="q${i}"]:checked`)){
           alert(`未回答の設問があります（Q${i+1}）`);
           return;
         }
       }
-      // 採点（逆転項目は 6 - 値）
+      // 採点（逆転は 6 - 値）
       let sum = 0;
-      for (let i = 0; i < items.length; i++) {
+      for (let i=0;i<items.length;i++){
         let v = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value,10);
         if (items[i].rev) v = 6 - v;
         sum += v;
       }
-      // 20〜100点 → 0〜100% に線形変換
+      // 20〜100点 → 0〜100%
       const machPct = Math.round((sum - 20) / 80 * 100);
 
       // タイプ判定
@@ -179,10 +201,10 @@
       else if (machPct <= 80) type="ソルベ";
       else type="クリスタルアイス";
 
-      const tagline = TAGLINE[type] || "";
       const slug = TYPE_TO_SLUG[type];
+      const tagline = TAGLINE[type] || "";
 
-      // 結果描画（サイト内画像1枚）
+      // 結果描画
       result.style.display = "block";
       result.innerHTML = `
         <h2>結果</h2>
@@ -197,12 +219,8 @@
           <a class="a-btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">🔁 もう一度やる</a>
         </div>
       `;
-
-      // 01画像を表示
-      const img = document.getElementById('ice-img');
-      setImage(img, slug);
-
-      window.scrollTo(0, document.body.scrollHeight);
+      setImage(document.getElementById('ice-img'), slug);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
   </script>
 </body>
