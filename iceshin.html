@@ -23,11 +23,8 @@
     .qstatus.done{color:var(--brand)}
 
     .scale{display:grid;grid-template-columns:1fr;gap:10px}
-    @media (min-width:560px){
-      .scale{grid-template-columns:1fr} /* 縦並びを固定（他診断と統一感） */
-    }
 
-    /* ラジオ＋行全体ハイライト（他診断と同じ挙動） */
+    /* ラジオ＋行ハイライト（他診断と統一） */
     .chip{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:10px;background:var(--chip);
           border:1.5px solid #e9e1de; cursor:pointer; user-select:none; transition:.12s ease}
     .chip input{appearance:none; inline-size:1.05em; block-size:1.05em; border-radius:50%;
@@ -65,7 +62,7 @@
   <div id="result" style="display:none;"></div>
 
   <script>
-    // ▼タイプ→画像フォルダ（01のみ）
+    // タイプ→画像フォルダ（01のみ）
     const TYPE_TO_SLUG = {
       "ソフトクリーム":"softcream",
       "バニラアイス":"vanilla",
@@ -120,7 +117,7 @@
     const count= document.getElementById("count");
     const result = document.getElementById("result");
 
-    // 質問描画（fieldset/legendでA11y強化）
+    // 質問描画
     items.forEach((it, i) => {
       const fs = document.createElement("fieldset");
       fs.className = "question";
@@ -147,7 +144,7 @@
       form.appendChild(fs);
     });
 
-    // 行ハイライト（他診断と同様の on 切替）
+    // 行ハイライト＆進捗
     document.addEventListener("change", (e) => {
       if (!e.target.matches('input[type="radio"][name^="q"]')) return;
       const name = e.target.name;
@@ -167,7 +164,7 @@
       count.textContent = `${answered} / ${totalQ} 回答`;
     }
 
-    // 画像読込（PNG→だめならWebP）
+    // 画像読込（01.png → だめなら 01.webp）
     function setImage(imgEl, slug){
       const base = `/shindan/assets/results/ice/${slug}/01`;
       imgEl.onerror = null;
@@ -204,7 +201,7 @@
       const slug = TYPE_TO_SLUG[type];
       const tagline = TAGLINE[type] || "";
 
-      // 結果描画
+      // 結果描画（01だけ表示）
       result.style.display = "block";
       result.innerHTML = `
         <h2>結果</h2>
