@@ -17,15 +17,15 @@
     .btn:disabled{opacity:.6;cursor:not-allowed}
     .btn.alt{background:#8a6a74}
     .actions{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+
     #result{max-width:900px;margin:18px auto 0;display:none}
-    .pill{display:inline-block;background:#fde9ee;color:#b86b77;padding:4px 10px;border-radius:999px;font-size:12px;margin:0 0 10px}
     .type{background:#fdf1f3;border-left:6px solid #b86b77;border-radius:10px;padding:12px 14px;margin:10px 0}
     .type h3{margin:0 0 6px;color:#b86b77;font-size:18px}
     .type small{color:#666}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 8px}
     .img{width:100%;height:auto;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.08);margin:6px 0}
-    .note{font-size:14px;color:#444;background:#fff7e6;border-left:6px solid #ffbf66;border-radius:6px;padding:10px 12px;margin:14px 0}
-    .footerlink{text-align:center;margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+    .footerlink{margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
     .linkbtn{display:inline-block;text-decoration:none}
   </style>
 </head>
@@ -42,22 +42,16 @@
   </div>
 
   <div id="result" class="card" aria-live="polite">
-    <span class="pill">基準：平均4.0以上の因子をすべて表示（該当なしなら上位2因子）</span>
     <div id="types"></div>
 
-    <div class="note">
-      🔖 複数の因子が出ることがあります。<br>
-      <strong>この結果をメモ・スクショしてから</strong>、下のボタンで次へ！
-    </div>
     <div class="footerlink">
       <a class="btn linkbtn" href="/shindan/">診断一覧へ戻る</a>
-      <a class="btn alt linkbtn" href="https://seikaku.my.canva.site/sweet-shin" target="_blank" rel="noopener">詳しい解説（Canva）</a>
       <button class="btn linkbtn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">もう一度やる</button>
     </div>
   </div>
 
   <script>
-    // 7つの休息タイプとスイーツ（表示用）
+    // 表示用データ
     const TYPES = {
       body:   {label:"身体の休息",  sweet:"シュークリーム 🥐", desc:"ふわっと軽くやさしい休息を。睡眠・入浴・ストレッチで物理的に回復を。"},
       soul:   {label:"魂の休息",    sweet:"バウムクーヘン 🍰", desc:"“やるべき”より“やりたい”を。好きな本・自然・内省で層にうるおいを。"},
@@ -68,7 +62,7 @@
       mental: {label:"精神の休息",  sweet:"マカロン 🍬",       desc:"情報と雑音を一度ミュート。瞑想・紙に書き出し・予定を減らす。"}
     };
 
-    // key → 画像フォルダslug（サイト内パス）
+    // key → 画像フォルダslug
     const KEY_TO_SLUG = {
       body:'physical',
       soul:'spiritual',
@@ -81,35 +75,24 @@
 
     // 設問（2問×7因子＝14問）
     const QUESTIONS = [
-      // 身体
       {t:"朝起きても疲れが残っていることが多い", k:"body"},
       {t:"体のコリや重だるさをよく感じる", k:"body"},
-      // 魂
       {t:"“やりたいこと”より“やるべきこと”で一日が埋まりがちだ", k:"soul"},
       {t:"自分の価値観や生きがいが薄くなっている気がする", k:"soul"},
-      // 創造
       {t:"新しいアイデアが浮かびにくい／ワクワクが減った", k:"create"},
       {t:"完璧を求めすぎて手が止まることが多い", k:"create"},
-      // 感覚
       {t:"人混みや音・光でぐったりしやすい", k:"sense"},
       {t:"通知や情報の多さに圧倒される", k:"sense"},
-      // 社会
       {t:"気を使いすぎて、人と会うのがしんどいことがある", k:"social"},
       {t:"最近、気楽に話せる相手と会っていない", k:"social"},
-      // 感情
       {t:"感情を抑え込みがちで、うまく表現できない", k:"emotion"},
       {t:"泣いたり怒ったりするのを我慢してしまう", k:"emotion"},
-      // 精神
       {t:"考えごとが多すぎて頭が休まらない", k:"mental"},
       {t:"集中できず、思考の引き出しが散らかっている感じがする", k:"mental"},
     ];
 
     const SCALE = [
-      "1（まったく当てはまらない）",
-      "2（あまり当てはまらない）",
-      "3（どちらともいえない）",
-      "4（やや当てはまる）",
-      "5（とても当てはまる）"
+      "1（まったく当てはまらない）","2（あまり当てはまらない）","3（どちらともいえない）","4（やや当てはまる）","5（とても当てはまる）"
     ];
 
     // フォーム描画
@@ -119,9 +102,7 @@
       block.className = "question";
       block.innerHTML = `<p>Q${i+1}. ${q.t}</p>
         <div class="scale">
-          ${SCALE.map((label, idx) =>
-            `<label><input type="radio" name="q${i}" value="${idx+1}"> ${label}</label>`
-          ).join("")}
+          ${SCALE.map((label, idx) => `<label><input type="radio" name="q${i}" value="${idx+1}"> ${label}</label>`).join("")}
         </div>`;
       form.appendChild(block);
     });
@@ -134,14 +115,12 @@
       window.scrollTo({top:0,behavior:"smooth"});
     }
 
-    // 画像パスを返す（01=説明 / 02=おすすめ）。PNG→ダメならWebPを試す。
-    function setImage(imgEl, slug, no){ // no: '01' or '02'
+    // 画像切替（01=説明 / 02=おすすめ）
+    function setImage(imgEl, slug, no){
       const base = `/shindan/assets/results/sweet/${slug}/${no}`;
       imgEl.onerror = null;
       imgEl.src = `${base}.png`;
-      imgEl.onerror = () => {
-        if (imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`;
-      };
+      imgEl.onerror = () => { if (imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`; };
     }
 
     // 診断
@@ -155,14 +134,13 @@
         if(!sel){ alert(`全ての質問に答えてください（Q${i+1}が未回答）`); return; }
         const v = parseInt(sel.value);
         const key = QUESTIONS[i].k;
-        sums[key]+=v;
-        counts[key]+=1;
+        sums[key]+=v; counts[key]+=1;
       }
 
-      // 平均
+      // 平均値リスト
       const avgs = Object.keys(sums).map(k=>({ key:k, avg: sums[k]/counts[k] }));
 
-      // 平均4.0以上をすべて表示、ゼロなら上位2因子
+      // 表示対象（平均4.0以上を優先。ゼロなら上位2つ）
       const THRESH = 4.0;
       let picked = avgs.filter(x=>x.avg>=THRESH).sort((a,b)=>b.avg-a.avg);
       if(picked.length===0){ picked = avgs.sort((a,b)=>b.avg-a.avg).slice(0,2); }
@@ -174,10 +152,9 @@
         const slug = KEY_TO_SLUG[key];
         const pct = Math.round((avg-1)/4*100);
         const imgId = `img-${slug}`;
-
         return `
           <div class="type" data-slug="${slug}">
-            <h3>${t.sweet}｜${t.label}（平均 ${avg.toFixed(1)} / 5｜必要度 ${pct}%）</h3>
+            <h3>${t.sweet}｜${t.label}（必要度 ${pct}%）</h3>
             <div class="tabs">
               <button class="btn" type="button" onclick="setImage(document.getElementById('${imgId}'),'${slug}','01')">説明（01）</button>
               <button class="btn alt" type="button" onclick="setImage(document.getElementById('${imgId}'),'${slug}','02')">休息おすすめ（02）</button>
@@ -188,7 +165,7 @@
         `;
       }).join("");
 
-      // すべてのカード画像を 01（説明）で初期化
+      // 初期はすべて 01 を表示
       picked.forEach(({key})=>{
         const slug = KEY_TO_SLUG[key];
         const img = document.getElementById(`img-${slug}`);
