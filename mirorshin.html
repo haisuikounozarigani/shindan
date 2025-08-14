@@ -32,15 +32,19 @@
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .card{ background:#fff7f9; border:1px solid #f1cbd2; border-radius:10px; padding:12px; }
     .note{ color:#6b6b6b; font-size:.9em; margin-top:10px; text-align:left; }
-    .links{ text-align:center; margin-top:10px; }
-    .btnlink{ display:inline-block; margin:6px; padding:8px 14px; background:#ffe7eb;
-              border:1px solid #f1cbd2; color:#7b3f4a; border-radius:8px; text-decoration:none; }
+
+    .img{width:100%;height:auto;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.08);margin:10px 0}
+
+    .links{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap }
+    .btnlink{ flex:1; display:inline-block; padding:10px 14px; text-align:center;
+              background:#ffe7eb; border:1px solid #f1cbd2; color:#7b3f4a;
+              border-radius:8px; text-decoration:none; font-weight:700; }
     @media (max-width:720px){ .row{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <h1>🪞 鏡ナルシスト診断</h1>
-  <p class="sub">14問・5件法。結果は％表示＋短い説明。詳しくはCanvaへ。</p>
+  <p class="sub">14問・5件法。結果は％表示＋短い説明＋サイト内画像。</p>
 
   <form id="quizForm"></form>
   <button type="button" onclick="calculate()">診断する</button>
@@ -48,6 +52,8 @@
   <section id="result">
     <h2 id="title">結果</h2>
     <p class="kpi" id="overall"></p>
+
+    <img id="mirrorImg" class="img" alt="結果画像" decoding="async" />
 
     <div class="row">
       <div class="card">
@@ -60,10 +66,9 @@
       </div>
     </div>
 
-    <p class="note" style="text-align:center">※本診断は娯楽・自己理解向けの簡易版です（医療・選別用途は不可）。</p>
     <div class="links">
-      <a class="btnlink" id="canvaLink" href="https://seikaku.my.canva.site/mirorshin" target="_blank">詳しい解説をCanvaで読む</a>
-      <a class="btnlink" href="https://seikaku.my.canva.site/shindan" target="_blank">🔙 心の標本トップへ</a>
+      <a class="btnlink" href="/shindan/">🔙 診断一覧へ戻る</a>
+      <a class="btnlink" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">🔁 もう一度やる</a>
     </div>
   </section>
 
@@ -111,13 +116,16 @@
 
     // ％計算と表示テキスト
     const pct = (sum,min,max)=> Math.round((sum-min)/(max-min)*100);
-    const band = (p)=>{
-      if (p<=20) return {badge:"非常に低い", mirror:"ゴージャス",   one:"控えめ・自然体"};
-      if (p<=40) return {badge:"低い",       mirror:"クリア",     one:"落ち着いた自己肯定"};
-      if (p<=60) return {badge:"中くらい",   mirror:"普通の鏡",   one:"状況でON/OFF"};
-      if (p<=80) return {badge:"やや高い",   mirror:"ひび割れ",   one:"自己主張・競争心強め"};
-      return        {badge:"高い",           mirror:"粉々",       one:"自己演出＆対抗心が強い"};
-    };
+
+    // 総合バンド → 表示ラベル＆一言＆画像用スラッグ
+    function bandLabel(p){
+      if (p<=20) return {label:"ゴージャス",  badge:"非常に低い", one:"控えめ・自然体", slug:"gorgeous"};
+      if (p<=40) return {label:"クリア",      badge:"低い",       one:"落ち着いた自己肯定", slug:"clear"};
+      if (p<=60) return {label:"ノーマル",    badge:"中くらい",   one:"状況でON/OFF", slug:"normal"};
+      if (p<=80) return {label:"クラック",    badge:"やや高い",   one:"自己主張・競争心強め", slug:"crack"};
+      return        {label:"スマッシュ",    badge:"高い",       one:"自己演出＆対抗心が強い", slug:"smash"};
+    }
+
     const briefAdm = (p)=>{
       if (p<=33) return `自己主張は控えめ（${p}%）。自然体で評価されたいスタイル。`;
       if (p<=66) return `自己肯定と謙虚さのバランス良し（${p}%）。場面で上手にスイッチ。`;
@@ -128,6 +136,14 @@
       if (p<=66) return `健全な競争心（${p}%）。勝ち負けより成長重視。`;
       return `勝負勘が鋭い（${p}%）。反骨心がドライブになることも。`;
     };
+
+    // 画像表示（PNG→失敗時WebP）
+    function setImage(imgEl, slug){
+      const base = `/shindan/assets/results/mirror/${slug}/01`;
+      imgEl.onerror = null;
+      imgEl.src = `${base}.png`;
+      imgEl.onerror = () => { if (imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`; };
+    }
 
     function calculate(){
       let total=0, adm=0, riv=0;
@@ -141,11 +157,14 @@
       const admPct   = pct(adm,  7,35);
       const rivPct   = pct(riv,  7,35);
 
-      const b = band(totalPct);
+      const b = bandLabel(totalPct);
       document.getElementById('title').innerHTML = `ナルシスト度 <span class="badge">${totalPct}%｜${b.badge}</span>`;
-      document.getElementById('overall').textContent = `鏡の状態：${b.mirror}（${b.one}）`;
+      document.getElementById('overall').textContent = `鏡の状態：${b.label}（${b.one}）`;
       document.getElementById('admBrief').textContent = briefAdm(admPct);
       document.getElementById('rivBrief').textContent = briefRiv(rivPct);
+
+      const img = document.getElementById('mirrorImg');
+      setImage(img, b.slug);
 
       document.getElementById('result').style.display = 'block';
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -153,4 +172,3 @@
   </script>
 </body>
 </html>
-```0
