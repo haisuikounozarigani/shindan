@@ -13,6 +13,7 @@
   h1{margin:0;color:var(--brand);font-size:clamp(20px,3.4vw,28px)}
   a.back{font-size:.9em;color:#835f5f;text-decoration:none;border:1px solid #e4d9d9;padding:6px 10px;border-radius:10px;background:#fff}
   .card{background:var(--card);border:1px solid #eee;border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+  .card.tall{padding-bottom:32px}
   .row{margin:12px 0}
   .muted{color:var(--muted);font-size:.95em}
   button{padding:10px 16px;border-radius:10px;border:1px solid #cfcfcf;background:#fff;cursor:pointer}
@@ -30,7 +31,7 @@
   .cell{width:72px;height:72px;border-radius:12px;border:1px solid #ddd;background:#faf9f7;cursor:pointer;transition:transform .06s}
   .cell.flash{background:#d8c0c0}
   .cell.sel{outline:3px solid #8e5a5a55}
-  .center{display:flex;justify-content:center;align-items:center;min-height:60px;font-size:42px;letter-spacing:.04em}
+  .center{display:flex;justify-content:center;align-items:center;min-height:110px;font-size:42px;letter-spacing:.04em}
   canvas{max-width:100%;height:auto}
   .small{font-size:.9em}
   .choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -40,7 +41,17 @@
   .choice.wrong{border-color:#b3261e}
   .pair{display:flex;gap:10px;justify-content:center;align-items:center;font-size:24px}
   .pill{display:inline-block;padding:2px 8px;border:1px solid #e4d9d9;border-radius:999px;background:#fff;font-size:.86em;margin-left:6px}
-  .controls-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+
+  /* ボタン行（下寄せ気味） */
+  .controls-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .btnbar{display:grid;grid-template-columns:repeat(2, minmax(120px,1fr));gap:10px;max-width:520px;margin:18px auto 4px}
+  .btnbar .wide{grid-column:1 / -1}
+  .bigbtn{padding:14px 16px;font-size:18px;border-radius:12px}
+  .soft{background:#fff;border-color:#e5dede}
+
+  /* Gv/Gsの表示域を“下側広め”に確保 */
+  .gv-area{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gs-area{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 
   /* 準備オーバーレイ */
   .prep{position:fixed;inset:0;background:rgba(255,253,248,.92);display:none;align-items:center;justify-content:center;z-index:999}
@@ -65,6 +76,7 @@
     .wrap{margin:18px auto}
     canvas#gv_left, canvas#gv_right{width:140px !important;height:140px !important}
     canvas#radar{width:100% !important;height:auto !important}
+    .btnbar{grid-template-columns:1fr 1fr}
   }
 </style>
 </head>
@@ -192,38 +204,42 @@
     <div class="row" id="gc_feedback"></div>
   </section>
 
-  <!-- GV（時間制限なし・試行数方式） -->
-  <section class="card" id="gv" style="display:none">
-    <h2>Gv（視覚）— 回転同一判断（時間制限なし）</h2>
-    <div class="muted small">任意の試行数で、左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。好きなペースで回答できます。</div>
+  <!-- GV（時間制：60秒で何問正解できるか） -->
+  <section class="card tall" id="gv" style="display:none">
+    <h2>Gv（視覚）— 回転同一判断（時間内にどれだけ解けるか）</h2>
+    <div class="muted small">左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。時間内にできるだけ解答してください。正答数で評価します。</div>
     <div class="row small muted">
-      <label>試行数：<input id="gv_trials" type="number" min="8" max="60" value="24"></label>
-      <span class="pill" id="gv_prog" style="margin-left:8px">0/—</span>
+      <label>持ち時間（秒）：<input id="gv_secs" type="number" min="30" max="120" value="60"></label>
+      <span class="pill" id="gv_status" style="margin-left:8px">待機中</span>
     </div>
-    <div class="row">
-      <canvas id="gv_left" width="180" height="180"></canvas>
-      <canvas id="gv_right" width="180" height="180"></canvas>
+    <div class="gv-area">
+      <div class="row">
+        <canvas id="gv_left" width="220" height="220"></canvas>
+        <canvas id="gv_right" width="220" height="220"></canvas>
+      </div>
     </div>
     <div class="row" id="gv_feedback"></div>
-    <div class="controls-row">
-      <button id="gv_start" class="primary">開始</button>
-      <button id="gv_same" disabled>同じ</button>
-      <button id="gv_diff" disabled>違う</button>
-      <button id="gv_finish" disabled>終了</button>
+    <div class="btnbar">
+      <button id="gv_start" class="primary bigbtn wide">開始</button>
+      <button id="gv_same"  class="bigbtn soft" disabled>同じ (F)</button>
+      <button id="gv_diff"  class="bigbtn soft" disabled>違う (J)</button>
+      <button id="gv_finish" class="bigbtn wide" disabled>終了</button>
     </div>
   </section>
 
   <!-- GS -->
-  <section class="card" id="gs" style="display:none">
+  <section class="card tall" id="gs" style="display:none">
     <h2>Gs（処理速度）— 記号比較（30秒・ペース固定）</h2>
     <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打は無効）。</div>
-    <div class="pair" id="gs_pair">—</div>
-    <div class="row small muted" id="gs_meta">—</div>
-    <div class="controls-row">
-      <button id="gs_start" class="primary">開始</button>
-      <button id="gs_same" disabled>同じ (F)</button>
-      <button id="gs_diff" disabled>違う (J)</button>
-      <span class="pill" id="gs_timer">00:30</span>
+    <div class="gs-area">
+      <div class="pair" id="gs_pair">—</div>
+      <div class="row small muted" id="gs_meta">—</div>
+    </div>
+    <div class="btnbar">
+      <button id="gs_start" class="primary bigbtn">開始</button>
+      <button id="gs_same" class="bigbtn soft" disabled>同じ (F)</button>
+      <button id="gs_diff" class="bigbtn soft" disabled>違う (J)</button>
+      <span class="pill" id="gs_timer" style="place-self:center">00:30</span>
     </div>
     <div class="row" id="gs_feedback"></div>
   </section>
@@ -242,7 +258,7 @@
       <p><b>標準化の近似</b>（簡易版・参考域）<br>
       Gwm：順向(μ7,σ2)／逆向(μ5,σ1.5)／視空間(μ5,σ1.5)／2-back正答(μ0.70,σ0.15)<br>
       Gf：行列推理 正答数(μ7,σ2.5)　Gc：語彙 正答数(μ8,σ2.0)<br>
-      Gv：回転同一 正答率(μ0.75,σ0.15)　Gs：30秒正答数(μ25,σ7)<br>
+      Gv：回転同一 <u>60秒正答数</u>(μ12,σ4)　Gs：30秒正答数(μ25,σ7)<br>
       能力別zを平均→CCI。CCI％位＝Φ(z)×100。上位＝(100−％位)％。</p>
     </div>
   </section>
@@ -275,7 +291,6 @@ function sanitizeNums(s){
   const hv = toHalfNumStr(s||'');
   return hv.replace(/[^\d]/g,'').split('').map(d=>parseInt(d,10));
 }
-// 入力中も全角→半角に矯正
 document.addEventListener('input', (e)=>{
   const t = e.target;
   if (t.tagName==='INPUT' && (t.type==='number' || t.type==='text')){
@@ -296,10 +311,11 @@ tabs.forEach(b=>b.addEventListener('click', ()=>{
 }));
 
 // ===== Scores =====
-const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_acc:null, gs_count:null };
+const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_count:null, gs_count:null };
 let lastSummary = null; // 画像保存用
 
-// ===== Gwm: T1 =====
+// ===== Gwm: T1/T2/T3（前回のまま） =====
+/* ...（数字スパン順向と逆向・視空間の実装は前回と同一。省略なしで貼り付け） */
 const t1 = { L:4, trial:0, success:false, seq:[], showing:false, done:false };
 function t1Reset(){
   t1.L = getNum('t1_start',4,3,9);
@@ -309,8 +325,7 @@ function t1Reset(){
 }
 function t1Digits(n){ return Array.from({length:n},()=>randInt(10)); }
 async function t1Show(){
-  t1.success=false;
-  await showPrep(900,'準備してください');
+  t1.success=false; await showPrep(900,'準備してください');
   t1.showing=true; t1.seq=t1Digits(t1.L);
   const ms=getNum('t1_ms',600,200,1500);
   el('t1_state').textContent=`提示中（${t1.L}桁）`; el('digitBox').textContent='';
@@ -336,8 +351,7 @@ async function t1Check(){
   t1.trial++;
   if (ok){
     el('t1_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${t1.L+1} 桁（正解：${t1.seq.join('')})`;
-    t1.success=true; t1.L++; t1.trial=0;
-    updateOverall(); await sleep(FEEDBACK_DELAY_MS); t1Step();
+    t1.success=true; t1.L++; t1.trial=0; updateOverall(); await sleep(FEEDBACK_DELAY_MS); t1Step();
   }else{
     el('t1_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${t1.trial}/2）／正解：${t1.seq.join('')}`;
     await sleep(FEEDBACK_DELAY_MS); t1Step();
@@ -349,7 +363,6 @@ el('t1_check').addEventListener('click', t1Check);
 el('t1_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t1_check').disabled) t1Check(); });
 t1Reset();
 
-// ===== Gwm: T2 =====
 const t2 = { L:3, trial:0, success:false, seq:[], showing:false, done:false };
 function t2Reset(){
   t2.L = getNum('t2_startN',3,3,8);
@@ -358,8 +371,7 @@ function t2Reset(){
   el('t2_feedback').textContent=''; el('t2_state').textContent='未開始';
 }
 async function t2Show(){
-  t2.success=false;
-  await showPrep(900,'準備してください');
+  t2.success=false; await showPrep(900,'準備してください');
   t2.showing=true; t2.seq=Array.from({length:t2.L},()=>randInt(10));
   const ms=getNum('t2_ms',650,200,1500);
   el('t2_state').textContent=`提示中（${t2.L}桁）`; el('digitBox2').textContent='';
@@ -398,7 +410,7 @@ el('t2_check').addEventListener('click', t2Check);
 el('t2_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t2_check').disabled) t2Check(); });
 t2Reset();
 
-// ===== Gwm: T3（3×3 視空間） =====
+// T3 視空間
 const grid = el('grid'); const cells=[];
 for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell'; d.dataset.idx=i; grid.appendChild(d); cells.push(d); }
 const V = { L:3, trial:0, success:false, seq:[], picks:[], showing:false, done:false, MAX:9 };
@@ -413,8 +425,7 @@ function t3Reset(){
 function makeSeq(n){ const arr=Array.from({length:9},(_,k)=>k); for(let i=arr.length-1;i>0;i--){ const j=randInt(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr.slice(0,n); }
 async function flashCell(i, ms){ cells[i].classList.add('flash'); await sleep(ms); cells[i].classList.remove('flash'); }
 async function t3Show(){
-  V.success=false;
-  await showPrep(900,'準備してください');
+  V.success=false; await showPrep(900,'準備してください');
   V.showing=true; V.seq=makeSeq(V.L); V.picks=[]; cells.forEach(c=>c.classList.remove('sel'));
   el('t3_sel_info').textContent=`0/${V.L}`;
   const ms=getNum('t3_ms',600,250,1500);
@@ -424,27 +435,18 @@ async function t3Show(){
 }
 cells.forEach(d=>d.addEventListener('click', ()=>{
   if (V.showing||V.done||el('t3_check').disabled) return;
-  if (V.picks.length>=V.L) {
-    el('t3_feedback').textContent=`これ以上選べません（必要 ${V.L}）。`;
-    d.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:120});
-    return;
-  }
-  const idx = parseInt(d.dataset.idx,10);
-  V.picks.push(idx);
-  d.classList.add('sel');
-  el('t3_sel_info').textContent=`${V.picks.length}/${V.L}`;
+  if (V.picks.length>=V.L) { el('t3_feedback').textContent=`これ以上選べません（必要 ${V.L}）。`; d.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:120}); return; }
+  const idx = parseInt(d.dataset.idx,10); V.picks.push(idx); d.classList.add('sel'); el('t3_sel_info').textContent=`${V.picks.length}/${V.L}`;
 }));
 function t3Start(){ t3Reset(); el('t3_startBtn').disabled=true; V.trial=0; t3Step(); }
 async function t3Step(){
   if (V.done) return;
   if (V.trial>=2){
-    const reached = V.success? V.L : V.L-1;
-    score.t3 = reached;
+    const reached = V.success? V.L : V.L-1; score.t3 = reached;
     el('t3_feedback').innerHTML = (V.success?`<span class="ok">レベル達成！</span>`:`<span class="ng">終了。</span>`) + ` 到達最大長 <b>${reached}</b><br>正解順：${V.seq.join('→')}`;
     if (score.t3===V.MAX){ score.t3Perfect=true; el('t3_badge').style.display='inline-block'; }
     V.done=true; el('t3_startBtn').disabled=false; updateOverall(); return;
-  }
-  await t3Show();
+  } await t3Show();
 }
 async function t3Check(){
   if (V.showing) return;
@@ -509,14 +511,13 @@ function summarizeT4(){
   const acc = total>0 ? (N.hits+N.cr)/total : 0;
   score.t4_acc = acc;
   el('t4_feedback').innerHTML = `正答率：<b>${Math.round(acc*100)}%</b>（命中 ${N.hits}／ミス ${N.miss}／誤反応 ${N.fa}／正拒否 ${N.cr}）`;
-  el('t4_state').textContent='完了';
-  updateOverall();
+  el('t4_state').textContent='完了'; updateOverall();
 }
 el('t4_startBtn').addEventListener('click', t4Start);
 el('t4_abortBtn').addEventListener('click', ()=>{ N.running=false; el('t4_state').textContent='中断'; el('t4_startBtn').disabled=false; el('t4_hitBtn').disabled=true; });
 t4Reset();
 
-// ===== GF: 行列推理 =====
+// ===== GF =====
 const gfItems = [
   {rows:[['A','B','C'],['D','E','?']], choices:['F','G','H','I'], ans:'F'},
   {rows:[['1','2','3'],['2','3','4'],['3','4','?']], choices:['4','5','6','7'], ans:'5'},
@@ -555,8 +556,7 @@ function renderGF(containerId, items){
       });
       box.appendChild(b);
     });
-    card.appendChild(box);
-    host.appendChild(card);
+    card.appendChild(box); host.appendChild(card);
   });
 }
 renderGF('gf_body', gfItems);
@@ -580,7 +580,7 @@ el('gf_submit').addEventListener('click', ()=>{
   updateOverall();
 });
 
-// ===== GC: 語彙（シャッフル＆提出採点） =====
+// ===== GC =====
 const gcItems = [
   {q:'堅実', choices:['着実','軽薄','奔放','曖昧'], ans:'着実'},
   {q:'逡巡', choices:['ためらい','邁進','撤回','昂揚'], ans:'ためらい'},
@@ -635,49 +635,56 @@ function gradeMC(containerSel, items, feedbackEl){
 renderMC('gc_body', gcItems);
 el('gc_submit').addEventListener('click', ()=>{
   const correct = gradeMC('#gc_body', gcItems, el('gc_feedback'));
-  score.gc_correct = correct;
-  updateOverall();
+  score.gc_correct = correct; updateOverall();
 });
 
-// ===== Gv: 回転同一（無制限・試行数方式） =====
-const gv = { trials:24, i:0, right:0, running:false, pat:null, rot:0, same:true };
+// ===== Gv：時間制で正答数カウント（厳しさ緩和） =====
+const gv = { running:false, correct:0, total:0, secs:60, remain:60, timer:null, trialsMin:12, same:true, pat:null, rot:0 };
 const gvcL = el('gv_left').getContext('2d'), gvcR = el('gv_right').getContext('2d');
 function randPattern(){ while(true){ const p=Array.from({length:9},()=>randInt(2)); const sum=p.reduce((a,b)=>a+b,0); if (sum>=2 && sum<=7) return p; } }
 function drawPattern(ctx, pat, rotDeg){
   const W=ctx.canvas.width, H=ctx.canvas.height; ctx.clearRect(0,0,W,H);
   ctx.save(); ctx.translate(W/2,H/2); ctx.rotate(rotDeg*Math.PI/180); ctx.translate(-W/2,-H/2);
-  const s=40, off=(W-3*s)/2;
+  const s=52, off=(W-3*s)/2;
   for(let r=0;r<3;r++)for(let c=0;c<3;c++){
     const v=pat[r*3+c]; ctx.fillStyle=v? '#333':'#f2eae6'; ctx.strokeStyle='#d8cccc';
-    ctx.fillRect(off+c*s, off+r*s, s-4, s-4); ctx.strokeRect(off+c*s, off+r*s, s-4, s-4);
+    ctx.fillRect(off+c*s, off+r*s, s-6, s-6); ctx.strokeRect(off+c*s, off+r*s, s-6, s-6);
   }
   ctx.restore();
 }
 function rotate90(p){ return [p[6],p[3],p[0], p[7],p[4],p[1], p[8],p[5],p[2]]; }
-function gvUpdateProg(){ el('gv_prog').textContent = `${Math.min(gv.i, gv.trials)}/${gv.trials}`; }
+function gvSetStatus(txt){ el('gv_status').textContent = txt; }
 function gvStart(){
-  gv.trials = getNum('gv_trials', 24, 8, 60);
-  gv.i=0; gv.right=0; gv.running=true;
+  gv.secs = getNum('gv_secs',60,30,120);
+  gv.remain = gv.secs; gv.correct=0; gv.total=0; gv.running=true;
+  gvSetStatus(`残り ${String(gv.remain).padStart(2,'0')}s`);
   el('gv_feedback').textContent='進行中';
   el('gv_start').disabled=true; el('gv_same').disabled=false; el('gv_diff').disabled=false; el('gv_finish').disabled=false;
-  gvNext();
+  showPrep(900,'準備してください').then(()=>{
+    gv.timer = setInterval(()=>{
+      gv.remain--; gvSetStatus(`残り ${String(gv.remain).padStart(2,'0')}s`);
+      if (gv.remain<=0){ clearInterval(gv.timer); gvEnd(); }
+    },1000);
+    gvNext();
+  });
 }
 function gvEnd(){
-  gv.running=false;
+  if (!gv.running) return;
+  gv.running=false; clearInterval(gv.timer);
   el('gv_same').disabled=true; el('gv_diff').disabled=true; el('gv_start').disabled=false; el('gv_finish').disabled=true;
-  const attempted = Math.max(1, Math.min(gv.i, gv.trials));
-  const acc = gv.right / attempted;
-  score.gv_acc = acc;
-  el('gv_feedback').innerHTML = `正答：<b>${gv.right}</b> / ${attempted}（正答率 ${Math.round(acc*100)}%）`;
-  if (attempted < 8){
+  el('gv_status').textContent='終了';
+  const attempted = gv.total;
+  el('gv_feedback').innerHTML = `正答数：<b>${gv.correct}</b>（試行 ${attempted}）`;
+  if (attempted < gv.trialsMin){
     el('gv_feedback').innerHTML += '　<span class="ng">※ 試行が少ないためCCIには未反映</span>';
-    score.gv_acc = null;
+    score.gv_count = null;
+  }else{
+    score.gv_count = gv.correct;
   }
   updateOverall();
 }
 function gvNext(){
   if (!gv.running) return;
-  if (gv.i>=gv.trials){ gvEnd(); return; }
   gv.pat = randPattern();
   const rotSteps = [0,90,180,270][randInt(4)];
   const same = Math.random()<0.5;
@@ -687,20 +694,24 @@ function gvNext(){
   for(let n=0;n<rotSteps/90;n++) rightPat=rotate90(rightPat);
   if (!same){ const pos = randInt(9); rightPat = rightPat.slice(); rightPat[pos] = 1-rightPat[pos]; }
   drawPattern(gvcR, rightPat, 0);
-  gv.i++;
-  gvUpdateProg();
+  gv.total++;
 }
 function gvResp(isSame){
   if (!gv.running) return;
-  if (isSame===gv.same) gv.right++;
+  if (isSame===gv.same) gv.correct++;
   gvNext();
 }
 el('gv_start').addEventListener('click', gvStart);
 el('gv_same').addEventListener('click', ()=>gvResp(true));
 el('gv_diff').addEventListener('click', ()=>gvResp(false));
 el('gv_finish').addEventListener('click', gvEnd);
+document.addEventListener('keydown', e=>{
+  if (!gv.running) return;
+  if (e.key==='f' || e.key==='F') gvResp(true);
+  if (e.key==='j' || e.key==='J') gvResp(false);
+});
 
-// ===== Gs: 記号比較（30秒・ペース固定＆1試行1回答） =====
+// ===== Gs：処理速度（そのまま＋下側広め） =====
 const gs = { running:false, time:30, right:0, wrong:0, total:0, responded:false, overallTimer:null, trialTimer:null, pace:900, same:false };
 const SYM = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 function randStr3(){ return SYM[randInt(SYM.length)]+SYM[randInt(SYM.length)]+SYM[randInt(SYM.length)]; }
@@ -710,8 +721,7 @@ async function startGS(){
   gs.running=true; gs.time=30; gs.right=0; gs.wrong=0; gs.total=0; gs.responded=false;
   el('gs_start').disabled=true; el('gs_same').disabled=false; el('gs_diff').disabled=false;
   el('gs_feedback').textContent='進行中';
-  tickGS();
-  nextPairGS();
+  tickGS(); nextPairGS();
   gs.trialTimer = setInterval(nextPairGS, gs.pace);
 }
 function stopGS(){
@@ -762,7 +772,7 @@ function z_t3(span){ return (span - 5) / 1.5; }
 function z_t4(acc){ return (acc - 0.70) / 0.15; }
 function z_gf(n){ return (n - 7) / 2.5; }
 function z_gc(n){ return (n - 8) / 2.0; }
-function z_gv(acc){ return (acc - 0.75) / 0.15; }
+function z_gv(n){ return (n - 12) / 4.0; }     // ★ Gv：60秒正答数
 function z_gs(n){ return (n - 25) / 7.0; }
 
 const overallEl = el('overall'), detailEl = el('detail');
@@ -770,6 +780,7 @@ function classifyPct(p){ if (p>=97) return '最上位'; if (p>=90) return '上�
 
 function updateOverall(){
   const zs = {};
+  // Gwm
   const zw = [];
   if (score.t1!=null) zw.push(z_t1(score.t1));
   if (score.t2!=null) zw.push(z_t2(score.t2));
@@ -779,7 +790,7 @@ function updateOverall(){
 
   if (score.gf_correct!=null) zs.Gf = z_gf(score.gf_correct);
   if (score.gc_correct!=null) zs.Gc = z_gc(score.gc_correct);
-  if (score.gv_acc!=null)     zs.Gv = z_gv(score.gv_acc);
+  if (score.gv_count!=null)   zs.Gv = z_gv(score.gv_count);   // ★ 変更
   if (score.gs_count!=null)   zs.Gs = z_gs(score.gs_count);
 
   const keys = Object.keys(zs);
@@ -807,7 +818,7 @@ function updateOverall(){
   const radarPcts = ['Gf','Gc','Gv','Gs','Gwm'].map(k=>pcts[k]||0);
   drawRadar(radarPcts);
 
-  // 万人向けコメント（強みの活かし方／日常のコツ）
+  // コメント
   const com = makeFriendlyComment(pct, pcts);
   el('result_body').innerHTML = `
     <div>CCI：<b>${pct}％位</b>（上位 ${top}%）</div>
@@ -820,7 +831,7 @@ function updateOverall(){
   lastSummary = { pct, top, pcts, comment: com.text };
 }
 
-// 万人向けコメント生成
+// 万人向けコメント（同前）
 function makeFriendlyComment(overallPct, pcts){
   const jpName = {Gf:'推理力', Gc:'言語力', Gv:'空間センス', Gs:'処理の速さ', Gwm:'ワーキングメモリ'};
   const daily = {
@@ -830,51 +841,31 @@ function makeFriendlyComment(overallPct, pcts){
     Gs:{use:'メール仕分け・チェック作業・タイピングなど短距離勝負', tip:'30秒タイムアタックで10件仕分けを試す'},
     Gwm:{use:'複数タスクの同時進行・暗算・口頭指示を覚えて動く', tip:'買い物リスト3〜5個を見ずに覚える／2-back系の簡単ゲーム'}
   };
-  const entries = Object.entries(pcts);
-  if (!entries.length) return {text:'', html:''};
+  const entries = Object.entries(pcts); if (!entries.length) return {text:'', html:''};
   entries.sort((a,b)=>b[1]-a[1]);
-  const [strong, sp] = entries[0];
-  const [weak, wp]   = entries[entries.length-1];
-
-  let opener = '';
-  if (overallPct>=90) opener='全体にハイパフォーマンス。';
-  else if (overallPct>=75) opener='やや高めで安定。';
-  else if (overallPct>=25) opener='バランスは概ね平均域。';
-  else opener='力を温存しがち。集中のタイミング作りが鍵。';
-
+  const [strong, sp] = entries[0]; const [weak, wp] = entries[entries.length-1];
+  let opener = (overallPct>=90)?'全体にハイパフォーマンス。':(overallPct>=75)?'やや高めで安定。':(overallPct>=25)?'バランスは概ね平均域。':'力を温存しがち。集中のタイミング作りが鍵。';
   const strongLine = `強みは<b>${jpName[strong]}</b>（${sp}％位）。日常では「${daily[strong].use}」が得意です。`;
   const useLine = `・活かし方：${daily[strong].tip}`;
-  const growLine = (wp<25)
-    ? `・伸ばし方（${jpName[weak]}）：${daily[weak].tip}`
-    : `・伸ばし方：得意な${jpName[strong]}を起点に、他の場面にも同じコツを横展開。`;
-
+  const growLine = (wp<25)? `・伸ばし方（${jpName[weak]}）：${daily[weak].tip}` : `・伸ばし方：得意な${jpName[strong]}を起点に、他の場面にも同じコツを横展開。`;
   const html = `${opener} ${strongLine}<br>${useLine}<br>${growLine}`;
   const text = `${opener} 強みは${jpName[strong]}（${sp}％位）。日常では「${daily[strong].use}」が得意。\n- 活かし方：${daily[strong].tip}\n- 伸ばし方：${(wp<25)? daily[weak].tip : '得意を起点に横展開'}`;
   return {text, html};
 }
 
-// ===== レーダー =====
+// ===== レーダー＆画像保存 =====
 const radar = el('radar'); const ctx = radar.getContext('2d');
 function drawRadar(pcts, labels=['Gf','Gc','Gv','Gs','Gwm']){
   ctx.clearRect(0,0,radar.width,radar.height);
-  const cx = radar.width/2, cy = radar.height/2+10, R = Math.min(radar.width,radar.height)*0.34;
-  const axes = labels.length;
+  const cx = radar.width/2, cy = radar.height/2+10, R = Math.min(radar.width,radar.height)*0.34, axes=labels.length;
   ctx.strokeStyle = '#e8dfdf'; ctx.lineWidth=1;
   for(let r=0.2;r<=1.0;r+=0.2){
-    ctx.beginPath();
-    for(let k=0;k<axes;k++){
-      const ang=-Math.PI/2 + k*2*Math.PI/axes;
-      const x=cx+R*r*Math.cos(ang), y=cy+R*r*Math.sin(ang);
-      if (k===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    }
-    ctx.closePath(); ctx.stroke();
-    ctx.save(); ctx.fillStyle='#9a8f8f'; ctx.font='12px system-ui';
-    ctx.fillText(String(Math.round(r*100))+'%', cx+5, cy-R*r+12); ctx.restore();
+    ctx.beginPath(); for(let k=0;k<axes;k++){ const ang=-Math.PI/2 + k*2*Math.PI/axes; const x=cx+R*r*Math.cos(ang), y=cy+R*r*Math.sin(ang); if (k===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.closePath(); ctx.stroke();
+    ctx.save(); ctx.fillStyle='#9a8f8f'; ctx.font='12px system-ui'; ctx.fillText(String(Math.round(r*100))+'%', cx+5, cy-R*r+12); ctx.restore();
   }
   ctx.strokeStyle='#d7cdcd';
   for(let k=0;k<axes;k++){
-    const ang=-Math.PI/2 + k*2*Math.PI/axes;
-    const x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
+    const ang=-Math.PI/2 + k*2*Math.PI/axes, x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
     ctx.save(); ctx.fillStyle='#5d4949'; ctx.font='14px system-ui';
     const lx=cx+(R+18)*Math.cos(ang), ly=cy+(R+18)*Math.sin(ang);
@@ -882,66 +873,34 @@ function drawRadar(pcts, labels=['Gf','Gc','Gv','Gs','Gwm']){
     ctx.fillText(labels[k], lx, ly); ctx.restore();
   }
   if (!pcts) return;
-  const pts=[];
-  for(let k=0;k<axes;k++){
-    const r = Math.max(0, Math.min(1, (pcts[k]||0)/100 ));
-    const ang=-Math.PI/2 + k*2*Math.PI/axes;
-    pts.push([cx+R*r*Math.cos(ang), cy+R*r*Math.sin(ang)]);
-  }
-  ctx.beginPath(); pts.forEach(([x,y],i)=>{ if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
-  ctx.closePath(); ctx.fillStyle='rgba(142,90,90,0.18)'; ctx.fill();
-  ctx.strokeStyle='rgba(142,90,90,0.9)'; ctx.lineWidth=2; ctx.stroke();
+  const pts=[]; for(let k=0;k<axes;k++){ const r = Math.max(0, Math.min(1, (pcts[k]||0)/100 )); const ang=-Math.PI/2 + k*2*Math.PI/axes; pts.push([cx+R*r*Math.cos(ang), cy+R*r*Math.sin(ang)]); }
+  ctx.beginPath(); pts.forEach(([x,y],i)=>{ if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.closePath(); ctx.fillStyle='rgba(142,90,90,0.18)'; ctx.fill(); ctx.strokeStyle='rgba(142,90,90,0.9)'; ctx.lineWidth=2; ctx.stroke();
 }
-
-// ===== 画像保存（レーダー＋スコア＋コメント） =====
 function wrapText(ctx,text,x,y,maxWidth,lineHeight){
-  const chars = (text||'').split('');
-  let line=''; for (let n=0;n<chars.length;n++){
-    const test = line + chars[n]; if (ctx.measureText(test).width>maxWidth && n>0){ ctx.fillText(line,x,y); line=chars[n]; y+=lineHeight; } else { line=test; }
-  } ctx.fillText(line,x,y);
+  const chars = (text||'').split(''); let line=''; for (let n=0;n<chars.length;n++){ const test = line + chars[n]; if (ctx.measureText(test).width>maxWidth && n>0){ ctx.fillText(line,x,y); line=chars[n]; y+=lineHeight; } else { line=test; } } ctx.fillText(line,x,y);
 }
+let lastSummary=null;
 function saveScoreCard(){
   if (!lastSummary){ alert('まずはテストを実施して結果を出してください。'); return; }
-  const w=900, h=1200;
-  const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
-  const c = cv.getContext('2d');
-
-  // 背景
-  const g = c.createLinearGradient(0,0,0,h);
-  g.addColorStop(0,'#fffaf2'); g.addColorStop(1,'#f3ebe4');
-  c.fillStyle=g; c.fillRect(0,0,w,h);
-
-  // タイトル
+  const w=900, h=1200; const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const c = cv.getContext('2d');
+  const g = c.createLinearGradient(0,0,0,h); g.addColorStop(0,'#fffaf2'); g.addColorStop(1,'#f3ebe4'); c.fillStyle=g; c.fillRect(0,0,w,h);
   c.fillStyle='#8e5a5a'; c.font='700 36px system-ui'; c.fillText('認知プロファイル・チャレンジ', 40, 64);
   c.fillStyle='#735f5f'; c.font='16px system-ui'; c.fillText('(CHC簡易版)', 360, 64);
-
-  // 日時
   const dt = new Date(); c.fillStyle='#8a7a7a'; c.font='14px system-ui'; c.fillText(dt.toLocaleString(), 40, 88);
-
-  // CCI
-  c.fillStyle='#534444'; c.font='24px system-ui';
-  c.fillText(`CCI：${lastSummary.pct}％位（上位 ${lastSummary.top}%）`, 40, 130);
-
-  // レーダー貼り付け
+  c.fillStyle='#534444'; c.font='24px system-ui'; c.fillText(`CCI：${lastSummary.pct}％位（上位 ${lastSummary.top}%）`, 40, 130);
   const rW = 760, rH = 540; c.drawImage(radar, (w-rW)/2, 160, rW, rH);
-
-  // 能力別
   c.fillStyle='#615050'; c.font='20px system-ui'; c.fillText('能力別％位', 40, 740);
   c.font='18px system-ui'; let y=770;
   [['Gf','流動性推理'],['Gc','結晶性'],['Gv','視覚'],['Gs','処理速度'],['Gwm','作動記憶']]
     .forEach(([k,jp])=>{ const p=lastSummary.pcts[k]??0; c.fillText(`${jp}: ${p}％位`, 48, y); y+=28; });
   if (score.t3Perfect){ c.fillStyle='#1a7f37'; c.font='18px system-ui'; c.fillText('視空間（3×3）満点', 48, y+8); y+=32; }
-
-  // コメント（万人向け）
   c.fillStyle='#8e5a5a'; c.font='20px system-ui'; c.fillText('コメント', 40, y+20); y+=48;
   c.fillStyle='#4b3f3f'; c.font='18px system-ui'; wrapText(c, lastSummary.comment || '—', 48, y, 804, 26);
-
-  const url = cv.toDataURL('image/png');
-  const a=document.createElement('a'); a.href=url; a.download='CHC_CCI_score.png'; a.click();
+  const url = cv.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='CHC_CCI_score.png'; a.click();
 }
 el('btnSaveCard').addEventListener('click', saveScoreCard);
 
-// ===== 初期描画 =====
+// 初期
 updateOverall();
 })();
 </script>
