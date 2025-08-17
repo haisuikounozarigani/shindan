@@ -53,7 +53,8 @@
   .rowgrid{display:grid;gap:6px;margin:4px 0}
   .cellg{height:36px;min-width:42px;display:flex;align-items:center;justify-content:center;border:1px solid #e0d7d7;border-radius:8px;background:#fbfaf8;font-weight:600}
 
-  /* モバイル最適化 */
+  /* スマホ操作バー（カード下に貼り付け） */
+  .controls-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   @media (max-width:560px){
     .grid{grid-template-columns:repeat(3,56px);gap:8px}
     .cell{width:56px;height:56px;border-radius:10px}
@@ -63,7 +64,14 @@
     h1{font-size:20px}
     .wrap{margin:18px auto}
     canvas#gv_left, canvas#gv_right{width:140px !important;height:140px !important}
-    canvas#radar{width:100% !important;height:auto !重要}
+    canvas#radar{width:100% !important;height:auto !important}
+    .controls-row{
+      position:sticky; bottom:8px;
+      background:rgba(255,255,255,.92);
+      border:1px solid #eee; border-radius:12px;
+      padding:8px; backdrop-filter:blur(6px);
+    }
+    .controls-row .pill{margin-left:0}
   }
 </style>
 </head>
@@ -159,18 +167,19 @@
       例）A → B → <b>A</b> → C … の太字Aは2つ前のAと同じなので反応。<br>
       押し間違いは減点、押し忘れも減点です。
     </details>
-    <div class="row">
-      <label>表示時間（ms/刺激）：<input id="t4_ms" type="number" min="600" max="2000" value="1000"></label>
-      <label style="margin-left:12px">インターバル（ms）：<input id="t4_gap" type="number" min="100" max="1000" value="180"></label>
-    </div>
-    <div class="row">
+    <div class="center" id="t4_stim" aria-live="off">—</div>
+    <!-- ★ 操作を下側に配置 -->
+    <div class="row controls-row">
       <button id="t4_startBtn" class="primary">開始</button>
       <button id="t4_abortBtn">中断</button>
       <button id="t4_hitBtn" disabled>反応（スペース）</button>
     </div>
-    <div class="center" id="t4_stim" aria-live="off">—</div>
     <div class="row" id="t4_feedback"></div>
     <div class="row muted small" id="t4_state">未開始</div>
+    <div class="row">
+      <label>表示時間（ms/刺激）：<input id="t4_ms" type="number" min="600" max="2000" value="1000"></label>
+      <label style="margin-left:12px">インターバル（ms）：<input id="t4_gap" type="number" min="100" max="1000" value="180"></label>
+    </div>
   </section>
 
   <!-- GF -->
@@ -199,14 +208,15 @@
       <label>試行制限（ms）：<input id="gv_limit" type="number" min="800" max="6000" value="2500"></label>
     </div>
     <div class="row">
+      <canvas id="gv_left" width="180" height="180"></canvas>
+      <canvas id="gv_right" width="180" height="180"></canvas>
+    </div>
+    <!-- ★ 操作を下側に配置 -->
+    <div class="row controls-row">
       <button id="gv_start" class="primary">開始</button>
       <button id="gv_same" disabled>同じ</button>
       <button id="gv_diff" disabled>違う</button>
       <span class="pill" id="gv_timer">—</span>
-    </div>
-    <div class="row">
-      <canvas id="gv_left" width="180" height="180"></canvas>
-      <canvas id="gv_right" width="180" height="180"></canvas>
     </div>
     <div class="row" id="gv_feedback"></div>
   </section>
@@ -215,14 +225,15 @@
   <section class="card" id="gs" style="display:none">
     <h2>Gs（処理速度）— 記号比較（30秒・ペース固定）</h2>
     <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打は無効）。</div>
-    <div class="row">
+    <div class="pair" id="gs_pair">—</div>
+    <div class="row small muted" id="gs_meta">—</div>
+    <!-- ★ 操作を下側に配置 -->
+    <div class="row controls-row">
       <button id="gs_start" class="primary">開始</button>
       <button id="gs_same" disabled>同じ (F)</button>
       <button id="gs_diff" disabled>違う (J)</button>
       <span class="pill" id="gs_timer">00:30</span>
     </div>
-    <div class="pair" id="gs_pair">—</div>
-    <div class="row small muted" id="gs_meta">—</div>
     <div class="row" id="gs_feedback"></div>
   </section>
 
@@ -797,7 +808,7 @@ function updateOverall(){
   const radarPcts = ['Gf','Gc','Gv','Gs','Gwm'].map(k=>pcts[k]||0);
   drawRadar(radarPcts);
 
-  // 万人向けコメント（強みの活かし方／日常のコツ）
+  // 万人向けコメント
   const com = makeFriendlyComment(pct, pcts);
   el('result_body').innerHTML = `
     <div>CCI：<b>${pct}％位</b>（上位 ${top}%）</div>
@@ -810,7 +821,6 @@ function updateOverall(){
   lastSummary = { pct, top, pcts, comment: com.text };
 }
 
-// 万人向けコメント生成
 function makeFriendlyComment(overallPct, pcts){
   const jpName = {Gf:'推理力', Gc:'言語力', Gv:'空間センス', Gs:'処理の速さ', Gwm:'ワーキングメモリ'};
   const daily = {
@@ -896,33 +906,26 @@ function saveScoreCard(){
   const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
   const c = cv.getContext('2d');
 
-  // 背景
   const g = c.createLinearGradient(0,0,0,h);
   g.addColorStop(0,'#fffaf2'); g.addColorStop(1,'#f3ebe4');
   c.fillStyle=g; c.fillRect(0,0,w,h);
 
-  // タイトル
   c.fillStyle='#8e5a5a'; c.font='700 36px system-ui'; c.fillText('認知プロファイル・チャレンジ', 40, 64);
   c.fillStyle='#735f5f'; c.font='16px system-ui'; c.fillText('(CHC簡易版)', 360, 64);
 
-  // 日時
   const dt = new Date(); c.fillStyle='#8a7a7a'; c.font='14px system-ui'; c.fillText(dt.toLocaleString(), 40, 88);
 
-  // CCI
   c.fillStyle='#534444'; c.font='24px system-ui';
   c.fillText(`CCI：${lastSummary.pct}％位（上位 ${lastSummary.top}%）`, 40, 130);
 
-  // レーダー貼り付け
   const rW = 760, rH = 540; c.drawImage(radar, (w-rW)/2, 160, rW, rH);
 
-  // 能力別
   c.fillStyle='#615050'; c.font='20px system-ui'; c.fillText('能力別％位', 40, 740);
   c.font='18px system-ui'; let y=770;
   [['Gf','流動性推理'],['Gc','結晶性'],['Gv','視覚'],['Gs','処理速度'],['Gwm','作動記憶']]
     .forEach(([k,jp])=>{ const p=lastSummary.pcts[k]??0; c.fillText(`${jp}: ${p}％位`, 48, y); y+=28; });
   if (score.t3Perfect){ c.fillStyle='#1a7f37'; c.font='18px system-ui'; c.fillText('視空間（3×3）満点', 48, y+8); y+=32; }
 
-  // コメント（万人向け）
   c.fillStyle='#8e5a5a'; c.font='20px system-ui'; c.fillText('コメント', 40, y+20); y+=48;
   c.fillStyle='#4b3f3f'; c.font='18px system-ui'; wrapText(c, lastSummary.comment || '—', 48, y, 804, 26);
 
