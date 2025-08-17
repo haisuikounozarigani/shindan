@@ -34,23 +34,32 @@
   .center{display:flex;justify-content:center;align-items:center;min-height:60px;font-size:36px;letter-spacing:.04em}
   canvas{max-width:100%;height:auto}
   .small{font-size:.9em}
+
+  /* 選択肢ボタン */
   .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
   .choice{padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff;cursor:pointer}
   .choice.selected{border-color: var(--brand); box-shadow:0 0 0 2px rgba(142,90,90,.15) inset}
   .choice.correct{border-color:#1a7f37}
   .choice.wrong{border-color:#b3261e}
-  .pair{display:flex;gap:10px;justify-content:center;align-items:center;font-size:22px}
-  .pill{display:inline-block;padding:2px 8px;border:1px solid #e4d9d9;border-radius:999px;background:#fff;font-size:.86em;margin-left:6px}
 
-  /* 押しやすい下側配置（スマホ用） */
+  /* Gf 見やすい行列レイアウト */
+  .gf-card{border:1px solid #eee;border-radius:12px;padding:12px;background:#fff;margin:10px 0}
+  .gf-title{color:#7b6a6a;font-size:.9em;margin-bottom:6px}
+  .gf-grid{--cols:3;display:grid;grid-template-columns:repeat(var(--cols), 42px);gap:6px;justify-content:center;margin:6px 0 10px}
+  .gf-cell{height:42px;min-width:42px;display:flex;align-items:center;justify-content:center;border:1px solid #e0d7d7;border-radius:8px;background:#fbfaf8;font-weight:600}
+  .gf-choices{display:grid;grid-template-columns:repeat(2, minmax(120px,1fr));gap:8px;max-width:420px;margin:0 auto}
+
+  /* 同じ/違う 横並び（スマホ安定） */
   .btnrow-inline{display:flex;gap:12px;justify-content:center;align-items:stretch;margin:10px auto 6px;max-width:520px}
   .btnrow-inline > button{flex:1 1 0;min-width:120px}
   .bigbtn{padding:14px 16px;font-size:18px;border-radius:12px}
   .soft{background:#fff;border-color:#e5dede}
 
-  /* Gv/Gs 表示域：下側余白広め */
+  /* 押しやすい下側領域 */
   .gv-area{min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px}
   .gs-area{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px}
+  .pair{display:flex;gap:10px;justify-content:center;align-items:center;font-size:22px}
+  .pill{display:inline-block;padding:2px 8px;border:1px solid #e4d9d9;border-radius:999px;background:#fff;font-size:.86em;margin-left:6px}
 </style>
 </head>
 <body>
@@ -88,12 +97,11 @@
   <!-- GWM -->
   <section class="card" id="gwm">
     <h2>Gwm（作動記憶）</h2>
-    <div class="muted small">停止規則：各レベル最大2試行。1回成功で次レベル、2回失敗で終了。採点後<span id="delayInfo">2.5秒</span>待ってから次へ。</div>
+    <div class="muted small">停止規則：各レベル最大2試行。1回成功で次レベル、2回失敗で終了。採点後<span id="delayInfo">2.5秒</span>待って次へ。</div>
 
     <h3>数字スパン（順向）</h3>
     <div class="row">
       <label>開始桁数：<input id="t1_start" type="number" min="3" max="9" value="4"></label>
-      <label style="margin-left:12px">表示速度（ms/桁）：<input id="t1_ms" type="number" min="200" max="1500" value="600"></label>
     </div>
     <div class="row" id="digitBox" aria-live="off"></div>
     <div class="row"><input id="t1_answer" type="text" placeholder="数字列（例: 4192）" disabled></div>
@@ -103,13 +111,12 @@
       <button id="t1_abortBtn">中断</button>
     </div>
     <div class="row" id="t1_feedback"></div>
-    <div class="row muted small" id="t1_state">未開始</div>
+    <div class="row small muted" id="t1_state">未開始</div>
     <hr>
 
     <h3>数字スパン（逆向）</h3>
     <div class="row">
       <label>開始桁数：<input id="t2_startN" type="number" min="3" max="8" value="3"></label>
-      <label style="margin-left:12px">表示速度（ms/桁）：<input id="t2_ms" type="number" min="200" max="1500" value="650"></label>
     </div>
     <div class="row" id="digitBox2" aria-live="off"></div>
     <div class="row"><input id="t2_answer" type="text" placeholder="逆順で（例: 2914）" disabled></div>
@@ -119,14 +126,13 @@
       <button id="t2_abortBtn">中断</button>
     </div>
     <div class="row" id="t2_feedback"></div>
-    <div class="row muted small" id="t2_state">未開始</div>
+    <div class="row small muted" id="t2_state">未開始</div>
     <hr>
 
     <h3>視空間パターン（3×3）</h3>
-    <div class="row small muted">必要数だけ選択できます（<span id="t3_sel_info">0/—</span>）。必要数に達すると以降のクリックは無視します。<span class="pill" id="t3_badge" style="display:none">満点</span></div>
+    <div class="row small muted">必要数だけ選択できます（<span id="t3_sel_info">0/—</span>）。必要数に達すると以降のクリックは無視。<span class="pill" id="t3_badge" style="display:none">満点</span></div>
     <div class="row">
       <label>開始長：<input id="t3_start" type="number" min="3" max="7" value="3"></label>
-      <label style="margin-left:12px">表示速度（ms/マス）：<input id="t3_ms" type="number" min="250" max="1500" value="600"></label>
     </div>
     <div class="grid" id="grid" aria-live="off"></div>
     <div class="btnrow-inline">
@@ -135,19 +141,14 @@
       <button id="t3_abortBtn">中断</button>
     </div>
     <div class="row" id="t3_feedback"></div>
-    <div class="row muted small" id="t3_state">未開始</div>
+    <div class="row small muted" id="t3_state">未開始</div>
     <hr>
 
     <h3>2-back（更新）</h3>
     <details class="small muted" style="margin-bottom:8px">
       <summary>2-backの説明（タップで展開）</summary>
-      画面中央に1文字ずつ表示されます。<b>2つ前と同じ文字が出た時だけ</b>、スペースキーまたは「反応」ボタンを押してください。<br>
-      押し間違いは減点、押し忘れも減点です。
+      画面中央に1文字ずつ表示。<b>2つ前と同じ文字</b>が出た時だけ、スペースまたは「反応」ボタンを押してください。押し間違い／押し忘れは減点。
     </details>
-    <div class="row">
-      <label>表示時間（ms/刺激）：<input id="t4_ms" type="number" min="600" max="2000" value="1000"></label>
-      <label style="margin-left:12px">インターバル（ms）：<input id="t4_gap" type="number" min="100" max="1000" value="180"></label>
-    </div>
     <div class="center" id="t4_stim" aria-live="off">—</div>
     <div class="btnrow-inline">
       <button id="t4_startBtn" class="primary">開始</button>
@@ -155,13 +156,13 @@
       <button id="t4_abortBtn">中断</button>
     </div>
     <div class="row" id="t4_feedback"></div>
-    <div class="row muted small" id="t4_state">未開始</div>
+    <div class="row small muted" id="t4_state">未開始</div>
   </section>
 
   <!-- GF -->
   <section class="card" id="gf" style="display:none">
     <h2>Gf（流動性推理）— 行列推理</h2>
-    <div class="muted small">12問・制限時間なし（簡易版）。選択後は<b>提出</b>で採点。</div>
+    <div class="muted small">12問・選択後<b>提出</b>で採点。（内容・答えは従来と同一）</div>
     <div id="gf_body"></div>
     <div class="btnrow-inline"><button id="gf_submit" class="primary">提出して採点</button></div>
     <div class="row" id="gf_feedback"></div>
@@ -170,16 +171,16 @@
   <!-- GC -->
   <section class="card" id="gc" style="display:none">
     <h2>Gc（結晶性）— 類義語選択</h2>
-    <div class="muted small">12問・制限時間なし（簡易版）。選択後は<b>提出</b>で採点。</div>
+    <div class="muted small">12問・選択後<b>提出</b>で採点。</div>
     <div id="gc_body"></div>
     <div class="btnrow-inline"><button id="gc_submit" class="primary">提出して採点</button></div>
     <div class="row" id="gc_feedback"></div>
   </section>
 
-  <!-- GV：時間制（残り時間の表示なし／同じ・違うは横並び） -->
+  <!-- GV：時間内できるだけ（残り時間UIなし） -->
   <section class="card tall" id="gv" style="display:none">
     <h2>Gv（視覚）— 回転同一判断（時間内できるだけ）</h2>
-    <div class="muted small">左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。時間内にできるだけ回答。正答数で評価します。</div>
+    <div class="muted small">左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。時間内にできるだけ回答。正答数で評価。</div>
     <div class="row small muted">
       <label>持ち時間（秒）：<input id="gv_secs" type="number" min="30" max="120" value="60"></label>
     </div>
@@ -190,25 +191,22 @@
       </div>
     </div>
     <div class="row" id="gv_feedback"></div>
-    <!-- 同じ／違う：横並び・等幅 -->
     <div class="btnrow-inline">
       <button id="gv_same"  class="bigbtn soft" disabled>同じ (F)</button>
       <button id="gv_diff"  class="bigbtn soft" disabled>違う (J)</button>
     </div>
-    <!-- 開始／終了（補助） -->
     <div class="btnrow-inline">
       <button id="gv_start"  class="primary bigbtn">開始</button>
       <button id="gv_finish" class="bigbtn">終了</button>
     </div>
   </section>
 
-  <!-- GS：同じ／違うを横並び固定 -->
+  <!-- GS：30秒間の正答数をスコア -->
   <section class="card tall" id="gs" style="display:none">
-    <h2>Gs（処理速度）— 記号比較（30秒・ペース固定）</h2>
-    <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打は無効）。</div>
+    <h2>Gs（処理速度）— 記号比較（30秒）</h2>
+    <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打無効）。</div>
     <div class="gs-area">
       <div class="pair" id="gs_pair">—</div>
-      <div class="row small muted" id="gs_meta">—</div>
     </div>
     <div class="btnrow-inline">
       <button id="gs_same" class="bigbtn soft" disabled>同じ (F)</button>
@@ -233,7 +231,7 @@
       <p><b>標準化の近似</b>（簡易版・参考域）<br>
       Gwm：順向(μ7,σ2)／逆向(μ5,σ1.5)／視空間(μ5,σ1.5)／2-back正答(μ0.70,σ0.15)<br>
       Gf：行列推理 正答数(μ7,σ2.5)　Gc：語彙 正答数(μ8,σ2.0)<br>
-      <u>Gv：回転同一 60秒正答数(μ10,σ5)</u>　Gs：30秒正答数(μ25,σ7)<br>
+      Gv：回転同一 60秒正答数(μ10,σ5)　Gs：30秒正答数(μ25,σ7)<br>
       能力別zを平均→CCI。CCI％位＝Φ(z)×100。上位＝(100−％位)％。</p>
     </div>
   </section>
@@ -250,16 +248,15 @@ const randInt = (n)=>Math.floor(Math.random()*n);
 const shuffle = (arr)=>arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
 function erf(x){const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const s=x<0?-1:1; x=Math.abs(x); const t=1/(1+p*x); const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x); return s*y;}
 function normCdf(z){return 0.5*(1+erf(z/Math.SQRT2));}
-async function showPrep(ms=800, text='準備してください'){ const o=el('prep'); o.querySelector('.title').textContent=text; o.style.display='flex'; await sleep(ms); o.style.display='none'; }
+async function showPrep(ms=800){ const o=el('prep'); o.style.display='flex'; await sleep(ms); o.style.display='none'; }
 
-// すべてのbuttonをtype=buttonに（誤submit対策）
-Array.from(document.querySelectorAll('button')).forEach(b=>{ try{ if(!b.type) b.type='button'; }catch(_){} });
+// buttonのtypeを明示
+Array.from(document.querySelectorAll('button')).forEach(b=>{ if(!b.type) b.type='button'; });
 
-// 全角→半角 数字
+// 全角→半角
 const toHalfNumStr = (s)=> s.replace(/[０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));
 function getNum(id, def, min, max){ const raw=(el(id)?.value??''); const hv=toHalfNumStr(raw); const n=parseInt(hv,10); return clamp(Number.isFinite(n)?n:def, min, max); }
 function sanitizeNums(s){ const hv=toHalfNumStr(s||''); return hv.replace(/[^\d]/g,'').split('').map(d=>parseInt(d,10)); }
-// 入力強制半角
 document.addEventListener('input', (e)=>{ const t=e.target; if (t?.tagName==='INPUT'&&(t.type==='number'||t.type==='text')){ const v=t.value, hv=toHalfNumStr(v); if(v!==hv) t.value=hv; }});
 
 // ===== Tabs =====
@@ -277,7 +274,8 @@ tabs.forEach(b=>b.addEventListener('click', ()=>{
 const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_count:null, gs_count:null };
 let lastSummary = null;
 
-// ===== Gwm: T1 =====
+// ===== Gwm: T1（固定提示速度） =====
+const T1_MS=600, GAP_MS=160;
 const t1 = { L:4, trial:0, success:false, seq:[], showing:false, done:false };
 function t1Reset(){ t1.L=getNum('t1_start',4,3,9); t1.trial=0;t1.success=false;t1.seq=[];t1.showing=false;t1.done=false;
   el('digitBox').textContent=''; el('t1_answer').value=''; el('t1_answer').disabled=true; el('t1_check').disabled=true;
@@ -285,11 +283,10 @@ function t1Reset(){ t1.L=getNum('t1_start',4,3,9); t1.trial=0;t1.success=false;t
 }
 function t1Digits(n){ return Array.from({length:n},()=>randInt(10)); }
 async function t1Show(){
-  t1.success=false; await showPrep(800,'準備してください');
+  t1.success=false; await showPrep();
   t1.showing=true; t1.seq=t1Digits(t1.L);
-  const ms=getNum('t1_ms',600,200,1500);
   el('t1_state').textContent=`提示中（${t1.L}桁）`; el('digitBox').textContent='';
-  for(let i=0;i<t1.seq.length;i++){ el('digitBox').textContent=t1.seq[i]; await sleep(ms); el('digitBox').textContent=''; await sleep(160); }
+  for(let i=0;i<t1.seq.length;i++){ el('digitBox').textContent=t1.seq[i]; await sleep(T1_MS); el('digitBox').textContent=''; await sleep(GAP_MS); }
   t1.showing=false; el('t1_answer').disabled=false; el('t1_check').disabled=false; el('t1_answer').focus();
   el('t1_state').textContent=`入力待ち（試行 ${t1.trial+1}/2）`;
 }
@@ -319,15 +316,15 @@ el('t1_check').addEventListener('click', t1Check);
 el('t1_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t1_check').disabled) t1Check(); });
 t1Reset();
 
-// ===== Gwm: T2 =====
+// ===== Gwm: T2（固定提示速度） =====
+const T2_MS=650;
 const t2 = { L:3, trial:0, success:false, seq:[], showing:false, done:false };
 function t2Reset(){ t2.L=getNum('t2_startN',3,3,8); t2.trial=0;t2.success=false;t2.seq=[];t2.showing=false;t2.done=false;
   el('digitBox2').textContent=''; el('t2_answer').value=''; el('t2_answer').disabled=true; el('t2_check').disabled=true; el('t2_feedback').textContent=''; el('t2_state').textContent='未開始';
 }
-async function t2Show(){ t2.success=false; await showPrep(800,'準備してください'); t2.showing=true; t2.seq=Array.from({length:t2.L},()=>randInt(10));
-  const ms=getNum('t2_ms',650,200,1500);
+async function t2Show(){ t2.success=false; await showPrep(); t2.showing=true; t2.seq=Array.from({length:t2.L},()=>randInt(10));
   el('t2_state').textContent=`提示中（${t2.L}桁）`; el('digitBox2').textContent='';
-  for(let i=0;i<t2.seq.length;i++){ el('digitBox2').textContent=t2.seq[i]; await sleep(ms); el('digitBox2').textContent=''; await sleep(160); }
+  for(let i=0;i<t2.seq.length;i++){ el('digitBox2').textContent=t2.seq[i]; await sleep(T2_MS); el('digitBox2').textContent=''; await sleep(GAP_MS); }
   t2.showing=false; el('t2_answer').disabled=false; el('t2_check').disabled=false; el('t2_answer').focus();
   el('t2_state').textContent=`入力待ち（試行 ${t2.trial+1}/2）`;
 }
@@ -357,7 +354,8 @@ el('t2_check').addEventListener('click', t2Check);
 el('t2_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t2_check').disabled) t2Check(); });
 t2Reset();
 
-// ===== Gwm: T3（3×3） =====
+// ===== Gwm: T3（3×3 視空間・固定速度） =====
+const T3_MS=600;
 const grid = el('grid'); const cells=[];
 for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell'; d.dataset.idx=i; grid.appendChild(d); cells.push(d); }
 const V = { L:3, trial:0, success:false, seq:[], picks:[], showing:false, done:false, MAX:9 };
@@ -368,10 +366,10 @@ function t3Reset(){ V.L=getNum('t3_start',3,3,7); V.trial=0;V.success=false;V.se
 function makeSeq(n){ const arr=Array.from({length:9},(_,k)=>k); for(let i=arr.length-1;i>0;i--){ const j=randInt(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr.slice(0,n); }
 async function flashCell(i, ms){ cells[i].classList.add('flash'); await sleep(ms); cells[i].classList.remove('flash'); }
 async function t3Show(){
-  V.success=false; await showPrep(800,'準備してください'); V.showing=true; V.seq=makeSeq(V.L); V.picks=[]; cells.forEach(c=>c.classList.remove('sel'));
-  el('t3_sel_info').textContent=`0/${V.L}`; const ms=getNum('t3_ms',600,250,1500);
+  V.success=false; await showPrep(); V.showing=true; V.seq=makeSeq(V.L); V.picks=[]; cells.forEach(c=>c.classList.remove('sel'));
+  el('t3_sel_info').textContent=`0/${V.L}`;
   el('t3_state').textContent=`提示中（長さ ${V.L}）`;
-  for (let k=0;k<V.seq.length;k++){ await flashCell(V.seq[k], ms); await sleep(140); }
+  for (let k=0;k<V.seq.length;k++){ await flashCell(V.seq[k], T3_MS); await sleep(140); }
   V.showing=false; el('t3_check').disabled=false; el('t3_state').textContent=`入力待ち（試行 ${V.trial+1}/2）`;
 }
 cells.forEach(d=>d.addEventListener('click', ()=>{
@@ -412,7 +410,8 @@ el('t3_abortBtn').addEventListener('click', ()=>{ V.done=true; el('t3_state').te
 el('t3_check').addEventListener('click', t3Check);
 t3Reset();
 
-// ===== Gwm: 2-back =====
+// ===== Gwm: 2-back（固定速度） =====
+const T4_MS=1000, T4_GAP=180;
 const N = { seq:[], i:-1, running:false, responded:false, hits:0, miss:0, fa:0, cr:0 };
 function make2backSeq(len=20){ const L='ABCDEFGH'; const arr=Array.from({length:len},()=>L[randInt(L.length)]);
   const cand=[]; for(let k=2;k<len;k++) cand.push(k);
@@ -425,20 +424,19 @@ function t4Reset(){ N.seq=[]; N.i=-1; N.running=false; N.responded=false; N.hits
 function isTarget(i){ return (i>=2) && (N.seq[i]===N.seq[i-2]); }
 function t4Start(){
   t4Reset();
-  showPrep(800,'準備してください').then(()=>{
-    const ms=getNum('t4_ms',1000,600,2000), gap=getNum('t4_gap',180,100,1000);
+  showPrep().then(()=>{
     N.seq=make2backSeq(20); N.running=true; el('t4_startBtn').disabled=true; el('t4_hitBtn').disabled=false; el('t4_state').textContent='進行中';
-    runLoop(ms,gap);
+    runLoop();
   });
 }
-async function runLoop(ms,gap){
+async function runLoop(){
   for(let i=0;i<N.seq.length;i++){
     if (!N.running) break;
     N.i=i; N.responded=false;
-    el('t4_stim').textContent=N.seq[i]; await sleep(ms);
+    el('t4_stim').textContent=N.seq[i]; await sleep(T4_MS);
     if (isTarget(i)){ if (N.responded) N.hits++; else N.miss++; }
     else{ if (N.responded) N.fa++; else N.cr++; }
-    el('t4_stim').textContent=''; await sleep(gap);
+    el('t4_stim').textContent=''; await sleep(T4_GAP);
   }
   N.running=false; el('t4_hitBtn').disabled=true; el('t4_startBtn').disabled=false; summarizeT4();
 }
@@ -455,7 +453,7 @@ el('t4_startBtn').addEventListener('click', t4Start);
 el('t4_abortBtn').addEventListener('click', ()=>{ N.running=false; el('t4_state').textContent='中断'; el('t4_startBtn').disabled=false; el('t4_hitBtn').disabled=true; });
 t4Reset();
 
-// ===== GF =====
+// ===== GF（整形レイアウト） =====
 const gfItems=[
   {rows:[['A','B','C'],['D','E','?']], choices:['F','G','H','I'], ans:'F'},
   {rows:[['1','2','3'],['2','3','4'],['3','4','?']], choices:['4','5','6','7'], ans:'5'},
@@ -473,16 +471,18 @@ const gfItems=[
 function renderGF(containerId, items){
   const host=el(containerId); host.innerHTML='';
   items.forEach((it,idx)=>{
-    const card=document.createElement('div'); card.className='card';
-    const title=document.createElement('div'); title.textContent=`Q${idx+1}`; title.className='muted small'; card.appendChild(title);
-    const wrap=document.createElement('div'); wrap.className='qwrap';
+    const card=document.createElement('div'); card.className='gf-card';
+    const title=document.createElement('div'); title.textContent=`Q${idx+1}`; title.className='gf-title'; card.appendChild(title);
+    const cols = Math.max(...it.rows.map(r=>r.length));
+    const grid=document.createElement('div'); grid.className='gf-grid'; grid.style.setProperty('--cols', cols);
     it.rows.forEach(r=>{
-      const row=document.createElement('div'); row.className='rowgrid'; row.style.display='grid'; row.style.gap='6px'; row.style.gridTemplateColumns=`repeat(${r.length}, 42px)`;
-      r.forEach(tok=>{ const c=document.createElement('div'); c.className='cellg'; c.textContent=tok; row.appendChild(c); });
-      wrap.appendChild(row);
+      r.forEach(tok=>{ const c=document.createElement('div'); c.className='gf-cell'; c.textContent=tok; grid.appendChild(c); });
+      // 足りない列は空セルで埋めて均等化
+      for(let k=r.length;k<cols;k++){ const c=document.createElement('div'); c.className='gf-cell'; c.textContent=''; grid.appendChild(c); }
     });
-    card.appendChild(wrap);
-    const box=document.createElement('div'); box.className='choices';
+    card.appendChild(grid);
+
+    const box=document.createElement('div'); box.className='gf-choices';
     const choices=shuffle(it.choices.slice());
     choices.forEach(c=>{
       const b=document.createElement('button'); b.className='choice'; b.textContent=c;
@@ -496,9 +496,9 @@ function renderGF(containerId, items){
 }
 renderGF('gf_body', gfItems);
 el('gf_submit').addEventListener('click', ()=>{
-  let correct=0; const boxes=$('#gf_body').querySelectorAll('.choices');
+  let correct=0; const boxes=$('#gf_body').querySelectorAll('.gf-choices');
   gfItems.forEach((it,i)=>{
-    const box=boxes[i]; const btns=[...box.children];
+    const btns=[...boxes[i].children];
     btns.forEach(btn=>{ btn.classList.remove('correct','wrong'); if (btn.textContent===it.ans) btn.classList.add('correct'); });
     if (it.selText===it.ans) correct++; else { const chosen=btns.find(b=>b.classList.contains('selected')); if (chosen) chosen.classList.add('wrong'); }
   });
@@ -540,7 +540,7 @@ function renderMC(containerId, items){
 function gradeMC(containerSel, items, feedbackEl){
   let correct=0; const boxes=document.querySelector(containerSel).querySelectorAll('.choices');
   items.forEach((it,i)=>{
-    const box=boxes[i]; const btns=[...box.children];
+    const btns=[...boxes[i].children];
     btns.forEach(btn=>{ btn.classList.remove('correct','wrong'); if (btn.textContent===it.ans) btn.classList.add('correct'); });
     if (it.selText===it.ans) correct++; else { const chosen=btns.find(b=>b.classList.contains('selected')); if (chosen) chosen.classList.add('wrong'); }
   });
@@ -551,29 +551,16 @@ el('gc_submit').addEventListener('click', ()=>{
   const correct=gradeMC('#gc_body', gcItems, el('gc_feedback')); score.gc_correct=correct; updateOverall();
 });
 
-// ===== Gv：時間制（残り時間のUIなし） =====
+// ===== Gv（時間内できるだけ／残り時間UIなし） =====
 const gv = { running:false, correct:0, total:0, secs:60, remain:60, timer:null, same:true, pat:null, rot:0 };
 let gvcL=null, gvcR=null;
-function ensureGvCtx(){
-  try{
-    if (!gvcL || !gvcR){
-      const cL=el('gv_left'), cR=el('gv_right');
-      if (!cL || !cR) return false;
-      gvcL=cL.getContext('2d'); gvcR=cR.getContext('2d');
-    }
-    return !!(gvcL&&gvcR);
-  }catch(e){ console.error(e); return false; }
-}
+function ensureGvCtx(){ try{ if (!gvcL||!gvcR){ gvcL=el('gv_left').getContext('2d'); gvcR=el('gv_right').getContext('2d'); } return !!(gvcL&&gvcR);}catch(e){return false;} }
 function randPattern(){ while(true){ const p=Array.from({length:9},()=>randInt(2)); const sum=p.reduce((a,b)=>a+b,0); if (sum>=2 && sum<=7) return p; } }
-function drawPattern(ctx, pat, rotDeg){
-  if(!ctx) return;
-  const W=ctx.canvas.width, H=ctx.canvas.height; ctx.clearRect(0,0,W,H);
+function drawPattern(ctx, pat, rotDeg){ const W=ctx.canvas.width, H=ctx.canvas.height; ctx.clearRect(0,0,W,H);
   ctx.save(); ctx.translate(W/2,H/2); ctx.rotate(rotDeg*Math.PI/180); ctx.translate(-W/2,-H/2);
   const s=52, off=(W-3*s)/2;
-  for(let r=0;r<3;r++)for(let c=0;c<3;c++){
-    const v=pat[r*3+c]; ctx.fillStyle=v? '#333':'#f2eae6'; ctx.strokeStyle='#d8cccc';
-    ctx.fillRect(off+c*s, off+r*s, s-6, s-6); ctx.strokeRect(off+c*s, off+r*s, s-6, s-6);
-  }
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){ const v=pat[r*3+c]; ctx.fillStyle=v? '#333':'#f2eae6'; ctx.strokeStyle='#d8cccc';
+    ctx.fillRect(off+c*s, off+r*s, s-6, s-6); ctx.strokeRect(off+c*s, off+r*s, s-6, s-6); }
   ctx.restore();
 }
 function rotate90(p){ return [p[6],p[3],p[0], p[7],p[4],p[1], p[8],p[5],p[2]]; }
@@ -583,43 +570,37 @@ function gvStart(){
   gv.remain=gv.secs; gv.correct=0; gv.total=0; gv.running=true;
   el('gv_feedback').textContent='進行中';
   el('gv_start').disabled=true; el('gv_same').disabled=false; el('gv_diff').disabled=false; el('gv_finish').disabled=false;
-  showPrep(800,'準備してください').then(()=>{
+  showPrep().then(()=>{
     gv.timer=setInterval(()=>{ gv.remain--; if (gv.remain<=0){ clearInterval(gv.timer); gvEnd(); } },1000);
     gvNext();
   });
 }
-function gvEnd(){
-  if (!gv.running) return;
-  gv.running=false; clearInterval(gv.timer);
+function gvEnd(){ if (!gv.running) return; gv.running=false; clearInterval(gv.timer);
   el('gv_same').disabled=true; el('gv_diff').disabled=true; el('gv_start').disabled=false; el('gv_finish').disabled=true;
   el('gv_feedback').innerHTML = `正答数：<b>${gv.correct}</b>（試行 ${gv.total}）`;
   score.gv_count = gv.correct; updateOverall();
 }
 function gvNext(){
   if (!gv.running) return;
-  gv.pat = randPattern();
-  const rotSteps=[0,90,180,270][randInt(4)]; const same=Math.random()<0.5;
-  gv.same=same; gv.rot=rotSteps;
-  drawPattern(gvcL, gv.pat, 0);
-  let rightPat=gv.pat.slice(); for(let n=0;n<rotSteps/90;n++) rightPat=rotate90(rightPat);
+  gv.pat = randPattern(); const rotSteps=[0,90,180,270][randInt(4)]; const same=Math.random()<0.5; gv.same=same; gv.rot=rotSteps;
+  drawPattern(gvcL, gv.pat, 0); let rightPat=gv.pat.slice(); for(let n=0;n<rotSteps/90;n++) rightPat=rotate90(rightPat);
   if (!same){ const pos=randInt(9); rightPat=rightPat.slice(); rightPat[pos]=1-rightPat[pos]; }
-  drawPattern(gvcR, rightPat, 0);
-  gv.total++;
+  drawPattern(gvcR, rightPat, 0); gv.total++;
 }
 function gvResp(isSame){ if (!gv.running) return; if (isSame===gv.same) gv.correct++; gvNext(); }
 el('gv_start').addEventListener('click', gvStart);
 el('gv_same').addEventListener('click', ()=>gvResp(true));
 el('gv_diff').addEventListener('click', ()=>gvResp(false));
 el('gv_finish').addEventListener('click', gvEnd);
-document.addEventListener('keydown', e=>{ if (!gv.running) return; if (e.key==='f'||e.key==='F') gvResp(true); if (e.key==='j'||e.key==='J') gvResp(false); });
+document.addEventListener('keydown', e=>{ if (!gv.running) return; if (e.key==='f'||e.key==='J'){} if (e.key==='f'||e.key==='F') gvResp(true); if (e.key==='j'||e.key==='J') gvResp(false); });
 
-// ===== Gs =====
+// ===== Gs（30秒・正答数＝スコア） =====
 const gs = { running:false, time:30, right:0, wrong:0, total:0, responded:false, overallTimer:null, trialTimer:null, pace:900, same:false };
 const SYM="ABCDEFGHJKLMNPQRSTUVWXYZ";
 function randStr3(){ return SYM[randInt(SYM.length)]+SYM[randInt(SYM.length)]+SYM[randInt(SYM.length)]; }
 function fmt(t){ const m=String(Math.floor(t/60)).padStart(2,'0'); const s=String(t%60).padStart(2,'0'); return `${m}:${s}`; }
 async function startGS(){
-  await showPrep(800,'準備してください');
+  await showPrep();
   gs.running=true; gs.time=30; gs.right=0; gs.wrong=0; gs.total=0; gs.responded=false;
   el('gs_start').disabled=true; el('gs_same').disabled=false; el('gs_diff').disabled=false; el('gs_feedback').textContent='進行中';
   tickGS(); nextPairGS(); gs.trialTimer=setInterval(nextPairGS, gs.pace);
@@ -627,9 +608,8 @@ async function startGS(){
 function stopGS(){
   gs.running=false; clearInterval(gs.overallTimer); clearInterval(gs.trialTimer);
   el('gs_same').disabled=true; el('gs_diff').disabled=true; el('gs_start').disabled=false;
-  score.gs_count=gs.right;
-  const acc=(gs.total>0)? Math.round(gs.right/gs.total*100):0;
-  el('gs_feedback').innerHTML=`正答数：<b>${gs.right}</b>（提示 ${gs.total}，正答率 ${acc}%）`;
+  score.gs_count=gs.right; // スコアは正答数のみ
+  el('gs_feedback').innerHTML=`正答数：<b>${gs.right}</b>`;
   updateOverall();
 }
 function tickGS(){
@@ -642,7 +622,6 @@ function nextPairGS(){
   const same=Math.random()<0.5; gs.same=same;
   const left=randStr3(); const right=same? left : randStr3();
   el('gs_pair').textContent=`${left}  |  ${right}`;
-  el('gs_meta').textContent=`ペース: ${gs.pace}ms/試行　提示: ${gs.total+1}`;
   gs.total++;
 }
 function respGS(isSame){ if (!gs.running) return; if (gs.responded) return; gs.responded=true; if (isSame===gs.same) gs.right++; else gs.wrong++; }
