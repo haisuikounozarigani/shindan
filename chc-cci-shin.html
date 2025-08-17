@@ -13,7 +13,6 @@
   h1{margin:0;color:var(--brand);font-size:clamp(20px,3.4vw,28px)}
   a.back{font-size:.9em;color:#835f5f;text-decoration:none;border:1px solid #e4d9d9;padding:6px 10px;border-radius:10px;background:#fff}
   .card{background:var(--card);border:1px solid #eee;border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
-  .card.tall{padding-bottom:36px}
   .row{margin:12px 0}
   .muted{color:var(--muted);font-size:.95em}
   button{padding:10px 16px;border-radius:10px;border:1px solid #cfcfcf;background:#fff;cursor:pointer}
@@ -42,553 +41,6 @@
   .pair{display:flex;gap:10px;justify-content:center;align-items:center;font-size:24px}
   .pill{display:inline-block;padding:2px 8px;border:1px solid #e4d9d9;border-radius:999px;background:#fff;font-size:.86em;margin-left:6px}
 
-  /* 下側に余白をとったボタン群 */
-  .controls-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-  .btnbar{display:grid;grid-template-columns:repeat(2,minmax(130px,1fr));gap:12px;max-width:560px;margin:20px auto 8px}
-  .btnbar .wide{grid-column:1 / -1}
-  .bigbtn{padding:14px 16px;font-size:18px;border-radius:12px}
-  .soft{background:#fff;border-color:#e5dede}
-
-  /* Gv/Gs 表示域を下側広めに */
-  .gv-area{min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px}
-  .gs-area{min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px}
-
-  /* 準備オーバーレイ */
-  .prep{position:fixed;inset:0;background:rgba(255,253,248,.92);display:none;align-items:center;justify-content:center;z-index:999}
-  .prep .box{background:#fff;border:1px solid #eee;padding:16px 22px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);color:#624c4c}
-  .prep .title{font-weight:700;margin-bottom:4px}
-  .prep .dots::after{content:"";display:inline-block;width:1ch;animation:dots 1.1s infinite steps(4,end)}
-  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}100%{content:""}}
-
-  /* Gf レイアウト */
-  .qwrap{margin:8px 0}
-  .rowgrid{display:grid;gap:6px;margin:4px 0}
-  .cellg{height:36px;min-width:42px;display:flex;align-items:center;justify-content:center;border:1px solid #e0d7d7;border-radius:8px;background:#fbfaf8;font-weight:600}
-
-  /* モバイル */
-  @media (max-width:560px){
-    .grid{grid-template-columns:repeat(3,56px);gap:8px}
-    .cell{width:56px;height:56px;border-radius:10px}
-    #digitBox,#digitBox2{font-size:36px}
-    .pair{font-size:20px}
-    .choices{grid-template-columns:repeat(2,1fr)}
-    h1{font-size:20px}
-    .wrap{margin:18px auto}
-    canvas#gv_left, canvas#gv_right{width:150px !important;height:150px !important}
-    canvas#radar{width:100% !important;height:auto !important}
-    .btnbar{grid-template-columns:1fr 1fr}
-  }
-</style>
-</head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>認知プロファイル・チャレンジ（CHC簡易版）<span class="pill">練習なし・一発計測</span></h1>
-    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
-  </header>
-
-  <div class="card">
-    <p class="muted">CHC理論の広範能力（Gf/Gc/Gv/Gs/Gwm）を簡易測定。ヒントは出しません（解き方は非表示）。</p>
-    <div class="kpis">
-      <div class="kpi"><b>総合（CCI）</b><br><div id="overall">未実施</div></div>
-      <div class="kpi"><b>詳細</b><br><div class="muted" id="detail">各タスク→能力別z→CCI。％位と「上位◯％」を表示。</div></div>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" data-tab="gwm">Gwm（作動記憶）</button>
-    <button class="tab" data-tab="gf">Gf（流動性推理）</button>
-    <button class="tab" data-tab="gc">Gc（結晶性）</button>
-    <button class="tab" data-tab="gv">Gv（視覚）</button>
-    <button class="tab" data-tab="gs">Gs（処理速度）</button>
-    <button class="tab" data-tab="result">結果</button>
-  </div>
-
-  <!-- 準備オーバーレイ -->
-  <div class="prep" id="prep">
-    <div class="box">
-      <div class="title">準備してください</div>
-      <div class="muted dots">まもなく提示します</div>
-    </div>
-  </div>
-
-  <!-- GWM -->
-  <section class="card" id="gwm">
-    <h2>Gwm（作動記憶）</h2>
-    <div class="muted small">停止規則：各レベル最大2試行。1回成功で次レベル、2回失敗で終了。採点後<span id="delayInfo">2.5秒</span>待ってから次へ。</div>
-
-    <h3>数字スパン（順向）</h3>
-    <div class="row">
-      <label>開始桁数：<input id="t1_start" type="number" min="3" max="9" value="4"></label>
-      <label style="margin-left:12px">表示速度（ms/桁）：<input id="t1_ms" type="number" min="200" max="1500" value="600"></label>
-    </div>
-    <div class="row" id="digitBox" aria-live="off"></div>
-    <div class="row"><input id="t1_answer" type="text" placeholder="数字列（例: 4192）" disabled></div>
-    <div class="controls-row">
-      <button id="t1_startBtn" class="primary">開始</button>
-      <button id="t1_check" disabled>採点</button>
-      <button id="t1_abortBtn">中断</button>
-    </div>
-    <div class="row" id="t1_feedback"></div>
-    <div class="row muted small" id="t1_state">未開始</div>
-    <hr>
-
-    <h3>数字スパン（逆向）</h3>
-    <div class="row">
-      <label>開始桁数：<input id="t2_startN" type="number" min="3" max="8" value="3"></label>
-      <label style="margin-left:12px">表示速度（ms/桁）：<input id="t2_ms" type="number" min="200" max="1500" value="650"></label>
-    </div>
-    <div class="row" id="digitBox2" aria-live="off"></div>
-    <div class="row"><input id="t2_answer" type="text" placeholder="逆順で（例: 2914）" disabled></div>
-    <div class="controls-row">
-      <button id="t2_startBtn" class="primary">開始</button>
-      <button id="t2_check" disabled>採点</button>
-      <button id="t2_abortBtn">中断</button>
-    </div>
-    <div class="row" id="t2_feedback"></div>
-    <div class="row muted small" id="t2_state">未開始</div>
-    <hr>
-
-    <h3>視空間パターン（3×3）</h3>
-    <div class="row small muted">必要数だけ選択できます（<span id="t3_sel_info">0/—</span>）。必要数に達すると以降のクリックは無視します。<span class="pill" id="t3_badge" style="display:none">満点</span></div>
-    <div class="row">
-      <label>開始長：<input id="t3_start" type="number" min="3" max="7" value="3"></label>
-      <label style="margin-left:12px">表示速度（ms/マス）：<input id="t3_ms" type="number" min="250" max="1500" value="600"></label>
-    </div>
-    <div class="grid" id="grid" aria-live="off"></div>
-    <div class="controls-row">
-      <button id="t3_startBtn" class="primary">開始</button>
-      <button id="t3_check" disabled>採点</button>
-      <button id="t3_abortBtn">中断</button>
-    </div>
-    <div class="row" id="t3_feedback"></div>
-    <div class="row muted small" id="t3_state">未開始</div>
-    <hr>
-
-    <h3>2-back（更新）</h3>
-    <details class="small muted" style="margin-bottom:8px">
-      <summary>2-backの説明（タップで展開）</summary>
-      画面中央に1文字ずつ表示されます。<b>2つ前と同じ文字が出た時だけ</b>、スペースキーまたは「反応」ボタンを押してください。<br>
-      例）A → B → <b>A</b> → C … の太字Aは2つ前のAと同じなので反応。<br>
-      押し間違いは減点、押し忘れも減点です。
-    </details>
-    <div class="row">
-      <label>表示時間（ms/刺激）：<input id="t4_ms" type="number" min="600" max="2000" value="1000"></label>
-      <label style="margin-left:12px">インターバル（ms）：<input id="t4_gap" type="number" min="100" max="1000" value="180"></label>
-    </div>
-    <div class="center" id="t4_stim" aria-live="off">—</div>
-    <div class="controls-row">
-      <button id="t4_startBtn" class="primary">開始</button>
-      <button id="t4_hitBtn" disabled>反応（スペース）</button>
-      <button id="t4_abortBtn">中断</button>
-    </div>
-    <div class="row" id="t4_feedback"></div>
-    <div class="row muted small" id="t4_state">未開始</div>
-  </section>
-
-  <!-- GF -->
-  <section class="card" id="gf" style="display:none">
-    <h2>Gf（流動性推理）— 行列推理</h2>
-    <div class="muted small">12問・制限時間なし（簡易版）。選択後は<b>提出</b>で採点。</div>
-    <div id="gf_body"></div>
-    <div class="controls-row"><button id="gf_submit" class="primary">提出して採点</button></div>
-    <div class="row" id="gf_feedback"></div>
-  </section>
-
-  <!-- GC -->
-  <section class="card" id="gc" style="display:none">
-    <h2>Gc（結晶性）— 類義語選択</h2>
-    <div class="muted small">12問・制限時間なし（簡易版）。選択後は<b>提出</b>で採点。</div>
-    <div id="gc_body"></div>
-    <div class="controls-row"><button id="gc_submit" class="primary">提出して採点</button></div>
-    <div class="row" id="gc_feedback"></div>
-  </section>
-
-  <!-- GV：時間制（無制限試行） -->
-  <section class="card tall" id="gv" style="display:none">
-    <h2>Gv（視覚）— 回転同一判断（時間制：できるだけ解く）</h2>
-    <div class="muted small">左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。<b>持ち時間内</b>にできるだけ回答。正答数で評価します。</div>
-    <div class="row small muted">
-      <label>持ち時間（秒）：<input id="gv_secs" type="number" min="30" max="120" value="60"></label>
-      <span class="pill" id="gv_status" style="margin-left:8px">待機中</span>
-    </div>
-    <div class="gv-area">
-      <div class="row">
-        <canvas id="gv_left" width="220" height="220"></canvas>
-        <canvas id="gv_right" width="220" height="220"></canvas>
-      </div>
-    </div>
-    <div class="row" id="gv_feedback"></div>
-    <div class="btnbar">
-      <button id="gv_start" class="primary bigbtn wide">開始</button>
-      <button id="gv_same"  class="bigbtn soft" disabled>同じ (F)</button>
-      <button id="gv_diff"  class="bigbtn soft" disabled>違う (J)</button>
-      <button id="gv_finish" class="bigbtn wide" disabled>終了</button>
-    </div>
-  </section>
-
-  <!-- GS -->
-  <section class="card tall" id="gs" style="display:none">
-    <h2>Gs（処理速度）— 記号比較（30秒・ペース固定）</h2>
-    <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打は無効）。</div>
-    <div class="gs-area">
-      <div class="pair" id="gs_pair">—</div>
-      <div class="row small muted" id="gs_meta">—</div>
-    </div>
-    <div class="btnbar">
-      <button id="gs_start" class="primary bigbtn">開始</button>
-      <button id="gs_same" class="bigbtn soft" disabled>同じ (F)</button>
-      <button id="gs_diff" class="bigbtn soft" disabled>違う (J)</button>
-      <span class="pill" id="gs_timer" style="place-self:center">00:30</span>
-    </div>
-    <div class="row" id="gs_feedback"></div>
-  </section>
-
-  <!-- RESULT -->
-  <section class="card" id="result" style="display:none">
-    <h2>結果</h2>
-    <div class="row"><canvas id="radar" width="760" height="540"></canvas></div>
-    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap">
-      <button id="btnSaveCard">画像保存</button>
-    </div>
-    <div class="row" id="result_body">未実施</div>
-    <div class="row" id="result_comment" class="small muted"></div>
-    <div class="muted small">
-      <hr>
-      <p><b>標準化の近似</b>（簡易版・参考域）<br>
-      Gwm：順向(μ7,σ2)／逆向(μ5,σ1.5)／視空間(μ5,σ1.5)／2-back正答(μ0.70,σ0.15)<br>
-      Gf：行列推理 正答数(μ7,σ2.5)　Gc：語彙 正答数(μ8,σ2.0)<br>
-      <u>Gv：回転同一 60秒正答数(μ10,σ5)</u>　Gs：30秒正答数(μ25,σ7)<br>
-      能力別zを平均→CCI。CCI％位＝Φ(z)×100。上位＝(100−％位)％。</p>
-    </div>
-  </section>
-</div>
-
-<script>
-(()=>{
-// ===== Utils =====
-const $ = (q)=>document.querySelector(q);
-const el = (id)=>document.getElementById(id);
-const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-const randInt = (n)=>Math.floor(Math.random()*n);
-const shuffle = (arr)=>arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
-function erf(x){const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const s=x<0?-1:1; x=Math.abs(x); const t=1/(1+p*x); const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x); return s*y;}
-function normCdf(z){return 0.5*(1+erf(z/Math.SQRT2));}
-async function showPrep(ms=900, text='準備してください'){ const o=el('prep'); o.querySelector('.title').textContent=text; o.style.display='flex'; await sleep(ms); o.style.display='none'; }
-
-// すべてのbuttonをtype=buttonに（誤submit対策）
-Array.from(document.querySelectorAll('button')).forEach(b=>{ try{ if(!b.type) b.type='button'; }catch(_){} });
-
-// 全角→半角 数字
-const toHalfNumStr = (s)=> s.replace(/[０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));
-function getNum(id, def, min, max){ const raw=(el(id)?.value??''); const hv=toHalfNumStr(raw); const n=parseInt(hv,10); return clamp(Number.isFinite(n)?n:def, min, max); }
-function sanitizeNums(s){ const hv=toHalfNumStr(s||''); return hv.replace(/[^\d]/g,'').split('').map(d=>parseInt(d,10)); }
-// 入力強制半角
-document.addEventListener('input', (e)=>{ const t=e.target; if (t?.tagName==='INPUT'&&(t.type==='number'||t.type==='text')){ const v=t.value, hv=toHalfNumStr(v); if(v!==hv) t.value=hv; }});
-
-// ===== Tabs =====
-const FEEDBACK_DELAY_MS = 2500;
-el('delayInfo').textContent = (FEEDBACK_DELAY_MS/1000).toFixed(1)+'秒';
-const tabs = document.querySelectorAll('.tab');
-const secs = { gwm: $('#gwm'), gf: $('#gf'), gc: $('#gc'), gv: $('#gv'), gs: $('#gs'), result: $('#result') };
-tabs.forEach(b=>b.addEventListener('click', ()=>{
-  tabs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
-  Object.values(secs).forEach(s=>{ if(s) s.style.display='none'; });
-  const tgt=secs[b.dataset.tab]; if (tgt) tgt.style.display='';
-}));
-
-// ===== Scores =====
-const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_count:null, gs_count:null };
-let lastSummary = null;
-
-// ===== Gwm: T1 =====
-const t1 = { L:4, trial:0, success:false, seq:[], showing:false, done:false };
-function t1Reset(){ t1.L=getNum('t1_start',4,3,9); t1.trial=0;t1.success=false;t1.seq=[];t1.showing=false;t1.done=false;
-  el('digitBox').textContent=''; el('t1_answer').value=''; el('t1_answer').disabled=true; el('t1_check').disabled=true;
-  el('t1_feedback').textContent=''; el('t1_state').textContent='未開始';
-}
-function t1Digits(n){ return Array.from({length:n},()=>randInt(10)); }
-async function t1Show(){
-  t1.success=false; await showPrep(900,'準備してください');
-  t1.showing=true; t1.seq=t1Digits(t1.L);
-  const ms=getNum('t1_ms',600,200,1500);
-  el('t1_state').textContent=`提示中（${t1.L}桁）`; el('digitBox').textContent='';
-  for(let i=0;i<t1.seq.length;i++){ el('digitBox').textContent=t1.seq[i]; await sleep(ms); el('digitBox').textContent=''; await sleep(180); }
-  t1.showing=false; el('t1_answer').disabled=false; el('t1_check').disabled=false; el('t1_answer').focus();
-  el('t1_state').textContent=`入力待ち（試行 ${t1.trial+1}/2）`;
-}
-function t1Start(){ t1Reset(); el('t1_startBtn').disabled=true; t1Step(); }
-async function t1Step(){
-  if (t1.done) return;
-  if (t1.trial>=2){
-    if (t1.success){ score.t1=t1.L; el('t1_feedback').innerHTML=`<span class="ok">レベル達成！</span> 到達最大桁 <b>${score.t1}</b>`; }
-    else{ score.t1=t1.L-1; el('t1_feedback').innerHTML=`<span class="ng">終了。</span> 到達最大桁 <b>${score.t1}</b><br>正解：${t1.seq.join('')}`; }
-    t1.done=true; el('t1_startBtn').disabled=false; updateOverall(); return;
-  }
-  await t1Show();
-}
-async function t1Check(){
-  if (t1.showing) return;
-  const g = sanitizeNums(el('t1_answer').value); el('t1_answer').value='';
-  const ok = (g.length===t1.seq.length) && g.every((d,i)=>d===t1.seq[i]); t1.trial++;
-  if (ok){ el('t1_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${t1.L+1} 桁（正解：${t1.seq.join('')})`;
-    t1.success=true; t1.L++; t1.trial=0; updateOverall(); await sleep(FEEDBACK_DELAY_MS); t1Step();
-  }else{ el('t1_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${t1.trial}/2）／正解：${t1.seq.join('')}`;
-    await sleep(FEEDBACK_DELAY_MS); t1Step();
-  }
-}
-el('t1_startBtn').addEventListener('click', t1Start);
-el('t1_abortBtn').addEventListener('click', ()=>{ t1.done=true; el('t1_state').textContent='中断'; el('t1_startBtn').disabled=false; });
-el('t1_check').addEventListener('click', t1Check);
-el('t1_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t1_check').disabled) t1Check(); });
-t1Reset();
-
-// ===== Gwm: T2 =====
-const t2 = { L:3, trial:0, success:false, seq:[], showing:false, done:false };
-function t2Reset(){ t2.L=getNum('t2_startN',3,3,8); t2.trial=0;t2.success=false;t2.seq=[];t2.showing=false;t2.done=false;
-  el('digitBox2').textContent=''; el('t2_answer').value=''; el('t2_answer').disabled=true; el('t2_check').disabled=true; el('t2_feedback').textContent=''; el('t2_state').textContent='未開始';
-}
-async function t2Show(){ t2.success=false; await showPrep(900,'準備してください'); t2.showing=true; t2.seq=Array.from({length:t2.L},()=>randInt(10));
-  const ms=getNum('t2_ms',650,200,1500);
-  el('t2_state').textContent=`提示中（${t2.L}桁）`; el('digitBox2').textContent='';
-  for(let i=0;i<t2.seq.length;i++){ el('digitBox2').textContent=t2.seq[i]; await sleep(ms); el('digitBox2').textContent=''; await sleep(180); }
-  t2.showing=false; el('t2_answer').disabled=false; el('t2_check').disabled=false; el('t2_answer').focus();
-  el('t2_state').textContent=`入力待ち（試行 ${t2.trial+1}/2）`;
-}
-function t2Start(){ t2Reset(); el('t2_startBtn').disabled=true; t2Step(); }
-async function t2Step(){
-  if (t2.done) return;
-  if (t2.trial>=2){
-    if (t2.success){ score.t2=t2.L; el('t2_feedback').innerHTML=`<span class="ok">レベル達成！</span> 到達最大桁 <b>${score.t2}</b>`; }
-    else{ score.t2=t2.L-1; el('t2_feedback').innerHTML=`<span class="ng">終了。</span> 到達最大桁 <b>${score.t2}</b><br>正解：${[...t2.seq].reverse().join('')}`; }
-    t2.done=true; el('t2_startBtn').disabled=false; updateOverall(); return;
-  }
-  await t2Show();
-}
-async function t2Check(){
-  if (t2.showing) return;
-  const g = sanitizeNums(el('t2_answer').value); el('t2_answer').value='';
-  const rev=[...t2.seq].reverse(); const ok=(g.length===rev.length)&&g.every((d,i)=>d===rev[i]); t2.trial++;
-  if (ok){ el('t2_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${t2.L+1} 桁（正解：${rev.join('')})`;
-    t2.success=true; t2.L++; t2.trial=0; updateOverall(); await sleep(FEEDBACK_DELAY_MS); t2Step();
-  }else{ el('t2_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${t2.trial}/2）／正解：${rev.join('')}`;
-    await sleep(FEEDBACK_DELAY_MS); t2Step();
-  }
-}
-el('t2_startBtn').addEventListener('click', t2Start);
-el('t2_abortBtn').addEventListener('click', ()=>{ t2.done=true; el('t2_state').textContent='中断'; el('t2_startBtn').disabled=false; });
-el('t2_check').addEventListener('click', t2Check);
-el('t2_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t2_check').disabled) t2Check(); });
-t2Reset();
-
-// ===== Gwm: T3（3×3） =====
-const grid = el('grid'); const cells=[];
-for(let v class="controls-row"><button id="gc_submit" class="primary">提出して採点</button></div>
-    <div class="row" id="gc_feedback"></div>
-  </section>
-
-  <!-- GV：時間内に何問正解できるか（試行無制限） -->
-  <section class="card tall" id="gv" style="display:none">
-    <h2>Gv（視覚）— 回転同一判断（時間制：できるだけ解く）</h2>
-    <div class="muted small">左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。<b>持ち時間内</b>にできるだけ回答。正答数で評価します。</div>
-    <div class="row small muted">
-      <label>持ち時間（秒）：<input id="gv_secs" type="number" min="30" max="120" value="60"></label>
-      <span class="pill" id="gv_status" style="margin-left:8px">待機中</span>
-    </div>
-    <div class="gv-area">
-      <div class="row">
-        <canvas id="gv_left" width="220" height="220"></canvas>
-        <canvas id="gv_right" width="220" height="220"></canvas>
-      </div>
-    </div>
-    <div class="row" id="gv_feedback"></div>
-    <div class="btnbar">
-      <button id="gv_start" class="primary bigbtn wide">開始</button>
-      <button id="gv_same"  class="bigbtn soft" disabled>同じ (F)</button>
-      <button id="gv_diff"  class="bigbtn soft" disabled>違う (J)</button>
-      <button id="gv_finish" class="bigbtn wide" disabled>終了</button>
-    </div>
-  </section>
-
-  <!-- GS：下側広め＋ボタン少し上 -->
-  <section class="card tall" id="gs" style="display:none">
-    <h2>Gs（処理速度）— 記号比較（30秒・ペース固定）</h2>
-    <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打は無効）。</div>
-    <div class="gs-area">
-      <div class="pair" id="gs_pair">—</div>
-      <div class="row small muted" id="gs_meta">—</div>
-    </div>
-    <div class="btnbar">
-      <button id="gs_start" class="primary bigbtn">開始</button>
-      <button id="gs_same" class="bigbtn soft" disabled>同じ (F)</button>
-      <button id="gs_diff" class="bigbtn soft" disabled>違う (J)</button>
-      <span class="pill" id="gs_timer" style="place-self:center">00:30</span>
-    </div>
-    <div class="row" id="gs_feedback"></div>
-  </section>
-
-  <!-- RESULT -->
-  <section class="card" id="result" style="display:none">
-    <h2>結果</h2>
-    <div class="row"><canvas id="radar" width="760" height="540"></canvas></div>
-    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap">
-      <button id="btnSaveCard">画像保存</button>
-    </div>
-    <div class="row" id="result_body">未実施</div>
-    <div class="row" id="result_comment" class="small muted"></div>
-    <div class="muted small">
-      <hr>
-      <p><b>標準化の近似</b>（簡易版・参考域）<br>
-      Gwm：順向(μ7,σ2)／逆向(μ5,σ1.5)／視空間(μ5,σ1.5)／2-back正答(μ0.70,σ0.15)<br>
-      Gf：行列推理 正答数(μ7,σ2.5)　Gc：語彙 正答数(μ8,σ2.0)<br>
-      <u>Gv：回転同一 60秒正答数(μ10,σ5)</u>　Gs：30秒正答数(μ25,σ7)<br>
-      能力別zを平均→CCI。CCI％位＝Φ(z)×100。上位＝(100−％位)％。</p>
-    </div>
-  </section>
-</div>
-
-<script>
-(()=>{
-// ===== Utils =====
-const $ = (q)=>document.querySelector(q);
-const el = (id)=>document.getElementById(id);
-const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-const randInt = (n)=>Math.floor(Math.random()*n);
-const shuffle = (arr)=>arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
-function erf(x){const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const s=x<0?-1:1; x=Math.abs(x); const t=1/(1+p*x); const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x); return s*y;}
-function normCdf(z){return 0.5*(1+erf(z/Math.SQRT2));}
-async function showPrep(ms=900, text='準備してください'){ const o=el('prep'); o.querySelector('.title').textContent=text; o.style.display='flex'; await sleep(ms); o.style.display='none'; }
-
-// 全角→半角 数字
-const toHalfNumStr = (s)=> s.replace(/[０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));
-function getNum(id, def, min, max){
-  const raw = (el(id).value??''); const hv = toHalfNumStr(raw); const n = parseInt(hv,10);
-  return clamp(Number.isFinite(n)?n:def, min, max);
-}
-function sanitizeNums(s){ const hv = toHalfNumStr(s||''); return hv.replace(/[^\d]/g,'').split('').map(d=>parseInt(d,10)); }
-// 入力強制半角
-document.addEventListener('input', (e)=>{
-  const t=e.target; if (t.tagName==='INPUT'&&(t.type==='number'||t.type==='text')){ const v=t.value, hv=toHalfNumStr(v); if(v!==hv) t.value=hv; }
-});
-
-// ===== Tabs =====
-const FEEDBACK_DELAY_MS = 2500;
-el('delayInfo').textContent = (FEEDBACK_DELAY_MS/1000).toFixed(1)+'秒';
-const tabs = document.querySelectorAll('.tab');
-const secs = { gwm: $('#gwm'), gf: $('#gf'), gc: $('#gc'), gv: $('#gv'), gs: $('#gs'), result: $('#result') };
-tabs.forEach(b=>b.addEventListener('click', ()=>{
-  tabs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
-  Object.values(secs).forEach(s=>s.style.display='none');
-  secs[b.dataset.tab].style.display='';
-}));
-
-// ===== Scores =====
-const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_count:null, gs_count:null };
-let lastSummary = null;
-
-// ===== Gwm: T1 =====
-const t1 = { L:4, trial:0, success:false, seq:[], showing:false, done:false };
-function t1Reset(){ t1.L=getNum('t1_start',4,3,9); t1.trial=0;t1.success=false;t1.seq=[];t1.showing=false;t1.done=false;
-  el('digitBox').textContent=''; el('t1_answer').value=''; el('t1_answer').disabled=true; el('t1_check').disabled=true;
-  el('t1_feedback').textContent=''; el('t1_state').textContent='未開始';
-}
-function t1Digits(n){ return Array.from({length:n},()=>randInt(10)); }
-async function t1Show(){
-  t1.success=false; await showPrep(900,'準備してください');
-  t1.showing=true; t1.seq=t1Digits(t1.L);
-  const ms=getNum('t1_ms',600,200,1500);
-  el('t1_state').textContent=`提示中（${t1.L}桁）`; el('digitBox').textContent='';
-  for(let i=0;i<t1.seq.length;i++){ el('digitBox').textContent=t1.seq[i]; await sleep(ms); el('digitBox').textContent=''; await sleep(180); }
-  t1.showing=false; el('t1_answer').disabled=false; el('t1_check').disabled=false; el('t1_answer').focus();
-  el('t1_state').textContent=`入力待ち（試行 ${t1.trial+1}/2）`;
-}
-function t1Start(){ t1Reset(); el('t1_startBtn').disabled=true; t1Step(); }
-async function t1Step(){
-  if (t1.done) return;
-  if (t1.trial>=2){
-    if (t1.success){ score.t1=t1.L; el('t1_feedback').innerHTML=`<span class="ok">レベル達成！</span> 到達最大桁 <b>${score.t1}</b>`; }
-    else{ score.t1=t1.L-1; el('t1_feedback').innerHTML=`<span class="ng">終了。</span> 到達最大桁 <b>${score.t1}</b><br>正解：${t1.seq.join('')}`; }
-    t1.done=true; el('t1_startBtn').disabled=false; updateOverall(); return;
-  }
-  await t1Show();
-}
-async function t1Check(){
-  if (t1.showing) return;
-  const g = sanitizeNums(el('t1_answer').value); el('t1_answer').value='';
-  const ok = (g.length===t1.seq.length) && g.every((d,i)=>d===t1.seq[i]); t1.trial++;
-  if (ok){ el('t1_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${t1.L+1} 桁（正解：${t1.seq.join('')})`;
-    t1.success=true; t1.L++; t1.trial=0; updateOverall(); await sleep(FEEDBACK_DELAY_MS); t1Step();
-  }else{ el('t1_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${t1.trial}/2）／正解：${t1.seq.join('')}`;
-    await sleep(FEEDBACK_DELAY_MS); t1Step();
-  }
-}
-el('t1_startBtn').addEventListener('click', t1Start);
-el('t1_abortBtn').addEventListener('click', ()=>{ t1.done=true; el('t1_state').textContent='中断'; el('t1_startBtn').disabled=false; });
-el('t1_check').addEventListener('click', t1Check);
-el('t1_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t1_check').disabled) t1Check(); });
-t1Reset();
-
-// ===== Gwm: T2 =====
-const t2 = { L:3, trial:0, success:false, seq:[], showing:false, done:false };
-function t2Reset(){ t2.L=getNum('t2_startN',3,3,8); t2.trial=0;t2.success=false;t2.seq=[];t2.showing=false;t2.done=false;
-  el('digitBox2').textContent=''; el('t2_answer').value=''; el('t2_answer').disabled=true; el('t2_check').disabled=true; el('t2_feedback').textContent=''; el('t2_state').textContent='未開始';
-}
-async function t2Show(){ t2.success=false; await showPrep(900,'準備してください'); t2.showing=true; t2.seq=Array.from({length:t2.L},()=>randInt(10));
-  const ms=getNum('t2_ms',650,200,1500);
-  el('t2_state').textContent=`提示中（${t2.L}桁）`; el('digitBox2').textContent='';
-  for(let i=0;i<t2.seq.length;i++){ el('digitBox2').textContent=t2.seq[i]; await sleep(ms); el('digitBox2').textContent=''; await sleep(180); }
-  t2.showing=false; el('t2_answer').disabled=false; el('t2_check').disabled=false; el('t2_answer').focus();
-  el('t2_state').textContent=`入力待ち（試行 ${t2.trial+1}/2）`;
-}
-function t2Start(){ t2Reset(); el('t2_startBtn').disabled=true; t2Step(); }
-async function t2Step(){
-  if (t2.done) return;
-  if (t2.trial>=2){
-    if (t2.success){ score.t2=t2.L; el('t2_feedback').innerHTML=`<span class="ok">レベル達成！</span> 到達最大桁 <b>${score.t2}</b>`; }
-    else{ score.t2=t2.L-1; el('t2_feedback').innerHTML=`<span class="ng">終了。</span> 到達最大桁 <b>${score.t2}</b><br>正解：${[...t2.seq].reverse().join('')}`; }
-    t2.done=true; el('t2_startBtn').disabled=false; updateOverall(); return;
-  }
-  await t2Show();
-}
-async function t2Check(){
-  if (t2.showing) return;
-  const g = sanitizeNums(el('t2_answer').value); el('t2_answer').value='';
-  const rev=[...t2.seq].reverse(); const ok=(g.length===rev.length)&&g.every((d,i)=>d===rev[i]); t2.trial++;
-  if (ok){ el('t2_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${t2.L+1} 桁（正解：${rev.join('')})`;
-    t2.success=true; t2.L++; t2.trial=0; updateOverall(); await sleep(FEEDBACK_DELAY_MS); t2Step();
-  }else{ el('t2_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${t2.trial}/2）／正解：${rev.join('')}`;
-    await sleep(FEEDBACK_DELAY_MS); t2Step();
-  }
-}
-el('t2_startBtn').addEventListener('click', t2Start);
-el('t2_abortBtn').addEventListener('click', ()=>{ t2.done=true; el('t2_state').textContent='中断'; el('t2_startBtn').disabled=false; });
-el('t2_check').addEventListener('click', t2Check);
-el('t2_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t2_check').disabled) t2Check(); });
-t2Reset();
-
-// ===== Gwm: T3（3×3） =====
-const grid = el('grid'); const cells=[];
-for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell'; d.dataset.idx=i; grid.appendChild(d); cells.push(d);   .choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .choice{padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff;cursor:pointer}
-  .choice.selected{border-color: var(--brand); box-shadow:0 0 0 2px rgba(142,90,90,.15) inset}
-  .choice.correct{border-color:#1a7f37}
-  .choice.wrong{border-color:#b3261e}
-  .pair{display:flex;gap:10px;justify-content:center;align-items:center;font-size:24px}
-  .pill{display:inline-block;padding:2px 8px;border:1px solid #e4d9d9;border-radius:999px;background:#fff;font-size:.86em;margin-left:6px}
-
-  /* ボタン行（下寄せ気味） */
-  .controls-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-  .btnbar{display:grid;grid-template-columns:repeat(2, minmax(120px,1fr));gap:10px;max-width:520px;margin:18px auto 4px}
-  .btnbar .wide{grid-column:1 / -1}
-  .bigbtn{padding:14px 16px;font-size:18px;border-radius:12px}
-  .soft{background:#fff;border-color:#e5dede}
-
-  /* Gv/Gsの表示域を“下側広め”に確保 */
-  .gv-area{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .gs-area{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-
   /* 準備オーバーレイ */
   .prep{position:fixed;inset:0;background:rgba(255,253,248,.92);display:none;align-items:center;justify-content:center;z-index:999}
   .prep .box{background:#fff;border:1px solid #eee;padding:16px 22px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);color:#624c4c}
@@ -601,7 +53,8 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
   .rowgrid{display:grid;gap:6px;margin:4px 0}
   .cellg{height:36px;min-width:42px;display:flex;align-items:center;justify-content:center;border:1px solid #e0d7d7;border-radius:8px;background:#fbfaf8;font-weight:600}
 
-  /* モバイル最適化 */
+  /* 下側に余白（スマホで親指が被らない） */
+  .controls-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;margin-bottom:6px}
   @media (max-width:560px){
     .grid{grid-template-columns:repeat(3,56px);gap:8px}
     .cell{width:56px;height:56px;border-radius:10px}
@@ -612,7 +65,7 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
     .wrap{margin:18px auto}
     canvas#gv_left, canvas#gv_right{width:140px !important;height:140px !important}
     canvas#radar{width:100% !important;height:auto !important}
-    .btnbar{grid-template-columns:1fr 1fr}
+    .controls-row{margin-top:22px;margin-bottom:2px}
   }
 </style>
 </head>
@@ -658,13 +111,13 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
       <label>開始桁数：<input id="t1_start" type="number" min="3" max="9" value="4"></label>
       <label style="margin-left:12px">表示速度（ms/桁）：<input id="t1_ms" type="number" min="200" max="1500" value="600"></label>
     </div>
-    <div class="row" id="digitBox" aria-live="off"></div>
-    <div class="row"><input id="t1_answer" type="text" placeholder="数字列（例: 4192）" disabled></div>
-    <div class="controls-row">
+    <div class="row">
       <button id="t1_startBtn" class="primary">開始</button>
-      <button id="t1_check" disabled>採点</button>
       <button id="t1_abortBtn">中断</button>
     </div>
+    <div class="row" id="digitBox" aria-live="off"></div>
+    <div class="row"><input id="t1_answer" type="text" placeholder="数字列（例: 4192）" disabled></div>
+    <div class="row"><button id="t1_check" disabled>採点</button></div>
     <div class="row" id="t1_feedback"></div>
     <div class="row muted small" id="t1_state">未開始</div>
     <hr>
@@ -674,13 +127,13 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
       <label>開始桁数：<input id="t2_startN" type="number" min="3" max="8" value="3"></label>
       <label style="margin-left:12px">表示速度（ms/桁）：<input id="t2_ms" type="number" min="200" max="1500" value="650"></label>
     </div>
-    <div class="row" id="digitBox2" aria-live="off"></div>
-    <div class="row"><input id="t2_answer" type="text" placeholder="逆順で（例: 2914）" disabled></div>
-    <div class="controls-row">
+    <div class="row">
       <button id="t2_startBtn" class="primary">開始</button>
-      <button id="t2_check" disabled>採点</button>
       <button id="t2_abortBtn">中断</button>
     </div>
+    <div class="row" id="digitBox2" aria-live="off"></div>
+    <div class="row"><input id="t2_answer" type="text" placeholder="逆順で（例: 2914）" disabled></div>
+    <div class="row"><button id="t2_check" disabled>採点</button></div>
     <div class="row" id="t2_feedback"></div>
     <div class="row muted small" id="t2_state">未開始</div>
     <hr>
@@ -691,12 +144,12 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
       <label>開始長：<input id="t3_start" type="number" min="3" max="7" value="3"></label>
       <label style="margin-left:12px">表示速度（ms/マス）：<input id="t3_ms" type="number" min="250" max="1500" value="600"></label>
     </div>
-    <div class="grid" id="grid" aria-live="off"></div>
-    <div class="controls-row">
+    <div class="row">
       <button id="t3_startBtn" class="primary">開始</button>
-      <button id="t3_check" disabled>採点</button>
       <button id="t3_abortBtn">中断</button>
     </div>
+    <div class="grid" id="grid" aria-live="off"></div>
+    <div class="row"><button id="t3_check" disabled>採点</button></div>
     <div class="row" id="t3_feedback"></div>
     <div class="row muted small" id="t3_state">未開始</div>
     <hr>
@@ -708,76 +161,73 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
       例）A → B → <b>A</b> → C … の太字Aは2つ前のAと同じなので反応。<br>
       押し間違いは減点、押し忘れも減点です。
     </details>
-    <div class="row">
+    <div class="center" id="t4_stim" aria-live="off">—</div>
+    <div class="row" id="t4_feedback"></div>
+    <!-- ▼ ボタンはカード下側へ -->
+    <div class="row controls-row">
+      <button id="t4_startBtn" class="primary">開始</button>
+      <button id="t4_abortBtn">中断</button>
+      <button id="t4_hitBtn" disabled>反応（スペース）</button>
+    </div>
+    <div class="row small muted">
       <label>表示時間（ms/刺激）：<input id="t4_ms" type="number" min="600" max="2000" value="1000"></label>
       <label style="margin-left:12px">インターバル（ms）：<input id="t4_gap" type="number" min="100" max="1000" value="180"></label>
     </div>
-    <div class="center" id="t4_stim" aria-live="off">—</div>
-    <div class="controls-row">
-      <button id="t4_startBtn" class="primary">開始</button>
-      <button id="t4_hitBtn" disabled>反応（スペース）</button>
-      <button id="t4_abortBtn">中断</button>
-    </div>
-    <div class="row" id="t4_feedback"></div>
-    <div class="row muted small" id="t4_state">未開始</div>
   </section>
 
   <!-- GF -->
   <section class="card" id="gf" style="display:none">
     <h2>Gf（流動性推理）— 行列推理</h2>
-    <div class="muted small">12問・制限時間なし（簡易版）。選択後は<b>提出</b>で採点。</div>
+    <div class="muted small">12問。最低<b>6問以上</b>選んでから<b>提出</b>で採点・反映。</div>
     <div id="gf_body"></div>
-    <div class="controls-row"><button id="gf_submit" class="primary">提出して採点</button></div>
+    <div class="row"><button id="gf_submit" class="primary">提出して採点</button></div>
     <div class="row" id="gf_feedback"></div>
   </section>
 
   <!-- GC -->
   <section class="card" id="gc" style="display:none">
     <h2>Gc（結晶性）— 類義語選択</h2>
-    <div class="muted small">12問・制限時間なし（簡易版）。選択後は<b>提出</b>で採点。</div>
+    <div class="muted small">12問。最低<b>6問以上</b>選んでから<b>提出</b>で採点・反映。</div>
     <div id="gc_body"></div>
-    <div class="controls-row"><button id="gc_submit" class="primary">提出して採点</button></div>
+    <div class="row"><button id="gc_submit" class="primary">提出して採点</button></div>
     <div class="row" id="gc_feedback"></div>
   </section>
 
-  <!-- GV（時間制：60秒で何問正解できるか） -->
-  <section class="card tall" id="gv" style="display:none">
-    <h2>Gv（視覚）— 回転同一判断（時間内にどれだけ解けるか）</h2>
-    <div class="muted small">左のパターンを回転したものが右と<b>同一</b>か判断（鏡映は「違う」）。時間内にできるだけ解答してください。正答数で評価します。</div>
+  <!-- GV -->
+  <section class="card" id="gv" style="display:none">
+    <h2>Gv（視覚）— 回転同一判断</h2>
+    <div class="muted small">16試行。左を回転したものが右と<b>同一</b>かを<b>時間内</b>に回答。</div>
     <div class="row small muted">
-      <label>持ち時間（秒）：<input id="gv_secs" type="number" min="30" max="120" value="60"></label>
-      <span class="pill" id="gv_status" style="margin-left:8px">待機中</span>
+      <label>試行制限（ms）：<input id="gv_limit" type="number" min="800" max="6000" value="2500"></label>
     </div>
-    <div class="gv-area">
-      <div class="row">
-        <canvas id="gv_left" width="220" height="220"></canvas>
-        <canvas id="gv_right" width="220" height="220"></canvas>
-      </div>
+    <div class="row">
+      <canvas id="gv_left" width="180" height="180"></canvas>
+      <canvas id="gv_right" width="180" height="180"></canvas>
     </div>
     <div class="row" id="gv_feedback"></div>
-    <div class="btnbar">
-      <button id="gv_start" class="primary bigbtn wide">開始</button>
-      <button id="gv_same"  class="bigbtn soft" disabled>同じ (F)</button>
-      <button id="gv_diff"  class="bigbtn soft" disabled>違う (J)</button>
-      <button id="gv_finish" class="bigbtn wide" disabled>終了</button>
+    <!-- ▼ ボタンはカード下側へ -->
+    <div class="row controls-row">
+      <button id="gv_start" class="primary">開始</button>
+      <button id="gv_same" disabled>同じ</button>
+      <button id="gv_diff" disabled>違う</button>
+      <span class="pill" id="gv_timer">—</span>
     </div>
   </section>
 
   <!-- GS -->
-  <section class="card tall" id="gs" style="display:none">
+  <section class="card" id="gs" style="display:none">
     <h2>Gs（処理速度）— 記号比較（30秒・ペース固定）</h2>
-    <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。<b>各ペアは一度だけ回答可</b>（連打は無効）。</div>
-    <div class="gs-area">
-      <div class="pair" id="gs_pair">—</div>
-      <div class="row small muted" id="gs_meta">—</div>
-    </div>
-    <div class="btnbar">
-      <button id="gs_start" class="primary bigbtn">開始</button>
-      <button id="gs_same" class="bigbtn soft" disabled>同じ (F)</button>
-      <button id="gs_diff" class="bigbtn soft" disabled>違う (J)</button>
-      <span class="pill" id="gs_timer" style="place-self:center">00:30</span>
-    </div>
+    <div class="muted small">左右の記号列（3文字）が<b>同じ</b>なら「同じ(F)」、違えば「違う(J)」。各ペアは<b>一度だけ回答可</b>。</div>
+    <div class="pair" id="gs_pair">—</div>
+    <div class="row small muted" id="gs_meta">—</div>
     <div class="row" id="gs_feedback"></div>
+    <!-- ▼ ボタンはカード下側へ -->
+    <div class="row controls-row">
+      <button id="gs_start" class="primary">開始</button>
+      <button id="gs_same" disabled>同じ (F)</button>
+      <button id="gs_diff" disabled>違う (J)</button>
+      <span class="pill" id="gs_timer">00:30</span>
+    </div>
   </section>
 
   <!-- RESULT -->
@@ -794,7 +244,7 @@ for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell';
       <p><b>標準化の近似</b>（簡易版・参考域）<br>
       Gwm：順向(μ7,σ2)／逆向(μ5,σ1.5)／視空間(μ5,σ1.5)／2-back正答(μ0.70,σ0.15)<br>
       Gf：行列推理 正答数(μ7,σ2.5)　Gc：語彙 正答数(μ8,σ2.0)<br>
-      Gv：回転同一 <u>60秒正答数</u>(μ12,σ4)　Gs：30秒正答数(μ25,σ7)<br>
+      Gv：回転同一 正答率(μ0.75,σ0.15)　Gs：30秒正答数(μ25,σ7)<br>
       能力別zを平均→CCI。CCI％位＝Φ(z)×100。上位＝(100−％位)％。</p>
     </div>
   </section>
@@ -815,23 +265,17 @@ async function showPrep(ms=900, text='準備してください'){ const o=el('pr
 
 // 全角→半角 数字
 const toHalfNumStr = (s)=> s.replace(/[０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));
-// 数値取得（全角対応＋clamp）
 function getNum(id, def, min, max){
-  const raw = (el(id).value??'');
-  const hv = toHalfNumStr(raw);
-  const n = parseInt(hv,10);
-  return clamp(Number.isFinite(n)?n:def, min, max);
+  const raw = (el(id).value??''); const hv = toHalfNumStr(raw);
+  const n = parseInt(hv,10); return clamp(Number.isFinite(n)?n:def, min, max);
 }
-// 回答の数字配列（全角対応）
 function sanitizeNums(s){
-  const hv = toHalfNumStr(s||'');
-  return hv.replace(/[^\d]/g,'').split('').map(d=>parseInt(d,10));
+  const hv = toHalfNumStr(s||''); return hv.replace(/[^\d]/g,'').split('').map(d=>parseInt(d,10));
 }
 document.addEventListener('input', (e)=>{
   const t = e.target;
   if (t.tagName==='INPUT' && (t.type==='number' || t.type==='text')){
-    const v = t.value; const hv = toHalfNumStr(v);
-    if (v!==hv) t.value = hv;
+    const v = t.value; const hv = toHalfNumStr(v); if (v!==hv) t.value = hv;
   }
 });
 
@@ -847,8 +291,8 @@ tabs.forEach(b=>b.addEventListener('click', ()=>{
 }));
 
 // ===== Scores =====
-const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_count:null, gs_count:null };
-let lastSummary = null; // ← 重複宣言をここだけに統一
+const score = { t1:null, t2:null, t3:null, t3Perfect:false, t4_acc:null, gf_correct:null, gc_correct:null, gv_acc:null, gs_count:null };
+let lastSummary = null; // 画像保存用
 
 // ===== Gwm: T1 =====
 const t1 = { L:4, trial:0, success:false, seq:[], showing:false, done:false };
@@ -886,7 +330,8 @@ async function t1Check(){
   t1.trial++;
   if (ok){
     el('t1_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${t1.L+1} 桁（正解：${t1.seq.join('')})`;
-    t1.success=true; t1.L++; t1.trial=0; updateOverall(); await sleep(FEEDBACK_DELAY_MS); t1Step();
+    t1.success=true; t1.L++; t1.trial=0;
+    updateOverall(); await sleep(FEEDBACK_DELAY_MS); t1Step();
   }else{
     el('t1_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${t1.trial}/2）／正解：${t1.seq.join('')}`;
     await sleep(FEEDBACK_DELAY_MS); t1Step();
@@ -946,6 +391,532 @@ el('t2_check').addEventListener('click', t2Check);
 el('t2_answer').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!el('t2_check').disabled) t2Check(); });
 t2Reset();
 
-// ===== Gwm: T3（3×3） =====
+// ===== Gwm: T3（3×3 視空間） =====
 const grid = el('grid'); const cells=[];
-for(let i=0;i<9;i++){ const d=document.createElement('div'); d
+for(let i=0;i<9;i++){ const d=document.createElement('div'); d.className='cell'; d.dataset.idx=i; grid.appendChild(d); cells.push(d); }
+const V = { L:3, trial:0, success:false, seq:[], picks:[], showing:false, done:false, MAX:9 };
+function t3Reset(){
+  V.L = getNum('t3_start',3,3,7);
+  V.trial=0; V.success=false; V.seq=[]; V.picks=[]; V.showing=false; V.done=false;
+  el('t3_feedback').textContent=''; el('t3_state').textContent='未開始';
+  el('t3_check').disabled=true; el('t3_sel_info').textContent=`0/—`;
+  el('t3_badge').style.display='none';
+  cells.forEach(c=>{c.classList.remove('flash','sel');});
+}
+function makeSeq(n){ const arr=Array.from({length:9},(_,k)=>k); for(let i=arr.length-1;i>0;i--){ const j=randInt(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr.slice(0,n); }
+async function flashCell(i, ms){ cells[i].classList.add('flash'); await sleep(ms); cells[i].classList.remove('flash'); }
+async function t3Show(){
+  V.success=false; await showPrep(900,'準備してください');
+  V.showing=true; V.seq=makeSeq(V.L); V.picks=[]; cells.forEach(c=>c.classList.remove('sel'));
+  el('t3_sel_info').textContent=`0/${V.L}`;
+  const ms=getNum('t3_ms',600,250,1500);
+  el('t3_state').textContent=`提示中（長さ ${V.L}）`;
+  for (let k=0;k<V.seq.length;k++){ await flashCell(V.seq[k], ms); await sleep(160); }
+  V.showing=false; el('t3_check').disabled=false; el('t3_state').textContent=`入力待ち（試行 ${V.trial+1}/2）`;
+}
+cells.forEach(d=>d.addEventListener('click', ()=>{
+  if (V.showing||V.done||el('t3_check').disabled) return;
+  if (V.picks.length>=V.L) {
+    el('t3_feedback').textContent=`これ以上選べません（必要 ${V.L}）。`;
+    d.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:120});
+    return;
+  }
+  const idx = parseInt(d.dataset.idx,10);
+  V.picks.push(idx);
+  d.classList.add('sel');
+  el('t3_sel_info').textContent=`${V.picks.length}/${V.L}`;
+}));
+function t3Start(){ t3Reset(); el('t3_startBtn').disabled=true; V.trial=0; t3Step(); }
+async function t3Step(){
+  if (V.done) return;
+  if (V.trial>=2){
+    const reached = V.success? V.L : V.L-1;
+    score.t3 = reached;
+    el('t3_feedback').innerHTML = (V.success?`<span class="ok">レベル達成！</span>`:`<span class="ng">終了。</span>`) + ` 到達最大長 <b>${reached}</b><br>正解順：${V.seq.join('→')}`;
+    if (score.t3===V.MAX){ score.t3Perfect=true; el('t3_badge').style.display='inline-block'; }
+    V.done=true; el('t3_startBtn').disabled=false; updateOverall(); return;
+  }
+  await t3Show();
+}
+async function t3Check(){
+  if (V.showing) return;
+  if (V.picks.length!==V.seq.length){ el('t3_feedback').textContent=`選択数が違います（必要 ${V.seq.length}）。`; return; }
+  const ok = V.picks.every((v,i)=>v===V.seq[i]); V.trial++;
+  if (ok){
+    if (V.L>=V.MAX){
+      score.t3 = V.MAX; score.t3Perfect=true; el('t3_badge').style.display='inline-block';
+      el('t3_feedback').innerHTML=`<span class="ok">満点！</span> 到達最大長 <b>${V.MAX}</b>（正解順：${V.seq.join('→')}）`;
+      V.done=true; el('t3_startBtn').disabled=false; updateOverall(); return;
+    }
+    V.success=true; V.L++; V.trial=0;
+    el('t3_feedback').innerHTML=`<span class="ok">正解！</span> 次は ${V.L}（正解順：${V.seq.join('→')})`;
+    updateOverall(); await sleep(FEEDBACK_DELAY_MS); t3Step();
+  }else{
+    el('t3_feedback').innerHTML=`<span class="ng">不正解。</span> 同レベル再試行（${V.trial}/2）／正解順：${V.seq.join('→')}`;
+    await sleep(FEEDBACK_DELAY_MS); t3Step();
+  }
+}
+el('t3_startBtn').addEventListener('click', t3Start);
+el('t3_abortBtn').addEventListener('click', ()=>{ V.done=true; el('t3_state').textContent='中断'; el('t3_startBtn').disabled=false; });
+el('t3_check').addEventListener('click', t3Check);
+t3Reset();
+
+// ===== Gwm: T4（2-back） =====
+const N = { seq:[], i:0, running:false, responded:false, hits:0, miss:0, fa:0, cr:0, timer:null };
+function make2backSeq(len=20){ const L='ABCDEFGH'; const arr=Array.from({length:len},()=>L[randInt(L.length)]);
+  const cand=[]; for(let k=2;k<len;k++) cand.push(k);
+  for(let t=0;t<4 && cand.length>0;t++){ const idx=cand.splice(randInt(cand.length),1)[0]; arr[idx]=arr[idx-2]; }
+  return arr;
+}
+function t4Reset(){ N.seq=[]; N.i=0; N.running=false; N.responded=false; N.hits=N.miss=N.fa=N.cr=0;
+  if (N.timer){ clearTimeout(N.timer); N.timer=null; }
+  el('t4_stim').textContent='—'; el('t4_feedback').textContent=''; el('t4_state').textContent='未開始'; el('t4_hitBtn').disabled=true;
+}
+function isTarget(i){ return (i>=2) && (N.seq[i]===N.seq[i-2]); }
+function t4Start(){
+  t4Reset();
+  showPrep(900,'準備してください').then(()=>{
+    const ms=getNum('t4_ms',1000,600,2000);
+    const gap=getNum('t4_gap',180,100,1000);
+    N.seq=make2backSeq(20); N.running=true; el('t4_startBtn').disabled=true; el('t4_hitBtn').disabled=false; el('t4_state').textContent='進行中';
+    t4Loop(ms,gap);
+  });
+}
+function t4Advance(ms,gap){
+  N.i++;
+  if (N.i>=N.seq.length){
+    N.running=false; el('t4_hitBtn').disabled=true; el('t4_startBtn').disabled=false; summarizeT4(); return;
+  }
+  N.responded=false;
+  el('t4_stim').textContent=N.seq[N.i];
+  N.timer = setTimeout(()=>{ // 時間切れ判定→隙間→次
+    if (isTarget(N.i)){ if (N.responded) N.hits++; else N.miss++; }
+    else{ if (N.responded) N.fa++; else N.cr++; }
+    el('t4_stim').textContent=''; setTimeout(()=>t4Advance(ms,gap), gap);
+  }, ms);
+}
+function t4Loop(ms,gap){
+  N.i = -1; // 最初に advance で 0 へ
+  t4Advance(ms,gap);
+}
+function t4Respond(){
+  if (!N.running || N.responded || N.i<0) return;
+  N.responded = true;
+}
+document.addEventListener('keydown', e=>{ if (e.code==='Space'){ e.preventDefault(); t4Respond(); }});
+el('t4_hitBtn').addEventListener('click', t4Respond);
+function summarizeT4(){
+  const total = N.hits+N.miss+N.fa+N.cr;
+  const acc = total>0 ? (N.hits+N.cr)/total : 0;
+  score.t4_acc = acc;
+  el('t4_feedback').innerHTML = `正答率：<b>${Math.round(acc*100)}%</b>（命中 ${N.hits}／ミス ${N.miss}／誤反応 ${N.fa}／正拒否 ${N.cr}）`;
+  el('t4_state').textContent='完了';
+  updateOverall();
+}
+el('t4_startBtn').addEventListener('click', t4Start);
+el('t4_abortBtn').addEventListener('click', ()=>{ N.running=false; if(N.timer){clearTimeout(N.timer);} el('t4_state').textContent='中断'; el('t4_startBtn').disabled=false; el('t4_hitBtn').disabled=true; });
+t4Reset();
+
+// ===== GF: 行列推理 =====
+const gfItems = [
+  {rows:[['A','B','C'],['D','E','?']], choices:['F','G','H','I'], ans:'F'},
+  {rows:[['1','2','3'],['2','3','4'],['3','4','?']], choices:['4','5','6','7'], ans:'5'},
+  {rows:[['○','△','□'],['△','□','☆'],['□','☆','?']], choices:['○','△','◇','★'], ans:'○'},
+  {rows:[['↖','↗','↘'],['↗','↘','↙'],['↘','↙','?']], choices:['↖','↗','↘','↙'], ans:'↖'},
+  {rows:[['2','4','8'],['3','6','12'],['4','8','?']], choices:['12','14','16','20'], ans:'16'},
+  {rows:[['■','□','■'],['□','■','□'],['■','□','?']], choices:['■','□','◇','◎'], ans:'■'},
+  {rows:[['A','C','E'],['B','D','F'],['C','E','?']], choices:['G','H','I','J'], ans:'G'},
+  {rows:[['●','○','●'],['○','●','○'],['●','○','?']], choices:['●','○','◎','▲'], ans:'●'},
+  {rows:[['1','3','6'],['2','5','9'],['3','7','?']], choices:['10','11','12','13'], ans:'12'},
+  {rows:[['▲','■','●'],['■','●','▲'],['●','▲','?']], choices:['■','▲','●','◆'], ans:'■'},
+  {rows:[['7','5','3'],['6','4','2'],['5','3','?']], choices:['1','0','2','4'], ans:'1'},
+  {rows:[['Z','X','V'],['Y','W','U'],['X','V','?']], choices:['T','S','U','W'], ans:'T'}
+];
+function renderGF(containerId, items){
+  const host = el(containerId); host.innerHTML='';
+  items.forEach((it,idx)=>{
+    const card = document.createElement('div'); card.className='card';
+    const title = document.createElement('div'); title.textContent = `Q${idx+1}`; title.className='muted small'; card.appendChild(title);
+    const wrap = document.createElement('div'); wrap.className='qwrap';
+    it.rows.forEach(r=>{
+      const row = document.createElement('div'); row.className='rowgrid';
+      row.style.gridTemplateColumns = `repeat(${r.length}, 46px)`;
+      r.forEach(tok=>{ const c=document.createElement('div'); c.className='cellg'; c.textContent=tok; row.appendChild(c); });
+      wrap.appendChild(row);
+    });
+    card.appendChild(wrap);
+    const box = document.createElement('div'); box.className='choices';
+    const choices = shuffle(it.choices.slice());
+    choices.forEach(c=>{
+      const b = document.createElement('button'); b.className='choice'; b.textContent=c;
+      b.addEventListener('click', ()=>{
+        [...box.children].forEach(ch=>ch.classList.remove('selected'));
+        b.classList.add('selected');
+        it.selText = c;
+      });
+      box.appendChild(b);
+    });
+    card.appendChild(box);
+    host.appendChild(card);
+  });
+}
+renderGF('gf_body', gfItems);
+const MIN_MCQ_ANS = 6;
+function countAnswered(items){ return items.reduce((s,it)=>s+(it.selText!=null?1:0),0); }
+el('gf_submit').addEventListener('click', ()=>{
+  const answered = countAnswered(gfItems);
+  if (answered < MIN_MCQ_ANS){
+    el('gf_feedback').innerHTML=`<span class="ng">未回答が多いです。</span> まず<b>${MIN_MCQ_ANS}問以上</b>選んでください（今は集計に反映しません）。`;
+    score.gf_correct = null; updateOverall(); return;
+  }
+  let correct = 0;
+  const boxes = $('#gf_body').querySelectorAll('.choices');
+  gfItems.forEach((it, i)=>{
+    const box = boxes[i]; const btns = [...box.children];
+    btns.forEach(btn=>{ btn.classList.remove('correct','wrong'); if (btn.textContent===it.ans) btn.classList.add('correct'); });
+    if (it.selText===it.ans) { correct++; } else {
+      const chosen = btns.find(b=>b.classList.contains('selected')); if (chosen) chosen.classList.add('wrong');
+    }
+  });
+  score.gf_correct = correct;
+  el('gf_feedback').innerHTML=`正答：<b>${correct}</b> / ${gfItems.length}`;
+  updateOverall();
+});
+
+// ===== GC: 語彙 =====
+const gcItems = [
+  {q:'堅実', choices:['着実','軽薄','奔放','曖昧'], ans:'着実'},
+  {q:'逡巡', choices:['ためらい','邁進','撤回','昂揚'], ans:'ためらい'},
+  {q:'精緻', choices:['精密','粗雑','単純','奔放'], ans:'精密'},
+  {q:'頑健', choices:['強健','脆弱','微弱','繊細'], ans:'強健'},
+  {q:'冗長', choices:['くどい','簡潔','俊敏','稚拙'], ans:'くどい'},
+  {q:'俯瞰', choices:['全体視','部分化','盲点','詳細'], ans:'全体視'},
+  {q:'示唆', choices:['ほのめかし','断定','沈黙','誇張'], ans:'ほのめかし'},
+  {q:'隔絶', choices:['へだたり','接続','同化','連帯'], ans:'へだたり'},
+  {q:'簡素', choices:['質素','華美','複雑','過剰'], ans:'質素'},
+  {q:'精励', choices:['勤勉','不精','怠惰','逸楽'], ans:'勤勉'},
+  {q:'流暢', choices:['なめらか','拙劣','停滞','過剰'], ans:'なめらか'},
+  {q:'博識', choices:['多学','無知','粗忽','偏狭'], ans:'多学'},
+];
+function renderMC(containerId, items){
+  const host = el(containerId); host.innerHTML='';
+  items.forEach((it,idx)=>{
+    const card = document.createElement('div'); card.className='card';
+    const q = document.createElement('div'); q.textContent = `Q${idx+1}. ${it.q}`; card.appendChild(q);
+    const box = document.createElement('div'); box.className='choices';
+    const choices = shuffle(it.choices.slice());
+    choices.forEach(c=>{
+      const b = document.createElement('button'); b.className='choice'; b.textContent=c;
+      b.addEventListener('click', ()=>{
+        [...box.children].forEach(ch=>ch.classList.remove('selected'));
+        b.classList.add('selected');
+        it.selText = c;
+      });
+      box.appendChild(b);
+    });
+    card.appendChild(box); host.appendChild(card);
+  });
+}
+function gradeMC(containerSel, items, feedbackEl){
+  let correct = 0;
+  const boxes = document.querySelector(containerSel).querySelectorAll('.choices');
+  items.forEach((it,i)=>{
+    const box = boxes[i]; const btns = [...box.children];
+    btns.forEach(btn=>{ btn.classList.remove('correct','wrong'); if (btn.textContent===it.ans) btn.classList.add('correct'); });
+    if (it.selText===it.ans) correct++; else {
+      const chosen = btns.find(b=>b.classList.contains('selected')); if (chosen) chosen.classList.add('wrong');
+    }
+  });
+  feedbackEl.innerHTML=`正答：<b>${correct}</b> / ${items.length}`;
+  return correct;
+}
+renderMC('gc_body', gcItems);
+el('gc_submit').addEventListener('click', ()=>{
+  const answered = countAnswered(gcItems);
+  if (answered < MIN_MCQ_ANS){
+    el('gc_feedback').innerHTML=`<span class="ng">未回答が多いです。</span> まず<b>${MIN_MCQ_ANS}問以上</b>選んでください（今は集計に反映しません）。`;
+    score.gc_correct = null; updateOverall(); return;
+  }
+  const correct = gradeMC('#gc_body', gcItems, el('gc_feedback'));
+  score.gc_correct = correct;
+  updateOverall();
+});
+
+// ===== Gv: 回転同一（時間管理を一本化） =====
+const gv = { trials:16, i:0, right:0, running:false, pat:null, rot:0, same:true, timer:null, limit:2500 };
+const gvcL = el('gv_left').getContext('2d'), gvcR = el('gv_right').getContext('2d');
+function randPattern(){ while(true){ const p=Array.from({length:9},()=>randInt(2)); const sum=p.reduce((a,b)=>a+b,0); if (sum>=2 && sum<=7) return p; } }
+function drawPattern(ctx, pat, rotDeg){
+  const W=ctx.canvas.width, H=ctx.canvas.height; ctx.clearRect(0,0,W,H);
+  ctx.save(); ctx.translate(W/2,H/2); ctx.rotate(rotDeg*Math.PI/180); ctx.translate(-W/2,-H/2);
+  const s=40, off=(W-3*s)/2;
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){
+    const v=pat[r*3+c]; ctx.fillStyle=v? '#333':'#f2eae6'; ctx.strokeStyle='#d8cccc';
+    ctx.fillRect(off+c*s, off+r*s, s-4, s-4); ctx.strokeRect(off+c*s, off+r*s, s-4, s-4);
+  }
+  ctx.restore();
+}
+function rotate90(p){ return [p[6],p[3],p[0], p[7],p[4],p[1], p[8],p[5],p[2]]; }
+function startGV(){
+  if (gv.timer){ clearTimeout(gv.timer); gv.timer=null; }
+  gv.trials=16; gv.i=0; gv.right=0; gv.running=true;
+  el('gv_start').disabled=true; el('gv_same').disabled=false; el('gv_diff').disabled=false; el('gv_feedback').textContent='進行中';
+  nextGV();
+}
+function nextGV(){
+  if (gv.timer){ clearTimeout(gv.timer); gv.timer=null; }
+  if (!gv.running) return;
+  if (gv.i>=gv.trials){
+    gv.running=false; el('gv_same').disabled=true; el('gv_diff').disabled=true; el('gv_start').disabled=false;
+    const acc = gv.right/gv.trials; score.gv_acc = acc;
+    el('gv_feedback').innerHTML=`正答率：<b>${Math.round(acc*100)}%</b>（${gv.right}/${gv.trials}）`;
+    updateOverall(); return;
+  }
+  gv.pat = randPattern();
+  const rotSteps = [0,90,180,270][randInt(4)];
+  const same = Math.random()<0.5;
+  gv.same = same; gv.rot = rotSteps;
+  drawPattern(gvcL, gv.pat, 0);
+  let rightPat = gv.pat.slice();
+  for(let n=0;n<rotSteps/90;n++) rightPat=rotate90(rightPat);
+  if (!same){ const pos = randInt(9); rightPat = rightPat.slice(); rightPat[pos] = 1-rightPat[pos]; }
+  drawPattern(gvcR, rightPat, 0);
+  gv.limit = clamp(parseInt(toHalfNumStr(el('gv_limit').value)||'2500',10),800,6000);
+  el('gv_timer').textContent = (gv.limit/1000).toFixed(2)+'s';
+  gv.timer = setTimeout(()=>{ // タイムアウト＝無反応として次へ
+    // 何も押されなかったので正誤処理は next の最初に行う（押下時のみカウント）
+    gv.i++; nextGV();
+  }, gv.limit);
+}
+function respGV(isSame){
+  if (!gv.running) return;
+  if (gv.timer){ clearTimeout(gv.timer); gv.timer=null; }
+  if (isSame===gv.same) gv.right++;
+  gv.i++; nextGV();
+}
+el('gv_start').addEventListener('click', startGV);
+el('gv_same').addEventListener('click', ()=>respGV(true));
+el('gv_diff').addEventListener('click', ()=>respGV(false));
+
+// ===== Gs: 記号比較（30秒・ペース固定＆1試行1回答） =====
+const gs = { running:false, time:30, right:0, wrong:0, total:0, responded:false, overallTimer:null, trialTimer:null, pace:900, same:false };
+const SYM = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+function randStr3(){ return SYM[randInt(SYM.length)]+SYM[randInt(SYM.length)]+SYM[randInt(SYM.length)]; }
+function fmt(t){ const m=String(Math.floor(t/60)).padStart(2,'0'); const s=String(t%60).padStart(2,'0'); return `${m}:${s}`; }
+async function startGS(){
+  await showPrep(900,'準備してください');
+  gs.running=true; gs.time=30; gs.right=0; gs.wrong=0; gs.total=0; gs.responded=false;
+  el('gs_start').disabled=true; el('gs_same').disabled=false; el('gs_diff').disabled=false;
+  el('gs_feedback').textContent='進行中';
+  tickGS();
+  nextPairGS();
+  gs.trialTimer = setInterval(nextPairGS, gs.pace);
+}
+function stopGS(){
+  gs.running=false; clearInterval(gs.overallTimer); clearInterval(gs.trialTimer);
+  el('gs_same').disabled=true; el('gs_diff').disabled=true; el('gs_start').disabled=false;
+  score.gs_count = gs.right;
+  const acc = (gs.total>0)? Math.round(gs.right/gs.total*100) : 0;
+  el('gs_feedback').innerHTML=`正答数：<b>${gs.right}</b>（提示 ${gs.total}，正答率 ${acc}%）`;
+  updateOverall();
+}
+function tickGS(){
+  el('gs_timer').textContent = fmt(gs.time);
+  gs.overallTimer = setInterval(()=>{
+    gs.time--; el('gs_timer').textContent=fmt(gs.time);
+    if (gs.time<=0){ clearInterval(gs.overallTimer); stopGS(); }
+  },1000);
+}
+function nextPairGS(){
+  if (!gs.running) return;
+  gs.responded=false;
+  const same = Math.random()<0.5; gs.same = same;
+  const left = randStr3(); const right = same ? left : randStr3();
+  el('gs_pair').textContent = `${left}  |  ${right}`;
+  el('gs_meta').textContent = `ペース: ${gs.pace}ms/試行　提示: ${gs.total+1}`;
+  gs.total++;
+}
+function respGS(isSame){
+  if (!gs.running) return;
+  if (gs.responded) return;
+  gs.responded = true;
+  if (isSame===gs.same) gs.right++; else gs.wrong++;
+}
+el('gs_start').addEventListener('click', startGS);
+el('gs_same').addEventListener('click', ()=>respGS(true));
+el('gs_diff').addEventListener('click', ()=>respGS(false));
+document.addEventListener('keydown', e=>{
+  if (!gs.running) return;
+  if (e.key==='f' || e.key==='F') respGS(true);
+  if (e.key==='j' || e.key==='J') respGS(false);
+});
+
+// ===== 標準化・CCI =====
+function z_t1(span){ return (span - 7) / 2; }
+function z_t2(span){ return (span - 5) / 1.5; }
+function z_t3(span){ return (span - 5) / 1.5; }
+function z_t4(acc){ return (acc - 0.70) / 0.15; }
+function z_gf(n){ return (n - 7) / 2.5; }
+function z_gc(n){ return (n - 8) / 2.0; }
+function z_gv(acc){ return (acc - 0.75) / 0.15; }
+function z_gs(n){ return (n - 25) / 7.0; }
+
+const overallEl = el('overall'), detailEl = el('detail');
+function classifyPct(p){ if (p>=97) return '最上位'; if (p>=90) return '上位'; if (p>=75) return 'やや上位'; if (p>=25) return '平均域'; if (p>=10) return 'やや下位'; return '下位'; }
+
+function updateOverall(){
+  const zs = {};
+  const zw = [];
+  if (score.t1!=null) zw.push(z_t1(score.t1));
+  if (score.t2!=null) zw.push(z_t2(score.t2));
+  if (score.t3!=null) zw.push(z_t3(score.t3));
+  if (score.t4_acc!=null) zw.push(z_t4(score.t4_acc));
+  if (zw.length>0) zs.Gwm = zw.reduce((a,b)=>a+b,0)/zw.length;
+
+  if (score.gf_correct!=null) zs.Gf = z_gf(score.gf_correct);
+  if (score.gc_correct!=null) zs.Gc = z_gc(score.gc_correct);
+  if (score.gv_acc!=null)     zs.Gv = z_gv(score.gv_acc);
+  if (score.gs_count!=null)   zs.Gs = z_gs(score.gs_count);
+
+  const keys = Object.keys(zs);
+  if (keys.length===0){
+    overallEl.textContent='未実施';
+    detailEl.textContent='各タスク→能力別z→CCI。％位と「上位◯％」を表示。';
+    el('result_body').textContent='未実施';
+    drawRadar(null);
+    return;
+  }
+  const zbar = keys.reduce((s,k)=>s+zs[k],0)/keys.length;
+  const pct = Math.round(normCdf(zbar)*100);
+  const top = Math.max(0, 100 - pct);
+  overallEl.innerHTML = `CCI：<b>${pct}％位</b>（上位 <b>${top}%</b>） <span class="pill">${classifyPct(pct)}</span>`;
+
+  const parts = [];
+  const pcts = {};
+  if (zs.Gf!=null){ const p=Math.round(normCdf(zs.Gf)*100); pcts.Gf=p; parts.push(`Gf：${p}％位`); }
+  if (zs.Gc!=null){ const p=Math.round(normCdf(zs.Gc)*100); pcts.Gc=p; parts.push(`Gc：${p}％位`); }
+  if (zs.Gv!=null){ const p=Math.round(normCdf(zs.Gv)*100); pcts.Gv=p; parts.push(`Gv：${p}％位`); }
+  if (zs.Gs!=null){ const p=Math.round(normCdf(zs.Gs)*100); pcts.Gs=p; parts.push(`Gs：${p}％位`); }
+  if (zs.Gwm!=null){ const p=Math.round(normCdf(zs.Gwm)*100); pcts.Gwm=p; parts.push(`Gwm：${p}％位`); }
+  detailEl.textContent = parts.join(' ／ ');
+
+  const radarPcts = ['Gf','Gc','Gv','Gs','Gwm'].map(k=>pcts[k]||0);
+  drawRadar(radarPcts);
+
+  // 万人向けコメント（前回のまま）
+  const com = makeFriendlyComment(pct, pcts);
+  el('result_body').innerHTML = `
+    <div>CCI：<b>${pct}％位</b>（上位 ${top}%）</div>
+    <div class="small muted">z=${zbar.toFixed(2)} ／ ${parts.join(' ／ ')}</div>
+    ${score.t3Perfect?'<div class="pill" style="margin-top:6px">視空間（3×3）満点</div>':''}
+    <div class="small muted">注：近似標準化。簡易版のため臨床評価用途には使えません。</div>
+  `;
+  el('result_comment').innerHTML = com.html;
+
+  lastSummary = { pct, top, pcts, comment: com.text };
+}
+
+function makeFriendlyComment(overallPct, pcts){
+  const jpName = {Gf:'推理力', Gc:'言語力', Gv:'空間センス', Gs:'処理の速さ', Gwm:'ワーキングメモリ'};
+  const daily = {
+    Gf:{use:'初見の問題で型を見抜く・仕様の抜けに気づく', tip:'「なぜ？」を3回たどる／ナンプレや謎解きで遊ぶ'},
+    Gc:{use:'要約・言い換え・伝わる説明', tip:'メールの冒頭に「一言で：◯◯」を書いてみる'},
+    Gv:{use:'地図の向き替え・配置やレイアウト・図の読み取り', tip:'地図アプリを北固定で使う／折り紙・積み木系パズル'},
+    Gs:{use:'メール仕分け・チェック作業・タイピングなど短距離勝負', tip:'30秒タイムアタックで10件仕分けを試す'},
+    Gwm:{use:'複数タスクの同時進行・暗算・口頭指示を覚えて動く', tip:'買い物リスト3〜5個を見ずに覚える／2-back系の簡単ゲーム'}
+  };
+  const entries = Object.entries(pcts); if (!entries.length) return {text:'', html:''};
+  entries.sort((a,b)=>b[1]-a[1]);
+  const [strong, sp] = entries[0]; const [weak, wp] = entries[entries.length-1];
+
+  let opener = '';
+  if (overallPct>=90) opener='全体にハイパフォーマンス。';
+  else if (overallPct>=75) opener='やや高めで安定。';
+  else if (overallPct>=25) opener='バランスは概ね平均域。';
+  else opener='力を温存しがち。集中のタイミング作りが鍵。';
+
+  const strongLine = `強みは<b>${jpName[strong]}</b>（${sp}％位）。日常では「${daily[strong].use}」が得意です。`;
+  const useLine = `・活かし方：${daily[strong].tip}`;
+  const growLine = (wp<25)
+    ? `・伸ばし方（${jpName[weak]}）：${daily[weak].tip}`
+    : `・伸ばし方：得意な${jpName[strong]}を起点に、他の場面にも同じコツを横展開。`;
+
+  const html = `${opener} ${strongLine}<br>${useLine}<br>${growLine}`;
+  const text = `${opener} 強みは${jpName[strong]}（${sp}％位）。日常では「${daily[strong].use}」が得意。\n- 活かし方：${daily[strong].tip}\n- 伸ばし方：${(wp<25)? daily[weak].tip : '得意を起点に横展開'}`;
+  return {text, html};
+}
+
+// ===== レーダー & 画像保存 =====
+const radar = el('radar'); const ctx = radar.getContext('2d');
+function drawRadar(pcts, labels=['Gf','Gc','Gv','Gs','Gwm']){
+  ctx.clearRect(0,0,radar.width,radar.height);
+  const cx = radar.width/2, cy = radar.height/2+10, R = Math.min(radar.width,radar.height)*0.34;
+  const axes = labels.length;
+  ctx.strokeStyle = '#e8dfdf'; ctx.lineWidth=1;
+  for(let r=0.2;r<=1.0;r+=0.2){
+    ctx.beginPath();
+    for(let k=0;k<axes;k++){
+      const ang=-Math.PI/2 + k*2*Math.PI/axes;
+      const x=cx+R*r*Math.cos(ang), y=cy+R*r*Math.sin(ang);
+      if (k===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.save(); ctx.fillStyle='#9a8f8f'; ctx.font='12px system-ui';
+    ctx.fillText(String(Math.round(r*100))+'%', cx+5, cy-R*r+12); ctx.restore();
+  }
+  ctx.strokeStyle='#d7cdcd';
+  for(let k=0;k<axes;k++){
+    const ang=-Math.PI/2 + k*2*Math.PI/axes;
+    const x=cx+R*Math.cos(ang), y=cy+R*Math.sin(ang);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+    ctx.save(); ctx.fillStyle='#5d4949'; ctx.font='14px system-ui';
+    const lx=cx+(R+18)*Math.cos(ang), ly=cy+(R+18)*Math.sin(ang);
+    ctx.textAlign = Math.cos(ang)>0.2 ? 'left' : (Math.cos(ang)<-0.2 ? 'right' : 'center');
+    ctx.fillText(labels[k], lx, ly); ctx.restore();
+  }
+  if (!pcts) return;
+  const pts=[];
+  for(let k=0;k<axes;k++){
+    const r = Math.max(0, Math.min(1, (pcts[k]||0)/100 ));
+    const ang=-Math.PI/2 + k*2*Math.PI/axes;
+    pts.push([cx+R*r*Math.cos(ang), cy+R*r*Math.sin(ang)]);
+  }
+  ctx.beginPath(); pts.forEach(([x,y],i)=>{ if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+  ctx.closePath(); ctx.fillStyle='rgba(142,90,90,0.18)'; ctx.fill();
+  ctx.strokeStyle='rgba(142,90,90,0.9)'; ctx.lineWidth=2; ctx.stroke();
+}
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+  const chars = (text||'').split(''); let line='';
+  for (let n=0;n<chars.length;n++){
+    const test = line + chars[n];
+    if (ctx.measureText(test).width>maxWidth && n>0){ ctx.fillText(line,x,y); line=chars[n]; y+=lineHeight; }
+    else { line=test; }
+  } ctx.fillText(line,x,y);
+}
+let lastSummary=null;
+function saveScoreCard(){
+  if (!lastSummary){ alert('まずはテストを実施して結果を出してください。'); return; }
+  const w=900, h=1200; const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const c = cv.getContext('2d');
+  const g = c.createLinearGradient(0,0,0,h); g.addColorStop(0,'#fffaf2'); g.addColorStop(1,'#f3ebe4'); c.fillStyle=g; c.fillRect(0,0,w,h);
+  c.fillStyle='#8e5a5a'; c.font='700 36px system-ui'; c.fillText('認知プロファイル・チャレンジ', 40, 64);
+  c.fillStyle='#735f5f'; c.font='16px system-ui'; c.fillText('(CHC簡易版)', 360, 64);
+  const dt = new Date(); c.fillStyle='#8a7a7a'; c.font='14px system-ui'; c.fillText(dt.toLocaleString(), 40, 88);
+  c.fillStyle='#534444'; c.font='24px system-ui'; c.fillText(`CCI：${lastSummary.pct}％位（上位 ${lastSummary.top}%）`, 40, 130);
+  const rW = 760, rH = 540; c.drawImage(radar, (w-rW)/2, 160, rW, rH);
+  c.fillStyle='#615050'; c.font='20px system-ui'; c.fillText('能力別％位', 40, 740);
+  c.font='18px system-ui'; let y=770;
+  [['Gf','流動性推理'],['Gc','結晶性'],['Gv','視覚'],['Gs','処理速度'],['Gwm','作動記憶']]
+    .forEach(([k,jp])=>{ const p=lastSummary.pcts[k]??0; c.fillText(`${jp}: ${p}％位`, 48, y); y+=28; });
+  if (score.t3Perfect){ c.fillStyle='#1a7f37'; c.font='18px system-ui'; c.fillText('視空間（3×3）満点', 48, y+8); y+=32; }
+  c.fillStyle='#8e5a5a'; c.font='20px system-ui'; c.fillText('コメント', 40, y+20); y+=48;
+  c.fillStyle='#4b3f3f'; c.font='18px system-ui'; wrapText(c, lastSummary.comment || '—', 48, y, 804, 26);
+  const url = cv.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='CHC_CCI_score.png'; a.click();
+}
+el('btnSaveCard').addEventListener('click', saveScoreCard);
+
+// 初期描画
+updateOverall();
+})();
+</script>
+</body>
+</html>
