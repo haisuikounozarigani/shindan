@@ -23,29 +23,52 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 .sub{margin:0;color:var(--muted)}
 .tap{margin-top:14px;font-size:.95em;color:#7a6a77}
 
-/* Main list */
+/* Main */
 .wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
 .wrap.show{opacity:1;transform:none}
+
+/* Quick bar + filter chips */
+.quick{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.quick .btn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg);cursor:pointer}
+.quick .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c5763;cursor:pointer}
+.chip.active{background:var(--fg);color:#fff;border-color:var(--fg)}
+
+/* Cards */
 .links{display:grid;gap:12px;margin-top:10px}
 a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
   background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;
   box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
 a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,.18);border-color:#efd7ff}
-.emo{font-size:20px}.ttl{font-weight:700}.sub2{color:var(--muted);font-size:.92em;margin-top:2px}
+.emo{font-size:20px}
+.ttl{font-weight:700;display:flex;align-items:center;gap:6px}
+.mini{font-size:.72em;padding:2px 6px;border-radius:8px;border:1px solid #f0d8ea;background:#fff}
+.mini.new{background:linear-gradient(90deg,#ffd6ea,#e7dbff);color:#624c4c;border-color:transparent}
+.sub2{color:var(--muted);font-size:.92em;margin-top:2px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.pill{padding:3px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571}
 .badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
+
+/* Footer */
 .note{color:var(--muted);text-align:center;margin:18px 0}
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
-.footerbar a{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff}
+.footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff;cursor:pointer}
+
+/* Accessibility toggles */
+:root[data-font="lg"]{font-size:17px}
+:root[data-contrast="high"] .link{border-color:#d7bed0}
+:root[data-contrast="high"] .sub2{color:#5b4752}
+
 @media (max-width:360px){.badge{display:none}}
 </style>
 </head>
 <body>
 
-<!-- Splash：タップ/クリック（またはEnter/Space）でだけ閉じる -->
+<!-- Splash -->
 <section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0">
   <div class="fallback" aria-hidden="true"></div>
-  <!-- 絶対パスで参照（どこからでも確実に読める） -->
   <img class="bg" alt="心の標本のキービジュアル"
        src="/shindan/assets/hero/specimens-hero-1080.png"
        onerror="this.src='/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png'">
@@ -57,31 +80,117 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 </section>
 
 <main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1">
-  <nav class="links">
+  <!-- Quick actions & Filters -->
+  <div class="quick" id="quick">
+    <button class="btn primary" id="btn-random">おまかせで選ぶ</button>
+    <button class="btn" id="btn-continue" style="display:none">つづきから再開</button>
+  </div>
+  <div class="filters" id="filters">
+    <button class="chip active" data-filter="all">すべて</button>
+    <button class="chip" data-filter="短時間">短時間</button>
+    <button class="chip" data-filter="しっかり">しっかり</button>
+    <button class="chip" data-filter="性格">性格</button>
+    <button class="chip" data-filter="認知">認知</button>
+  </div>
 
-    <!-- ★ 新規追加：CHC まとめテスト -->
-    <a class="link" href="/shindan/chc-cci-shin.html?src=specimens">
+  <nav class="links" id="list">
+
+    <!-- CHC まとめテスト -->
+    <a class="link" href="/shindan/chc-cci-shin.html?src=specimens"
+       data-id="chc-cci" data-tags="認知,しっかり" data-mins="6" data-updated="2025-08-15">
       <span class="emo">🧠</span>
       <div>
-        <div class="ttl">認知プロファイル・チャレンジ（CHC簡易版）</div>
+        <div class="ttl">認知プロファイル・チャレンジ（CHC簡易版） <span class="mini new" data-new>NEW</span></div>
         <div class="sub2">Gf/Gc/Gv/Gs/Gwmを一発計測・結果は画像保存OK</div>
+        <div class="meta"><span class="pill">⏱6分</span><span class="pill">#認知</span><span class="pill">#しっかり</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
 
     <!-- 既存の診断 -->
-    <a class="link" href="/shindan/hanashin.html?src=specimens"><span class="emo">🌸</span><div><div class="ttl">花診断（オリジナル）</div><div class="sub2">6問で象徴の花を提示</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="/shindan/housekishin.html?src=specimens"><span class="emo">💎</span><div><div class="ttl">宝石×恋愛スタイル</div><div class="sub2">Love Styles × 愛着で24タイプ</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="/shindan/drinkshin.html?src=specimens"><span class="emo">☕</span><div><div class="ttl">飲み物サイコパス（LSRP簡易）</div><div class="sub2">10問で“毒気”をライトに測定</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="/shindan/iceshin.html?src=specimens"><span class="emo">🍦</span><div><div class="ttl">冷酷アイスクリーム（Mach-IV簡易）</div><div class="sub2">駆け引き度をスコア化</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="/shindan/mirorshin.html?src=specimens"><span class="emo">🪞</span><div><div class="ttl">鏡ナルシスト（NARQ簡易）</div><div class="sub2">14問でAdmiration/Rivalry傾向</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="/shindan/animalshin.html?src=specimens"><span class="emo">🐾</span><div><div class="ttl">性格動物診断（SBF）</div><div class="sub2">5因子を動物メタファで表示</div></div><span class="badge">診断へ</span></a>
-    <a class="link" href="/shindan/sweetshin.html?src=specimens"><span class="emo">🍰</span><div><div class="ttl">7つの休息 × スイーツ診断</div><div class="sub2">Saundra Dalton-Smithの提案に基づく</div></div><span class="badge">診断へ</span></a>
+    <a class="link" href="/shindan/hanashin.html?src=specimens"
+       data-id="hana" data-tags="性格,短時間" data-mins="3" data-updated="2025-07-20">
+      <span class="emo">🌸</span>
+      <div>
+        <div class="ttl">花診断（オリジナル）</div>
+        <div class="sub2">6問で象徴の花を提示</div>
+        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <a class="link" href="/shindan/housekishin.html?src=specimens"
+       data-id="houseki" data-tags="性格,しっかり" data-mins="6" data-updated="2025-06-10">
+      <span class="emo">💎</span>
+      <div>
+        <div class="ttl">宝石×恋愛スタイル</div>
+        <div class="sub2">Love Styles × 愛着で24タイプ</div>
+        <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <a class="link" href="/shindan/drinkshin.html?src=specimens"
+       data-id="drink" data-tags="性格,短時間" data-mins="4" data-updated="2025-05-01">
+      <span class="emo">☕</span>
+      <div>
+        <div class="ttl">飲み物サイコパス（LSRP簡易）</div>
+        <div class="sub2">10問で“毒気”をライトに測定</div>
+        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <a class="link" href="/shindan/iceshin.html?src=specimens"
+       data-id="ice" data-tags="性格,短時間" data-mins="3" data-updated="2025-05-20">
+      <span class="emo">🍦</span>
+      <div>
+        <div class="ttl">冷酷アイスクリーム（Mach-IV簡易）</div>
+        <div class="sub2">駆け引き度をスコア化</div>
+        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <a class="link" href="/shindan/mirorshin.html?src=specimens"
+       data-id="mirror" data-tags="性格,しっかり" data-mins="5" data-updated="2025-04-18">
+      <span class="emo">🪞</span>
+      <div>
+        <div class="ttl">鏡ナルシスト（NARQ簡易）</div>
+        <div class="sub2">14問でAdmiration/Rivalry傾向</div>
+        <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <a class="link" href="/shindan/animalshin.html?src=specimens"
+       data-id="animal" data-tags="性格,短時間" data-mins="4" data-updated="2025-03-05">
+      <span class="emo">🐾</span>
+      <div>
+        <div class="ttl">性格動物診断（SBF）</div>
+        <div class="sub2">5因子を動物メタファで表示</div>
+        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <a class="link" href="/shindan/sweetshin.html?src=specimens"
+       data-id="sweet" data-tags="セルフケア,短時間" data-mins="3" data-updated="2025-02-12">
+      <span class="emo">🍰</span>
+      <div>
+        <div class="ttl">7つの休息 × スイーツ診断</div>
+        <div class="sub2">Saundra Dalton-Smithの提案に基づく</div>
+        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#セルフケア</span><span class="pill">#短時間</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
   </nav>
   <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
 </main>
 
 <nav class="footerbar">
+  <button id="toggle-font">Aa</button>
+  <button id="toggle-contrast">高コントラスト</button>
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
@@ -96,19 +205,104 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 <script>
 (function(){
-  const splash = document.getElementById('splash');
-  const content = document.getElementById('content');
-  const reveal = ()=>{ splash.classList.add('hidden'); content.classList.add('show'); content.focus({preventScroll:true}); };
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const splash = $('#splash');
+  const content = $('#content');
 
-  // タップ/クリックで開く（リンク等の誤作動は除外）
-  splash.addEventListener('click', e=>{
-    if (e.target.closest('a,button,label,input')) return;
-    reveal();
+  const vibrate = (ms=10)=> ('vibrate' in navigator) && navigator.vibrate(ms);
+
+  // Reveal
+  const reveal = ()=>{ splash.classList.add('hidden'); content.classList.add('show'); content.focus({preventScroll:true}); };
+  splash.addEventListener('click', e=>{ if (!e.target.closest('a,button,label,input')) reveal(); });
+  splash.addEventListener('keydown', e=>{ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(); } });
+
+  // NEW badge (within 21 days)
+  const today = new Date();
+  $$('#list a.link').forEach(a=>{
+    const ds = a.dataset.updated;
+    const badge = a.querySelector('[data-new]');
+    if (!ds || !badge) return;
+    const d = new Date(ds+'T00:00:00');
+    const diff = (today - d) / (1000*60*60*24);
+    if (diff <= 21) { badge.style.display='inline-block'; }
+    else { badge.style.display='none'; }
   });
-  // キーボード（Enter/Space）でも開く
-  splash.addEventListener('keydown', e=>{
-    if (e.key==='Enter' || e.key===' '){ e.preventDefault(); reveal(); }
+
+  // Filters
+  const chips = $$('#filters .chip');
+  function applyFilter(){
+    const act = $('#filters .chip.active')?.dataset.filter || 'all';
+    $$('#list a.link').forEach(a=>{
+      const tags = (a.dataset.tags||'').split(',');
+      const mins = parseInt(a.dataset.mins||'0',10);
+      let show=true;
+      if (act==='短時間') show = mins<=3;
+      else if (act==='しっかり') show = mins>=5;
+      else if (act!=='all') show = tags.includes(act);
+      a.style.display = show ? '' : 'none';
+    });
+  }
+  chips.forEach(ch=>{
+    ch.addEventListener('click', ()=>{
+      chips.forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      vibrate();
+      applyFilter();
+    });
   });
+  applyFilter();
+
+  // Continue last
+  const CONT_KEY = 'specimens:last';
+  function updateContinue(){
+    const btn = $('#btn-continue');
+    const raw = localStorage.getItem(CONT_KEY);
+    if (!raw){ btn.style.display='none'; return; }
+    try{
+      const obj = JSON.parse(raw);
+      const a = $(`#list a.link[data-id="${obj.id}"]`);
+      if (!a){ btn.style.display='none'; return; }
+      btn.textContent = `つづきから再開：${obj.title}`;
+      btn.onclick = ()=>{ location.href = obj.href; };
+      btn.style.display='inline-block';
+    }catch{ btn.style.display='none'; }
+  }
+  // Save on click
+  $$('#list a.link').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      const data = { id:a.dataset.id, title:$('.ttl',a)?.textContent?.trim()||'診断', href:a.getAttribute('href') };
+      localStorage.setItem(CONT_KEY, JSON.stringify(data));
+      vibrate();
+    }, {passive:true});
+  });
+  updateContinue();
+
+  // Random pick
+  $('#btn-random').addEventListener('click', ()=>{
+    const vis = $$('#list a.link').filter(a=>a.style.display!=='none');
+    if (!vis.length) return;
+    const pick = vis[Math.floor(Math.random()*vis.length)];
+    vibrate(15);
+    location.href = pick.getAttribute('href');
+  });
+
+  // Accessibility toggles
+  const root = document.documentElement;
+  const FONT_KEY='specimens:font', CONT_KEY2='specimens:contrast';
+  function applyPrefs(){
+    root.setAttribute('data-font', localStorage.getItem(FONT_KEY)||'');
+    root.setAttribute('data-contrast', localStorage.getItem(CONT_KEY2)||'');
+  }
+  $('#toggle-font').addEventListener('click', ()=>{
+    const cur = root.getAttribute('data-font')==='lg' ? '' : 'lg';
+    localStorage.setItem(FONT_KEY, cur); applyPrefs(); vibrate();
+  });
+  $('#toggle-contrast').addEventListener('click', ()=>{
+    const cur = root.getAttribute('data-contrast')==='high' ? '' : 'high';
+    localStorage.setItem(CONT_KEY2, cur); applyPrefs(); vibrate();
+  });
+  applyPrefs();
 })();
 </script>
 
