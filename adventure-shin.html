@@ -81,6 +81,17 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
 @media (max-width:560px){
   .bar{grid-template-columns:100px 1fr 44px}
 }
+
+/* 近い候補（複数表示） */
+.nearWrap{margin-top:10px}
+.nearWrap h3{margin:0 0 6px;font-size:1em}
+.nearList{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.nearCard{min-width:180px;max-width:220px;border:1px solid #eee3f5;border-radius:12px;background:#fff}
+.nearThumb{width:100%;aspect-ratio:1/1;border-bottom:1px solid #eee3f5;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nearThumb img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;background:transparent}
+.nearBody{padding:8px}
+.nearName{font-weight:800}
+.nearCatch{font-size:.9em;color:#6b5560;margin-top:2px}
 </style>
 </head>
 <body>
@@ -138,6 +149,12 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
       </div>
     </div>
 
+    <!-- 近い候補（複数表示：必要時のみ表示） -->
+    <div id="nearby" class="nearWrap" style="display:none">
+      <h3>近い候補</h3>
+      <div class="nearList" id="nearList"></div>
+    </div>
+
     <div class="saveRow">
       <button id="btnSave" class="primary" type="button">結果カードを画像保存</button>
       <button id="btnRetry" type="button">最初から</button>
@@ -148,6 +165,11 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
 </div>
 
 <script>
+/* ====== しきい値（併記の条件） ====== */
+const NEAR_DELTA = 4;        // トップとの差が4点以内
+const NEAR_MAX = 2;          // 最大2職まで表示
+const NEAR_MIN_OVERALL = 60; // 総合が熟練(60)以上のときだけ候補を併記
+
 /* ====== 7因子（略号→表示名） ====== */
 const FACTOR_NAMES = {
   GR:'粘り強さ', RF:'回復力', FX:'柔軟性', PL:'計画性', SS:'支援活用', EF:'集中力', SE:'自己効力感'
@@ -350,28 +372,42 @@ function scoreSection(sec){
   const pct = Math.round((raw - n) / (4 * n) * 100);
   return Math.max(0, Math.min(100, pct));
 }
+
+/* トップと“近い候補”の算出 */
 function computeAll(){
   const pcts={};
   for(const sec of SECTIONS) pcts[sec.key]=scoreSection(sec);
   const overall = Math.round(Object.values(pcts).reduce((a,b)=>a+b,0)/SECTIONS.length);
 
-  // 勇者（hero/00.png）
+  // 勇者（hero/00.png）: 勇者のみ
   const minEach = Math.min(...Object.values(pcts));
   if (minEach>=HERO_RULE.minEach && overall>=HERO_RULE.minOverall){
-    return {pcts, overall, job:HERO, tier:null, heroOnly:true};
+    return {pcts, overall, job:HERO, tier:null, heroOnly:true, nearby:[], scores:[]};
   }
-  // 重み付き最大
-  let best=null, bestScore=-1;
-  for(const j of JOBS){
+
+  // 各職の重み付きスコアを算出
+  const scores = JOBS.map(j=>{
     const w=j.w;
     const sc =
       (pcts.GR||0)*(w.GR||0) + (pcts.RF||0)*(w.RF||0) + (pcts.FX||0)*(w.FX||0) +
       (pcts.PL||0)*(w.PL||0) + (pcts.SS||0)*(w.SS||0) + (pcts.EF||0)*(w.EF||0) +
       (pcts.SE||0)*(w.SE||0);
-    if(sc>bestScore){ bestScore=sc; best=j; }
+    return {job:j, score:Math.round(sc)};
+  }).sort((a,b)=>b.score-a.score);
+
+  const best = scores[0];
+  const tier = tierOf(overall);
+
+  // 近い候補（上位との差が NEAR_DELTA 以内 & 総合が一定以上）
+  let nearby=[];
+  if (overall>=NEAR_MIN_OVERALL){
+    nearby = scores.slice(1).filter(s=> (best.score - s.score) <= NEAR_DELTA )
+                           .slice(0, NEAR_MAX);
   }
-  return {pcts, overall, job:best, tier:tierOf(overall), heroOnly:false};
+
+  return {pcts, overall, job:best.job, tier, heroOnly:false, nearby, scores};
 }
+
 function tierOf(overall){
   if (overall>=90) return {code:'05', name:'伝説級'};
   if (overall>=75) return {code:'04', name:'英雄'};
@@ -393,6 +429,8 @@ const listStrength=document.getElementById('listStrength');
 const listCaution=document.getElementById('listCaution');
 const listQuest=document.getElementById('listQuest');
 const listGrowth=document.getElementById('listGrowth');
+const nearWrap=document.getElementById('nearby');
+const nearList=document.getElementById('nearList');
 
 btnSubmit.addEventListener('click', ()=>{
   const total = SECTIONS.reduce((n,s)=>n+s.items.length,0);
@@ -431,8 +469,32 @@ btnSubmit.addEventListener('click', ()=>{
   fill(listQuest,    R.job.quests);
   fill(listGrowth,   R.job.growth);
 
-  // 画像
+  // メイン画像
   renderArt(R);
+
+  // 近い候補
+  if (!R.heroOnly && R.nearby.length){
+    nearWrap.style.display='';
+    nearList.innerHTML='';
+    R.nearby.forEach(({job})=>{
+      const card=document.createElement('div');
+      card.className='nearCard';
+      const imgSrc = `/shindan/assets/results/adventurer/${job.dir}/${R.tier.code}.png`;
+      card.innerHTML = `
+        <div class="nearThumb">
+          <img src="${imgSrc}" alt="${job.name} 画像" loading="lazy"
+               onerror="this.alt='画像なし';this.style.opacity=.3;">
+        </div>
+        <div class="nearBody">
+          <div class="nearName">${job.name}</div>
+          <div class="nearCatch">${job.catch}</div>
+        </div>`;
+      nearList.appendChild(card);
+    });
+  }else{
+    nearWrap.style.display='none';
+    nearList.innerHTML='';
+  }
 
   // 切り替え
   document.getElementById('intro').style.display='none';
