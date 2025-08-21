@@ -58,6 +58,13 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 :root[data-font="lg"]{font-size:17px}
 @media (max-width:360px){.badge{display:none}}
+
+/* Share sheet + toast */
+.sharesheet{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;display:none}
+.sharesheet .box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:10px;display:flex;gap:8px}
+.sharesheet .box a,.sharesheet .box button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#533;cursor:pointer;text-decoration:none}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9em;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
@@ -80,6 +87,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <div class="quick" id="quick">
     <button class="btn primary" id="btn-random">おまかせで選ぶ</button>
     <button class="btn" id="btn-continue" style="display:none">つづきから再開</button>
+    <button class="btn" id="btn-share">共有する</button>
   </div>
   <div class="filters" id="filters">
     <button class="chip active" data-filter="all">すべて</button>
@@ -91,7 +99,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   </div>
 
   <nav class="links" id="list">
-
     <!-- NEW: 冒険者逆境力診断（7因子） -->
     <a class="link" href="/shindan/adventure-shin.html?src=specimens"
        data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
@@ -207,6 +214,17 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
 </nav>
 
+<!-- Share sheet + toast -->
+<div id="shareSheet" class="sharesheet" aria-hidden="true">
+  <div class="box" role="dialog" aria-label="共有メニュー">
+    <a id="share-x" href="#" rel="noopener">Xで共有</a>
+    <a id="share-line" href="#" rel="noopener">LINEで共有</a>
+    <button id="share-copy" type="button">URLをコピー</button>
+    <button id="share-close" type="button">閉じる</button>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite">コピーしました</div>
+
 <noscript>
   <div style="max-width:860px;margin:16px auto;padding:0 14px;color:#7a6a77">
     JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
@@ -288,7 +306,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     vibrate(15); location.href=pick.getAttribute('href');
   });
 
-  // Accessibility: font only（高コントラスト機能はなし）
+  // Accessibility: font only
   const root=document.documentElement;
   const FONT_KEY='specimens:font';
   function applyPrefs(){ root.setAttribute('data-font', localStorage.getItem(FONT_KEY)||''); }
@@ -297,6 +315,68 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     localStorage.setItem(FONT_KEY,cur); applyPrefs(); vibrate();
   });
   applyPrefs();
+
+  /* ===== 共有ボタン ===== */
+  const shareBtn = $('#btn-share');
+  const sheet = $('#shareSheet');
+  const toast = $('#toast');
+
+  const shareData = {
+    title: document.title,
+    text: '診断の入口まとめ「心の標本」',
+    url: location.href.split('#')[0]
+  };
+
+  function showToast(msg='コピーしました'){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 1400);
+  }
+  function openSheet(){
+    // リンクを差し替え
+    const tw = 'https://twitter.com/intent/tweet?text='
+      + encodeURIComponent('診断の入口まとめ「心の標本」') + '&url=' + encodeURIComponent(shareData.url);
+    const line = 'https://line.me/R/msg/text/?' + encodeURIComponent('心の標本 ' + shareData.url);
+    $('#share-x').setAttribute('href', tw);
+    $('#share-line').setAttribute('href', line);
+    sheet.style.display='block';
+  }
+  function closeSheet(){ sheet.style.display='none'; }
+
+  shareBtn.addEventListener('click', async ()=>{
+    try{
+      if (navigator.share){
+        await navigator.share(shareData);
+      }else{
+        openSheet();
+      }
+      vibrate(10);
+    }catch(e){
+      // ユーザーキャンセル等は無視
+    }
+  });
+
+  // Sheet actions
+  $('#share-copy').addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(shareData.url);
+      showToast();
+    }catch{
+      // クリップボード不可時は選択用プロンプト
+      prompt('このURLをコピーしてください', shareData.url);
+    }
+    closeSheet();
+  });
+  $('#share-close').addEventListener('click', closeSheet);
+  // 外側クリックで閉じる
+  document.addEventListener('click', (e)=>{
+    if (sheet.style.display==='block' && !e.target.closest('.sharesheet .box') && e.target!==shareBtn){
+      closeSheet();
+    }
+  });
+  // Escで閉じる
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSheet(); });
+
 })();
 </script>
 
