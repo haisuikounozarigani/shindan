@@ -56,11 +56,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
 .footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff;cursor:pointer}
 
-/* Accessibility toggles */
 :root[data-font="lg"]{font-size:17px}
-:root[data-contrast="high"] .link{border-color:#d7bed0}
-:root[data-contrast="high"] .sub2{color:#5b4752}
-
 @media (max-width:360px){.badge{display:none}}
 </style>
 </head>
@@ -91,45 +87,60 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     <button class="chip" data-filter="しっかり">しっかり</button>
     <button class="chip" data-filter="性格">性格</button>
     <button class="chip" data-filter="認知">認知</button>
+    <button class="chip" data-filter="ゲーム風">ゲーム風</button>
   </div>
 
   <nav class="links" id="list">
+
+    <!-- NEW: 冒険者逆境力診断（7因子） -->
+    <a class="link" href="/shindan/adventure-shin.html?src=specimens"
+       data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
+      <span class="emo">🗺️</span>
+      <div>
+        <div class="ttl">冒険者逆境力診断（CD-RISC/GRIT-S参考） <span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">7因子で“逆境への強さ”をざっくり計測。結果カードは画像保存OK</div>
+        <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span><span class="pill">#ゲーム風</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
     <!-- CHC まとめテスト -->
     <a class="link" href="/shindan/chc-cci-shin.html?src=specimens"
        data-id="chc-cci" data-tags="認知,しっかり" data-mins="6" data-updated="2025-08-15">
       <span class="emo">🧠</span>
       <div>
-        <div class="ttl">認知プロファイル・チャレンジ（CHC簡易版） <span class="mini new" data-new>NEW</span></div>
+        <div class="ttl">認知プロファイル・チャレンジ（CHC簡易版）</div>
         <div class="sub2">Gf/Gc/Gv/Gs/Gwmを一発計測・結果は画像保存OK</div>
         <div class="meta"><span class="pill">⏱6分</span><span class="pill">#認知</span><span class="pill">#しっかり</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
 
-    <!-- 既存の診断 -->
+    <!-- 心模様花診断（オリジナル） -->
     <a class="link" href="/shindan/hanashin.html?src=specimens"
-       data-id="hana" data-tags="性格,短時間" data-mins="3" data-updated="2025-07-20">
+       data-id="hana" data-tags="性格,短時間" data-mins="3" data-updated="2025-08-21">
       <span class="emo">🌸</span>
       <div>
-        <div class="ttl">花診断（オリジナル）</div>
-        <div class="sub2">6問で象徴の花を提示</div>
+        <div class="ttl">心模様花診断（オリジナル） <span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">6問・5件法で“心の花”タイプを判定。結果は画像つき</div>
         <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
 
+    <!-- 宝石×恋愛スタイル（尺度明記） -->
     <a class="link" href="/shindan/housekishin.html?src=specimens"
        data-id="houseki" data-tags="性格,しっかり" data-mins="6" data-updated="2025-06-10">
       <span class="emo">💎</span>
       <div>
-        <div class="ttl">宝石×恋愛スタイル</div>
-        <div class="sub2">Love Styles × 愛着で24タイプ</div>
+        <div class="ttl">宝石恋愛診断（LAS/ECR-R参考）</div>
+        <div class="sub2">Love Styles（LAS）× 愛着（ECR-R）で24タイプ</div>
         <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
 
+    <!-- 既存の短時間性格系など -->
     <a class="link" href="/shindan/drinkshin.html?src=specimens"
        data-id="drink" data-tags="性格,短時間" data-mins="4" data-updated="2025-05-01">
       <span class="emo">☕</span>
@@ -190,7 +201,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 <nav class="footerbar">
   <button id="toggle-font">Aa</button>
-  <button id="toggle-contrast">高コントラスト</button>
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
@@ -209,98 +219,82 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
   const splash = $('#splash');
   const content = $('#content');
-
-  const vibrate = (ms=10)=> ('vibrate' in navigator) && navigator.vibrate(ms);
+  const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
 
   // Reveal
-  const reveal = ()=>{ splash.classList.add('hidden'); content.classList.add('show'); content.focus({preventScroll:true}); };
-  splash.addEventListener('click', e=>{ if (!e.target.closest('a,button,label,input')) reveal(); });
-  splash.addEventListener('keydown', e=>{ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(); } });
+  const reveal=()=>{splash.classList.add('hidden');content.classList.add('show');content.focus({preventScroll:true});};
+  splash.addEventListener('click',e=>{if(!e.target.closest('a,button,label,input'))reveal();});
+  splash.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal();}});
 
   // NEW badge (within 21 days)
-  const today = new Date();
+  const today=new Date();
   $$('#list a.link').forEach(a=>{
-    const ds = a.dataset.updated;
-    const badge = a.querySelector('[data-new]');
-    if (!ds || !badge) return;
-    const d = new Date(ds+'T00:00:00');
-    const diff = (today - d) / (1000*60*60*24);
-    if (diff <= 21) { badge.style.display='inline-block'; }
-    else { badge.style.display='none'; }
+    const ds=a.dataset.updated, badge=a.querySelector('[data-new]');
+    if(!ds||!badge) return;
+    const diff=(today - new Date(ds+'T00:00:00'))/86400000;
+    badge.style.display = (diff<=21)?'inline-block':'none';
   });
 
   // Filters
-  const chips = $$('#filters .chip');
+  const chips=$$('#filters .chip');
   function applyFilter(){
-    const act = $('#filters .chip.active')?.dataset.filter || 'all';
+    const act=$('#filters .chip.active')?.dataset.filter||'all';
     $$('#list a.link').forEach(a=>{
-      const tags = (a.dataset.tags||'').split(',');
-      const mins = parseInt(a.dataset.mins||'0',10);
+      const tags=(a.dataset.tags||'').split(',');
+      const mins=parseInt(a.dataset.mins||'0',10);
       let show=true;
-      if (act==='短時間') show = mins<=3;
-      else if (act==='しっかり') show = mins>=5;
-      else if (act!=='all') show = tags.includes(act);
-      a.style.display = show ? '' : 'none';
+      if(act==='短時間') show=mins<=3;
+      else if(act==='しっかり') show=mins>=5;
+      else if(act!=='all') show=tags.includes(act);
+      a.style.display=show?'':'none';
     });
   }
   chips.forEach(ch=>{
-    ch.addEventListener('click', ()=>{
+    ch.addEventListener('click',()=>{
       chips.forEach(c=>c.classList.remove('active'));
-      ch.classList.add('active');
-      vibrate();
-      applyFilter();
+      ch.classList.add('active'); vibrate(); applyFilter();
     });
   });
   applyFilter();
 
   // Continue last
-  const CONT_KEY = 'specimens:last';
+  const CONT_KEY='specimens:last';
   function updateContinue(){
-    const btn = $('#btn-continue');
-    const raw = localStorage.getItem(CONT_KEY);
-    if (!raw){ btn.style.display='none'; return; }
+    const btn=$('#btn-continue');
+    const raw=localStorage.getItem(CONT_KEY);
+    if(!raw){btn.style.display='none';return;}
     try{
-      const obj = JSON.parse(raw);
-      const a = $(`#list a.link[data-id="${obj.id}"]`);
-      if (!a){ btn.style.display='none'; return; }
-      btn.textContent = `つづきから再開：${obj.title}`;
-      btn.onclick = ()=>{ location.href = obj.href; };
+      const obj=JSON.parse(raw);
+      const a=$(`#list a.link[data-id="${obj.id}"]`);
+      if(!a){btn.style.display='none';return;}
+      btn.textContent=`つづきから再開：${obj.title}`;
+      btn.onclick=()=>{location.href=obj.href;};
       btn.style.display='inline-block';
-    }catch{ btn.style.display='none'; }
+    }catch{btn.style.display='none';}
   }
-  // Save on click
   $$('#list a.link').forEach(a=>{
-    a.addEventListener('click', ()=>{
-      const data = { id:a.dataset.id, title:$('.ttl',a)?.textContent?.trim()||'診断', href:a.getAttribute('href') };
-      localStorage.setItem(CONT_KEY, JSON.stringify(data));
-      vibrate();
-    }, {passive:true});
+    a.addEventListener('click',()=>{
+      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href:a.getAttribute('href')};
+      localStorage.setItem(CONT_KEY,JSON.stringify(data)); vibrate();
+    },{passive:true});
   });
   updateContinue();
 
   // Random pick
-  $('#btn-random').addEventListener('click', ()=>{
-    const vis = $$('#list a.link').filter(a=>a.style.display!=='none');
-    if (!vis.length) return;
-    const pick = vis[Math.floor(Math.random()*vis.length)];
-    vibrate(15);
-    location.href = pick.getAttribute('href');
+  $('#btn-random').addEventListener('click',()=>{
+    const vis=$$('#list a.link').filter(a=>a.style.display!=='none');
+    if(!vis.length) return;
+    const pick=vis[Math.floor(Math.random()*vis.length)];
+    vibrate(15); location.href=pick.getAttribute('href');
   });
 
-  // Accessibility toggles
-  const root = document.documentElement;
-  const FONT_KEY='specimens:font', CONT_KEY2='specimens:contrast';
-  function applyPrefs(){
-    root.setAttribute('data-font', localStorage.getItem(FONT_KEY)||'');
-    root.setAttribute('data-contrast', localStorage.getItem(CONT_KEY2)||'');
-  }
-  $('#toggle-font').addEventListener('click', ()=>{
-    const cur = root.getAttribute('data-font')==='lg' ? '' : 'lg';
-    localStorage.setItem(FONT_KEY, cur); applyPrefs(); vibrate();
-  });
-  $('#toggle-contrast').addEventListener('click', ()=>{
-    const cur = root.getAttribute('data-contrast')==='high' ? '' : 'high';
-    localStorage.setItem(CONT_KEY2, cur); applyPrefs(); vibrate();
+  // Accessibility: font only（高コントラスト機能はなし）
+  const root=document.documentElement;
+  const FONT_KEY='specimens:font';
+  function applyPrefs(){ root.setAttribute('data-font', localStorage.getItem(FONT_KEY)||''); }
+  $('#toggle-font').addEventListener('click',()=>{
+    const cur=root.getAttribute('data-font')==='lg'?'':'lg';
+    localStorage.setItem(FONT_KEY,cur); applyPrefs(); vibrate();
   });
   applyPrefs();
 })();
