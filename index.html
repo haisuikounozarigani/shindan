@@ -52,12 +52,9 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 /* Footer */
 .note{color:var(--muted);text-align:center;margin:18px 0}
-.footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;padding:10px;background:rgba(255,255,255,.82);
+.footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
 .footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer}
-
-:root[data-font="lg"]{font-size:17px}
-@media (max-width:360px){.badge{display:none}}
 
 /* Share sheet + toast */
 .sharesheet{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;display:none}
@@ -65,6 +62,9 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 .sharesheet .box a,.sharesheet .box button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#533;cursor:pointer;text-decoration:none}
 .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9em;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
+
+:root[data-font="lg"]{font-size:17px}
+@media (max-width:360px){.badge{display:none}}
 </style>
 </head>
 <body>
@@ -146,7 +146,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
       <span class="badge">診断へ</span>
     </a>
 
-    <!-- 既存の短時間性格系など -->
+    <!-- 既存 -->
     <a class="link" href="/shindan/drinkshin.html?src=specimens"
        data-id="drink" data-tags="性格,短時間" data-mins="4" data-updated="2025-05-01">
       <span class="emo">☕</span>
@@ -205,13 +205,14 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
 </main>
 
+<!-- Footer（共有ボタンをここに配置） -->
 <nav class="footerbar">
-  <button id="toggle-font">Aa</button>
+  <button id="toggle-font" aria-pressed="false" title="押すと文字が大きくなります">文字を大きく</button>
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
   <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
-  <button id="btn-share">共有する</button>
+  <button id="btn-share" type="button" aria-haspopup="dialog" aria-controls="shareSheet" title="このページのURLを共有">🔗 共有</button>
 </nav>
 
 <!-- Share sheet + toast -->
@@ -226,7 +227,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 <div id="toast" class="toast" role="status" aria-live="polite">コピーしました</div>
 
 <noscript>
-  <div style="max-width:860px;margin:16px auto;padding:0 14px;color:var(--muted)">
+  <div style="max-width:860px;margin:16px auto;padding:0 14px;color:#7a6a77">
     JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
   </div>
 </noscript>
@@ -306,17 +307,25 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     vibrate(15); location.href=pick.getAttribute('href');
   });
 
-  // Accessibility: font only
+  // ===== フォント切替（明記：文字を大きく / 標準に戻す） =====
   const root=document.documentElement;
   const FONT_KEY='specimens:font';
-  function applyPrefs(){ root.setAttribute('data-font', localStorage.getItem(FONT_KEY)||''); }
-  $('#toggle-font').addEventListener('click',()=>{
-    const cur=root.getAttribute('data-font')==='lg'?'':'lg';
-    localStorage.setItem(FONT_KEY,cur); applyPrefs(); vibrate();
+  const fontBtn=$('#toggle-font');
+  function applyFont(){
+    const mode=localStorage.getItem(FONT_KEY)||'';
+    root.setAttribute('data-font', mode);
+    const on = (mode==='lg');
+    fontBtn.setAttribute('aria-pressed', on?'true':'false');
+    fontBtn.textContent = on ? '標準に戻す' : '文字を大きく';
+    fontBtn.title = on ? '押すと文字サイズが標準に戻ります' : '押すと文字が大きくなります';
+  }
+  fontBtn.addEventListener('click',()=>{
+    const next = (root.getAttribute('data-font')==='lg') ? '' : 'lg';
+    localStorage.setItem(FONT_KEY,next); applyFont(); vibrate();
   });
-  applyPrefs();
+  applyFont();
 
-  /* ===== 共有ボタン（フッター） ===== */
+  // ===== 共有ボタン（フッター） =====
   const shareBtn = $('#btn-share');
   const sheet = $('#shareSheet');
   const toast = $('#toast');
@@ -352,7 +361,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
       vibrate(10);
     }catch(e){/* キャンセル等は無視 */}
   });
-
   // Sheet actions
   $('#share-copy').addEventListener('click', async ()=>{
     try{
