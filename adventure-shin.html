@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>冒険者逆境力診断（CD-RISC/GRIT-S参考）</title>
+<meta name="theme-color" content="#fff8fb">
+<style>
+:root{
+  --bg1:#fff8fb; --bg2:#f3f7ff; --card:#ffffff; --line:#ead9e8; --fg:#3f2e38; --muted:#8b6c78;
+  --ac1:#ff8fb3; --ac2:#a796ff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans JP",system-ui,-apple-system,sans-serif;color:var(--fg);
+  background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+.wrap{max-width:960px;margin:12px auto 22px;padding:0 12px}
+header{display:flex;align-items:center;justify-content:space-between;margin:8px 0 10px}
+h1{margin:0;font-size:clamp(18px,5.2vw,24px);line-height:1.25}
+a.back{font-size:.9em;color:#6b5560;text-decoration:none;border:1px solid var(--line);
+  padding:6px 10px;border-radius:999px;background:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.muted{color:var(--muted)} .small{font-size:.92em}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #efdff4;background:#fff;font-weight:700}
+
+/* 進捗 */
+.progressShell{display:flex;align-items:center;gap:10px;margin-top:6px}
+.progressBar{flex:1;height:10px;border-radius:999px;background:#efe7f4;overflow:hidden;border:1px solid #e6d9ef}
+.progressBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac2),var(--ac1))}
+.count{font-variant-numeric:tabular-nums}
+
+/* 質問 */
+.q{margin:10px 0;padding:10px;border:1px solid #f0e6f0;border-radius:12px;background:#fff}
+.q.miss{animation:shake .3s linear 1;border-color:#ffb3c1}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-2px)}50%{transform:translateX(2px)}75%{transform:translateX(-1px)}100%{transform:translateX(0)}}
+.qtitle{font-weight:700;margin-bottom:6px}
+.scaleRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.scaleRow .cap{color:#8f7f8a;font-size:.88em;margin-right:4px}
+.opt{display:flex;gap:6px}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt label{
+  display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;
+  border:1px solid #e8ddee;background:#fff;border-radius:9px;cursor:pointer;
+  font-weight:800;font-size:14px;padding:0 8px; user-select:none;
+}
+.opt input:checked + label{border-color:#b691ff;box-shadow:0 0 0 2px rgba(182,145,255,.18) inset}
+.scaleHint{color:#8f7f8a;font-size:.82em;margin-top:4px}
+
+/* 結果ヘッダ（モバイルは1カラムで大きく表示） */
+.resultHead{display:grid;grid-template-columns:1fr;gap:12px;align-items:center;justify-items:center}
+@media (min-width:720px){ .resultHead{grid-template-columns:420px 1fr;justify-items:stretch} }
+
+/* 画像を大きめに（スマホ 96vw / PC 420px） */
+.art{
+  width:min(96vw,480px);aspect-ratio:1/1;border-radius:12px;background:#f4f0fa;border:1px solid #e6def4;
+  display:flex;align-items:center;justify-content:center;overflow:hidden
+}
+@media (min-width:720px){ .art{width:420px} }
+.art picture,.art img{width:100%;height:100%;object-fit:contain;background:transparent;
+  image-rendering:pixelated;image-rendering:crisp-edges}
+.titleWrap{display:flex;flex-direction:column;gap:6px;width:100%}
+.job{font-size:20px;font-weight:900}
+.tag{font-size:.92em;color:#6b5560}
+.catch{font-size:1em;color:#534050}
+.hr{height:1px;background:#efebf3;margin:10px 0}
+.desc{line-height:1.6}
+.grid2{display:grid;grid-template-columns:1fr;gap:8px}
+.block{background:#fff;border:1px solid #eee3f5;border-radius:12px;padding:10px}
+.block h3{margin:0 0 6px;font-size:1em}
+ul{margin:0;padding-left:18px}
+.saveRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+button{padding:11px 14px;border-radius:12px;border:1px solid #d9cbe0;background:#fff;cursor:pointer;font-weight:700}
+button.primary{background:linear-gradient(90deg,var(--ac1),var(--ac2));color:#fff;border-color:transparent}
+button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
+
+.bars{display:grid;gap:8px;margin:8px 0}
+.bar{display:grid;grid-template-columns:108px 1fr 52px;gap:8px;align-items:center}
+.bar .name{font-weight:700}
+.meter{height:10px;border-radius:999px;background:#f0e8f5;overflow:hidden;border:1px solid #eadff3}
+.meter > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a796ff,#ff8fb3)}
+
+@media (max-width:560px){
+  .bar{grid-template-columns:100px 1fr 44px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>冒険者逆境力診断（CD-RISC/GRIT-S参考）</h1>
+    <a class="back" href="/shindan/">一覧へ</a>
+  </header>
+
+  <section class="card" id="intro">
+    <p class="small muted">出るタイプ：<b>戦士・騎士・魔法使い・盗賊・狩人・格闘家・商人</b>（全体が高水準のときは<b>勇者</b>）。気楽に遊んでね。</p>
+    <div class="progressShell">
+      <div class="progressBar"><i id="prog"></i></div>
+      <span class="pill count" id="cnt">0 / 28</span>
+    </div>
+  </section>
+
+  <section id="stage" class="card" aria-live="polite"></section>
+
+  <div class="saveRow" id="actionRow">
+    <button id="btnSubmit" class="primary fakeDisabled" type="button">結果を見る</button>
+  </div>
+
+  <section class="card" id="result" style="display:none">
+    <div class="resultHead">
+      <div class="art" id="art"><span id="fallbackIcon" style="font-size:48px">🛡️</span></div>
+      <div class="titleWrap">
+        <div class="job" id="jobLine">—</div>
+        <div class="catch" id="catchLine">—</div>
+        <div class="tag"><span class="pill" id="tierBadge">—</span> <span class="pill" id="scoreBadge">総合 0</span></div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <div class="desc" id="desc">—</div>
+
+    <div class="bars" id="bars"></div>
+
+    <div class="grid2">
+      <div class="block">
+        <h3>強み</h3>
+        <ul id="listStrength"></ul>
+      </div>
+      <div class="block">
+        <h3>気をつけたいこと</h3>
+        <ul id="listCaution"></ul>
+      </div>
+      <div class="block">
+        <h3>日常クエスト</h3>
+        <ul id="listQuest"></ul>
+      </div>
+      <div class="block">
+        <h3>育成ヒント</h3>
+        <ul id="listGrowth"></ul>
+      </div>
+    </div>
+
+    <div class="saveRow">
+      <button id="btnSave" class="primary" type="button">結果カードを画像保存</button>
+      <button id="btnRetry" type="button">最初から</button>
+    </div>
+
+    <canvas id="cardCanvas" width="1080" height="1620" style="display:none"></canvas>
+  </section>
+</div>
+
+<script>
+/* ====== 7因子（略号→表示名） ====== */
+const FACTOR_NAMES = {
+  GR:'粘り強さ', RF:'回復力', FX:'柔軟性', PL:'計画性', SS:'支援活用', EF:'集中力', SE:'自己効力感'
+};
+
+/* タイプ設定（画像フォルダ名は GitHub と一致） */
+const JOBS = [
+  {key:'warrior', dir:'warrior', icon:'⚔️', name:'戦士',
+   w:{GR:.28, RF:.14, FX:.08, PL:.18, SS:.06, EF:.16, SE:.10},
+   catch:'押してダメなら…もう一押し',
+   desc:'迷っても前に進める実行力が光る。積み上げで突破するタイプ。',
+   strengths:['続けるのが得意','逆風に強い','約束や締切を守る'],
+   cautions:['視野が狭くなりやすい','休むのを後回しにしがち'],
+   quests:['毎日15分を7日続ける','課題を3分割で着手','終わったら小さなご褒美'],
+   growth:['週1の完全休養','他流試合でやり方を増やす']},
+
+  {key:'knight', dir:'knight', icon:'🛡️', name:'騎士',
+   w:{GR:.22, RF:.22, FX:.08, PL:.18, SS:.14, EF:.10, SE:.06},
+   catch:'約束と守備の二刀流',
+   desc:'安定感があり責任の場面に強い。チームを守る役回りが得意。',
+   strengths:['落ち着いた判断','規律を守る','仲間思い'],
+   cautions:['融通が利かないときがある','抱え込みやすい'],
+   quests:['役割を一言で定義','朝に今日の3タスク宣言','困りごとは3分以内に相談'],
+   growth:['断る練習（代案）','週1で規則外の小実験']},
+
+  {key:'mage', dir:'mage', icon:'🔮', name:'魔法使い',
+   w:{GR:.08, RF:.10, FX:.18, PL:.28, SS:.10, EF:.10, SE:.16},
+   catch:'考えて当てる、段取りの魔法',
+   desc:'先回りの段取りが得意。学びを素早く形にする。',
+   strengths:['準備が的確','学習が早い','説明や要約が上手'],
+   cautions:['計画倒れに注意','着手が遅れがち'],
+   quests:['5分で分解→次の一手','1日の学びを1行ログ','終わり時間を先に決める'],
+   growth:['60%で実行開始','完璧主義の手放し']},
+
+  {key:'rogue', dir:'rogue', icon:'🗝️', name:'盗賊',
+   w:{GR:.10, RF:.10, FX:.30, PL:.16, SS:.10, EF:.16, SE:.08},
+   catch:'鍵より先に抜け道を発見',
+   desc:'変化に強く別ルートを素早く見つける。状況対応が速い。',
+   strengths:['柔軟対応が速い','発想の引き出しが多い','決断が速い'],
+   cautions:['根気が切れやすい','詰めが甘くなることがある'],
+   quests:['同じ課題で別案を3つ','日替わりの小挑戦1つ','送信前チェック3項目'],
+   growth:['開始の合図で習慣化','最終確認の時間枠を確保']},
+
+  {key:'ranger', dir:'ranger', icon:'🏹', name:'狩人',
+   w:{GR:.14, RF:.16, FX:.22, PL:.14, SS:.08, EF:.18, SE:.08},
+   catch:'狙って当てる、外さない人',
+   desc:'周りをよく見て集中配分。環境調整がうまい。',
+   strengths:['集中のオンオフが上手','状況読みが早い','観察からの修正が効く'],
+   cautions:['単独行動になりがち','協働の詰めが弱くなる'],
+   quests:['作業前5分で環境整備','25分集中＋5分休憩×3','観察を1行メモ'],
+   growth:['協働タスクを週1で設定','共有チェックリストで詰め強化']},
+
+  {key:'monk', dir:'monk', icon:'🥋', name:'格闘家',
+   w:{GR:.22, RF:.26, FX:.12, PL:.08, SS:.06, EF:.12, SE:.14},
+   catch:'タフさで押し切る自己メンテ職人',
+   desc:'体力・気力の配分が上手。逆境でも立て直せる。',
+   strengths:['回復が早い','継続稼働に強い','踏ん張りが効く'],
+   cautions:['気分の波が作業に出やすい','計画を軽視しがち'],
+   quests:['開始前に深呼吸3回','運動or睡眠の目標を1つ','毎日1つ小達成'],
+   growth:['週1で作戦会議10分','前夜に明日の手順を3行']},
+
+  {key:'merchant', dir:'merchant', icon:'💰', name:'商人',
+   w:{GR:.08, RF:.08, FX:.16, PL:.20, SS:.30, EF:.06, SE:.12},
+   catch:'つなげて回す、街が味方',
+   desc:'人と情報をつなげて価値を生む。段取りと関係作りが武器。',
+   strengths:['関係構築がうまい','提案や交渉が得意','先を見て段取りできる'],
+   cautions:['時間を取られやすい','決め切りが遅れることがある'],
+   quests:['紹介/お礼を1人に送る','会議後3行サマリ共有','来週の面談枠を先に確保'],
+   growth:['NO＋代案で時間を守る','締切を前倒し設定']}
+];
+
+/* 勇者（高水準時のみ出す／小文字 hero/00.png） */
+const HERO = {
+  key:'hero', dir:'hero', icon:'🗡️✨', name:'勇者',
+  catch:'ぜんぶ強い。バランスで無双',
+  desc:'7つの力がどれも高水準。未知のクエストでも自分で道を作れる。',
+  strengths:['バランスの良さ','状況に合わせて調整できる','学びの転用が早い'],
+  cautions:['何でも背負い込みやすい','休むのが苦手になりがち'],
+  quests:['月1で難しめ長期目標','役割を委任してチーム化','挑戦と休息のリズム作り'],
+  growth:['委任と撤退ラインを決める','睡眠・運動など休息も数値化']
+};
+const HERO_RULE = { minEach:80, minOverall:85 };
+
+/* 5件法（各設問にヒント） */
+const SCALE = [
+  {v:1,t:'全くない'},{v:2,t:'少ない'},{v:3,t:'どちらとも'},{v:4,t:'ややある'},{v:5,t:'とても'}
+];
+
+/* 冒険者テイストの質問（7因子×4=28） */
+const SECTIONS = [
+  { key:'GR', items:[
+    {id:'gr1', text:'長い冒険でも毎日ちょっとずつ進められる', rev:false},
+    {id:'gr2', text:'面倒だと寄り道してしまう', rev:true},
+    {id:'gr3', text:'成果がすぐ出なくても続けていける', rev:false},
+    {id:'gr4', text:'小さな失敗でやる気がしぼみやすい', rev:true},
+  ]},
+  { key:'RF', items:[
+    {id:'rf1', text:'落ち込んでも一晩寝れば気持ちが戻る', rev:false},
+    {id:'rf2', text:'予想外の出来事を長く引きずる', rev:true},
+    {id:'rf3', text:'失敗を次の一手に切り替えやすい', rev:false},
+    {id:'rf4', text:'緊張で頭が真っ白になりがち', rev:true},
+  ]},
+  { key:'FX', items:[
+    {id:'fx1', text:'作戦が崩れてもすぐ別のやり方に切り替えられる', rev:false},
+    {id:'fx2', text:'決めた手順に固執してしまう', rev:true},
+    {id:'fx3', text:'仲間の視点に立って考え直せる', rev:false},
+    {id:'fx4', text:'行き詰まったら別ルートを思いつく', rev:false},
+  ]},
+  { key:'PL', items:[
+    {id:'pl1', text:'地図を見て優先順を決めて動ける', rev:false},
+    {id:'pl2', text:'見積もりが甘く「集合時間」に遅れがち', rev:true},
+    {id:'pl3', text:'大きな依頼を小さなタスクに分けられる', rev:false},
+    {id:'pl4', text:'メモや持ち物リストで抜け漏れを防げる', rev:false},
+  ]},
+  { key:'SS', items:[
+    {id:'ss1', text:'困ったらギルドや仲間に早めに相談できる', rev:false},
+    {id:'ss2', text:'助けを求めるのが気まずくて避けがち', rev:true},
+    {id:'ss3', text:'人や情報などのリソースを上手く使える', rev:false},
+    {id:'ss4', text:'つい一人で抱え込みがち', rev:true},
+  ]},
+  { key:'EF', items:[
+    {id:'ef1', text:'酒場のざわつきの中でも目の前に集中できる', rev:false},
+    {id:'ef2', text:'通知や誘惑で集中が切れやすい', rev:true},
+    {id:'ef3', text:'短時間でもグッと集中を入れられる', rev:false},
+    {id:'ef4', text:'作業中すぐ別のことを始めてしまう', rev:true},
+  ]},
+  { key:'SE', items:[
+    {id:'se1', text:'工夫すれば何とかできると感じる', rev:false},
+    {id:'se2', text:'自分の判断に自信が持てないことが多い', rev:true},
+    {id:'se3', text:'初めてのダンジョンでも手探りで進める', rev:false},
+    {id:'se4', text:'失敗しそうで新しい挑戦を避けがち', rev:true},
+  ]},
+];
+
+/* ====== レンダリング ====== */
+const stage = document.getElementById('stage');
+const btnSubmit = document.getElementById('btnSubmit');
+const progBar = document.getElementById('prog');
+const cnt = document.getElementById('cnt');
+const actionRow = document.getElementById('actionRow');
+const answers = Object.create(null);
+
+function renderAll(){
+  const items = SECTIONS.flatMap(s=>s.items);
+  let html = '';
+  for (let i=0;i<items.length;i++){
+    const it = items[i];
+    html += `
+      <div class="q" id="wrap_${it.id}">
+        <div class="qtitle">Q${i+1}. ${it.text}</div>
+        <div class="scaleRow">
+          <span class="cap">選択：</span>
+          <div class="opt" role="radiogroup" aria-label="Q${i+1}">
+            ${SCALE.map(sc=>{
+              const rid = `${it.id}_${sc.v}`;
+              return `
+                <div>
+                  <input id="${rid}" name="${it.id}" type="radio" value="${sc.v}">
+                  <label for="${rid}" title="${sc.v}: ${sc.t}">${sc.v}</label>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        <div class="scaleHint">（${SCALE[0].t} ↔︎ ${SCALE[4].t}）</div>
+      </div>
+    `;
+  }
+  stage.innerHTML = html;
+  cnt.textContent = `0 / ${items.length}`;
+}
+renderAll();
+
+/* 入力・進捗 */
+stage.addEventListener('change', (e)=>{
+  if (e.target && e.target.type==='radio' && e.target.name){
+    answers[e.target.name] = parseInt(e.target.value,10);
+    const wrap = document.getElementById('wrap_'+e.target.name);
+    if (wrap) wrap.classList.remove('miss');
+    updateProgress();
+  }
+});
+function updateProgress(){
+  const total = SECTIONS.reduce((n,s)=>n+s.items.length,0);
+  const filled = Object.keys(answers).length;
+  const pct = Math.round(filled/total*100);
+  progBar.style.width = pct+'%';
+  cnt.textContent = `${filled} / ${total}`;
+  if (filled===total) btnSubmit.classList.remove('fakeDisabled');
+  else btnSubmit.classList.add('fakeDisabled');
+}
+
+/* 採点（項目数に自動対応） */
+function scoreSection(sec){
+  let raw=0, n=sec.items.length;
+  for(const it of sec.items){
+    const v = answers[it.id]??3;
+    raw += it.rev ? (6-v) : v;
+  }
+  const pct = Math.round((raw - n) / (4 * n) * 100);
+  return Math.max(0, Math.min(100, pct));
+}
+function computeAll(){
+  const pcts={};
+  for(const sec of SECTIONS) pcts[sec.key]=scoreSection(sec);
+  const overall = Math.round(Object.values(pcts).reduce((a,b)=>a+b,0)/SECTIONS.length);
+
+  // 勇者（hero/00.png）
+  const minEach = Math.min(...Object.values(pcts));
+  if (minEach>=HERO_RULE.minEach && overall>=HERO_RULE.minOverall){
+    return {pcts, overall, job:HERO, tier:null, heroOnly:true};
+  }
+  // 重み付き最大
+  let best=null, bestScore=-1;
+  for(const j of JOBS){
+    const w=j.w;
+    const sc =
+      (pcts.GR||0)*(w.GR||0) + (pcts.RF||0)*(w.RF||0) + (pcts.FX||0)*(w.FX||0) +
+      (pcts.PL||0)*(w.PL||0) + (pcts.SS||0)*(w.SS||0) + (pcts.EF||0)*(w.EF||0) +
+      (pcts.SE||0)*(w.SE||0);
+    if(sc>bestScore){ bestScore=sc; best=j; }
+  }
+  return {pcts, overall, job:best, tier:tierOf(overall), heroOnly:false};
+}
+function tierOf(overall){
+  if (overall>=90) return {code:'05', name:'伝説級'};
+  if (overall>=75) return {code:'04', name:'英雄'};
+  if (overall>=60) return {code:'03', name:'熟練'};
+  if (overall>=40) return {code:'02', name:'一人前'};
+  return {code:'01', name:'見習い'};
+}
+
+/* 結果表示 */
+const resultEl=document.getElementById('result');
+const barsEl=document.getElementById('bars');
+const jobLine=document.getElementById('jobLine');
+const catchLine=document.getElementById('catchLine');
+const tierBadge=document.getElementById('tierBadge');
+const scoreBadge=document.getElementById('scoreBadge');
+const descEl=document.getElementById('desc');
+const art=document.getElementById('art');
+const listStrength=document.getElementById('listStrength');
+const listCaution=document.getElementById('listCaution');
+const listQuest=document.getElementById('listQuest');
+const listGrowth=document.getElementById('listGrowth');
+
+btnSubmit.addEventListener('click', ()=>{
+  const total = SECTIONS.reduce((n,s)=>n+s.items.length,0);
+  const filled = Object.keys(answers).length;
+  if (filled!==total){
+    const miss = SECTIONS.flatMap(s=>s.items).find(it=>answers[it.id]==null);
+    if (miss){
+      const w=document.getElementById('wrap_'+miss.id);
+      if(w){ w.classList.add('miss'); w.scrollIntoView({behavior:'smooth', block:'center'}); }
+    }
+    return;
+  }
+  const R = computeAll();
+
+  jobLine.textContent = `${R.job.name}`;
+  catchLine.textContent = R.job.catch;
+  scoreBadge.textContent = `総合 ${R.overall}`;
+  tierBadge.textContent  = R.heroOnly ? '勇者' : `等級 ${R.tier.name}`;
+  descEl.textContent     = R.job.desc;
+
+  // 能力バー
+  barsEl.innerHTML='';
+  for(const k of ['GR','RF','FX','PL','SS','EF','SE']){
+    const v=R.pcts[k]||0;
+    const row=document.createElement('div'); row.className='bar';
+    row.innerHTML=`<div class="name">${FACTOR_NAMES[k]}</div>
+                   <div class="meter"><i style="width:${v}%"></i></div>
+                   <div style="text-align:right;font-variant-numeric:tabular-nums">${v}</div>`;
+    barsEl.appendChild(row);
+  }
+
+  // リスト
+  const fill = (elm, arr)=>{ elm.innerHTML=''; arr.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; elm.appendChild(li); }); };
+  fill(listStrength, R.job.strengths);
+  fill(listCaution,  R.job.cautions);
+  fill(listQuest,    R.job.quests);
+  fill(listGrowth,   R.job.growth);
+
+  // 画像
+  renderArt(R);
+
+  // 切り替え
+  document.getElementById('intro').style.display='none';
+  stage.style.display='none';
+  actionRow.style.display='none';
+  resultEl.style.display='';
+  // ボタン
+  document.getElementById('btnSave').onclick=()=>saveCard(R);
+  document.getElementById('btnRetry').onclick=resetAll;
+});
+
+function renderArt(R){
+  const base = '/shindan/assets/results/adventurer/';
+  const imgPath = R.heroOnly
+    ? `${base}${HERO.dir}/00.png`
+    : `${base}${R.job.dir}/${R.tier.code}.png`;
+  art.innerHTML = '';
+  const pic = document.createElement('picture');
+  const img = document.createElement('img');
+  img.alt = `${R.job.name} 画像`;
+  img.decoding = 'async';
+  img.loading = 'lazy';
+  img.src = imgPath;
+  img.onerror = ()=>{ art.innerHTML=''; const s=document.createElement('span'); s.textContent=R.job.icon; s.style.fontSize='64px'; art.appendChild(s); };
+  pic.appendChild(img);
+  art.appendChild(pic);
+}
+
+function resetAll(){
+  for(const k in answers) delete answers[k];
+  document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
+  document.getElementById('intro').style.display='';
+  stage.style.display='';
+  actionRow.style.display='';
+  resultEl.style.display='none';
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* 画像保存（結果カード） */
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+  const chars=(text||'').split(''); let line='';
+  for(let i=0;i<chars.length;i++){
+    const test=line+chars[i];
+    if(ctx.measureText(test).width>maxWidth && i>0){ ctx.fillText(line,x,y); line=chars[i]; y+=lineHeight; }
+    else line=test;
+  } ctx.fillText(line,x,y);
+}
+function saveCard(R){
+  const canvas=document.getElementById('cardCanvas');
+  const c=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  const g=c.createLinearGradient(0,0,0,h); g.addColorStop(0,'#fff8fb'); g.addColorStop(1,'#f3f7ff');
+  c.fillStyle=g; c.fillRect(0,0,w,h);
+
+  c.fillStyle='#2f2630'; c.font='700 44px system-ui'; c.fillText('冒険者逆境力診断', 56, 88);
+  c.font='600 26px system-ui'; c.fillStyle='#6f5f6a'; c.fillText('(CD-RISC/GRIT-S参考／7因子)', 520, 88);
+
+  c.font='700 36px system-ui'; c.fillStyle='#2b2230'; c.fillText(`${R.job.name}`, 56, 150);
+  c.font='600 26px system-ui'; c.fillStyle='#4b3d48'; c.fillText(R.job.catch, 56, 188);
+
+  c.font='600 24px system-ui'; c.fillStyle='#3f2e38';
+  const tierText = R.heroOnly ? '勇者' : `等級 ${R.tier.name}`;
+  c.fillText(`総合 ${R.overall}　${tierText}`, 56, 226);
+
+  c.font='400 22px system-ui'; c.fillStyle='#4a3f4a';
+  wrapText(c, R.job.desc, 56, 266, 970, 30);
+
+  let y=360;
+  for(const k of ['GR','RF','FX','PL','SS','EF','SE']){
+    const v=R.pcts[k]||0;
+    c.fillStyle='#3f2e38'; c.font='600 22px system-ui'; c.fillText(FACTOR_NAMES[k], 56, y);
+    const X=210,Y=y-16,W=740,H=16;
+    c.fillStyle='#efe7f5'; c.strokeStyle='#e5daef'; c.lineWidth=1;
+    c.fillRect(X,Y,W,H); c.strokeRect(X,Y,W,H);
+    const grad=c.createLinearGradient(X,0,X+W,0); grad.addColorStop(0,'#a796ff'); grad.addColorStop(1,'#ff8fb3');
+    c.fillStyle=grad; c.fillRect(X,Y,Math.round(W*v/100),H);
+    c.fillStyle='#4a4150'; c.font='600 20px system-ui'; c.fillText(String(v), X+W+16, y);
+    y+=54;
+  }
+
+  function drawList(title, arr, startY){
+    c.fillStyle='#2f2630'; c.font='700 24px system-ui'; c.fillText(title, 56, startY);
+    c.font='400 20px system-ui'; c.fillStyle='#4b3f4b';
+    let ty=startY+34;
+    arr.forEach(t=>{ wrapText(c,'・'+t, 56, ty, 970, 28); ty+=30; });
+    return ty+8;
+  }
+  y = drawList('強み', R.job.strengths, y+12);
+  y = drawList('気をつけたいこと', R.job.cautions, y+12);
+  y = drawList('日常クエスト', R.job.quests, y+12);
+  y = drawList('育成ヒント', R.job.growth, y+12);
+
+  c.font='400 16px system-ui'; c.fillStyle='#7c6b77';
+  c.fillText(new Date().toLocaleString(), 56, h-36);
+
+  const a=document.createElement('a');
+  a.href=canvas.toDataURL('image/png');
+  a.download='adventurer_result.png';
+  a.click();
+}
+
+/* 初期 */
+updateProgress();
+</script>
+</body>
+</html>
