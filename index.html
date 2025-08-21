@@ -54,7 +54,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 .note{color:var(--muted);text-align:center;margin:18px 0}
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
-.footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:var(--fg);background:#fff;cursor:pointer}
+.footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer}
 
 :root[data-font="lg"]{font-size:17px}
 @media (max-width:360px){.badge{display:none}}
@@ -87,7 +87,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <div class="quick" id="quick">
     <button class="btn primary" id="btn-random">おまかせで選ぶ</button>
     <button class="btn" id="btn-continue" style="display:none">つづきから再開</button>
-    <button class="btn" id="btn-share">共有する</button>
   </div>
   <div class="filters" id="filters">
     <button class="chip active" data-filter="all">すべて</button>
@@ -212,6 +211,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
   <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
+  <button id="btn-share">共有する</button>
 </nav>
 
 <!-- Share sheet + toast -->
@@ -226,7 +226,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 <div id="toast" class="toast" role="status" aria-live="polite">コピーしました</div>
 
 <noscript>
-  <div style="max-width:860px;margin:16px auto;padding:0 14px;color:#7a6a77">
+  <div style="max-width:860px;margin:16px auto;padding:0 14px;color:var(--muted)">
     JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
   </div>
 </noscript>
@@ -316,7 +316,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   });
   applyPrefs();
 
-  /* ===== 共有ボタン ===== */
+  /* ===== 共有ボタン（フッター） ===== */
   const shareBtn = $('#btn-share');
   const sheet = $('#shareSheet');
   const toast = $('#toast');
@@ -333,7 +333,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     setTimeout(()=>toast.classList.remove('show'), 1400);
   }
   function openSheet(){
-    // リンクを差し替え
     const tw = 'https://twitter.com/intent/tweet?text='
       + encodeURIComponent('診断の入口まとめ「心の標本」') + '&url=' + encodeURIComponent(shareData.url);
     const line = 'https://line.me/R/msg/text/?' + encodeURIComponent('心の標本 ' + shareData.url);
@@ -351,9 +350,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
         openSheet();
       }
       vibrate(10);
-    }catch(e){
-      // ユーザーキャンセル等は無視
-    }
+    }catch(e){/* キャンセル等は無視 */}
   });
 
   // Sheet actions
@@ -362,19 +359,16 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
       await navigator.clipboard.writeText(shareData.url);
       showToast();
     }catch{
-      // クリップボード不可時は選択用プロンプト
       prompt('このURLをコピーしてください', shareData.url);
     }
     closeSheet();
   });
   $('#share-close').addEventListener('click', closeSheet);
-  // 外側クリックで閉じる
   document.addEventListener('click', (e)=>{
     if (sheet.style.display==='block' && !e.target.closest('.sharesheet .box') && e.target!==shareBtn){
       closeSheet();
     }
   });
-  // Escで閉じる
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSheet(); });
 
 })();
