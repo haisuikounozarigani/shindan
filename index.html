@@ -1,385 +1,312 @@
-<!doctype html><html lang="ja"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>心の標本｜ゆめかわセレクター</title>
-<meta name="description" content="心の標本。タップで診断の入口が開きます。">
-<meta name="theme-color" content="#ffeef7">
-<meta property="og:title" content="心の標本">
-<meta property="og:description" content="タップで診断の入口が開きます。">
-<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/hero/specimens-hero-1080.png">
-<link rel="preload" as="image" href="/shindan/assets/hero/specimens-hero-1080.png">
-<style>
-:root{--bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;--accent:#ff9ecf;--accent2:#b69cff}
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
-.hidden{display:none!important}
-/* Splash */
-.splash{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden;cursor:pointer}
-.splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
-.splash .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
-.splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
-.splash .hero{position:relative;z-index:1;text-align:center;padding:22px}
-h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
-.sub{margin:0;color:var(--muted)}
-.tap{margin-top:14px;font-size:.95em;color:#7a6a77}
-/* Main */
-.wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
-.wrap.show{opacity:1;transform:none}
-/* Quick bar + filter chips */
-.quick{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
-.quick .btn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg);cursor:pointer}
-.quick .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-.chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c5763;cursor:pointer}
-.chip.active{background:var(--fg);color:#fff;border-color:var(--fg)}
-/* Cards */
-.links{display:grid;gap:12px;margin-top:10px}
-a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
-  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;
-  box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
-a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,.18);border-color:#efd7ff}
-.emo{font-size:20px}
-.ttl{font-weight:700;display:flex;align-items:center;gap:6px}
-.mini{font-size:.72em;padding:2px 6px;border-radius:8px;border:1px solid #f0d8ea;background:#fff}
-.mini.new{background:linear-gradient(90deg,#ffd6ea,#e7dbff);color:#624c4c;border-color:transparent}
-.sub2{color:var(--muted);font-size:.92em;margin-top:2px}
-.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.pill{padding:3px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571}
-.badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
-/* Footer */
-.note{color:var(--muted);text-align:center;margin:18px 0}
-.footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:10px;background:rgba(255,255,255,.82);
-  backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
-.footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer}
-/* Share sheet + toast */
-.sharesheet{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;display:none}
-.sharesheet .box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:10px;display:flex;gap:8px}
-.sharesheet .box a,.sharesheet .box button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#533;cursor:pointer;text-decoration:none}
-.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9em;opacity:0;pointer-events:none;transition:opacity .2s}
-.toast.show{opacity:1}
-:root[data-font="lg"]{font-size:17px}
-@media (max-width:360px){.badge{display:none}}
-</style>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>姫と城下の恋診断（オリジナル）</title>
+  <meta name="description" content="身分ちがいの禁断ルート。4場面×三択で5つのENDへ。">
+  <style>
+    :root{
+      --brand:#7a5e70; --ink:#332b33;
+      --bg1:#f8f6f3; --bg2:#efe8e0; --card:#ffffff;
+      --muted:#6b6466; --line:#e7ddd7; --btn:#7a5e70; --btn2:#8f8f8f;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;padding:22px;color:var(--ink);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2))}
+    .wrap{max-width:820px;margin:0 auto}
+    h1{margin:4px 0 12px;text-align:center;color:var(--brand);font-size:clamp(20px,4vw,32px)}
+    .sub{color:var(--muted);text-align:center;margin:0 0 18px;font-size:.98em}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+    .meta{display:flex;gap:8px;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px}
+    .section-title{font-weight:600;margin:6px 0 8px;color:#4c404c}
+    .preface{font-size:.98em;line-height:1.8;color:#493f46;background:#fbf9f7;border:1px dashed var(--line);border-radius:12px;padding:12px}
+    .scene{margin:18px 0 16px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .scene h3{margin:0 0 6px;font-size:1.02em;color:#4b3e49}
+    .scene p{margin:4px 0 10px;color:#574a55}
+    .choices{display:grid;gap:8px}
+    .choice{display:flex;gap:10px;align-items:flex-start;background:#f6f3f1;border-radius:10px;padding:10px;cursor:pointer;border:1px solid transparent}
+    .choice:hover{border-color:#e5d9d2}
+    .choice input{margin-top:2px;accent-color:var(--brand)}
+    .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+    .btn{background:var(--btn);color:#fff;border:none;border-radius:12px;padding:12px 18px;font-size:16px;cursor:pointer}
+    .btn.secondary{background:var(--btn2)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    #result{margin-top:18px}
+    .result-head{text-align:center;margin:0 0 8px}
+    .result-title{font-size:clamp(18px,3.2vw,26px);color:var(--brand);margin:0}
+    .result-sub{color:#5a4d56;margin:4px 0 0}
+    .result-img{width:100%;height:auto;display:block;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.12);margin-top:12px}
+    .result-body{display:grid;gap:10px;margin-top:12px}
+    .result-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+    .result-card h4{margin:0 0 6px;font-size:1em;color:#4c404c}
+    .note{color:var(--muted);text-align:center;margin-top:10px;font-size:.9em}
+    .result-ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+    .linkbtn{display:inline-block;text-decoration:none;background:#fff;border:1px solid var(--line);color:#533;padding:10px 14px;border-radius:999px}
+    .linkbtn.primary{background:var(--brand);color:#fff;border-color:transparent}
+    @media (prefers-color-scheme: dark){
+      :root{--card:#181518;--ink:#ede7ee;--bg1:#141014;--bg2:#1a161a;--line:#2b252b;--muted:#b9aeb7}
+      .preface{background:#191619;border-color:#2b252b}
+      .scene{background:#171417}
+      .choice{background:#1e1a1e}
+      .linkbtn{background:#151215;color:#e9dfeb}
+    }
+  </style>
 </head>
 <body>
-<!-- Splash -->
-<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0">
-  <div class="fallback" aria-hidden="true"></div>
-  <img class="bg" alt="心の標本のキービジュアル"
-       src="/shindan/assets/hero/specimens-hero-1080.png"
-       onerror="this.src='/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png'">
-  <div class="hero">
-    <h1>心の標本</h1>
-    <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
-    <p class="tap">✦ 開かないときは画像以外の余白をタップしてね</p>
+  <div class="wrap">
+    <h1>姫と城下の恋診断（オリジナル）</h1>
+    <p class="sub">— 禁じられたのは、恋か、手順か。—</p>
+
+    <div class="card">
+      <div class="meta"><span id="progress">未回答 4 / 4</span><span>三択 × 4場面</span></div>
+
+      <!-- 前提 -->
+      <div class="preface">
+        <div class="section-title">前提</div>
+        <p>
+          お姫様には婚約者がいる。あなたは城下の一般の人。<br>
+          二人の間に“規程”と“噂”が横たわる夜、<br>
+          その場その場の、小さな選び方が物語を決める。
+        </p>
+      </div>
+
+      <form id="quizForm">
+        <!-- ① 塔の陰の渡り階段 -->
+        <div class="scene">
+          <h3>① 塔の陰の渡り階段</h3>
+          <p>城の外台所と書庫をつなぐ、せまい階段。足音はひびく。</p>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q1" value="A"> 小門のほうを指で示し、そっと一段だけ戻る</label>
+            <label class="choice"><input type="radio" name="q1" value="B"> 踊り段で止まり、明日の時間だけ決める</label>
+            <label class="choice"><input type="radio" name="q1" value="C"> 柱の影でうなずき、ここを「合図の場所」にする</label>
+          </div>
+        </div>
+
+        <!-- ② 告解格子の前（礼拝堂） -->
+        <div class="scene">
+          <h3>② 告解格子の前（礼拝堂）</h3>
+          <p>蝋のにおい。小さな格子。小声でも祈りに見える。</p>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q2" value="A"> 短いリボンを一回だけ結び、格子の根もとに置く</label>
+            <label class="choice"><input type="radio" name="q2" value="B"> 書付に「相談 十分」と一行だけ書き、受付印をもらう</label>
+            <label class="choice"><input type="radio" name="q2" value="C"> ベンチの板のすき間へ、次の日時の札をすべり込ませる</label>
+          </div>
+        </div>
+
+        <!-- ③ 大広間の夜会 -->
+        <div class="scene">
+          <h3>③ 大広間の夜会</h3>
+          <p>音楽と人波。婚約者は姫のそばにいる。</p>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q3" value="A"> 曲の終わりに、同時に小さく礼をする</label>
+            <label class="choice"><input type="radio" name="q3" value="B"> 柱ごしに目を合わせ、息をそろえる</label>
+            <label class="choice"><input type="radio" name="q3" value="C"> 執事に頼み、「書庫の確認」として席をひとつもらう</label>
+          </div>
+        </div>
+
+        <!-- ④ 夜明け前の外門 -->
+        <div class="scene">
+          <h3>④ 夜明け前の外門</h3>
+          <p>空がしろむ。門番は交代前。ここで二人の次が決まる。</p>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q4" value="A"> 手を取り、そのまま外へ出る</label>
+            <label class="choice"><input type="radio" name="q4" value="B"> 書付を整え、朝の評議に出す</label>
+            <label class="choice"><input type="radio" name="q4" value="C"> 合図をふやし、影であたためて続ける</label>
+          </div>
+        </div>
+      </form>
+
+      <div class="actions">
+        <button class="btn" type="button" id="btn-diagnose">診断する</button>
+        <button class="btn secondary" type="button" id="btn-reset">リセット</button>
+      </div>
+
+      <div id="result" aria-live="polite"></div>
+    </div>
   </div>
-</section>
 
-<main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1">
-  <!-- Quick actions & Filters -->
-  <div class="quick" id="quick">
-    <button class="btn primary" id="btn-random">おまかせで選ぶ</button>
-    <button class="btn" id="btn-continue" style="display:none">つづきから再開</button>
-  </div>
-  <div class="filters" id="filters">
-    <button class="chip active" data-filter="all">すべて</button>
-    <button class="chip" data-filter="短時間">短時間</button>
-    <button class="chip" data-filter="しっかり">しっかり</button>
-    <button class="chip" data-filter="性格">性格</button>
-    <button class="chip" data-filter="認知">認知</button>
-    <button class="chip" data-filter="ゲーム風">ゲーム風</button>
-  </div>
+  <noscript>
+    <div style="max-width:820px;margin:12px auto;color:#7a6a77">JavaScriptが無効です。<a href="/shindan/">診断一覧へ</a></div>
+  </noscript>
 
-  <nav class="links" id="list">
-    <!-- NEW: 姫と城下の恋診断（オリジナル） -->
-    <a class="link" href="/shindan/hime.html?src=specimens"
-       data-id="hime" data-tags="性格,短時間,ゲーム風" data-mins="3" data-updated="2025-08-22">
-      <span class="emo">👑</span>
-      <div>
-        <div class="ttl">姫と城下の恋診断（オリジナル） <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">分岐する物語で5つのENDへ。結果は絵画風画像つき</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#ゲーム風</span><span class="pill">#短時間</span><span class="pill">#性格</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <!-- NEW: 冒険者逆境力診断（7因子） -->
-    <a class="link" href="/shindan/adventure-shin.html?src=specimens"
-       data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
-      <span class="emo">🗺️</span>
-      <div>
-        <div class="ttl">冒険者逆境力診断（CD-RISC/GRIT-S参考） <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">7因子で“逆境への強さ”をざっくり計測。結果カードは画像保存OK</div>
-        <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span><span class="pill">#ゲーム風</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <!-- CHC まとめテスト -->
-    <a class="link" href="/shindan/chc-cci-shin.html?src=specimens"
-       data-id="chc-cci" data-tags="認知,しっかり" data-mins="6" data-updated="2025-08-15">
-      <span class="emo">🧠</span>
-      <div>
-        <div class="ttl">認知プロファイル・チャレンジ（CHC簡易版）</div>
-        <div class="sub2">Gf/Gc/Gv/Gs/Gwmを一発計測・結果は画像保存OK</div>
-        <div class="meta"><span class="pill">⏱6分</span><span class="pill">#認知</span><span class="pill">#しっかり</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <!-- 心模様花診断（オリジナル） -->
-    <a class="link" href="/shindan/hanashin.html?src=specimens"
-       data-id="hana" data-tags="性格,短時間" data-mins="3" data-updated="2025-08-21">
-      <span class="emo">🌸</span>
-      <div>
-        <div class="ttl">心模様花診断（オリジナル） <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">6問・5件法で“心の花”タイプを判定。結果は画像つき</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <!-- 宝石×恋愛スタイル（尺度明記） -->
-    <a class="link" href="/shindan/housekishin.html?src=specimens"
-       data-id="houseki" data-tags="性格,しっかり" data-mins="6" data-updated="2025-06-10">
-      <span class="emo">💎</span>
-      <div>
-        <div class="ttl">宝石恋愛診断（LAS/ECR-R参考）</div>
-        <div class="sub2">Love Styles（LAS）× 愛着（ECR-R）で24タイプ</div>
-        <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <!-- 既存 -->
-    <a class="link" href="/shindan/drinkshin.html?src=specimens"
-       data-id="drink" data-tags="性格,短時間" data-mins="4" data-updated="2025-05-01">
-      <span class="emo">☕</span>
-      <div>
-        <div class="ttl">飲み物サイコパス（LSRP簡易）</div>
-        <div class="sub2">10問で“毒気”をライトに測定</div>
-        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="/shindan/iceshin.html?src=specimens"
-       data-id="ice" data-tags="性格,短時間" data-mins="3" data-updated="2025-05-20">
-      <span class="emo">🍦</span>
-      <div>
-        <div class="ttl">冷酷アイスクリーム（Mach-IV簡易）</div>
-        <div class="sub2">駆け引き度をスコア化</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="/shindan/mirorshin.html?src=specimens"
-       data-id="mirror" data-tags="性格,しっかり" data-mins="5" data-updated="2025-04-18">
-      <span class="emo">🪞</span>
-      <div>
-        <div class="ttl">鏡ナルシスト（NARQ簡易）</div>
-        <div class="sub2">14問でAdmiration/Rivalry傾向</div>
-        <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="/shindan/animalshin.html?src=specimens"
-       data-id="animal" data-tags="性格,短時間" data-mins="4" data-updated="2025-03-05">
-      <span class="emo">🐾</span>
-      <div>
-        <div class="ttl">性格動物診断（SBF）</div>
-        <div class="sub2">5因子を動物メタファで表示</div>
-        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-
-    <a class="link" href="/shindan/sweetshin.html?src=specimens"
-       data-id="sweet" data-tags="セルフケア,短時間" data-mins="3" data-updated="2025-02-12">
-      <span class="emo">🍰</span>
-      <div>
-        <div class="ttl">7つの休息 × スイーツ診断</div>
-        <div class="sub2">Saundra Dalton-Smithの提案に基づく</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#セルフケア</span><span class="pill">#短時間</span></div>
-      </div>
-      <span class="badge">診断へ</span>
-    </a>
-  </nav>
-
-  <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
-</main>
-
-<!-- Footer -->
-<nav class="footerbar">
-  <button id="toggle-font" aria-pressed="false" title="押すと文字が大きくなります">文字を大きく</button>
-  <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
-  <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
-  <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
-  <a href="/shindan/seikaku.html">自己紹介</a>
-  <button id="btn-share" type="button" aria-haspopup="dialog" aria-controls="shareSheet" title="このページのURLを共有">🔗 共有</button>
-</nav>
-
-<!-- Share sheet + toast -->
-<div id="shareSheet" class="sharesheet" aria-hidden="true">
-  <div class="box" role="dialog" aria-label="共有メニュー">
-    <a id="share-x" href="#" rel="noopener">Xで共有</a>
-    <a id="share-line" href="#" rel="noopener">LINEで共有</a>
-    <button id="share-copy" type="button">URLをコピー</button>
-    <button id="share-close" type="button">閉じる</button>
-  </div>
-</div>
-<div id="toast" class="toast" role="status" aria-live="polite">コピーしました</div>
-
-<noscript>
-  <div style="max-width:860px;margin:16px auto;padding:0 14px;color:#7a6a77">
-    JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
-  </div>
-</noscript>
-
-<script>
-(function(){
-  const $ = (q,root=document)=>root.querySelector(q);
-  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-  const splash = $('#splash');
-  const content = $('#content');
-  const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
-
-  // Reveal
-  const reveal=()=>{splash.classList.add('hidden');content.classList.add('show');content.focus({preventScroll:true});};
-  splash.addEventListener('click',e=>{if(!e.target.closest('a,button,label,input'))reveal();});
-  splash.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal();}});
-
-  // NEW badge (within 21 days)
-  const today=new Date();
-  $$('#list a.link').forEach(a=>{
-    const ds=a.dataset.updated, badge=a.querySelector('[data-new]');
-    if(!ds||!badge) return;
-    const diff=(today - new Date(ds+'T00:00:00'))/86400000;
-    badge.style.display = (diff<=21)?'inline-block':'none';
-  });
-
-  // Filters
-  const chips=$$('#filters .chip');
-  function applyFilter(){
-    const act=$('#filters .chip.active')?.dataset.filter||'all';
-    $$('#list a.link').forEach(a=>{
-      const tags=(a.dataset.tags||'').split(',');
-      const mins=parseInt(a.dataset.mins||'0',10);
-      let show=true;
-      if(act==='短時間') show=mins<=3;
-      else if(act==='しっかり') show=mins>=5;
-      else if(act!=='all') show=tags.includes(act);
-      a.style.display=show?'':'none';
-    });
+  <script>
+  // ---- 進捗表示 ----
+  const form = document.getElementById('quizForm');
+  const progressEl = document.getElementById('progress');
+  function updateProgress(){
+    const total = 4;
+    let answered = 0;
+    for(let i=1;i<=total;i++){
+      if(document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+    }
+    progressEl.textContent = `未回答 ${total-answered} / ${total}`;
   }
-  chips.forEach(ch=>{
-    ch.addEventListener('click',()=>{
-      chips.forEach(c=>c.classList.remove('active'));
-      ch.classList.add('active');
-      vibrate(); applyFilter();
-    });
-  });
-  applyFilter();
+  form.addEventListener('change', updateProgress);
+  updateProgress();
 
-  // Continue last
-  const CONT_KEY='specimens:last';
-  function updateContinue(){
-    const btn=$('#btn-continue');
-    const raw=localStorage.getItem(CONT_KEY);
-    if(!raw){btn.style.display='none';return;}
-    try{
-      const obj=JSON.parse(raw);
-      const a=$(`#list a.link[data-id="${obj.id}"]`);
-      if(!a){btn.style.display='none';return;}
-      btn.textContent=`つづきから再開：${obj.title}`;
-      btn.onclick=()=>{location.href=obj.href;};
-      btn.style.display='inline-block';
-    }catch{btn.style.display='none';}
-  }
-  $$('#list a.link').forEach(a=>{
-    a.addEventListener('click',()=>{
-      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href:a.getAttribute('href')};
-      localStorage.setItem(CONT_KEY,JSON.stringify(data)); vibrate();
-    },{passive:true});
-  });
-  updateContinue();
-
-  // Random pick
-  $('#btn-random').addEventListener('click',()=>{
-    const vis=$$('#list a.link').filter(a=>a.style.display!=='none');
-    if(!vis.length) return;
-    const pick=vis[Math.floor(Math.random()*vis.length)];
-    vibrate(15); location.href=pick.getAttribute('href');
-  });
-
-  // フォント切替
-  const root=document.documentElement;
-  const FONT_KEY='specimens:font';
-  const fontBtn=$('#toggle-font');
-  function applyFont(){
-    const mode=localStorage.getItem(FONT_KEY)||'';
-    root.setAttribute('data-font', mode);
-    const on = (mode==='lg');
-    fontBtn.setAttribute('aria-pressed', on?'true':'false');
-    fontBtn.textContent = on ? '標準に戻す' : '文字を大きく';
-    fontBtn.title = on ? '押すと文字サイズが標準に戻ります' : '押すと文字が大きくなります';
-  }
-  fontBtn.addEventListener('click',()=>{
-    const next = (root.getAttribute('data-font')==='lg') ? '' : 'lg';
-    localStorage.setItem(FONT_KEY,next); applyFont(); vibrate();
-  });
-  applyFont();
-
-  // 共有
-  const shareBtn = $('#btn-share');
-  const sheet = $('#shareSheet');
-  const toast = $('#toast');
-  const shareData = {
-    title: document.title,
-    text: '診断の入口まとめ「心の標本」',
-    url: location.href.split('#')[0]
+  // ---- タグと加点 ----
+  const countersInit = () => ({ 熱:0, 言葉:0, 手順:0, 合図:0, 守り:0 });
+  const TAGS = {
+    'q1:A': { 熱:1, 合図:1 },   'q1:B': { 言葉:1, 手順:1 },   'q1:C': { 合図:1, 守り:1 },
+    'q2:A': { 合図:1, 守り:1 }, 'q2:B': { 言葉:1, 手順:1 },   'q2:C': { 手順:1, 合図:1 },
+    'q3:A': { 熱:1, 合図:1 },   'q3:B': { 守り:1, 合図:1 },   'q3:C': { 手順:1, 言葉:1 },
+    'q4:A': { 熱:2 },           'q4:B': { 言葉:1, 手順:1 },   'q4:C': { 合図:1, 守り:1 },
   };
-  function showToast(msg='コピーしました'){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'), 1400);
+
+  // ---- ルート定義（画像は 01.png〜05.png を直参照） ----
+  const ROUTES = {
+    moon_sun: {
+      id:"01", title:"自由の月と太陽",
+      story:[
+        "外門を越えた朝、二人は市はずれの小さな店を始める。",
+        "合図はいらない。声で呼び合えるから。",
+        "過去は短く、未来は長く――同じ皿を拭きながら決めていく。"
+      ],
+      trait:[
+        "決めるまで慎重だが、決めた後の足は速い。",
+        "“守るべき人”が見つかると、自分の疲れより相手の明日を優先しがち。",
+        "言葉より行動で示すとき、いちばん誠実さが伝わる。",
+        "幸せは派手さよりも、静かな反復で育てられるタイプ。"
+      ],
+      alt:"夜明け色の店内で、二人が同じ皿を拭いている。窓辺に細い月。"
+    },
+    good_evil: {
+      id:"02", title:"善と悪の秤",
+      story:[
+        "群青の帳簿は静かに閉じられ、申請は通らない。",
+        "廊下ですれ違えば礼は交わすが、足は止めない。",
+        "“正しさ”は守られた。心は、それぞれの側で保存されたまま。"
+      ],
+      trait:[
+        "感情が大きいほど、手順と記録で自分を落ち着かせる。",
+        "「損しない選択」を無意識に選び、あとから胸がざわつくことがある。",
+        "人に迷惑をかけないことを誇りにしている。",
+        "期限とルールがあると、ほんとうの優しさを出しやすい。"
+      ],
+      alt:"群青の帳簿と小さな秤。窓から冷たい朝光が射す。"
+    },
+    letter_shadow: {
+      id:"03", title:"折れた手紙と灯の影（露見）",
+      story:[
+        "夜更け、折り目の同じ手紙を箱に戻す指先を、ひとつの影が見ていた。",
+        "朝には帳簿に追記が増え、面会票の写しに赤い印。",
+        "合図は言葉になる――二人の間でではなく、他人の口の上で。"
+      ],
+      trait:[
+        "空気を読む精度は高いが、境界の“持久力”を過信しがち。",
+        "守るための秘密が増えるほど、自分の線引きが薄くなる。",
+        "“二人だけのルール”に温かさを感じる一方、外圧への備えは後回しになりやすい。",
+        "早めに出口（撤退線）を決めておくと、優しさを壊さずに終われるタイプ。"
+      ],
+      alt:"灯に照らされた手紙の箱。扉の隙間に人影がのぞく。"
+    },
+    bottle_morning: {
+      id:"04", title:"空の瓶と朝の水",
+      story:[
+        "噴水の水を空の瓶に少しだけ入れて、棚に戻す。",
+        "名前は付けない。痛みは薄まり、好意は尊重へ形を変える。",
+        "会わない段取りを決め、生活は静かに整っていく。"
+      ],
+      trait:[
+        "感情を“保存”してから片づける、几帳面な優しさがある。",
+        "きっぱりよりも、静かに距離を置く方が心に馴染む。",
+        "未練をゼロにしないほうが、前に進めるタイプ。",
+        "朝のルーティンが整うほど、決断は穏やかになる。"
+      ],
+      alt:"朝の棚に並ぶガラス瓶。ひとつだけ蓋が開いている。"
+    },
+    blank_map: {
+      id:"05", title:"白紙の地図",
+      story:[
+        "地図は畳まれ、季節が変わるまで再会しないと決めた。",
+        "敗北ではなく、余地としての白。",
+        "次に開くとき、道具から作り直す。"
+      ],
+      trait:[
+        "“いまは決めない”という賢さを持っている。",
+        "周囲に合わせるより、時期を合わせるほうが得意。",
+        "白紙を見ると不安になるが、開き直ると創造力が出る。",
+        "小さな再開の約束があると、毎日が落ち着く。"
+      ],
+      alt:"紐で閉じられた白い地図。机にやわらかな影が落ちる。"
+    }
+  };
+
+  // ---- 判定 ----
+  function routeByCounters(c){
+    if (c.熱 >= 4 || (c.熱 >= 3 && c.合図 >= 1)) return 'moon_sun';
+    if ((c.言葉 + c.手順) >= 5) return 'good_evil';
+    if (c.合図 >= 3 && c.守り >= 2) return 'letter_shadow';
+    if ((c.守り + c.手順) >= 5 && c.熱 <= 2) return 'bottle_morning';
+    return 'blank_map';
   }
-  function openSheet(){
-    const tw = 'https://twitter.com/intent/tweet?text='
-      + encodeURIComponent('診断の入口まとめ「心の標本」') + '&url=' + encodeURIComponent(shareData.url);
-    const line = 'https://line.me/R/msg/text/?' + encodeURIComponent('心の標本 ' + shareData.url);
-    $('#share-x').setAttribute('href', tw);
-    $('#share-line').setAttribute('href', line);
-    sheet.style.display='block';
-  }
-  function closeSheet(){ sheet.style.display='none'; }
-  shareBtn.addEventListener('click', async ()=>{
-    try{
-      if (navigator.share){
-        await navigator.share(shareData);
-      }else{
-        openSheet();
+
+  function diagnose(){
+    // 未回答チェック
+    for(let i=1;i<=4;i++){
+      if(!document.querySelector(`input[name="q${i}"]:checked`)){
+        alert(`すべての質問に答えてください。\n未回答：Q${i}`); return;
       }
-      vibrate(10);
-    }catch(e){}
-  });
-  $('#share-copy').addEventListener('click', async ()=>{
-    try{
-      await navigator.clipboard.writeText(shareData.url);
-      showToast();
-    }catch{
-      prompt('このURLをコピーしてください', shareData.url);
     }
-    closeSheet();
-  });
-  $('#share-close').addEventListener('click', closeSheet);
-  document.addEventListener('click', (e)=>{
-    if (sheet.style.display==='block' && !e.target.closest('.sharesheet .box') && e.target!==shareBtn){
-      closeSheet();
+    let C = countersInit();
+    for(let i=1;i<=4;i++){
+      const v = document.querySelector(`input[name="q${i}"]:checked`).value;
+      const add = TAGS[`q${i}:${v}`] || {};
+      Object.keys(add).forEach(k => C[k] += add[k]);
     }
-  });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSheet(); });
-})();
-</script>
-</body></html>
+    const key = routeByCounters(C);
+    renderResult(ROUTES[key]);
+    window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
+  }
+
+  function resetAll(){
+    form.reset();
+    document.getElementById('result').innerHTML = '';
+    updateProgress();
+    window.scrollTo({ top: 0, behavior:'smooth' });
+  }
+
+  function renderResult(route){
+    const imgPath = `/shindan/assets/results/story/${route.id}.png`; // ← 01.png〜05.png
+    const storyHtml = route.story.map(line => `<p>${line}</p>`).join('');
+    const traitHtml = route.trait.map(t => `<li>${t}</li>`).join('');
+
+    const html = `
+      <div class="result-head">
+        <h3 class="result-title">${route.title}</h3>
+        <p class="result-sub">二人の物語は、こう続いていく。</p>
+      </div>
+
+      <img class="result-img" src="${imgPath}" alt="${route.alt}"
+           width="1024" height="1536"
+           onerror="this.style.opacity=.3; this.alt='結果画像が見つかりません';" loading="eager" decoding="async">
+
+      <div class="result-body">
+        <div class="result-card">
+          <h4>END ストーリー</h4>
+          ${storyHtml}
+        </div>
+
+        <div class="result-card">
+          <h4>あなたの気質（やさしい指摘）</h4>
+          <ul style="margin:0 0 0 1.2em; padding:0">${traitHtml}</ul>
+        </div>
+      </div>
+
+      <div class="result-ctas">
+        <a class="linkbtn primary" href="#" onclick="resetAll(); return false;">もう一度診断</a>
+        <a class="linkbtn" href="/shindan/">診断一覧へ戻る</a>
+      </div>
+      <p class="note">※ 物語はフィクションです。現実では規程・安全・立場を最優先に。</p>
+    `;
+    document.getElementById('result').innerHTML = html;
+  }
+
+  // ボタン紐づけ（Safari対策で明示）
+  document.getElementById('btn-diagnose').addEventListener('click', diagnose);
+  document.getElementById('btn-reset').addEventListener('click', resetAll);
+  </script>
+</body>
+</html>
