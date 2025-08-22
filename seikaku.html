@@ -1,0 +1,201 @@
+<!-- === Game Status Card: Specimen 01 === -->
+<section class="gs-wrap" id="status01">
+  <style>
+    .gs-wrap{--bg:#fff5fb;--ink:#3b3445;--sub:#6e6786;--line:#ecd9ff;--card:#fff;
+      --p1:#ff9ecf;--p2:#b69cff;--ok:#10b981;--ng:#ef4444; font:16px/1.7 ui-sans-serif,system-ui,"Hiragino Kaku Gothic ProN","Meiryo",sans-serif; color:var(--ink)}
+    .gs{max-width:960px;margin:18px auto;border:1.5px solid var(--line);border-radius:16px;background:var(--card)}
+    .gs-hd{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding:14px;border-bottom:1.5px solid var(--line)}
+    .gs-ava{width:120px;height:120px;border-radius:16px;object-fit:cover;border:1.5px solid var(--line);box-shadow:6px 6px 0 0 var(--p2)}
+    .gs-title{margin:0;font-size:20px}
+    .gs-tags{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 0}
+    .tag{border:1.5px solid var(--line);border-radius:999px;padding:4px 10px;background:#fff;font-weight:700}
+    .gs-body{padding:14px;display:grid;gap:12px}
+    .panel{border:1.5px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+    .panel h3{margin:0 0 8px;font-size:16px}
+    .grid{display:grid;gap:12px}
+    @media(min-width:900px){ .grid-2{grid-template-columns:1fr 1fr} .grid-3{grid-template-columns:1fr 1fr 1fr}}
+    .bar{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center}
+    progress{width:100%;height:10px;-webkit-appearance:none;appearance:none}
+    progress::-webkit-progress-bar{background:#f3e8ff;border-radius:6px}
+    progress::-webkit-progress-value{background:linear-gradient(90deg,var(--p1),var(--p2));border-radius:6px}
+    .kv{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{border:1.5px solid var(--line);border-radius:8px;padding:4px 8px;background:#fff}
+    .ok{color:var(--ok);font-weight:700}.ng{color:var(--ng);font-weight:700}
+    .skills{list-style:disc;margin:.2rem 0 .2rem 1.2rem}
+    .muted{color:var(--sub);font-size:13px}
+    .tabs{display:flex;gap:8px;margin:8px 0}
+    .tab{border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;background:#fff;cursor:pointer;font-weight:700}
+    .tab[aria-pressed="true"]{outline:3px solid #ffd1e7}
+    .hidden{display:none}
+  </style>
+
+  <div class="gs">
+    <!-- Header -->
+    <div class="gs-hd">
+      <picture>
+        <source srcset="/result/seikaku/01.webp" type="image/webp">
+        <img src="/result/seikaku/01.png" alt="Specimen 01" class="gs-ava"
+             onerror="this.onerror=null;this.src='/result/seikaku01.png'">
+      </picture>
+      <div>
+        <h2 class="gs-title">Specimen 01 ─ ステータス</h2>
+        <div class="gs-tags">
+          <span class="tag">称号：さなぎ（成長中）</span>
+          <span class="tag">愛着：恐れ回避型</span>
+          <span class="tag">好み：静けさ 5/5・独り時間 5/5（お気に入りはそばに）</span>
+        </div>
+        <p class="muted" style="margin:6px 0 0">人は好き。<b>お気に入りの人</b>が近くにいると満たされる。</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="gs-body">
+      <div class="tabs" role="tablist" aria-label="view switch">
+        <button class="tab" data-pane="#pane-trait" aria-pressed="true">性格傾向</button>
+        <button class="tab" data-pane="#pane-love"  aria-pressed="false">恋愛</button>
+      </div>
+
+      <!-- TRAIT -->
+      <div id="pane-trait" class="panel">
+        <h3>基本パラメータ（Big Five）</h3>
+        <div class="grid grid-2">
+          <div class="bar"><label>外向性</label><progress max="5" value="2.83"></progress></div>
+          <div class="bar"><label>神経症傾向</label><progress max="5" value="2.83"></progress></div>
+          <div class="bar"><label>協調性</label><progress max="5" value="3.50"></progress></div>
+          <div class="bar"><label>誠実性</label><progress max="5" value="4.33"></progress></div>
+          <div class="bar"><label>開放性</label><progress max="5" value="5.00"></progress></div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top:10px">
+          <div>
+            <h3>強み（パッシブ）</h3>
+            <ul class="skills">
+              <li>知識の統合 / 抽象思考 / 適応が速い</li>
+              <li>正確さを最優先（正確さ→スピード→楽しさ→やさしさ）</li>
+              <li>静かな場所で会話の質が上がる</li>
+            </ul>
+          </div>
+          <div>
+            <h3>デバフ / 境界</h3>
+            <ul class="skills">
+              <li class="ng">根拠のない断定 / 高圧 / 強要</li>
+              <li class="ng">求めてないアドバイス / きつい匂い</li>
+              <li>浅い会話は苦手 / 感情表現・頼るのは修行中</li>
+            </ul>
+          </div>
+          <div>
+            <h3>ブースト / リセット</h3>
+            <ul class="skills">
+              <li class="ok">発見・感性・楽しさ → エネルギー↑</li>
+              <li class="ok">リセット：猫 ＞ いい匂い ＞ マインドフルネス</li>
+              <li>集中サイン：脚を組む / 目がゆるむ / 口を触る</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:10px">
+          <h3>好感度が上がったときの挙動（イベント）</h3>
+          <ul class="skills">
+            <li>勉強以外の話が増える / 甘える / 目で追う / 物理距離が近づく</li>
+          </ul>
+          <div class="kv">
+            <span class="chip">入口：哲学・研究・感性</span>
+            <span class="chip">くだらない話OK：「あの雲◯◯に見えへん？」</span>
+            <span class="chip">キーワード：変化 / 依存性のある毒 / 草原の大きな石</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOVE -->
+      <div id="pane-love" class="panel hidden">
+        <h3>恋愛スタイル（総合）</h3>
+        <div class="grid grid-2">
+          <div class="panel" style="padding:10px">
+            <h3 style="margin-top:0">はじまり</h3>
+            <ul class="skills">
+              <li>いい匂い、<b>相手の立場</b>で考えられる人、柔軟性に惹かれやすい</li>
+              <li>一目惚れしやすいが、そこからはゆっくり進む</li>
+              <li>好きな人なら「近い距離」が好き</li>
+            </ul>
+          </div>
+          <div class="panel" style="padding:10px">
+            <h3 style="margin-top:0">コミュニケーション</h3>
+            <ul class="skills">
+              <li>連絡：仲良くなる前は多め、仲良くなったら少なくてOK</li>
+              <li>文量は短文 / 通話が楽</li>
+              <li>ひとり時間は<b>5/5</b>必要。ただし、<b>そばにいるだけ</b>なら平気</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top:8px">
+          <div>
+            <h3>愛着：恐れ回避型</h3>
+            <ul class="skills">
+              <li>近づきたい＋傷つくのが怖い → ときどき距離を取る</li>
+              <li>明確な好意表示で安心しやすい</li>
+              <li>ストレス時はいったん置いてから再接近が◎</li>
+            </ul>
+          </div>
+          <div>
+            <h3>不安・衝突のハンドリング</h3>
+            <ul class="skills">
+              <li>不安：まず一人で考える</li>
+              <li>してほしい：好意や誤解の訂正を<b>はっきり</b>伝える</li>
+              <li>話し合い：考えと目的を説明→納得ラインに調整</li>
+              <li>イライラ時：数分クールダウン後に対話</li>
+            </ul>
+          </div>
+          <div>
+            <h3>長続きの鍵 / 安心の交換</h3>
+            <ul class="skills">
+              <li>鍵：変化・体験の共有・優しさ</li>
+              <li>贈れる安心：<b>好きになったら基本的に嫌いにならない</b>（謝って笑えたら大体OK）</li>
+              <li>欲しい安心：<b>明確な好意</b>（言葉/行動で）</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="margin-top:8px">
+          <div class="panel" style="padding:10px">
+            <h3 style="margin-top:0">相性</h3>
+            <ul class="skills">
+              <li class="ok">開放性が高い / 誠実 / 優しい</li>
+              <li class="ng">極端な現実主義 / 無責任 / 低共感</li>
+            </ul>
+          </div>
+          <div class="panel" style="padding:10px">
+            <h3 style="margin-top:0">Do / Don’t</h3>
+            <ul class="skills">
+              <li class="ok">努力をほめる / 気づいてない魅力を言語化</li>
+              <li class="ok">近くに座る・手短な通話・小さな体験を共有</li>
+              <li class="ng">根拠のない断定 / 強要 / 高圧</li>
+              <li>スキンシップ：<b>お気に入りならOK</b>。それ以外はNG</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:8px">
+          <h3 style="margin-top:0">初期デートの当たり</h3>
+          <ul class="skills">
+            <li>喫茶店でべらべら話す / 動物とふれあう</li>
+            <li>惚れ直しトリガー：<b>真剣な顔</b>、何かを改善しようとしている姿</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // tab switch
+    document.querySelectorAll('#status01 .tab').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        document.querySelectorAll('#status01 .tab').forEach(x=>x.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        document.querySelector('#status01 #pane-trait').classList.toggle('hidden', b.dataset.pane!=='#pane-trait');
+        document.querySelector('#status01 #pane-love').classList.toggle('hidden',  b.dataset.pane!=='#pane-love');
+      });
+    });
+  </script>
+</section>
+<!-- === /Game Status Card === -->
