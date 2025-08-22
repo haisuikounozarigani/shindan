@@ -211,7 +211,9 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
-  <a href="https://seikaku.my.canva.site/" target="_blank" rel="noopener">自己紹介</a>
+  <!-- ▼ ここを差し替え ▼ -->
+  <a href="/shindan/seikaku.html">自己紹介</a>
+  <!-- ▲ 差し替え完了 ▲ -->
   <button id="btn-share" type="button" aria-haspopup="dialog" aria-controls="shareSheet" title="このページのURLを共有">🔗 共有</button>
 </nav>
 
@@ -271,7 +273,8 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   chips.forEach(ch=>{
     ch.addEventListener('click',()=>{
       chips.forEach(c=>c.classList.remove('active'));
-      ch.classList.add('active'); vibrate(); applyFilter();
+      ch.addClass?.('active')||ch.classList.add('active');
+      vibrate(); applyFilter();
     });
   });
   applyFilter();
@@ -307,7 +310,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     vibrate(15); location.href=pick.getAttribute('href');
   });
 
-  // ===== フォント切替（明記：文字を大きく / 標準に戻す） =====
+  // フォント切替
   const root=document.documentElement;
   const FONT_KEY='specimens:font';
   const fontBtn=$('#toggle-font');
@@ -325,7 +328,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   });
   applyFont();
 
-  // ===== 共有ボタン（フッター） =====
+  // 共有
   const shareBtn = $('#btn-share');
   const sheet = $('#shareSheet');
   const toast = $('#toast');
@@ -359,9 +362,8 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
         openSheet();
       }
       vibrate(10);
-    }catch(e){/* キャンセル等は無視 */}
+    }catch(e){}
   });
-  // Sheet actions
   $('#share-copy').addEventListener('click', async ()=>{
     try{
       await navigator.clipboard.writeText(shareData.url);
