@@ -60,7 +60,7 @@ li{margin:0 0 12px}
 
 /* ====================  Lock  ==================== */
 .lockmask .detail{position:relative}
-.lockmask.locked .detail .inner{display:none}        /* ロック中はDOMへ詳細を入れない */
+.lockmask.locked .detail .inner{display:none}
 .lockmask.locked .detail .gate{display:flex}
 .gate{display:none;position:absolute;inset:0;background:rgba(255,255,255,.9);border:1px dashed #dcb9cc;border-radius:14px;align-items:center;justify-content:center;text-align:center;color:#6b5662;padding:18px;line-height:2.0}
 
@@ -97,11 +97,7 @@ li{margin:0 0 12px}
 
   <header class="header" id="top">
     <div class="portrait" aria-label="プロフィール画像">
-      <picture>
-        <source srcset="/result/seikaku/01.webp" type="image/webp">
-        <source srcset="/result/seikaku/01.jpg" type="image/jpeg">
-        <img src="/result/seikaku/01.png" alt="プロフィール画像">
-      </picture>
+      <img src="/shindan/assets/result/seikaku/01.png" alt="プロフィール画像">
     </div>
     <div>
       <h1>性格と恋愛のレポート</h1>
@@ -140,10 +136,8 @@ li{margin:0 0 12px}
     <h2 id="h-person">📘 性格レポート（Big Five＋VIA）</h2>
     <p class="small">NEO-PI-Rの正式スコアとVIAの強みを統合。簡潔は極少、詳細は濃密。</p>
 
-    <!-- 概要（常時表示：さらに少なめ） -->
     <div class="summary" id="sum-person"></div>
 
-    <!-- 詳細（ロック解除後にJSで挿入） -->
     <div class="detail">
       <div class="inner" id="detail-person"></div>
       <div class="gate">🔒 この先は<strong>性格の全文</strong>。下の<strong>スロットで猫🐱×3</strong>を揃えると、その場で解放されます。<br>※ 保存はしません。毎回チャレンジ。</div>
@@ -156,10 +150,8 @@ li{margin:0 0 12px}
   <section id="sec-love" class="card lockmask locked" aria-labelledby="h-love">
     <h2 id="h-love">💗 恋愛レポート（Love Styles × 愛着）</h2>
 
-    <!-- 概要（常時表示：さらに少なめ） -->
     <div class="summary" id="sum-love"></div>
 
-    <!-- 詳細（ロック解除後にJSで挿入） -->
     <div class="detail">
       <div class="inner" id="detail-love"></div>
       <div class="gate">🔒 この先は<strong>恋愛の全文</strong>。下の<strong>スロットで犬🐶×3</strong>を揃えると、その場で解放されます。<br>※ 保存はしません。毎回チャレンジ。</div>
@@ -193,11 +185,10 @@ li{margin:0 0 12px}
 
 <script>
 /* ============================================================
-   単一ソースのデータ定義（ここだけ編集すれば全体に反映）
+   単一ソースのデータ定義
    ============================================================ */
 const PROFILE = {
   summary: {
-    /* ======= 簡潔は極少（2〜4行） ======= */
     person: `
 <div class="hl">
   見た目は淡々でも、人が好き。お気に入りが隣にいるだけで満たされる。<br>
@@ -215,7 +206,6 @@ const PROFILE = {
     `
   },
   detail: {
-    /* ===== 性格（Big Five） ===== */
     person: `
 <h3>よくある誤解 → ほんとうの姿</h3>
 <p>
@@ -243,7 +233,7 @@ const PROFILE = {
       怒鳴るタイプではないが、心の中では揺れが大きい瞬間がある。</li>
 </ul>
 
-<p><b>協調性 3.50（やや高）</b></p>
+<p><b>協調性 3.50（やや高）</p>
 <ul>
   <li><b>メリット：</b><b>行動で示すやさしさ</b>が核。率直でフェア。信頼を得やすい。</li>
   <li><b>デメリット：</b><b>感情に入り込んで一緒に沈む</b>より、まず<b>行動的・倫理的な配慮</b>を優先しやすい。  
@@ -279,7 +269,6 @@ const PROFILE = {
 <p><b>無言：</b>疲れているか考え事。機嫌が悪いわけではない。目を合わせないのは認知負荷を下げたいから。</p>
     `,
 
-    /* ===== 恋愛（濃く＋接触の条件＆NG更新） ===== */
     love: `
 <h3>スタイルの土台（Love Styles × 愛着）</h3>
 <p>
@@ -329,12 +318,12 @@ Love Styles は情熱（Eros）高め × 遊戯（Ludus）高め。
 <h3>喜ぶ行動（すぐ試せる）</h3>
 <ul>
   <li><b>好意をはっきり言う：</b>言葉と行動をそろえて伝える。「好きだよ」「一緒にいたい」。</li>
-  <li><b>予定・目的を短く共有：</b>「今日はここでこれをしたい」を先に教えてくれると安心。</li>
   <li><b>静かな場所の提案：</b>落ち着ける席取り、香りは少量・甘め寄り。</li>
   <li><b>学び・発見の共有：</b>研究や面白い知見を「否定ではなく紹介」で話す。</li>
-  <li><b>写真は一緒に確認：</b>雰囲気重視、OKかどうかを一緒に見る。</li>
   <li><b>連絡の温度合わせ：</b>忙しい時は短文OKの合図をくれると助かる。</li>
   <li><b>体験のストック：</b>小さな旅行、レトロ喫茶、動物と触れ合うなど「一緒の記憶」を増やす。</li>
+  <li><b>勉強や最近の発見を聞いてくれる：</b>「今なに学んでる？」「最近の気づきは？」と興味を向けてくれると嬉しい。</li>
+  <li><b>沈黙OKの合図：</b>話さなくても一緒にいられる時間を大事にしてくれる。</li>
 </ul>
 
 <hr class="hr">
@@ -343,7 +332,7 @@ Love Styles は情熱（Eros）高め × 遊戯（Ludus）高め。
 <ul>
   <li><b>根拠のない断定・見下し：</b>「そう思う理由」を一緒に探したい。</li>
   <li><b>強い圧・強要：</b>判断は急かされるほど固くなる。選択肢で提案してほしい。</li>
-  <li><b>約束を軽く扱う：</b>小さな約束ほど効く。時間とドタキャンは心に残る。</li>
+  <li><b>ドタキャン：</b><u>直前のキャンセルはNG</u>。ただし<b>遅刻は平気</b>（来てくれるならOK）。</li>
   <li><b>距離感が急：</b><u>親しくなる前の</u>突然の濃い接触は苦手。仲良くなれば自分からも近づくし、触れられるのもOK。</li>
   <li><b>にぎやかすぎる場ばかり：</b>対応はできるが内側の消耗が大きい。静かな時間も混ぜたい。</li>
 </ul>
@@ -516,4 +505,3 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 </body>
 </html>
-```0
