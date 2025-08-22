@@ -12,7 +12,6 @@
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
 .hidden{display:none!important}
-
 /* Splash */
 .splash{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden;cursor:pointer}
 .splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
@@ -22,11 +21,9 @@ body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;ba
 h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 .sub{margin:0;color:var(--muted)}
 .tap{margin-top:14px;font-size:.95em;color:#7a6a77}
-
 /* Main */
 .wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
 .wrap.show{opacity:1;transform:none}
-
 /* Quick bar + filter chips */
 .quick{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
 .quick .btn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg);cursor:pointer}
@@ -34,7 +31,6 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 .chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c5763;cursor:pointer}
 .chip.active{background:var(--fg);color:#fff;border-color:var(--fg)}
-
 /* Cards */
 .links{display:grid;gap:12px;margin-top:10px}
 a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
@@ -49,26 +45,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .pill{padding:3px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571}
 .badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
-
 /* Footer */
 .note{color:var(--muted);text-align:center;margin:18px 0}
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
 .footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer}
-
 /* Share sheet + toast */
 .sharesheet{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;display:none}
 .sharesheet .box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:10px;display:flex;gap:8px}
 .sharesheet .box a,.sharesheet .box button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#533;cursor:pointer;text-decoration:none}
 .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9em;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
-
 :root[data-font="lg"]{font-size:17px}
 @media (max-width:360px){.badge{display:none}}
 </style>
 </head>
 <body>
-
 <!-- Splash -->
 <section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0">
   <div class="fallback" aria-hidden="true"></div>
@@ -98,6 +90,18 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   </div>
 
   <nav class="links" id="list">
+    <!-- NEW: 姫と城下の恋診断（オリジナル） -->
+    <a class="link" href="/shindan/hime.html?src=specimens"
+       data-id="hime" data-tags="性格,短時間,ゲーム風" data-mins="3" data-updated="2025-08-22">
+      <span class="emo">👑</span>
+      <div>
+        <div class="ttl">姫と城下の恋診断（オリジナル） <span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">分岐する物語で5つのENDへ。結果は絵画風画像つき</div>
+        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#ゲーム風</span><span class="pill">#短時間</span><span class="pill">#性格</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
     <!-- NEW: 冒険者逆境力診断（7因子） -->
     <a class="link" href="/shindan/adventure-shin.html?src=specimens"
        data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
@@ -202,18 +206,17 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
       <span class="badge">診断へ</span>
     </a>
   </nav>
+
   <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
 </main>
 
-<!-- Footer（共有ボタンをここに配置） -->
+<!-- Footer -->
 <nav class="footerbar">
   <button id="toggle-font" aria-pressed="false" title="押すと文字が大きくなります">文字を大きく</button>
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
-  <!-- ▼ ここを差し替え ▼ -->
   <a href="/shindan/seikaku.html">自己紹介</a>
-  <!-- ▲ 差し替え完了 ▲ -->
   <button id="btn-share" type="button" aria-haspopup="dialog" aria-controls="shareSheet" title="このページのURLを共有">🔗 共有</button>
 </nav>
 
@@ -273,7 +276,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   chips.forEach(ch=>{
     ch.addEventListener('click',()=>{
       chips.forEach(c=>c.classList.remove('active'));
-      ch.addClass?.('active')||ch.classList.add('active');
+      ch.classList.add('active');
       vibrate(); applyFilter();
     });
   });
@@ -332,13 +335,11 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   const shareBtn = $('#btn-share');
   const sheet = $('#shareSheet');
   const toast = $('#toast');
-
   const shareData = {
     title: document.title,
     text: '診断の入口まとめ「心の標本」',
     url: location.href.split('#')[0]
   };
-
   function showToast(msg='コピーしました'){
     toast.textContent = msg;
     toast.classList.add('show');
@@ -353,7 +354,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     sheet.style.display='block';
   }
   function closeSheet(){ sheet.style.display='none'; }
-
   shareBtn.addEventListener('click', async ()=>{
     try{
       if (navigator.share){
@@ -380,8 +380,6 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     }
   });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSheet(); });
-
 })();
 </script>
-
 </body></html>
