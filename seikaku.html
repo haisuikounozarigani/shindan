@@ -1,324 +1,519 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lab Report | Specimen 01</title>
-<meta name="description" content="Specimen 01 — 研究レポート風プロフィール。密度切替・おみくじ連動で恋愛傾向を解放。">
-<meta name="theme-color" content="#ffeef7">
-<meta property="og:title" content="Lab Report | Specimen 01">
-<meta property="og:description" content="密度切替・おみくじ連動で恋愛傾向を解放。">
-<meta property="og:image" content="/result/seikaku/01.png">
+<title>性格と恋愛レポート｜完全版</title>
+<meta name="theme-color" content="#fff5fb">
 <style>
+/* ====================  Base  ==================== */
 :root{
-  --bg:#fff5fb; --ink:#3b3445; --sub:#6e6786; --line:#ecd9ff; --card:#fff;
-  --p1:#ff9ecf; --p2:#b69cff; --ok:#10b981; --ng:#ef4444;
+  --bg1:#fff5fb; --bg2:#f3f4ff;
+  --card:#fff;   --line:#efd9ee;
+  --fg:#533e4a;  --muted:#6f5f67;
+  --accent:#ff9ecf; --accent2:#b69cff;
+  --good:#2ea86a;   --warn:#e07a95;
+  --shadow:rgba(182,156,255,.18);
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.8 ui-sans-serif,system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Meiryo","Noto Sans JP",sans-serif}
-.wrap{max-width:980px;margin:28px auto 120px;padding:0 18px}
-header.hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
-.avatar{width:190px;height:190px;border-radius:22px;object-fit:cover;background:#f2e8ff;
-  border:2px solid var(--line);box-shadow:8px 8px 0 0 var(--p2);cursor:zoom-in;transition:.2s}
-.avatar.big{width:300px;height:300px;cursor:zoom-out;box-shadow:12px 12px 0 0 var(--p1)}
-h1{margin:0 0 6px;font-size:clamp(20px,2.6vw,30px)}
-.idrow{display:flex;gap:8px;flex-wrap:wrap}
-.idrow .cell{border:1.5px dashed var(--line);border-radius:8px;background:#fff;padding:6px 10px}
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-.btn{padding:8px 12px;border:1.5px solid var(--line);border-radius:999px;background:#fff;cursor:pointer;font-weight:700}
-.btn.primary{background:linear-gradient(90deg,var(--p1),var(--p2));color:#fff;border-color:transparent}
-.note{color:var(--sub);font-size:13px}
+html,body{height:100%}
+body{
+  margin:0; color:var(--fg);
+  font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:linear-gradient(160deg,var(--bg1),var(--bg2));
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+a{color:inherit}
 
-/* Sections */
-.section{border:1.5px solid var(--line);border-radius:18px;background:var(--card);padding:18px;margin-top:16px}
-.section h2{margin:0 0 8px;font-size:19px}
-.cols{display:grid;gap:14px}
-@media(min-width:860px){ .cols{grid-template-columns:1fr 1fr} }
-.grid-3{display:grid;gap:12px}
-@media(min-width:980px){ .grid-3{grid-template-columns:1fr 1fr 1fr} }
-.card{border:1.5px solid var(--line);border-radius:14px;background:#fff;padding:12px}
-.list{margin:.2rem 0 .2rem 1.2rem}
+/* ====================  Layout  ==================== */
+.wrap{max-width:880px;margin:20px auto 240px;padding:0 18px}
+.topbar{display:flex;gap:12px;align-items:center;margin:8px 0 16px}
+.btn{padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;text-decoration:none;cursor:pointer}
+.header{display:grid;grid-template-columns:1fr;gap:16px;margin:12px 0 22px;align-items:center;text-align:center}
+.portrait{width:138px;height:138px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 12px 28px var(--shadow);margin:0 auto}
+.portrait img{width:100%;height:100%;object-fit:cover;display:block}
+h1{margin:0;font-size:clamp(22px,6vw,30px);letter-spacing:.02em}
+.lead{margin:0;color:var(--muted);line-height:2.2;letter-spacing:.02em;white-space:pre-line}
+.tag{display:inline-block;margin-top:10px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.95em}
 
-/* Bars & Radar */
-.bar{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center}
-progress{width:100%;height:10px;-webkit-appearance:none;appearance:none}
-progress::-webkit-progress-bar{background:#f3e8ff;border-radius:6px}
-progress::-webkit-progress-value{background:linear-gradient(90deg,var(--p1),var(--p2));border-radius:6px}
-canvas{max-width:100%;height:auto}
+/* ====================  TOC  ==================== */
+.toc{display:grid;gap:12px;margin:14px 0 12px}
+.toc a{display:block;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;line-height:2.0;box-shadow:0 10px 22px rgba(255,158,207,.12)}
+.toc small{display:block;color:var(--muted);margin-top:4px}
 
-/* Density control */
-[data-density="lite"] .deep{display:none}
-[data-density="deep"] .deep{display:block}
+/* ====================  Cards  ==================== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin:20px 0;box-shadow:0 12px 26px rgba(255,158,207,.12)}
+.card h2{margin:6px 0 14px;font-size:1.22rem;letter-spacing:.01em}
+.card h3{margin:22px 0 12px;font-size:1.08rem}
+p,li{line-height:2.2;letter-spacing:.02em}
+p{margin:0 0 18px}
+ul{margin:12px 0 18px 1.35em;padding:0}
+li{margin:0 0 12px}
+.small{color:var(--muted);font-size:.96em}
+.hr{height:1px;background:linear-gradient(90deg,#ffe0f0,#e7e3ff);border:none;margin:22px 0;border-radius:999px}
+.hl{background:linear-gradient(90deg,#ffe7f3,#efe9ff);border:1px solid #f1d9ee;border-radius:12px;padding:14px 16px;margin:0 0 14px}
 
-/* Omikuji */
-.omikuji{display:flex;gap:10px;align-items:center}
-.result{font-weight:800}
-.ok{color:var(--ok)} .ng{color:var(--ng)}
-.lock{opacity:.6;filter:grayscale(0.2)}
-.unlock{animation:pop .3s ease}
-@keyframes pop{from{transform:scale(.98)}to{transform:scale(1)}}
+/* ====================  Mode  ==================== */
+.modebar{display:flex;gap:12px;align-items:center;margin:10px 0 6px}
+.modebar button{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.modebar button.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+
+/* ====================  Lock  ==================== */
+.lockmask .detail{position:relative}
+.lockmask.locked .detail .inner{display:none}        /* ロック中はDOMへ詳細を入れない */
+.lockmask.locked .detail .gate{display:flex}
+.gate{display:none;position:absolute;inset:0;background:rgba(255,255,255,.9);border:1px dashed #dcb9cc;border-radius:14px;align-items:center;justify-content:center;text-align:center;color:#6b5662;padding:18px;line-height:2.0}
+
+/* ====================  Slot (fixed bottom)  ==================== */
+.slotbar{position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:12px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:rgba(255,255,255,.98);backdrop-filter:blur(10px) saturate(1.1);border-top:1px solid #f0d8ea;box-shadow:0 -10px 22px rgba(0,0,0,.05)}
+.slot{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.reel{width:68px;height:68px;border-radius:14px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:38px;box-shadow:0 8px 14px rgba(0,0,0,.06)}
+.slotbtn{padding:12px 18px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;cursor:pointer}
+.info{font-size:1em;color:#6b5a66;text-align:center;margin-top:8px;line-height:2.0}
+.win{color:var(--good);font-weight:700}
+.loss{color:var(--warn)}
+
+/* ====================  Confetti  ==================== */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:10000;display:none}
+.confetti.show{display:block}
+.confetti i{position:absolute;font-size:22px;animation:fall 980ms ease-in forwards}
+@keyframes fall{to{transform:translateY(120vh) rotate(540deg);opacity:0}}
+
+/* ====================  Helpers  ==================== */
+.note{background:#fff;border:1px dashed #e9cfe0;border-radius:12px;padding:14px 16px;color:#6c5a66}
+.center{text-align:center}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.sep{height:20px}
 </style>
 </head>
 <body>
-<main class="wrap" id="top" data-density="lite">
-  <!-- Header -->
-  <header class="hero">
-    <picture>
-      <source srcset="/result/seikaku/01.webp" type="image/webp">
-      <img class="avatar" src="/result/seikaku/01.png" alt="Specimen 01" id="ava"
-           onerror="this.onerror=null;this.src='/result/seikaku01.png'">
-    </picture>
+<div class="wrap">
+
+  <!-- ===== Top ===== -->
+  <nav class="topbar" aria-label="戻る">
+    <a class="btn" href="/shindan/">← 診断一覧に戻る</a>
+  </nav>
+
+  <header class="header" id="top">
+    <div class="portrait" aria-label="プロフィール画像">
+      <picture>
+        <source srcset="/result/seikaku/01.webp" type="image/webp">
+        <source srcset="/result/seikaku/01.jpg" type="image/jpeg">
+        <img src="/result/seikaku/01.png" alt="プロフィール画像">
+      </picture>
+    </div>
     <div>
-      <h1>Research Lab Report — Specimen 01</h1>
-      <div class="idrow">
-        <div class="cell">Status: Active</div>
-        <div class="cell">Observer: you</div>
-        <div class="cell">Use: personal profile</div>
-      </div>
-      <p class="note" style="margin-top:6px">人が好き。<b>お気に入りの人</b>が近くにいると満たされる。</p>
-      <div class="controls">
-        <button id="btn-density" class="btn" aria-pressed="false" title="内容密度を切り替え">密度：ライト</button>
-        <a class="btn" href="/index.html">← 入口へ戻る</a>
-      </div>
+      <h1>性格と恋愛のレポート</h1>
+      <p class="lead">
+        いまの自分を一言で言うなら「さなぎ（成長中）」。
+
+        静かな場所で落ち着いて話すのが好き。
+        見た目は淡々でも、人が好き。お気に入りが隣にいるだけで満たされる。
+
+        研究の話は「否定」ではなく「共有」。良さを分かち合いたいだけ。
+        本当にイライラした時は、黙って距離をとる。落ち着いてから話す。
+      </p>
+      <span class="tag">はじめは要約（ごく少なめ）。下のスロットで全文を解放（保存しません）。</span>
     </div>
   </header>
 
-  <!-- Data: Big Five -->
-  <section class="section" id="data">
-    <h2>§ DATA（Big Five）</h2>
-    <div class="cols" style="align-items:center">
-      <div class="card">
-        <canvas id="radar" width="460" height="400" aria-label="Big Five レーダー"></canvas>
-      </div>
-      <div>
-        <div class="bar"><label>外向性</label><progress max="5" value="2.83"></progress></div>
-        <div class="bar"><label>神経症傾向</label><progress max="5" value="2.83"></progress></div>
-        <div class="bar"><label>協調性</label><progress max="5" value="3.50"></progress></div>
-        <div class="bar"><label>誠実性</label><progress max="5" value="4.33"></progress></div>
-        <div class="bar"><label>開放性</label><progress max="5" value="5.00"></progress></div>
-        <p class="note">好調条件：静かな場所 / 新しい発見が続く。</p>
-      </div>
+  <!-- ===== TOC ===== -->
+  <nav class="toc" aria-label="目次">
+    <a href="#sec-person">📘 性格レポート（Big Five＋VIA）
+      <small>誤解→ほんとうの姿／因子別“メリ・デメリット”明記／非言語サイン（訂正版）</small>
+    </a>
+    <a href="#sec-love">💗 恋愛レポート（Love Styles × 愛着）
+      <small>好きなタイプ・喜ぶ行動・NG／距離・連絡・接触／不安の扱い／修復手順 ほか</small>
+    </a>
+  </nav>
+
+  <!-- ===== Display Mode ===== -->
+  <div class="modebar" role="group" aria-label="表示量を切り替え">
+    <span class="small">表示量：</span>
+    <button id="btn-brief" class="active" type="button">簡潔</button>
+    <button id="btn-full"  type="button">詳細</button>
+  </div>
+
+  <!-- ===== 性格 ===== -->
+  <section id="sec-person" class="card lockmask locked" aria-labelledby="h-person">
+    <h2 id="h-person">📘 性格レポート（Big Five＋VIA）</h2>
+    <p class="small">NEO-PI-Rの正式スコアとVIAの強みを統合。簡潔は極少、詳細は濃密。</p>
+
+    <!-- 概要（常時表示：さらに少なめ） -->
+    <div class="summary" id="sum-person"></div>
+
+    <!-- 詳細（ロック解除後にJSで挿入） -->
+    <div class="detail">
+      <div class="inner" id="detail-person"></div>
+      <div class="gate">🔒 この先は<strong>性格の全文</strong>。下の<strong>スロットで猫🐱×3</strong>を揃えると、その場で解放されます。<br>※ 保存はしません。毎回チャレンジ。</div>
     </div>
 
-    <div class="grid-3" style="margin-top:12px">
-      <div class="card">
-        <b>下位因子<span class="note">（ディープで展開）</span></b>
-        <ul class="list deep">
-          <li><b>外向性 2.83</b>：社交5／刺激3／活動2／親密2／陽気2／主張1</li>
-          <li><b>神経症 2.83</b>：衝動5／傷つ4／抑うつ3／自意識3／不安1／怒り1</li>
-          <li><b>協調性 3.50</b>：利他5／率直5／信頼3／従順3／思いやり2／謙虚2</li>
-          <li><b>誠実性 4.33</b>：秩序5／責任5／達成5／統制4／慎重3／有能2</li>
-          <li><b>開放性 5.00</b>：知的5／価値観柔軟5／審美5／感受5／空想5／柔軟5</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>コア・アルゴリズム</b>
-        <ul class="list">
-          <li>優先順位：<b>正確さ ＞ スピード ＞ 楽しさ ＞ やさしさ</b></li>
-          <li class="deep">新体験：5/5、リスク有りは設計して動く：5/5</li>
-          <li>独り時間：5/5（ただし<b>お気に入り</b>はそばにいると安定）</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>ブースト / デバフ</b>
-        <ul class="list">
-          <li class="ok">発見・感性・楽しさ → エネルギー↑</li>
-          <li class="ng">臭い／根拠のない断定／求めてないアドバイス</li>
-          <li class="deep">リセット：猫 ＞ いい匂い ＞ マインドフルネス</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="cols" style="margin-top:12px">
-      <div class="card">
-        <b>誤解されやすい → 本当は</b>
-        <ul class="list">
-          <li>人に興味なさそう → 実は興味ある。<b>感情表現が苦手</b>。</li>
-          <li>賢い人だけ好む？ → <b>周りの目を気にせず自分の意見</b>を聞きたい。</li>
-          <li>無意味は嫌い？ → <b>くだらない話は好き</b>（例：「あの雲◯◯に見えへん？」）。</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>集中/照れサイン</b>
-        <ul class="list">
-          <li>集中：脚を組む／目がゆるむ／口を触る</li>
-          <li class="deep">照れ：左手で目隠し／左頬タッチ／唇の上に手／左耳上をかく</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <b>好感度↑イベント</b>
-      <ul class="list">
-        <li>勉強以外の話が増える／甘える／目で追う／物理距離が近づく</li>
-        <li class="deep">入口：哲学・研究・感性／キーワード：変化・依存性のある毒・草原の大きな石</li>
-      </ul>
-    </div>
+    <p class="note mt12">これは傾向のメモです。断定や診断ではありません。日々の状態で揺れます。</p>
   </section>
 
-  <!-- Omikuji gate -->
-  <section class="section" id="gate">
-    <h2>§ GATE（恋愛データ解放）</h2>
-    <div class="omikuji">
-      <button id="draw" class="btn primary">おみくじを引く</button>
-      <span id="omk" class="result"></span>
-      <span class="note">※「大吉」で恋愛傾向が解放されます（保存され次回以降も表示）。</span>
+  <!-- ===== 恋愛 ===== -->
+  <section id="sec-love" class="card lockmask locked" aria-labelledby="h-love">
+    <h2 id="h-love">💗 恋愛レポート（Love Styles × 愛着）</h2>
+
+    <!-- 概要（常時表示：さらに少なめ） -->
+    <div class="summary" id="sum-love"></div>
+
+    <!-- 詳細（ロック解除後にJSで挿入） -->
+    <div class="detail">
+      <div class="inner" id="detail-love"></div>
+      <div class="gate">🔒 この先は<strong>恋愛の全文</strong>。下の<strong>スロットで犬🐶×3</strong>を揃えると、その場で解放されます。<br>※ 保存はしません。毎回チャレンジ。</div>
     </div>
+
+    <p class="note mt12">この章は実体験と傾向のメモです。相手とコンディションで変わります。</p>
   </section>
 
-  <!-- Love: locked by omikuji -->
-  <section class="section lock" id="love">
-    <h2>§ LOVE（恋愛傾向）</h2>
-    <div class="cols">
-      <div class="card">
-        <b>はじまり</b>
-        <ul class="list">
-          <li>トリガー：いい匂い／<b>相手の立場</b>で考えられる／柔軟性</li>
-          <li>一目惚れはあるが、その後はゆっくり進む</li>
-          <li>距離：好きな人なら近い方がいい</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>コミュニケーション</b>
-        <ul class="list">
-          <li>連絡：仲良くなる前は多め、仲良くなったら少なくてOK</li>
-          <li>文量は短文／通話が楽</li>
-          <li>ひとり時間：5/5（<b>そばにいるだけ</b>なら平気）</li>
-        </ul>
-      </div>
-    </div>
+  <div class="sep"></div>
+</div>
 
-    <div class="grid-3" style="margin-top:12px">
-      <div class="card">
-        <b>愛着：恐れ回避型</b>
-        <ul class="list">
-          <li>近づきたい＋傷つきたくない → ときどき距離をとる</li>
-          <li>明確な好意表示があると安心</li>
-          <li>不安時はいったん置いてから再接近が◎</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>不安・衝突のハンドリング</b>
-        <ul class="list">
-          <li>不安：まず一人で考える</li>
-          <li>してほしい：好意や誤解の訂正を<b>はっきり</b>伝える</li>
-          <li>対話：考えと目的を説明→納得ラインで調整／イライラ時は数分クールダウン</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>長続きの鍵 / 安心の交換</b>
-        <ul class="list">
-          <li>鍵：変化・体験の共有・優しさ</li>
-          <li>贈れる安心：<b>好きになったら基本的に嫌いにならない</b>（謝って笑えたら大体OK）</li>
-          <li>欲しい安心：<b>明確な好意</b>（言葉/行動）</li>
-        </ul>
-      </div>
-    </div>
+<!-- ===== SLOT ===== -->
+<div class="slotbar" role="region" aria-label="スロットで詳細解放">
+  <div class="slot">
+    <div class="reel" id="r1" aria-live="polite">🐱</div>
+    <div class="reel" id="r2" aria-live="polite">🐶</div>
+    <div class="reel" id="r3" aria-live="polite">🐱</div>
+    <button class="slotbtn" id="spin" type="button" aria-label="スロットを回す">スロットを回す</button>
+  </div>
+  <div class="info" id="status">
+    <b>解放ルール：</b>猫🐱×3で「性格」全文／犬🐶×3で「恋愛」全文。<br>
+    はじめは要約だけ（超・少量）。揃ったらその項目だけ<strong>すぐ解放</strong>。<strong>保存はしません（毎回チャレンジ）</strong>。
+  </div>
+</div>
 
-    <div class="cols" style="margin-top:12px">
-      <div class="card">
-        <b>相性</b>
-        <ul class="list">
-          <li class="ok">開放性が高い／誠実／優しい</li>
-          <li class="ng">極端な現実主義／無責任／低共感</li>
-        </ul>
-      </div>
-      <div class="card">
-        <b>初期デートの当たり</b>
-        <ul class="list">
-          <li>喫茶店でべらべら／動物とふれあう</li>
-          <li>惚れ直す瞬間：<b>真剣な顔</b>／改善しようとしている姿</li>
-        </ul>
-      </div>
-    </div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
 
-    <div class="card deep" style="margin-top:12px">
-      <b>スキンシップ方針</b>
-      <ul class="list">
-        <li><b>お気に入りならOK</b>。好感度が普通未満は触れてほしくない</li>
-        <li>褒め方：努力／自分が知らない自分を言語化</li>
-        <li>NG：根拠のない断定／強要／高圧</li>
-      </ul>
-    </div>
-  </section>
-</main>
+<noscript>
+  <div class="wrap"><p>JavaScriptが無効のためスロットは使えませんが、<a href="#sec-person">性格</a>／<a href="#sec-love">恋愛</a>の要約は読めます。</p></div>
+</noscript>
 
 <script>
-/* ===== 画像拡大 ===== */
-document.getElementById('ava').addEventListener('click',e=> e.target.classList.toggle('big'));
+/* ============================================================
+   単一ソースのデータ定義（ここだけ編集すれば全体に反映）
+   ============================================================ */
+const PROFILE = {
+  summary: {
+    /* ======= 簡潔は極少（2〜4行） ======= */
+    person: `
+<div class="hl">
+  見た目は淡々でも、人が好き。お気に入りが隣にいるだけで満たされる。<br>
+  研究の話は否定ではなく共有。「こういう良いのがあるよ」を伝えたいだけ。<br>
+  本当に怒った時は黙って距離をとる。落ち着いてから言葉にする。<br>
+  エネルギーは13時↑／21時↓。
+</div>
+    `,
+    love: `
+<div class="hl">
+  惹かれる入口は「いい匂い」「献身的なやさしさ」「柔軟さ」。<br>
+  好きな人なら無言で隣にいてOK。序盤は連絡多め、仲良くなれば少なくて平気。<br>
+  親しくなると自分から近づく／触れることも増え、触れられるのもOK。
+</div>
+    `
+  },
+  detail: {
+    /* ===== 性格（Big Five） ===== */
+    person: `
+<h3>よくある誤解 → ほんとうの姿</h3>
+<p>
+「人に興味がなさそう」に見えるのは、最初は観察が多く表情や声の抑揚が控えめだから。
+実際は興味が強く、慣れてくると質問と共感が増える。「賢い人だけが好き」ではなく、
+<b>対話の姿勢</b>（意見を聴き、根拠を一緒に探す）がある人に惹かれる。
+くだらない話も好きで、そこから新しい発見が生まれる瞬間を楽しめる。
+</p>
 
-/* ===== 密度切替 ===== */
-const root=document.querySelector('main');
-const btnDensity=document.getElementById('btn-density');
-function applyDensity(mode){
-  root.setAttribute('data-density', mode);
-  const pressed = (mode==='deep');
-  btnDensity.setAttribute('aria-pressed', pressed?'true':'false');
-  btnDensity.textContent = pressed ? '密度：ディープ' : '密度：ライト';
-  localStorage.setItem('seikaku:density', mode);
+<hr class="hr">
+
+<h3>Big Five 総評（“メリット・デメリット”のみを明記）</h3>
+
+<p><b>外向性 2.83（やや低）</b></p>
+<ul>
+  <li><b>メリット：</b>少人数の深い対話に強い。観察が丁寧で、相手の考えを引き出すのが上手い。派手さより質。</li>
+  <li><b>デメリット：</b><b>自己主張と感情表現が控えめ</b>。にぎやかな場でも合わせられるが、<b>内側では負荷がかかりやすい</b>。  
+      反応が落ち着いているため、興味が低く見えることがある。</li>
+</ul>
+
+<p><b>神経症 2.83（中〜やや低）</b></p>
+<ul>
+  <li><b>メリット：</b>小さな変化や場の空気に気づく。相手の気持ちの動きをよく拾える。</li>
+  <li><b>デメリット：</b><b>内面の刺激に鋭敏</b>で、匂い・雰囲気・言い回しなどに<b>感情の反応が強く出る</b>時がある。  
+      怒鳴るタイプではないが、心の中では揺れが大きい瞬間がある。</li>
+</ul>
+
+<p><b>協調性 3.50（やや高）</b></p>
+<ul>
+  <li><b>メリット：</b><b>行動で示すやさしさ</b>が核。率直でフェア。信頼を得やすい。</li>
+  <li><b>デメリット：</b><b>感情に入り込んで一緒に沈む</b>より、まず<b>行動的・倫理的な配慮</b>を優先しやすい。  
+      そのため、感情の寄り添いを強く求められる場面では<b>少し冷たく見える</b>ことがある。</li>
+</ul>
+
+<p><b>誠実性 4.33（高）</b></p>
+<ul>
+  <li><b>メリット：</b>継続力、品質への意識、約束に強い。方針は<b>正確さ＞スピード＞楽しさ＞優しさ</b>。</li>
+  <li><b>デメリット：</b>客観評価に比べて<b>自己評価が控えめ</b>で、<b>自己批判・自己懐疑</b>が顔を出しやすい。</li>
+</ul>
+
+<p><b>開放性 5.00（MAX）</b></p>
+<ul>
+  <li><b>メリット：</b>好奇心の反応が速い。新しい視点、芸術、抽象思考に強く、発想が豊か。</li>
+  <li><b>デメリット：</b>意味の薄い反復作業だと<b>集中が切れやすい</b>。刺激が無い期間が続くとエネルギーが下がる。</li>
+</ul>
+
+<hr class="hr">
+
+<h3>VIA（強み）</h3>
+<p>
+ユーモア／創造性／好奇心／大局観／審美眼／向学心／誠実さ／勇敢さ。  
+学びに「楽しさ」を混ぜると最長距離を走れる。
+</p>
+
+<hr class="hr">
+
+<h3>非言語サイン（訂正版）</h3>
+<p><b>照れている時：</b>左手で左目を隠す、左頬に手を添える、唇の上に手、唇を噛み直す、人差し指で左耳の上をかく。</p>
+<p><b>集中している時：</b>顎や唇に触れる、こめかみをやさしく押す。</p>
+<p><b>イライラ：</b>軽い時は首の後ろを揉む・後ろ髪に触れる・左目の眉を押す。強い時は黙って距離をとり、落ち着いてから話す。</p>
+<p><b>無言：</b>疲れているか考え事。機嫌が悪いわけではない。目を合わせないのは認知負荷を下げたいから。</p>
+    `,
+
+    /* ===== 恋愛（濃く＋接触の条件＆NG更新） ===== */
+    love: `
+<h3>スタイルの土台（Love Styles × 愛着）</h3>
+<p>
+Love Styles は情熱（Eros）高め × 遊戯（Ludus）高め。  
+直感で「好き」は生まれやすいが、関係そのものは丁寧に育てたい。  
+愛着は回避やや高め × 不安は中くらい（恐れ回避寄り）。  
+<b>近づきたい気持ち</b>と<b>自分を守りたい気持ち</b>が同居している。
+</p>
+
+<hr class="hr">
+
+<h3>好きになる入口（理由つき）</h3>
+<ul>
+  <li><b>いい匂い：</b>安心のスイッチが早く入る。</li>
+  <li><b>献身的なやさしさ：</b>相手本位に動ける人に心がほどける。こちらも素直に甘えられる。</li>
+  <li><b>柔軟さ：</b>価値観のやり取りが楽しく、学び合いが続く。</li>
+  <li><b>責任感：</b>約束と時間を大切にする人は、長く関わっても安全だと感じられる。</li>
+  <li><b>声量・温度の調整：</b>静かな場を尊重できると相性が良い。</li>
+  <li><b>自分の世界観：</b>新しい視点を交換できると関係が深まる。</li>
+  <li><b>努力している人：</b>過程に惹かれる。<u>がんばっている自覚がない自然体</u>も好き。</li>
+  <li><b>ベタ惚れ：</b>不安が落ち着く。<b>明確な好意</b>があると安心して近づける。</li>
+</ul>
+
+<hr class="hr">
+
+<h3>距離・連絡・接触</h3>
+<ul>
+  <li><b>距離：</b>好きな人なら近いほど落ち着く。<b>無言で隣にいるだけ</b>でも満たされる。</li>
+  <li><b>連絡：</b>序盤は多め。親しくなれば少なくても平気。短文と通話が得意で、温度は相手に合わせられる。</li>
+  <li><b>接触：</b>
+    <u>好感度が「普通未満」の段階では、突然のボディタッチはNG。</u>
+    親しくなってからは、<b>自分から近づいたり触れることが増える</b>し、<b>触れられるのもOK</b>（その時の場・合意に合わせて）。
+  </li>
+</ul>
+
+<hr class="hr">
+
+<h3>進み方（ペースの目安）</h3>
+<ul>
+  <li><b>初期：</b>一目惚れが起こりやすい。ただし大事な確認は急がない。</li>
+  <li><b>中期：</b>一緒の体験を重ねると安定。猫カフェ／喫茶店／静かな自然などが合いやすい。</li>
+  <li><b>長期：</b><b>変化・安定・やさしさ</b>が同居していると関係が伸びる。</li>
+</ul>
+
+<hr class="hr">
+
+<h3>喜ぶ行動（すぐ試せる）</h3>
+<ul>
+  <li><b>好意をはっきり言う：</b>言葉と行動をそろえて伝える。「好きだよ」「一緒にいたい」。</li>
+  <li><b>予定・目的を短く共有：</b>「今日はここでこれをしたい」を先に教えてくれると安心。</li>
+  <li><b>静かな場所の提案：</b>落ち着ける席取り、香りは少量・甘め寄り。</li>
+  <li><b>学び・発見の共有：</b>研究や面白い知見を「否定ではなく紹介」で話す。</li>
+  <li><b>写真は一緒に確認：</b>雰囲気重視、OKかどうかを一緒に見る。</li>
+  <li><b>連絡の温度合わせ：</b>忙しい時は短文OKの合図をくれると助かる。</li>
+  <li><b>体験のストック：</b>小さな旅行、レトロ喫茶、動物と触れ合うなど「一緒の記憶」を増やす。</li>
+</ul>
+
+<hr class="hr">
+
+<h3>NG集（段階つき）</h3>
+<ul>
+  <li><b>根拠のない断定・見下し：</b>「そう思う理由」を一緒に探したい。</li>
+  <li><b>強い圧・強要：</b>判断は急かされるほど固くなる。選択肢で提案してほしい。</li>
+  <li><b>約束を軽く扱う：</b>小さな約束ほど効く。時間とドタキャンは心に残る。</li>
+  <li><b>距離感が急：</b><u>親しくなる前の</u>突然の濃い接触は苦手。仲良くなれば自分からも近づくし、触れられるのもOK。</li>
+  <li><b>にぎやかすぎる場ばかり：</b>対応はできるが内側の消耗が大きい。静かな時間も混ぜたい。</li>
+</ul>
+
+<hr class="hr">
+
+<h3>不安の扱い</h3>
+<ul>
+  <li><b>自分側：</b>まず一人で考えを整理し、数分落ち着いてから言葉にする。</li>
+  <li><b>相手にしてほしいこと：</b><b>明確な好意の表明</b>と<b>行動の一貫性</b>。状況説明があると誤解が減る。</li>
+</ul>
+
+<hr class="hr">
+
+<h3>衝突 → 修復の手順</h3>
+<ol>
+  <li><b>クールダウン：</b>少し距離をとって落ち着く。本当に怒っている時は話さない。</li>
+  <li><b>共有：</b>何が起きたか／どう感じたかを短く具体的に伝える。</li>
+  <li><b>相互理解：</b>相手の気持ちと事情を途中で遮らずに聴く。</li>
+  <li><b>調整：</b>納得ラインを一緒に決める。相手に非があれば謝る。</li>
+  <li><b>締め：</b>最後に笑えたらベスト。そこで関係は少し強くなる。</li>
+</ol>
+
+<hr class="hr">
+
+<h3>贈れる安心・欲しい安心</h3>
+<p>
+<b>贈れる：</b>一度好きになったら基本的に嫌いにならない“長期の一途さ”。  
+喧嘩しても、謝り合い、また笑えたら続けられる。
+</p>
+<p>
+<b>欲しい：</b>不安になりやすいので、<b>はっきりした好意</b>と<b>変わらない態度</b>がほしい。  
+言葉と行動が一致していると、安心して深まる。
+</p>
+
+<hr class="hr">
+
+<h3>5年後のワンシーン</h3>
+<p>
+いつもの喫茶店で、5年前と同じようにくだらない話で笑っている。  
+その「変わらない楽しさ」が、いちばんの安心になっている。
+</p>
+    `
+  }
+};
+
+/* ============ 要約レンダリング（極少化） ============ */
+function renderSummaries(){
+  document.getElementById('sum-person').innerHTML = PROFILE.summary.person;
+  document.getElementById('sum-love').innerHTML   = PROFILE.summary.love;
 }
-applyDensity(localStorage.getItem('seikaku:density')||'lite');
-btnDensity.addEventListener('click',()=>{
-  applyDensity(root.getAttribute('data-density')==='lite'?'deep':'lite');
-});
 
-/* ===== レーダー ===== */
-const radar=document.getElementById('radar'), ctx=radar.getContext('2d');
-const labels=["外向性","神経症傾向","協調性","誠実性","開放性"];
-const values=[2.83,2.83,3.50,4.33,5.00]; // 0-5
-function drawRadar(){
-  const W=radar.width,H=radar.height,cx=W/2,cy=H/2+10,r=Math.min(W,H)*0.36,steps=5;
-  ctx.clearRect(0,0,W,H);
-  ctx.font="12px ui-sans-serif"; ctx.fillStyle="#6e6786"; ctx.strokeStyle="#ecd9ff";
-  for(let i=1;i<=steps;i++){ const rr=r*i/steps;
-    ctx.beginPath();
-    for(let a=0;a<5;a++){ const ang=-Math.PI/2+a*2*Math.PI/5, x=cx+rr*Math.cos(ang), y=cy+rr*Math.sin(ang);
-      a?ctx.lineTo(x,y):ctx.moveTo(x,y); }
-    ctx.closePath(); ctx.stroke();
+/* ============ 詳細の挿入（解放時のみDOMへ） ============ */
+function injectDetail(kind){
+  if(kind==='person'){
+    const target = document.getElementById('detail-person');
+    if(!target.dataset.loaded){
+      target.innerHTML = PROFILE.detail.person;
+      target.dataset.loaded = '1';
+    }
+  }else if(kind==='love'){
+    const target = document.getElementById('detail-love');
+    if(!target.dataset.loaded){
+      target.innerHTML = PROFILE.detail.love;
+      target.dataset.loaded = '1';
+    }
   }
-  for(let a=0;a<5;a++){
-    const ang=-Math.PI/2+a*2*Math.PI/5, x=cx+r*Math.cos(ang), y=cy+r*Math.sin(ang);
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
-    const lx=cx+(r+16)*Math.cos(ang), ly=cy+(r+16)*Math.sin(ang);
-    ctx.fillText(labels[a], lx-14, ly+4);
-  }
-  ctx.beginPath();
-  for(let a=0;a<5;a++){
-    const ang=-Math.PI/2+a*2*Math.PI/5, rr=r*(values[a]/5),
-          x=cx+rr*Math.cos(ang), y=cy+rr*Math.sin(ang);
-    a?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  }
-  ctx.closePath();
-  ctx.fillStyle="rgba(255,158,207,.35)"; ctx.strokeStyle="rgba(182,156,255,.9)"; ctx.lineWidth=2;
-  ctx.fill(); ctx.stroke();
 }
-drawRadar();
 
-/* ===== おみくじ（大吉で恋愛解放） ===== */
-const LOVE_KEY='seikaku:loveUnlocked';
-const loveSec=document.getElementById('love');
-const omk=document.getElementById('omk');
-function setLoveUnlocked(on){
-  if(on){ loveSec.classList.remove('lock'); loveSec.classList.add('unlock'); }
-  else   { loveSec.classList.add('lock');  loveSec.classList.remove('unlock'); }
-}
-setLoveUnlocked(localStorage.getItem(LOVE_KEY)==='1');
+/* ============================================================
+   UI 挙動
+   ============================================================ */
+document.addEventListener('DOMContentLoaded',function(){
+  const $  = q => document.querySelector(q);
+  const $$ = q => [...document.querySelectorAll(q)];
 
-document.getElementById('draw').addEventListener('click', ()=>{
-  // 簡易おみくじ（出目の比率は任意）
-  const table=[..."大吉中吉中吉小吉小吉吉吉凶"]; // 大吉1 / 中吉2 / 小吉2 / 吉2 / 凶1
-  const pick = table[Math.floor(Math.random()*table.length)];
-  omk.textContent = `結果：${pick}`;
-  if(pick==="大吉"){
-    localStorage.setItem(LOVE_KEY,'1');
-    setLoveUnlocked(true);
-    omk.className='result ok';
-  }else{
-    omk.className='result';
+  renderSummaries();
+
+  // 表示量（簡潔／詳細）
+  const btnB = $('#btn-brief'), btnF = $('#btn-full');
+  let mode = 'brief';
+  function applyMode(){
+    $$('.summary').forEach(el => el.style.display = (mode==='brief') ? 'block' : 'none');
+    $$('.detail').forEach(el => el.style.display   = (mode==='brief') ? 'none'  : 'block');
   }
+  btnB.addEventListener('click',()=>{mode='brief';btnB.classList.add('active');btnF.classList.remove('active');applyMode();});
+  btnF.addEventListener('click',()=>{mode='full'; btnF.classList.add('active');btnB.classList.remove('active');applyMode();});
+  applyMode();
+
+  // ロック（保存なし：毎回リセット）
+  const secPerson = $('#sec-person'), secLove = $('#sec-love');
+  function lock(sec,on){ if(!sec) return; sec.classList.toggle('locked',on); }
+  lock(secPerson,true); lock(secLove,true);
+
+  // スロット
+  const reels   = ['#r1','#r2','#r3'].map(id=>$(id));
+  const icons   = ['🐱','🐶','🐰','🐼','🐹','🦊','🐨'];
+  const spinBtn = $('#spin'), status = $('#status');
+
+  function confetti(){
+    const c = document.getElementById('confetti'); if(!c) return;
+    c.innerHTML=''; c.classList.add('show');
+    const em = ['✨','💖','💫','🌸','⭐️'];
+    for(let i=0;i<64;i++){
+      const e=document.createElement('i');
+      e.textContent=em[Math.random()*em.length|0];
+      e.style.left=(Math.random()*100)+'%';
+      e.style.top='-10%';
+      c.appendChild(e);
+    }
+    setTimeout(()=>c.classList.remove('show'),980);
+  }
+
+  function scrollInto(el){
+    try{ el.scrollIntoView({behavior:'smooth',block:'start'});}catch{}
+  }
+
+  function spin(){
+    try{
+      spinBtn.disabled = true;
+      status.textContent = '回転中…';
+      const win     = Math.random() < 0.48;    // 揃いやすさ：やや高め
+      const winType = Math.random() < 0.50 ? 'cat' : 'dog';
+      const seq     = [260, 420, 600];
+
+      reels.forEach((r,i)=>{
+        const roll = setInterval(()=>{ r.textContent = icons[Math.random()*icons.length|0]; }, 42);
+        setTimeout(()=>{
+          clearInterval(roll);
+          if(win){ r.textContent = (winType==='cat' ? '🐱' : '🐶'); }
+          else{
+            const pool=['🐰','🐼','🐹','🦊','🐨','🐱','🐶'];
+            r.textContent = pool[Math.random()*pool.length|0];
+          }
+          if(i===2) finish();
+        }, seq[i]);
+      });
+
+      function finish(){
+        const v = reels.map(r=>r.textContent).join('');
+        let msg='';
+        if(v==='🐱🐱🐱'){
+          lock(secPerson,false);
+          injectDetail('person');
+          confetti();
+          msg='猫🐱が揃った！「性格」の全文が開きました。';
+          mode='full'; btnF.classList.add('active'); btnB.classList.remove('active'); applyMode();
+          scrollInto(secPerson);
+        }else if(v==='🐶🐶🐶'){
+          lock(secLove,false);
+          injectDetail('love');
+          confetti();
+          msg='犬🐶が揃った！「恋愛」の全文が開きました。';
+          mode='full'; btnF.classList.add('active'); btnB.classList.remove('active'); applyMode();
+          scrollInto(secLove);
+        }else{
+          msg='ハズレ。もう一度どうぞ。';
+        }
+        status.innerHTML = /開きました/.test(msg) ? '<span class="win">'+msg+'</span>' : '<span class="loss">'+msg+'</span>';
+        spinBtn.disabled = false;
+      }
+    }catch(e){
+      console.error(e);
+      status.innerHTML = '<span class="loss">エラー。もう一度お試しください。</span>';
+      spinBtn.disabled = false;
+    }
+  }
+  spinBtn.addEventListener('click',spin,{passive:true});
 });
 </script>
 </body>
 </html>
+```0
