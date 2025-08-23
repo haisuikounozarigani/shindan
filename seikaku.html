@@ -2,11 +2,12 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
 <title>性格と恋愛レポート｜完全版</title>
 <meta name="theme-color" content="#fff5fb">
 <style>
-/* ====================  Base  ==================== */
+/* ===== Base ===== */
 :root{
   --bg1:#fff5fb; --bg2:#f3f4ff;
   --card:#fff;   --line:#efd9ee;
@@ -15,115 +16,111 @@
   --good:#2ea86a;   --warn:#e07a95;
   --shadow:rgba(182,156,255,.18);
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box; min-width:0}       /* はみ出し防止 */
 html,body{height:100%}
+html,body{overflow-x:hidden}               /* 横スクロール禁止 */
 body{
   margin:0; color:var(--fg);
   font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   background:linear-gradient(160deg,var(--bg1),var(--bg2));
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  /* 和文の見栄えと改行ズレ対策 */
-  line-break: strict; word-break: keep-all;
-  font-feature-settings:"palt" 1,"pkna" 1;
+  line-break: strict; word-break: keep-all;            /* 和文改行 */
+  font-feature-settings:"palt" 1,"pkna" 1;            /* 約物の整形 */
 }
-a{color:inherit}
+img,video{max-width:100%; height:auto; display:block} /* 画像は枠内に収める */
+a{color:inherit; text-decoration:none}
 
-/* ====================  Layout  ==================== */
-.wrap{max-width:880px;margin:20px auto 300px;padding:0 18px} /* 下余白を増やし、フッター固定UIと重なり防止 */
-.topbar{display:flex;gap:12px;align-items:center;margin:8px 0 16px}
-.btn{padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;text-decoration:none;cursor:pointer}
-.header{display:grid;grid-template-columns:1fr;gap:16px;margin:12px 0 22px;align-items:center;text-align:center}
+/* ===== Layout ===== */
+.wrap{max-width:880px;width:100%;margin:16px auto 320px; padding:0 16px} /* 下に大きめ余白（固定バー対策） */
+.topbar{display:flex;gap:10px;align-items:center;margin:6px 0 12px}
+.btn{padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer}
+.header{display:grid;grid-template-columns:1fr;gap:14px;margin:8px 0 18px;align-items:center;text-align:center}
 .portrait{
-  width:138px;height:138px;border-radius:14px;overflow:hidden;border:1px solid var(--line);
-  background:linear-gradient(180deg,#fff,#f7f1ff);box-shadow:0 12px 28px var(--shadow);margin:0 auto;position:relative;
+  width:124px;height:124px;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#f7f1ff);box-shadow:0 12px 28px var(--shadow);
+  margin:0 auto;position:relative
 }
-.portrait img{width:100%;height:100%;object-fit:cover;display:block}
-.portrait .ph{
-  position:absolute;inset:0;display:grid;place-items:center;color:#9b8a94;font-size:.9em;
-}
+.portrait .ph{position:absolute;inset:0;display:grid;place-items:center;color:#9b8a94;font-size:.9em;padding:8px;text-align:center}
 h1{margin:0;font-size:clamp(22px,6vw,30px);letter-spacing:.02em;text-wrap:balance}
-.lead{
-  margin:0;color:var(--muted);line-height:2.2;letter-spacing:.02em;white-space:normal;
-}
+.lead{margin:0;color:var(--muted);line-height:2.1;letter-spacing:.02em;white-space:normal}
 .tag{display:inline-block;margin-top:10px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.95em}
 
-/* ====================  TOC  ==================== */
-.toc{display:grid;gap:12px;margin:14px 0 12px}
+/* ===== TOC ===== */
+.toc{display:grid;gap:10px;margin:12px 0 8px}
 .toc a{
-  display:block;text-decoration:none;background:#fff;border:1px solid var(--line);
-  border-radius:16px;padding:16px 18px;line-height:2.0;box-shadow:0 10px 22px rgba(255,158,207,.12);
-  text-wrap:balance;
+  display:block;background:#fff;border:1px solid var(--line);
+  border-radius:16px;padding:14px 16px;line-height:2.0;box-shadow:0 10px 22px rgba(255,158,207,.12);
+  text-wrap:balance
 }
 .toc small{display:block;color:var(--muted);margin-top:4px}
 
-/* ====================  Cards  ==================== */
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin:20px 0;box-shadow:0 12px 26px rgba(255,158,207,.12)}
-.card h2{margin:6px 0 14px;font-size:1.22rem;letter-spacing:.01em;text-wrap:balance}
-.card h3{margin:22px 0 12px;font-size:1.08rem;text-wrap:balance}
-p,li{line-height:2.2;letter-spacing:.02em;text-wrap:pretty}
-p{margin:0 0 18px}
-ul{margin:12px 0 18px 1.35em;padding:0}
-li{margin:0 0 12px}
+/* ===== Cards ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 12px 26px rgba(255,158,207,.12)}
+.card h2{margin:6px 0 12px;font-size:1.18rem;letter-spacing:.01em;text-wrap:balance}
+.card h3{margin:18px 0 10px;font-size:1.06rem;text-wrap:balance}
+p,li{line-height:2.05;letter-spacing:.02em;text-wrap:pretty;overflow-wrap:anywhere}
+p{margin:0 0 14px}
+ul{margin:10px 0 14px 1.35em;padding:0}
+li{margin:0 0 10px}
 .small{color:var(--muted);font-size:.96em}
-.hr{height:1px;background:linear-gradient(90deg,#ffe0f0,#e7e3ff);border:none;margin:22px 0;border-radius:999px}
-.hl{background:linear-gradient(90deg,#ffe7f3,#efe9ff);border:1px solid #f1d9ee;border-radius:12px;padding:14px 16px;margin:0 0 14px}
+.hr{height:1px;background:linear-gradient(90deg,#ffe0f0,#e7e3ff);border:none;margin:18px 0;border-radius:999px}
+.hl{background:linear-gradient(90deg,#ffe7f3,#efe9ff);border:1px solid #f1d9ee;border-radius:12px;padding:12px 14px;margin:0 0 12px}
 
-/* ====================  Mode  ==================== */
-.modebar{display:flex;gap:12px;align-items:center;margin:10px 0 6px}
-.modebar button{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer}
+/* ===== Mode ===== */
+.modebar{display:flex;gap:10px;align-items:center;margin:8px 0 4px}
+.modebar button{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer}
 .modebar button.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
 
-/* ====================  Lock  ==================== */
+/* ===== Lock ===== */
 .lockmask .detail{position:relative}
 .lockmask.locked .detail .inner{display:none}
 .lockmask.locked .detail .gate{display:flex}
-.gate{display:none;position:absolute;inset:0;background:rgba(255,255,255,.92);border:1px dashed #dcb9cc;border-radius:14px;align-items:center;justify-content:center;text-align:center;color:#6b5662;padding:18px;line-height:2.0}
+.gate{
+  display:none;position:absolute;inset:0;background:rgba(255,255,255,.94);
+  border:1px dashed #dcb9cc;border-radius:14px;align-items:center;justify-content:center;
+  text-align:center;color:#6b5662;padding:16px;line-height:1.95
+}
 
-/* ====================  Slot (fixed bottom)  ==================== */
+/* ===== Slot (fixed bottom) ===== */
 .slotbar{
   position:fixed;left:0;right:0;bottom:0;z-index:9999;
   padding:12px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
   background:rgba(255,255,255,.98);backdrop-filter:blur(10px) saturate(1.1);
   border-top:1px solid #f0d8ea;box-shadow:0 -10px 22px rgba(0,0,0,.05)
 }
-.slot{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
-.reel{width:68px;height:68px;border-radius:14px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:38px;box-shadow:0 8px 14px rgba(0,0,0,.06)}
-.slotbtn{padding:12px 18px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;cursor:pointer}
-.info{font-size:1em;color:#6b5a66;text-align:center;margin-top:8px;line-height:2.0}
+.slot{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.reel{width:60px;height:60px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:34px;box-shadow:0 8px 14px rgba(0,0,0,.06)}
+.slotbtn{padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;cursor:pointer}
+.info{font-size:.98em;color:#6b5a66;text-align:center;margin-top:6px;line-height:1.9}
 .win{color:var(--good);font-weight:700}
 .loss{color:var(--warn)}
 
-/* ====================  Confetti  ==================== */
+/* ===== Confetti ===== */
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:10000;display:none}
 .confetti.show{display:block}
-.confetti i{position:absolute;font-size:22px;animation:fall 980ms ease-in forwards}
+.confetti i{position:absolute;font-size:20px;animation:fall 980ms ease-in forwards}
 @keyframes fall{to{transform:translateY(120vh) rotate(540deg);opacity:0}}
 
-/* ====================  Helpers  ==================== */
-.note{background:#fff;border:1px dashed #e9cfe0;border-radius:12px;padding:14px 16px;color:#6c5a66}
-.center{text-align:center}
-.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
-.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
-.sep{height:20px}
-
-/* ====================  Small screens ==================== */
+/* ===== Small screens ===== */
 @media (max-width:360px){
-  p,li{line-height:2.25}
-  .toc a{padding:14px 16px}
+  .portrait{width:108px;height:108px}
+  .reel{width:54px;height:54px;font-size:30px}
+  p,li{line-height:2.15}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- ===== Top ===== -->
+  <!-- Top -->
   <nav class="topbar" aria-label="戻る">
     <a class="btn" href="/shindan/">← 診断一覧に戻る</a>
   </nav>
 
+  <!-- Header -->
   <header class="header" id="top">
     <div class="portrait" aria-label="プロフィール画像">
-      <img id="portrait" alt="プロフィール画像" decoding="async" referrerpolicy="no-referrer">
+      <img id="portrait" alt="プロフィール画像" decoding="async" loading="eager">
       <div class="ph" id="portraitPh">画像を読み込み中…</div>
     </div>
     <div>
@@ -141,7 +138,7 @@ li{margin:0 0 12px}
     </div>
   </header>
 
-  <!-- ===== TOC ===== -->
+  <!-- TOC -->
   <nav class="toc" aria-label="目次">
     <a href="#sec-person">📘 性格レポート（Big Five＋VIA）
       <small>誤解→ほんとうの姿／因子別“メリ・デメリット”明記／非言語サイン（訂正版）</small>
@@ -151,14 +148,14 @@ li{margin:0 0 12px}
     </a>
   </nav>
 
-  <!-- ===== Display Mode ===== -->
+  <!-- Mode -->
   <div class="modebar" role="group" aria-label="表示量を切り替え">
     <span class="small">表示量：</span>
     <button id="btn-brief" class="active" type="button">簡潔</button>
     <button id="btn-full"  type="button">詳細</button>
   </div>
 
-  <!-- ===== 性格 ===== -->
+  <!-- 性格 -->
   <section id="sec-person" class="card lockmask locked" aria-labelledby="h-person">
     <h2 id="h-person">📘 性格レポート（Big Five＋VIA）</h2>
     <p class="small">NEO-PI-Rの正式スコアとVIAの強みを統合。簡潔は極少、詳細は濃密。</p>
@@ -170,10 +167,10 @@ li{margin:0 0 12px}
       <div class="gate">🔒 この先は<strong>性格の全文</strong>。下の<strong>スロットで猫🐱×3</strong>を揃えると、その場で解放されます。<br>※ 保存はしません。毎回チャレンジ。</div>
     </div>
 
-    <p class="note mt12">これは傾向のメモです。断定や診断ではありません。日々の状態で揺れます。</p>
+    <p class="note">これは傾向のメモです。断定や診断ではありません。日々の状態で揺れます。</p>
   </section>
 
-  <!-- ===== 恋愛 ===== -->
+  <!-- 恋愛 -->
   <section id="sec-love" class="card lockmask locked" aria-labelledby="h-love">
     <h2 id="h-love">💗 恋愛レポート（Love Styles × 愛着）</h2>
 
@@ -184,13 +181,13 @@ li{margin:0 0 12px}
       <div class="gate">🔒 この先は<strong>恋愛の全文</strong>。下の<strong>スロットで犬🐶×3</strong>を揃えると、その場で解放されます。<br>※ 保存はしません。毎回チャレンジ。</div>
     </div>
 
-    <p class="note mt12">この章は実体験と傾向のメモです。相手とコンディションで変わります。</p>
+    <p class="note">この章は実体験と傾向のメモです。相手とコンディションで変わります。</p>
   </section>
 
-  <div class="sep"></div>
+  <div style="height:24px"></div>
 </div>
 
-<!-- ===== SLOT ===== -->
+<!-- Slot -->
 <div class="slotbar" role="region" aria-label="スロットで詳細解放">
   <div class="slot">
     <div class="reel" id="r1" aria-live="polite">🐱</div>
@@ -211,43 +208,56 @@ li{margin:0 0 12px}
 </noscript>
 
 <script>
-/* ============================================================
-   画像：複数パス自動リトライ（最初に通ったものだけ採用）
-   指定：/shindan/assets/result/seikaku/01.png が第1候補
-   ============================================================ */
+/* ===== 画像ローダ：動的ベース検出 + 拡張子フォールバック ===== */
 (function(){
-  const portrait = document.getElementById('portrait');
-  const ph = document.getElementById('portraitPh');
-  const candidates = [
-    '/shindan/assets/result/seikaku/01.png',
-    '/shindan/assets/result/seikaku/01.jpg',
-    '/shindan/assets/result/seikaku/01.webp',
-    '../assets/result/seikaku/01.png',    // 相対置換（/shindan/以下で開いた場合の保険）
-    './assets/result/seikaku/01.png',
-    '/result/seikaku/01.png'              // 旧パスの可能性に備えた保険
-  ];
+  const img = document.getElementById('portrait');
+  const ph  = document.getElementById('portraitPh');
+
+  // 現在パスから最有力ベースを推定
+  const parts = location.pathname.split('/').filter(Boolean);   // 例: ["shindan","seikaku.html"]
+  const bases = [];
+
+  // 1) 現在階層の先頭ディレクトリ（/shindan）
+  if(parts.length) bases.push('/' + parts[0]);
+  // 2) 既知の固定ベース
+  bases.push('/shindan');
+  // 3) ドキュメント直下
+  bases.push('/' + parts.slice(0, -1).join('/'));
+  // 4) ルート
+  bases.push('/');
+
+  // 重複除去
+  const uniq = [...new Set(bases.map(b => (b || '/').replace(/\/+$/,'') || '/'))];
+
+  const names = ['01.png','01.jpg','01.webp'];
+  const candidates = [];
+  uniq.forEach(base => {
+    if(!base) base = '/';
+    const root = base === '/' ? '' : base;
+    names.forEach(n => candidates.push(`${root}/assets/result/seikaku/${n}`));
+  });
+
   let i = 0;
   function tryNext(){
     if(i >= candidates.length){
       ph.textContent = '画像を表示できませんでした';
-      portrait.remove();
       return;
     }
     const url = candidates[i++];
     const test = new Image();
     test.onload = function(){
-      portrait.src = url;
+      img.src = url; img.alt = "プロフィール画像";
+      img.width = 512; img.height = 512;             // レイアウトシフト抑制
+      img.style.objectFit = 'cover';
       ph.remove();
     };
     test.onerror = tryNext;
-    test.src = url + '?v=' + Date.now(); // キャッシュ無効化
+    test.src = url + '?v=' + Date.now();             // キャッシュバスター
   }
   tryNext();
 })();
 
-/* ============================================================
-   単一ソースのデータ定義（テキストは前回と完全同一）
-   ============================================================ */
+/* ===== コンテンツ（前回と同一。テキスト変更なし） ===== */
 const PROFILE = {
   summary: {
     person: `
@@ -440,63 +450,55 @@ Love Styles は情熱（Eros）高め × 遊戯（Ludus）高め。
   }
 };
 
-/* ============ 要約レンダリング（極少化） ============ */
+/* ===== 要約（極少）を反映 ===== */
 function renderSummaries(){
   document.getElementById('sum-person').innerHTML = PROFILE.summary.person;
   document.getElementById('sum-love').innerHTML   = PROFILE.summary.love;
 }
 
-/* ============ 詳細の挿入（解放時のみDOMへ） ============ */
+/* ===== 詳細は解放時にだけDOMへ挿入 ===== */
 function injectDetail(kind){
   if(kind==='person'){
-    const target = document.getElementById('detail-person');
-    if(!target.dataset.loaded){
-      target.innerHTML = PROFILE.detail.person;
-      target.dataset.loaded = '1';
-    }
+    const t = document.getElementById('detail-person');
+    if(!t.dataset.loaded){ t.innerHTML = PROFILE.detail.person; t.dataset.loaded='1'; }
   }else if(kind==='love'){
-    const target = document.getElementById('detail-love');
-    if(!target.dataset.loaded){
-      target.innerHTML = PROFILE.detail.love;
-      target.dataset.loaded = '1';
-    }
+    const t = document.getElementById('detail-love');
+    if(!t.dataset.loaded){ t.innerHTML = PROFILE.detail.love; t.dataset.loaded='1'; }
   }
 }
 
-/* ============================================================
-   UI 挙動
-   ============================================================ */
+/* ===== UI ===== */
 document.addEventListener('DOMContentLoaded',function(){
   const $  = q => document.querySelector(q);
   const $$ = q => [...document.querySelectorAll(q)];
 
   renderSummaries();
 
-  // 表示量（簡潔／詳細）
+  // 表示量
   const btnB = $('#btn-brief'), btnF = $('#btn-full');
   let mode = 'brief';
-  function applyMode(){
+  const applyMode = ()=>{
     $$('.summary').forEach(el => el.style.display = (mode==='brief') ? 'block' : 'none');
     $$('.detail').forEach(el => el.style.display   = (mode==='brief') ? 'none'  : 'block');
-  }
+  };
   btnB.addEventListener('click',()=>{mode='brief';btnB.classList.add('active');btnF.classList.remove('active');applyMode();});
   btnF.addEventListener('click',()=>{mode='full'; btnF.classList.add('active');btnB.classList.remove('active');applyMode();});
   applyMode();
 
-  // ロック（保存なし：毎回リセット）
+  // ロック
   const secPerson = $('#sec-person'), secLove = $('#sec-love');
-  function lock(sec,on){ if(!sec) return; sec.classList.toggle('locked',on); }
+  const lock = (sec,on)=>sec && sec.classList.toggle('locked',on);
   lock(secPerson,true); lock(secLove,true);
 
   // スロット
-  const reels   = ['#r1','#r2','#r3'].map(id=>$(id));
-  const icons   = ['🐱','🐶','🐰','🐼','🐹','🦊','🐨'];
-  const spinBtn = $('#spin'), status = $('#status');
+  const reels=['#r1','#r2','#r3'].map(id=>$(id));
+  const icons=['🐱','🐶','🐰','🐼','🐹','🦊','🐨'];
+  const spinBtn=$('#spin'), status=$('#status');
 
-  function confetti(){
+  const confetti=()=>{
     const c = document.getElementById('confetti'); if(!c) return;
     c.innerHTML=''; c.classList.add('show');
-    const em = ['✨','💖','💫','🌸','⭐️'];
+    const em=['✨','💖','💫','🌸','⭐️'];
     for(let i=0;i<64;i++){
       const e=document.createElement('i');
       e.textContent=em[Math.random()*em.length|0];
@@ -505,19 +507,17 @@ document.addEventListener('DOMContentLoaded',function(){
       c.appendChild(e);
     }
     setTimeout(()=>c.classList.remove('show'),980);
-  }
+  };
 
-  function scrollInto(el){
-    try{ el.scrollIntoView({behavior:'smooth',block:'start'});}catch{}
-  }
+  const scrollInto = el => { try{ el.scrollIntoView({behavior:'smooth',block:'start'});}catch{} };
 
   function spin(){
     try{
       spinBtn.disabled = true;
       status.textContent = '回転中…';
-      const win     = Math.random() < 0.48;    // 揃いやすさ：やや高め
+      const win     = Math.random() < 0.50;   // 少し当たりやすく
       const winType = Math.random() < 0.50 ? 'cat' : 'dog';
-      const seq     = [260, 420, 600];
+      const seq     = [240, 400, 560];
 
       reels.forEach((r,i)=>{
         const roll = setInterval(()=>{ r.textContent = icons[Math.random()*icons.length|0]; }, 42);
@@ -562,6 +562,16 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   }
   spinBtn.addEventListener('click',spin,{passive:true});
+
+  // スロット高さぶんの下余白を自動確保（端末フォント差対策）
+  const wrap = document.querySelector('.wrap');
+  const bar  = document.querySelector('.slotbar');
+  const reserve = ()=>{
+    const h = bar.getBoundingClientRect().height;
+    wrap.style.marginBottom = (h + 140) + 'px';
+  };
+  reserve();
+  window.addEventListener('resize',reserve,{passive:true});
 });
 </script>
 </body>
