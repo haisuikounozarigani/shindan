@@ -15,23 +15,24 @@
   --accent:#ff9ecf; --accent2:#b69cff;
   --good:#2ea86a;   --warn:#e07a95;
   --shadow:rgba(182,156,255,.18);
+  --slot-reserve: 440px; /* 初期は多めに確保（JSで上書き） */
 }
-*{box-sizing:border-box; min-width:0}       /* はみ出し防止 */
+*{box-sizing:border-box; min-width:0}
 html,body{height:100%}
-html,body{overflow-x:hidden}               /* 横スクロール禁止 */
+html,body{overflow-x:hidden}
 body{
   margin:0; color:var(--fg);
-  font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;
   background:linear-gradient(160deg,var(--bg1),var(--bg2));
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  line-break: strict; word-break: keep-all;            /* 和文改行 */
-  font-feature-settings:"palt" 1,"pkna" 1;            /* 約物の整形 */
+  line-break: strict; word-break: keep-all;
+  font-feature-settings:"palt" 1,"pkna" 1;
 }
-img,video{max-width:100%; height:auto; display:block} /* 画像は枠内に収める */
+img,video{max-width:100%; height:auto; display:block}
 a{color:inherit; text-decoration:none}
 
 /* ===== Layout ===== */
-.wrap{max-width:880px;width:100%;margin:16px auto 320px; padding:0 16px} /* 下に大きめ余白（固定バー対策） */
+.wrap{max-width:880px;width:100%;margin:16px auto calc(var(--slot-reserve) + 120px); padding:0 16px}
 .topbar{display:flex;gap:10px;align-items:center;margin:6px 0 12px}
 .btn{padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer}
 .header{display:grid;grid-template-columns:1fr;gap:14px;margin:8px 0 18px;align-items:center;text-align:center}
@@ -40,9 +41,10 @@ a{color:inherit; text-decoration:none}
   background:linear-gradient(180deg,#fff,#f7f1ff);box-shadow:0 12px 28px var(--shadow);
   margin:0 auto;position:relative
 }
+.portrait img{width:100%;height:100%;object-fit:cover}
 .portrait .ph{position:absolute;inset:0;display:grid;place-items:center;color:#9b8a94;font-size:.9em;padding:8px;text-align:center}
 h1{margin:0;font-size:clamp(22px,6vw,30px);letter-spacing:.02em;text-wrap:balance}
-.lead{margin:0;color:var(--muted);line-height:2.1;letter-spacing:.02em;white-space:normal}
+.lead{margin:0;color:var(--muted);line-height:2.05;letter-spacing:.02em;white-space:normal}
 .tag{display:inline-block;margin-top:10px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.95em}
 
 /* ===== TOC ===== */
@@ -89,7 +91,7 @@ li{margin:0 0 10px}
   border-top:1px solid #f0d8ea;box-shadow:0 -10px 22px rgba(0,0,0,.05)
 }
 .slot{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
-.reel{width:60px;height:60px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:34px;box-shadow:0 8px 14px rgba(0,0,0,.06)}
+.reel{width:64px;height:64px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:34px;box-shadow:0 8px 14px rgba(0,0,0,.06)}
 .slotbtn{padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;cursor:pointer}
 .info{font-size:.98em;color:#6b5a66;text-align:center;margin-top:6px;line-height:1.9}
 .win{color:var(--good);font-weight:700}
@@ -104,7 +106,7 @@ li{margin:0 0 10px}
 /* ===== Small screens ===== */
 @media (max-width:360px){
   .portrait{width:108px;height:108px}
-  .reel{width:54px;height:54px;font-size:30px}
+  .reel{width:58px;height:58px;font-size:30px}
   p,li{line-height:2.15}
 }
 </style>
@@ -208,56 +210,48 @@ li{margin:0 0 10px}
 </noscript>
 
 <script>
-/* ===== 画像ローダ：動的ベース検出 + 拡張子フォールバック ===== */
+/* ===== 画像ローダ：/shindan/assets/results/seikaku/01.* を最優先で試行 ===== */
 (function(){
   const img = document.getElementById('portrait');
   const ph  = document.getElementById('portraitPh');
 
-  // 現在パスから最有力ベースを推定
-  const parts = location.pathname.split('/').filter(Boolean);   // 例: ["shindan","seikaku.html"]
+  // 既知のベース候補
   const bases = [];
-
-  // 1) 現在階層の先頭ディレクトリ（/shindan）
-  if(parts.length) bases.push('/' + parts[0]);
-  // 2) 既知の固定ベース
-  bases.push('/shindan');
-  // 3) ドキュメント直下
-  bases.push('/' + parts.slice(0, -1).join('/'));
-  // 4) ルート
+  const p = location.pathname.split('/').filter(Boolean);
+  if(p.length) bases.push('/' + p[0]);      // /shindan
+  bases.push('/shindan');                   // 明示
+  bases.push('/' + p.slice(0,-1).join('/'));
   bases.push('/');
 
-  // 重複除去
-  const uniq = [...new Set(bases.map(b => (b || '/').replace(/\/+$/,'') || '/'))];
-
+  const uniq = [...new Set(bases.map(b => (b||'/').replace(/\/+$/,'') || '/'))];
   const names = ['01.png','01.jpg','01.webp'];
+
   const candidates = [];
-  uniq.forEach(base => {
-    if(!base) base = '/';
+  uniq.forEach(base=>{
     const root = base === '/' ? '' : base;
-    names.forEach(n => candidates.push(`${root}/assets/result/seikaku/${n}`));
+    names.forEach(n=>{
+      // results（正）、result（旧）の両方を試す
+      candidates.push(`${root}/assets/results/seikaku/${n}`);
+      candidates.push(`${root}/assets/result/seikaku/${n}`);
+    });
   });
 
-  let i = 0;
+  let i=0;
   function tryNext(){
-    if(i >= candidates.length){
-      ph.textContent = '画像を表示できませんでした';
-      return;
-    }
+    if(i>=candidates.length){ ph.textContent='画像を表示できませんでした'; return; }
     const url = candidates[i++];
     const test = new Image();
     test.onload = function(){
-      img.src = url; img.alt = "プロフィール画像";
-      img.width = 512; img.height = 512;             // レイアウトシフト抑制
-      img.style.objectFit = 'cover';
-      ph.remove();
+      img.src = url; img.alt='プロフィール画像';
+      img.width=512; img.height=512; ph.remove();
     };
     test.onerror = tryNext;
-    test.src = url + '?v=' + Date.now();             // キャッシュバスター
+    test.src = url + '?v=' + Date.now();
   }
   tryNext();
 })();
 
-/* ===== コンテンツ（前回と同一。テキスト変更なし） ===== */
+/* ===== コンテンツ（文言は前回と同一） ===== */
 const PROFILE = {
   summary: {
     person: `
@@ -515,7 +509,7 @@ document.addEventListener('DOMContentLoaded',function(){
     try{
       spinBtn.disabled = true;
       status.textContent = '回転中…';
-      const win     = Math.random() < 0.50;   // 少し当たりやすく
+      const win     = Math.random() < 0.50;   // 当たりやすめ
       const winType = Math.random() < 0.50 ? 'cat' : 'dog';
       const seq     = [240, 400, 560];
 
@@ -556,22 +550,27 @@ document.addEventListener('DOMContentLoaded',function(){
         spinBtn.disabled = false;
       }
     }catch(e){
-      console.error(e);
       status.innerHTML = '<span class="loss">エラー。もう一度お試しください。</span>';
       spinBtn.disabled = false;
     }
   }
   spinBtn.addEventListener('click',spin,{passive:true});
 
-  // スロット高さぶんの下余白を自動確保（端末フォント差対策）
+  // ===== 固定バーの高さに応じて自動で下余白を確保（WebView対策） =====
   const wrap = document.querySelector('.wrap');
   const bar  = document.querySelector('.slotbar');
-  const reserve = ()=>{
-    const h = bar.getBoundingClientRect().height;
-    wrap.style.marginBottom = (h + 140) + 'px';
-  };
+  function reserve(){
+    const h = bar.getBoundingClientRect().height || 340;
+    document.documentElement.style.setProperty('--slot-reserve', (h + 60) + 'px');
+  }
+  // 初期・リサイズ・スクロール(アドレスバー変動)・可視化変化で再計算
   reserve();
+  const ro = new ResizeObserver(reserve); ro.observe(bar);
   window.addEventListener('resize',reserve,{passive:true});
+  window.addEventListener('scroll',reserve,{passive:true});
+  document.addEventListener('visibilitychange',reserve,{passive:true});
+  // 遅延フォント/画像後も再計算
+  window.addEventListener('load',()=>setTimeout(reserve,100),{once:true});
 });
 </script>
 </body>
