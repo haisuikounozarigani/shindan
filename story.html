@@ -39,18 +39,17 @@
     .result-head{text-align:center; margin:0 0 8px}
     .result-title{font-size:clamp(18px,3.2vw,26px); color:var(--brand); margin:0}
     .result-sub{color:#5a4d56; margin:4px 0 0}
-
-    /* 画像をスマホで綺麗に見せる */
+    /* スマホで綺麗に見せる */
     .result-img{
       width:100%;
       height:auto;
-      aspect-ratio: 3 / 4;          /* レイアウトシフト防止 */
-      object-fit: contain;          /* トリミングしない */
-      background: #f6f3f1;          /* 余白が出る時の下地 */
+      aspect-ratio:3/4;
+      object-fit:contain;
+      background:#f6f3f1;
       border-radius:12px;
       box-shadow:0 10px 28px rgba(0,0,0,.12);
       margin-top:12px;
-      max-height:72svh;             /* 画面高の約7割で止める */
+      max-height:72svh;
     }
     .result-body{display:grid; gap:10px; margin-top:12px}
     .result-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px}
@@ -248,7 +247,7 @@
       }
     };
 
-    // 判定ロジック（優先順）
+    // 判定ロジック
     function routeByCounters(c){
       if (c.熱 >= 4 || (c.熱 >= 3 && c.合図 >= 1)) return 'moon_sun';
       if ((c.言葉 + c.手順) >= 5) return 'good_evil';
@@ -269,7 +268,7 @@
         Object.keys(add).forEach(k => C[k] += add[k]);
       }
       const key = routeByCounters(C);
-      renderResult(ROUTES[key], C);
+      renderResult(ROUTES[key]);
       window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
     }
 
@@ -281,8 +280,8 @@
     }
 
     function renderResult(route){
-      // 画像は 01.png〜05.png を直接参照
-      const imgPath = `/assets/results/story/${route.id}.png`;
+      // ここを相対パスに修正（/shindan/ 配下で確実に解決）
+      const imgPath = `assets/results/story/${route.id}.png`;
       const storyHtml = route.story.map(line => `<p>${line}</p>`).join('');
       const traitHtml = route.trait.map(t => `<li>${t}</li>`).join('');
 
@@ -293,10 +292,8 @@
         </div>
 
         <img class="result-img"
-             src="${imgPath}"
-             alt="${route.alt}"
-             loading="lazy"
-             sizes="(max-width: 600px) 100vw, 820px">
+             src="${imgPath}" alt="${route.alt}"
+             loading="lazy" decoding="async">
 
         <div class="result-body">
           <div class="result-card">
@@ -312,7 +309,7 @@
 
         <div class="result-ctas">
           <a class="linkbtn primary" href="#" onclick="resetAll(); return false;">もう一度診断</a>
-          <a class="linkbtn" href="https://haisuikounozarigani.github.io/shindan/">診断一覧へ戻る</a>
+          <a class="linkbtn" href="/shindan/">診断一覧へ戻る</a>
         </div>
         <p class="note">※ 物語はフィクションです。現実では規程・安全・立場を最優先に。</p>
       `;
