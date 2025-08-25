@@ -70,7 +70,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <div class="hero">
     <h1>心の標本</h1>
     <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
-    <p class="tap">✦ 開かないときは画像以外の余白をタップしてね</p>
+    <p class="tap">✦ 開かないときは画像以外の余白をタップしてね（3秒後に自動で開きます）</p>
   </div>
 </section>
 
@@ -246,21 +246,42 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   const content = $('#content');
   const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
 
-  // Reveal
-  const reveal=()=>{splash.classList.add('hidden');content.classList.add('show');content.focus({preventScroll:true});};
-  splash.addEventListener('click',e=>{if(!e.target.closest('a,button,label,input'))reveal();});
-  splash.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal();}});
+  // ---------- Reveal（保険＋自動） ----------
+  let opened=false, autoTimer=null;
+  function reveal(){
+    if(opened) return;
+    opened=true;
+    clearTimeout(autoTimer);
+    splash.classList.add('hidden');
+    content.classList.add('show');
+    try{ content.focus({preventScroll:true}); }catch{}
+    vibrate(12);
+  }
+  // タップ取りこぼし対策
+  const handlers=(ev)=>{
+    if(ev?.target?.closest?.('a,button,label,input')) return;
+    reveal();
+  };
+  splash.addEventListener('click', handlers);
+  splash.addEventListener('pointerup', handlers, {passive:true});
+  splash.addEventListener('touchend', handlers, {passive:true});
+  // キーボード
+  splash.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(); }
+  });
+  // 3秒後に自動オープン
+  window.addEventListener('load', ()=>{ autoTimer=setTimeout(reveal,3000); });
 
-  // NEW badge (within 21 days)
+  // ---------- NEW バッジ ----------
   const today=new Date();
   $$('#list a.link').forEach(a=>{
     const ds=a.dataset.updated, badge=a.querySelector('[data-new]');
     if(!ds||!badge) return;
     const diff=(today - new Date(ds+'T00:00:00'))/86400000;
-    badge.style.display = (diff<=21)?'inline-block':'none';
+    badge.style.display=(diff<=21)?'inline-block':'none';
   });
 
-  // Filters
+  // ---------- フィルタ ----------
   const chips=$$('#filters .chip');
   function applyFilter(){
     const act=$('#filters .chip.active')?.dataset.filter||'all';
@@ -277,13 +298,13 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   chips.forEach(ch=>{
     ch.addEventListener('click',()=>{
       chips.forEach(c=>c.classList.remove('active'));
-      ch.addClass?.('active')||ch.classList.add('active');
+      ch.classList.add('active');
       vibrate(); applyFilter();
-    });
+    },{passive:true});
   });
   applyFilter();
 
-  // Continue last
+  // ---------- 続きから ----------
   const CONT_KEY='specimens:last';
   function updateContinue(){
     const btn=$('#btn-continue');
@@ -300,13 +321,13 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   }
   $$('#list a.link').forEach(a=>{
     a.addEventListener('click',()=>{
-      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href=a.getAttribute('href')};
+      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href:a.getAttribute('href')};
       localStorage.setItem(CONT_KEY,JSON.stringify(data)); vibrate();
     },{passive:true});
   });
   updateContinue();
 
-  // Random pick
+  // ---------- おまかせ ----------
   $('#btn-random').addEventListener('click',()=>{
     const vis=$$('#list a.link').filter(a=>a.style.display!=='none');
     if(!vis.length) return;
@@ -314,71 +335,52 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
     vibrate(15); location.href=pick.getAttribute('href');
   });
 
-  // フォント切替
+  // ---------- フォント切替 ----------
   const root=document.documentElement;
   const FONT_KEY='specimens:font';
   const fontBtn=$('#toggle-font');
   function applyFont(){
     const mode=localStorage.getItem(FONT_KEY)||'';
     root.setAttribute('data-font', mode);
-    const on = (mode==='lg');
+    const on=(mode==='lg');
     fontBtn.setAttribute('aria-pressed', on?'true':'false');
-    fontBtn.textContent = on ? '標準に戻す' : '文字を大きく';
-    fontBtn.title = on ? '押すと文字サイズが標準に戻ります' : '押すと文字が大きくなります';
+    fontBtn.textContent= on ? '標準に戻す' : '文字を大きく';
+    fontBtn.title= on ? '押すと文字サイズが標準に戻ります' : '押すと文字が大きくなります';
   }
   fontBtn.addEventListener('click',()=>{
-    const next = (root.getAttribute('data-font')==='lg') ? '' : 'lg';
+    const next=(root.getAttribute('data-font')==='lg')?'':'lg';
     localStorage.setItem(FONT_KEY,next); applyFont(); vibrate();
   });
   applyFont();
 
-  // 共有
-  const shareBtn = $('#btn-share');
-  const sheet = $('#shareSheet');
-  const toast = $('#toast');
-  const shareData = {
-    title: document.title,
-    text: '診断の入口まとめ「心の標本」',
-    url: location.href.split('#')[0]
-  };
+  // ---------- 共有 ----------
+  const shareBtn=$('#btn-share');
+  const sheet=$('#shareSheet');
+  const toast=$('#toast');
+  const shareData={title:document.title,text:'診断の入口まとめ「心の標本」',url:location.href.split('#')[0]};
   function showToast(msg='コピーしました'){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'), 1400);
+    toast.textContent=msg; toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),1400);
   }
   function openSheet(){
-    const tw = 'https://twitter.com/intent/tweet?text='
-      + encodeURIComponent('診断の入口まとめ「心の標本」') + '&url=' + encodeURIComponent(shareData.url);
-    const line = 'https://line.me/R/msg/text/?' + encodeURIComponent('心の標本 ' + shareData.url);
-    $('#share-x').setAttribute('href', tw);
-    $('#share-line').setAttribute('href', line);
+    const tw='https://twitter.com/intent/tweet?text='+encodeURIComponent('診断の入口まとめ「心の標本」')+'&url='+encodeURIComponent(shareData.url);
+    const line='https://line.me/R/msg/text/?'+encodeURIComponent('心の標本 '+shareData.url);
+    $('#share-x').setAttribute('href',tw);
+    $('#share-line').setAttribute('href',line);
     sheet.style.display='block';
   }
   function closeSheet(){ sheet.style.display='none'; }
   shareBtn.addEventListener('click', async ()=>{
-    try{
-      if (navigator.share){
-        await navigator.share(shareData);
-      }else{
-        openSheet();
-      }
-      vibrate(10);
-    }catch(e){}
+    try{ if(navigator.share){ await navigator.share(shareData);} else{ openSheet(); } vibrate(10);}catch(e){}
   });
   $('#share-copy').addEventListener('click', async ()=>{
-    try{
-      await navigator.clipboard.writeText(shareData.url);
-      showToast();
-    }catch{
-      prompt('このURLをコピーしてください', shareData.url);
-    }
+    try{ await navigator.clipboard.writeText(shareData.url); showToast(); }
+    catch{ prompt('このURLをコピーしてください',shareData.url); }
     closeSheet();
   });
   $('#share-close').addEventListener('click', closeSheet);
   document.addEventListener('click', (e)=>{
-    if (sheet.style.display==='block' && !e.target.closest('.sharesheet .box') && e.target!==shareBtn){
-      closeSheet();
-    }
+    if(sheet.style.display==='block' && !e.target.closest('.sharesheet .box') && e.target!==shareBtn){ closeSheet(); }
   });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSheet(); });
 })();
