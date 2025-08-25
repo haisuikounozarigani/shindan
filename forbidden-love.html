@@ -65,7 +65,7 @@
 
     <figure class="hero">
       <!-- ※プロローグ画像は01のみ -->
-      <img src="assets/results/forbidden-love/prologue/01.png" alt="薄明の城と噴水（プロローグ）">
+      <img src="/shindan/assets/results/forbidden-love/prologue/01.png" alt="薄明の城と噴水（プロローグ）">
     </figure>
 
     <div class="center">
@@ -647,7 +647,7 @@
   <article class="ending-text">
     <h3>E3：忘れようとする — ハッピーエンド（静かな満足）</h3>
     <figure class="result-figure">
-      <img src="assets/results/forbidden-love/e3-forget/03.png" alt="忘れようとする — ハッピー（静かな満足）" loading="lazy" />
+      <img src="/shindan/assets/results/forbidden-love/e3-forget/03.png" alt="忘れようとする — ハッピー（静かな満足）" loading="lazy" />
       <figcaption>結果イラスト：E3-03</figcaption>
     </figure>
 
@@ -683,7 +683,7 @@
   <article class="ending-text">
     <h3>E3：忘れようとする — 普通エンド（静かな継ぎ目）</h3>
     <figure class="result-figure">
-      <img src="assets/results/forbidden-love/e3-forget/02.png" alt="忘れようとする — 普通（静かな継ぎ目）" loading="lazy" />
+      <img src="/shindan/assets/results/forbidden-love/e3-forget/02.png" alt="忘れようとする — 普通（静かな継ぎ目）" loading="lazy" />
       <figcaption>結果イラスト：E3-02</figcaption>
     </figure>
 
@@ -720,7 +720,7 @@
   <article class="ending-text">
     <h3>E3：忘れようとする — バッドエンド（遠くで鳴る鈴）</h3>
     <figure class="result-figure">
-      <img src="assets/results/forbidden-love/e3-forget/01.png" alt="忘れようとする — バッド（遠くで鳴る鈴）" loading="lazy" />
+      <img src="/shindan/assets/results/forbidden-love/e3-forget/01.png" alt="忘れようとする — バッド（遠くで鳴る鈴）" loading="lazy" />
       <figcaption>結果イラスト：E3-01</figcaption>
     </figure>
 
@@ -767,7 +767,7 @@
   <article class="ending-text">
     <h3>E4：密かに続ける — ハッピーエンド（小さく、でも強く）</h3>
     <figure class="result-figure">
-      <img src="assets/results/forbidden-love/e4-secret/03.png" alt="密かに続ける — ハッピー（小さく、でも強く）" loading="lazy" />
+      <img src="/shindan/assets/results/forbidden-love/e4-secret/03.png" alt="密かに続ける — ハッピー（小さく、でも強く）" loading="lazy" />
       <figcaption>結果イラスト：E4-03</figcaption>
     </figure>
 
@@ -823,7 +823,7 @@
   <article class="ending-text">
     <h3>E4：密かに続ける — 普通エンド（幸せと罪のまんなか）</h3>
     <figure class="result-figure">
-      <img src="assets/results/forbidden-love/e4-secret/02.png" alt="密かに続ける — 普通（幸せと罪のまんなか）" loading="lazy" />
+      <img src="/shindan/assets/results/forbidden-love/e4-secret/02.png" alt="密かに続ける — 普通（幸せと罪のまんなか）" loading="lazy" />
       <figcaption>結果イラスト：E4-02</figcaption>
     </figure>
 
@@ -877,7 +877,7 @@
   <article class="ending-text">
     <h3>E4：密かに続ける — バッドエンド（露見・後悔）</h3>
     <figure class="result-figure">
-      <img src="assets/results/forbidden-love/e4-secret/01.png" alt="密かに続ける — バッド（露見・後悔）" loading="lazy" />
+      <img src="/shindan/assets/results/forbidden-love/e4-secret/01.png" alt="密かに続ける — バッド（露見・後悔）" loading="lazy" />
       <figcaption>結果イラスト：E4-01</figcaption>
     </figure>
 
@@ -1101,14 +1101,16 @@
     return {tags, lines};
   }
   function resultImage(route, idx){
-    const folder = {
-      'e1-kakeochi':'e1-kakeochi',
-      'e2-petition':'e2-petition',
-      'e3-forget':'e3-forget',
-      'e4-secret':'e4-secret',
-    }[route];
-    return `assets/results/forbidden-love/${folder}/${idx}.png`;
-  }
+  const folder = {
+    'e1-kakeochi':'e1-kakeochi',
+    'e2-petition':'e2-petition',
+    'e3-forget':'e3-forget',
+    'e4-secret':'e4-secret',
+  }[route];
+  // 絶対パスに修正（GitHub Pagesでも確実に参照できる）
+  return `/shindan/assets/results/forbidden-love/${folder}/${idx}.png`;
+}
+    
 
   // ---- 結果画面 ----
   function showResult(){
@@ -1168,7 +1170,7 @@ document.head.appendChild(style);// ---- 起動：0章テンプレがあれば0�
     const sec = document.createElement('section');
     sec.innerHTML = `
       <figure class="result-figure">
-        <img src="assets/results/forbidden-love/prologue/01.png" alt="Prologue">
+        <img src="/shindan/assets/results/forbidden-love/prologue/01.png" alt="Prologue">
       </figure>`;
     clear(app); app.appendChild(sec);
   }
