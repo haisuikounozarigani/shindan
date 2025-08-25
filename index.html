@@ -91,14 +91,14 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
   <!-- Cards -->
   <nav class="links" id="list">
-    <!-- ★ 追加：禁断の恋診断（forbidden-love.html） -->
+    <!-- ★ 姫と城下の恋診断（forbidden-love.html） -->
     <a class="link" href="/shindan/forbidden-love.html?src=specimens"
-       data-id="forbidden-love" data-tags="性格,短時間,ゲーム風" data-mins="4" data-updated="2025-08-25">
-      <span class="emo">💔</span>
+       data-id="forbidden-love" data-tags="性格,短時間,ゲーム風" data-mins="3" data-updated="2025-08-25">
+      <span class="emo">🏰</span>
       <div>
-        <div class="ttl">禁断の恋診断（ストーリー分岐） <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">身分や立場を越える恋の選択。4場面×3択で12個のENDへ（画像つき）</div>
-        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span><span class="pill">#ゲーム風</span></div>
+        <div class="ttl">姫と城下の恋診断（ストーリー分岐） <span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">4場面 × 幸福度3 で 12個のENDへ（画像つき）</div>
+        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span><span class="pill">#ゲーム風</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
@@ -300,7 +300,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   }
   $$('#list a.link').forEach(a=>{
     a.addEventListener('click',()=>{
-      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href:a.getAttribute('href')};
+      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href=a.getAttribute('href')};
       localStorage.setItem(CONT_KEY,JSON.stringify(data)); vibrate();
     },{passive:true});
   });
@@ -384,4 +384,3 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 })();
 </script>
 </body></html>
-
