@@ -12,8 +12,9 @@
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
 .hidden{display:none!important}
+
 /* Splash */
-.splash{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden;cursor:pointer}
+.splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;cursor:pointer}
 .splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
 .splash .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
 .splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
@@ -21,9 +22,14 @@ body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;ba
 h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 .sub{margin:0;color:var(--muted)}
 .tap{margin-top:14px;font-size:.95em;color:#7a6a77}
+
+/* closing中は透過して見た目上は消えるが、前面でクリックを吸収 */
+.splash.closing{opacity:0;transition:opacity .28s ease;pointer-events:auto}
+
 /* Main */
 .wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
 .wrap.show{opacity:1;transform:none}
+
 /* Quick bar + filter chips */
 .quick{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
 .quick .btn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg);cursor:pointer}
@@ -31,6 +37,7 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 .chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c5763;cursor:pointer}
 .chip.active{background:var(--fg);color:#fff;border-color:var(--fg)}
+
 /* Cards */
 .links{display:grid;gap:12px;margin-top:10px}
 a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
@@ -45,24 +52,27 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .pill{padding:3px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571}
 .badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
+
 /* Footer */
 .note{color:var(--muted);text-align:center;margin:18px 0}
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
 .footerbar a, .footerbar button{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer}
+
 /* Share sheet + toast */
 .sharesheet{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;display:none}
 .sharesheet .box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:10px;display:flex;gap:8px}
 .sharesheet .box a,.sharesheet .box button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#533;cursor:pointer;text-decoration:none}
 .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9em;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
+
 :root[data-font="lg"]{font-size:17px}
 @media (max-width:360px){.badge{display:none}}
 </style>
 </head>
 <body>
 <!-- Splash -->
-<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0">
+<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0" role="button">
   <div class="fallback" aria-hidden="true"></div>
   <img class="bg" alt="心の標本のキービジュアル"
        src="/shindan/assets/hero/specimens-hero-1080.png"
@@ -70,11 +80,11 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <div class="hero">
     <h1>心の標本</h1>
     <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
-    <p class="tap">✦ 開かないときは画像以外の余白をタップしてね（3秒後に自動で開きます）</p>
+    <p class="tap">※ 誤タップ対策済み：開いた直後600msはリンク無効化</p>
   </div>
 </section>
 
-<main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1">
+<main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1" inert>
   <!-- Quick actions & Filters -->
   <div class="quick" id="quick">
     <button class="btn primary" id="btn-random">おまかせで選ぶ</button>
@@ -223,7 +233,7 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
 </main>
 
-<!-- Footer（共有ボタンをここに配置） -->
+<!-- Footer -->
 <nav class="footerbar">
   <button id="toggle-font" aria-pressed="false" title="押すと文字が大きくなります">文字を大きく</button>
   <a href="https://x.com/zariganitabe24?s=21" target="_blank" rel="noopener">X</a>
@@ -258,23 +268,70 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
   const content = $('#content');
   const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
 
+  // ====== 設定 ======
+  const AUTO_OPEN = false;           // ← 自動オープンに戻したい場合は true
+  const GUARD_MS  = 600;             // 露出直後のクリック無効化時間
+  const HIDE_DELAY = 300;            // スプラッシュの透明化時間と一致させる
+
   // ---------- Reveal ----------
-  let opened=false, autoTimer=null;
-  function reveal(){
-    if(opened) return;
-    opened=true;
-    clearTimeout(autoTimer);
-    splash.classList.add('hidden');
-    content.classList.add('show');
-    try{ content.focus({preventScroll:true}); }catch{}
-    vibrate(12);
+  let opened=false, guardUntil=0, autoTimer=null;
+
+  function startClickGuard(){
+    guardUntil = performance.now() + GUARD_MS;
+    // 捕捉フェーズで先に握りつぶす
+    const guard = (e)=>{
+      if (performance.now() < guardUntil) {
+        e.stopPropagation();
+        e.preventDefault();
+      } else {
+        window.removeEventListener('click', guard, true);
+      }
+    };
+    window.addEventListener('click', guard, true);
+    // 念のため pointer-events でも重ねがけ
+    content.style.pointerEvents = 'none';
+    setTimeout(()=>{ content.style.pointerEvents = ''; }, GUARD_MS);
   }
-  const handlers=(ev)=>{ if(ev?.target?.closest?.('a,button,label,input')) return; reveal(); };
-  splash.addEventListener('click', handlers);
-  splash.addEventListener('pointerup', handlers, {passive:true});
-  splash.addEventListener('touchend', handlers, {passive:true});
-  splash.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(); }});
-  window.addEventListener('load', ()=>{ autoTimer=setTimeout(reveal,3000); });
+
+  function reveal(ev){
+    if(opened) return;
+    opened = true;
+    if(ev){ try{ ev.preventDefault(); ev.stopPropagation(); }catch{} }
+    clearTimeout(autoTimer);
+
+    // ガード発動 → スプラッシュは少し残してイベント吸収
+    startClickGuard();
+    splash.classList.add('closing');
+    splash.setAttribute('aria-hidden','true');
+
+    // コンテンツ表示（ただしinertはガード明けに解除）
+    content.classList.add('show');
+    vibrate(12);
+
+    setTimeout(()=>{
+      // 完全に非表示化
+      splash.classList.add('hidden');
+      splash.classList.remove('closing');
+      // inert解除＆フォーカス
+      try{ content.removeAttribute('inert'); content.focus({preventScroll:true}); }catch{}
+    }, Math.max(HIDE_DELAY, GUARD_MS));
+  }
+
+  // スプラッシュ操作（pointer系に一本化）
+  const onPointerUp = (e)=>{
+    // スプラッシュ上の<a>等は存在しないが、将来の誤動作回避
+    if(e?.target?.closest?.('a,button,input,label')) return;
+    reveal(e);
+  };
+  splash.addEventListener('pointerup', onPointerUp);
+  splash.addEventListener('keydown', e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(e); }
+  });
+
+  // 自動オープン（既定で無効）
+  if (AUTO_OPEN) {
+    window.addEventListener('load', ()=>{ autoTimer=setTimeout(()=>reveal(), 3000); });
+  }
 
   // ---------- NEW バッジ ----------
   const today=new Date();
