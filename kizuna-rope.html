@@ -1,1 +1,380 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>関係の切れやすさ診断（四騎士/ファビング/拒絶/愛着/TAS20・DERS簡易）</title>
+<meta name="description" content="関係が切れやすくなる要因（スマホの割り込み、四つの悪い言い方、沈黙、負担の不公平など）を20問でチェック。結果は「鎖→糸」の5段階で表示。恋人・友人どちらにも使えます。">
+<meta property="og:title" content="関係の切れやすさ診断（四騎士/ファビング/拒絶/愛着/TAS20・DERS簡易）">
+<meta property="og:description" content="20問で“切れやすさ”を可視化。結果は「鎖→糸」の5段階。恋人・友人どちらにも使えます。">
+<meta name="theme-color" content="#faf7ff">
+<style>
+  :root{--bg:#f7f8ff;--ink:#1b2030;--muted:#677088;--panel:#fff;--line:#e5e8f2;--accent:#6b4cff}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,#fbfcff,#f2f4fb);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif}
+  header{position:sticky;top:0;background:rgba(255,255,255,.8);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line);z-index:10}
+  header .in{max-width:960px;margin:auto;padding:14px 16px}
+  h1{margin:0;font-size:clamp(18px,3vw,22px)}
+  .lead{color:var(--muted);margin:6px 0 4px}
+  .note{color:var(--muted);font-size:.92em;margin:0}
+  main{max-width:960px;margin:0 auto;padding:20px 16px 100px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 26px rgba(0,0,0,.06);padding:16px;margin:14px 0}
+  .qs{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .q{border:1px dashed #e9ecf5;border-radius:12px;padding:12px}
+  .q .t{margin:0 0 8px}
+  .scale{display:flex;gap:8px;flex-wrap:wrap}
+  .scale label{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;cursor:pointer}
+  .scale input{appearance:none;position:absolute;opacity:0}
+  .scale input:checked+span{outline:2px solid var(--accent);outline-offset:1px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f5f6fb);padding:10px 14px;border-radius:12px;cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg,#6b4cff,#8f7bff);color:#fff;border-color:transparent}
+  .result{margin-top:18px}
+  .result figure{margin:10px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f7f8ff}
+  .result img{display:block;width:100%;height:auto}
+  .r-ttl{font-weight:700}
+  .muted{color:var(--muted)}
+#r-text{ white-space: pre-line; }
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>関係の切れやすさ診断（四騎士/ファビング/拒絶/愛着/TAS20・DERS簡易）</h1>
+  <p class="lead">対象：最近よく関わる「特定の相手」を一人思い浮かべてお答えください。（恋人／友人どちらでもOK）</p>
+  <p class="note">※ この診断は参考情報です。断定やラベリングは行いません。</p>
+</div></header>
 
+<main>
+  <!-- 質問カード -->
+  <section class="card">
+    <h2 style="margin:0 0 10px">質問（20問・5段階）</h2>
+    <ul id="qs" class="qs">
+      <li class="q"><p class="t">1) 話している最中に、どちらかがついスマホや画面を見てしまう。</p><div class="scale" data-i="1">
+        <label><input type="radio" name="q1" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q1" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q1" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q1" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q1" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">2) 食事中や集まりの場でも、片方が画面に気を取られて会話が切れがち。</p><div class="scale" data-i="2">
+        <label><input type="radio" name="q2" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q2" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q2" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q2" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q2" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">3) けんかのとき、相手の性格そのものを責める言い方になりやすい。</p><div class="scale" data-i="3">
+        <label><input type="radio" name="q3" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q3" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q3" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q3" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q3" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">4) 皮肉・見下し・ため息など、相手を下げるサインが出ることがある。</p><div class="scale" data-i="4">
+        <label><input type="radio" name="q4" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q4" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q4" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q4" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q4" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">5) ぶつかったとき、片方が黙り込んで話を終わらせてしまうことが多い。</p><div class="scale" data-i="5">
+        <label><input type="radio" name="q5" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q5" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q5" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q5" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q5" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">6) ひとつの話題を、十分ほど落ち着いて最後まで話しきれる。</p><div class="scale" data-i="6" data-rev="1">
+        <label><input type="radio" name="q6" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q6" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q6" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q6" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q6" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">7) 感情が高ぶったら、一度間を置いてから話し直す「合図」がある。</p><div class="scale" data-i="7" data-rev="1">
+        <label><input type="radio" name="q7" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q7" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q7" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q7" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q7" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">8) 「助かった」「ありがとう」などの感謝を、はっきり言葉にして伝えている。</p><div class="scale" data-i="8" data-rev="1">
+        <label><input type="radio" name="q8" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q8" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q8" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q8" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q8" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">9) 忙しくても、短い近況のやりとり（対面やメッセ）を続けられている。</p><div class="scale" data-i="9" data-rev="1">
+        <label><input type="radio" name="q9" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q9" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q9" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q9" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q9" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">10) 役割や費用・時間の負担で、不公平だと感じることが多い。</p><div class="scale" data-i="10">
+        <label><input type="radio" name="q10" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q10" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q10" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q10" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q10" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">11) 意見が割れたときの決め方（折り合い・持ち越しなど）がはっきりしている。</p><div class="scale" data-i="11" data-rev="1">
+        <label><input type="radio" name="q11" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q11" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q11" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q11" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q11" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">12) SNSやメッセの非公開・既読などを過度に疑ってしまう。</p><div class="scale" data-i="12">
+        <label><input type="radio" name="q12" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q12" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q12" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q12" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q12" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">13) 連絡のしかたや誘いの線引きなど、共通の「決まり」がある。</p><div class="scale" data-i="13" data-rev="1">
+        <label><input type="radio" name="q13" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q13" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q13" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q13" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q13" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">14) 距離感や誘うタイミングをめぐって、気まずさや我慢がたまりやすい。</p><div class="scale" data-i="14">
+        <label><input type="radio" name="q14" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q14" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q14" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q14" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q14" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">15) 予定の断りや変更を、悪者にせず伝える・代案を出すことができる。</p><div class="scale" data-i="15" data-rev="1">
+        <label><input type="radio" name="q15" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q15" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q15" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q15" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q15" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">16) 片方が追い、片方が逃げる（近づくほど離れる）流れになりがちだ。</p><div class="scale" data-i="16">
+        <label><input type="radio" name="q16" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q16" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q16" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q16" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q16" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">17) 不満を伝える頻度より、ねぎらいや労いの言葉のほうが多い。</p><div class="scale" data-i="17" data-rev="1">
+        <label><input type="radio" name="q17" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q17" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q17" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q17" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q17" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">18) 「事実 → その時の気持ち → こうしてほしい」の順で伝えられている。</p><div class="scale" data-i="18" data-rev="1">
+        <label><input type="radio" name="q18" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q18" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q18" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q18" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q18" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">19) 大声・物に当たる・怖がらせる等の「安全でない言い合い」は起きていない。</p><div class="scale" data-i="19" data-rev="1">
+        <label><input type="radio" name="q19" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q19" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q19" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q19" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q19" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+
+      <li class="q"><p class="t">20) 先の予定（遊び/旅行/イベントや共同のこと）を一緒に決める時間がある。</p><div class="scale" data-i="20" data-rev="1">
+        <label><input type="radio" name="q20" value="1"><span>ほとんどない</span></label>
+        <label><input type="radio" name="q20" value="2"><span>たまにある</span></label>
+        <label><input type="radio" name="q20" value="3"><span>ときどきある</span></label>
+        <label><input type="radio" name="q20" value="4"><span>よくある</span></label>
+        <label><input type="radio" name="q20" value="5"><span>ほぼいつも</span></label>
+      </div></li>
+    </ul>
+
+    <div class="actions">
+      <button id="btn-calc" class="btn primary">判定する</button>
+      <button id="btn-clear" class="btn">未回答をリセット</button>
+    </div>
+
+    <div id="result" class="result card" style="display:none">
+      <p class="r-ttl" id="r-ttl">—</p>
+      <figure><img id="r-img" alt="結果画像"></figure>
+      <div id="r-text" class="muted">—</div>
+      <p class="muted" id="r-foot">平均スコア：<span id="r-avg">—</span>（1=鎖に近い／5=糸に近い）</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  // 画像マップ（01=鎖 … 05=糸）
+  const IMG = {
+    1: '/shindan/assets/results/kizuna-rope/01.png', // 鎖
+    2: '/shindan/assets/results/kizuna-rope/02.png', // 登山用ロープ
+    3: '/shindan/assets/results/kizuna-rope/03.png', // 麻縄
+    4: '/shindan/assets/results/kizuna-rope/04.png', // 荷造り紐
+    5: '/shindan/assets/results/kizuna-rope/05.png'  // 糸
+  };
+
+  // 短めの結果テキスト（あとでここを差し替えればOK）
+  const R_TITLE = {
+    1: '鎖：とても強い・安定',
+    2: '登山用ロープ：強いが負荷大',
+    3: '麻縄：ほつれ始め',
+    4: '荷造り紐：切れやすい',
+    5: '糸：切れかけ'
+  };
+// 結果テキスト（長文）
+  const R_TEXT = {
+    1: `【状態】信頼が厚く、小さな揺れでは切れません。ただし油断すると“さび”がつきます。
+
+【今日】
+・感謝2：不満1で伝える（先に感謝を2つ→改善1つ）
+・1分点検（寝る前）：「今日よかったこと」を各自1つ口に出す
+・画面の線引き：一緒の時間はスマホを箱へ。急ぎは「ひと声」だけ
+
+【今週】
+・“ゆる会議”30分/週1：「よかった3・直したい1・来週試す1」
+・合図の更新：中断＝手でT、再開は「○:○○に続き」と宣言
+・不公平の早期発見：家事/連絡/移動など5項目を0〜10点で採点→差が大きい1つだけ入れ替え
+
+【伝え方】事実→気持ち→お願い
+例「昨日の約束が延びた→少し残念→次は所要時間を先に決めたい」
+
+【NG】「どうせいつも」などの決めつけ／既読の詰問
+
+【例】恋人：次回の会計は割り勘に／友人：集合時刻を5分だけ早める`,
+    2: `【状態】強いけれど摩耗が進行。放置すると焼け切れの恐れ。
+
+【今日】
+・担当表を作り1つ交換（移動/予約/連絡/会計/片付け）
+・停戦タイマー：口調が荒れたら15分中断→再開時刻を必ず宣言
+・対面中の画面は下向きに置く。長文は後で読む
+
+【今週】
+・不公平の数字化：各負担を0〜10で採点→差が大の項目を1つだけ改善
+・ねぎらい貯金：相手の具体行動に名前を付けて感謝（1日1枚）
+
+【伝え方】
+「○○のとき（事実）、私は△△と感じた（気持ち）。次は□□できる？（お願い）」
+連絡は「遅れます・到着目安・代案」の3点セット
+
+【NG】一度に三つ以上の改善要求／他人比較で責める`,
+    3: `【状態】小さな傷みが積み重なり、毛羽立ちが出始め。今なら間に合う。
+
+【今日】四つの悪い癖を止める
+①非難（人格攻撃）→出来事に言い換え
+②皮肉・見下し→素直な言葉
+③自己防衛（言い訳合戦）→まず「なるほど」
+④黙り込み→中断と再開時刻を宣言
+追う側：質問は1つに／逃げる側：再開時刻を自分から言う
+
+【今週】
+・不満は「相談箱」に入れて週1だけ話す
+・予定変更は「到着目安＋理由＋代案」を固定文に
+・30分のふり返り（よかった3／直したい1／来週試す1）
+
+【伝え方】短く一度だけ。お願いは1つ
+例「今夜の通話はあと10分で切りたい。明日は21時からにできる？」
+
+【NG】既読スルーに連投／その場で結論を迫る`,
+    4: `【状態】小さな力でも切れやすい段階。応急処置と動線の見直しが必要。
+
+【今日】
+・危ない言い合い（大声・威圧・物に当たる兆し）は即停止→翌日昼など安全な時間に再開
+・合図カードを紙で用意（😮‍💨中断／🔁再開／🕊今回はやめる）
+・画面の扱い固定：食卓・寝室へは持ち込まない。通知はタイマーで停止
+
+【今週】
+・不満の下の“望み”（安心・公平・尊重）を言葉にする
+・第三者の視点：事実だけを書いて見てもらい、話す順番（1→2→3）を整える
+
+【伝え方（謝る型）】
+「驚かせたね（相手への影響）。ごめん（謝罪）。次は○○をやめて□□にする（具体）。」
+
+【NG】昔の失敗を持ち出す／探りや詮索で不安を増やす`,
+    5: `【状態】限界が近い。まず身の安全と心の回復を最優先。続ける/離れるの分岐点。
+
+【今日】
+・安全確保：暴言・威圧・物に当たる・無断位置把握などがあれば距離を取る。会うなら人目のある場所
+・連絡は最小限：急ぎ以外は短文。感情が高ぶる話は持ち越し。やり取りは記録を残す
+・期限を決める：「3週間ためす→良くならなければ関係の棚卸し」
+
+【今週】
+・最小限のルールを紙に（面会時間/話題の幅/第三者同席の可否）。破られたらその日は終了
+・離れる準備も並行：共同の物・費用・合鍵・SNSの扱いを一覧化
+
+【続けるなら】中断→再開時刻の厳守／感謝2：不満1／画面の線引き
+【離れるなら】日程と手順だけ共有し、荷物・鍵・費用から静かに決める
+
+【NG】密室や深夜で会う／「話せばわかる」と長時間の押し合いを続ける`
+  };
+
+  // しきい値（avg<=1.8→1, <=2.6→2, <=3.4→3, <=4.2→4, それ以外→5）
+  const TH = [1.8, 2.6, 3.4, 4.2];
+
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+
+  function calcAvg(){
+    const vals=[];
+    for(let i=1;i<=20;i++){
+      const v=document.querySelector(`input[name="q${i}"]:checked`)?.value;
+      if(!v) continue;
+      // 逆採点（data-rev="1" の設問は 1<->5, 2<->4 を反転）
+      { const val=parseInt(v,10);
+        const rev=document.querySelector('.scale[data-i="'+i+'"]')?.dataset.rev==='1';
+        vals.push(rev ? (6 - val) : val);
+      }
+    }
+    if(!vals.length) return null;
+    return vals.reduce((a,b)=>a+b,0)/vals.length;
+  }
+  function avgToRank(avg){
+    if(avg<=TH[0]) return 1;
+    if(avg<=TH[1]) return 2;
+    if(avg<=TH[2]) return 3;
+    if(avg<=TH[3]) return 4;
+    return 5;
+  }
+
+  $('#btn-calc').addEventListener('click', ()=>{
+    const avg=calcAvg();
+    if(avg===null){ alert('未回答があります。できる範囲で選んでください。'); return; }
+    const rank=avgToRank(avg);
+    $('#result').style.display='';
+    $('#r-ttl').textContent = R_TITLE[rank];
+    $('#r-img').src = IMG[rank];
+    $('#r-img').alt = R_TITLE[rank];
+    $('#r-text').textContent = R_TEXT[rank];
+    $('#r-avg').textContent = avg.toFixed(2);
+    window.scrollTo({top: $('#result').offsetTop-10, behavior:'smooth'});
+  });
+
+  $('#btn-clear').addEventListener('click', ()=>{
+    $$('input[type="radio"]:checked').forEach(el=>{ el.checked=false; });
+    $('#result').style.display='none';
+  });
+})();
+</script>
+</body>
+</html>
