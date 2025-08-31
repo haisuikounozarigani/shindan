@@ -1256,5 +1256,33 @@
   renderChapter('chapter-0');
 })();
 </script>
+<!-- 診断一覧ボタン（エンディング表示時だけ自動追加） -->
+<script>
+  // 一覧ページのURLを必要に応じて変更
+  const LIST_URL = 'index.html';
+
+  const app = document.getElementById('app');
+
+  function inject() {
+    // #app 内に描画された <article>（＝エンディング本文）を検知
+    const article = app && app.querySelector('article');
+    if (article && !article.querySelector('.result-actions')) {
+      const div = document.createElement('div');
+      div.className = 'result-actions';
+      div.innerHTML = `
+        <a class="btn" href="${LIST_URL}">診断一覧に戻る</a>
+        <button class="btn" type="button" onclick="history.back()">ひとつ前に戻る</button>
+      `;
+      article.appendChild(div);
+    }
+  }
+
+  // 初回＆以後のレンダリング差し替えに対応
+  const mo = new MutationObserver(inject);
+  if (app) {
+    mo.observe(app, { childList: true, subtree: true });
+    inject();
+  }
+</script>
 </body>
 </html>
