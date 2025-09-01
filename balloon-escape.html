@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>気球エスケープ診断 — どれだけ現実から“離陸”しやすいか</title>
+<meta name="description" content="25項目・5件法。逃避/気晴らし/上の空/着地力から“離陸しやすさ”を％表示。">
+<meta name="theme-color" content="#f7f4ff">
+<style>
+  :root{
+    --bg1:#f7f3ff; --bg2:#fff9fd; --paper:#fff; --ink:#14131a; --muted:#6b6a77;
+    --line:#eae6f5; --accent:#7b5cff; --accent2:#ff88c9;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    line-height:1.9; letter-spacing:.02em;
+  }
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.86);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:960px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:700}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+
+  main{max-width:960px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 140px;min-width:140px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent)}
+  .muted{color:var(--muted)}
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#f2effa;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  .pct{font-size:42px;font-weight:800;letter-spacing:.02em}
+  .badge{display:inline-block;margin-left:8px;padding:4px 10px;border-radius:999px;font-weight:700;border:1px solid var(--line);background:#fff}
+  .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+  .card{flex:1 1 240px;min-width:240px;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .meter{height:8px;background:#f2effa;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .result-figure{margin:12px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f6f8fb}
+  .result-figure img{display:block;width:100%;height:auto}
+
+  /* Footer bar */
+  .footerbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid var(--line);padding:10px}
+  .footerbar .in{max-width:960px;margin:auto;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .footerbar a,.footerbar button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#1c1a22;text-decoration:none;cursor:pointer}
+
+  @media (max-width:380px){ .opt{min-width:unset} .pct{font-size:36px} }
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>気球エスケープ診断</h1>
+  <span class="crumb">25項目・5件法 → % とバンド</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>どれだけ現実から“離陸”しやすいか</strong> を測ります。</div>
+      <p class="lead">5件法でお答えください（左＝低、右＝高）。※個人の傾向把握が目的です。</p>
+    </div>
+
+    <div id="qbox"></div>
+
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 25</div>
+    </div>
+
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>スコアを見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+    </div>
+
+    <div id="result" class="panel">
+      <div><span class="pct" id="pctText">—%</span>
+        <span class="badge" id="bandName"></span>
+      </div>
+
+      <!-- 結果イメージ -->
+      <figure class="result-figure" aria-hidden="true">
+        <img id="bandImg" src="" alt="結果イメージ">
+      </figure>
+
+      <p id="bandMsg" class="lead"></p>
+
+      <div class="row">
+        <div class="card">
+          <div><strong>総合（離陸しやすさ）</strong></div>
+          <div class="meter"><i id="mH"></i></div>
+        </div>
+        <div class="card">
+          <div><strong>回避（EA）</strong> <span class="muted">避ける・先送り</span></div>
+          <div class="meter"><i id="mEA"></i></div>
+        </div>
+        <div class="card">
+          <div><strong>回避方略（COPE）</strong> <span class="muted">気晴らし・脱落</span></div>
+          <div class="meter"><i id="mCOPE"></i></div>
+        </div>
+        <div class="card">
+          <div><strong>上の空（MW）</strong> <span class="muted">意識の離陸</span></div>
+          <div class="meter"><i id="mMW"></i></div>
+        </div>
+        <div class="card">
+          <div><strong>着地力（BRS）</strong> <span class="muted">戻る・立て直す</span></div>
+          <div class="meter"><i id="mBRS"></i></div>
+        </div>
+      </div>
+
+      <p class="muted" style="margin-top:10px">
+        参考概念：回避傾向／対処方略／マインドワンダリング／レジリエンス（概念参照）。結果は傾向の目安であり、診断や治療を目的としません。
+      </p>
+    </div>
+  </section>
+</main>
+
+<!-- 診断一覧に戻る -->
+<nav class="footerbar">
+  <div class="in">
+    <a id="backList" href="/shindan/">診断一覧に戻る</a>
+    <button id="btnShare" type="button">結果を共有</button>
+  </div>
+</nav>
+
+<script>
+(()=> {
+  // ===== 画像の置き場所（必要なら変更） =====
+  const IMG_BASE = '/shindan/assets/results/balloon-escape/'; // 例）.../01.png〜06.png
+
+  // ===== 設問 =====
+  const ITEMS = [
+    {k:1,  t:'嫌な気持ちが来そうだと、先に用事を作って避ける。',                   cat:'EA'},
+    {k:2,  t:'不安を感じたら、人や場所ごと距離を取る。',                             cat:'EA'},
+    {k:3,  t:'つらい記憶を思い出しそうな映画や音楽は避けがち。',                     cat:'EA'},
+    {k:4,  t:'気まずい会話になりそうなら、話題を急に変える。',                       cat:'EA'},
+    {k:5,  t:'悩みは向き合うより、見なかったことにしたい。',                         cat:'EA'},
+    {k:6,  t:'締切が近づくと、別の簡単な作業に逃げる。',                             cat:'EA'},
+    {k:7,  t:'（R）不快でも、必要ならやるべきことに取りかかれる。',                   cat:'EA', rev:true},
+    {k:8,  t:'（R）不安があっても、少しずつ慣らして向き合える。',                     cat:'EA', rev:true},
+    {k:9,  t:'心が重い日は、ついスマホや動画で気をそらす。',                           cat:'EA'},
+    {k:10, t:'心配ごとがある時、眠ってやりすごそうとする。',                           cat:'EA'},
+
+    {k:11, t:'しんどいときは、別の楽しいことで気を紛らわせる。',                       cat:'COPE'},
+    {k:12, t:'やる気が出ないと、計画そのものをやめてしまう。',                         cat:'COPE'},
+    {k:13, t:'問題が大きいと、放っておけばそのうち過ぎると思う。',                     cat:'COPE'},
+    {k:14, t:'失敗しそうなら、最初から手を出さない。',                                 cat:'COPE'},
+
+    {k:15, t:'話を聞いていても、気づけば別のことを考えている。',                       cat:'MW'},
+    {k:16, t:'作業中に、上空を散歩しているみたいに意識が遠のく。',                     cat:'MW'},
+    {k:17, t:'読書や動画の途中で、内容を覚えていないことがある。',                     cat:'MW'},
+    {k:18, t:'（R）必要な場面では、注意を長く保てる。',                                 cat:'MW', rev:true},
+    {k:19, t:'つい空想にふけって、時間の感覚をなくす。',                               cat:'MW'},
+
+    {k:20, t:'困っても、休んでから現実に戻って立て直せる。',                           cat:'BRS'},
+    {k:21, t:'予想外でも、落ち着いて対処に戻れる。',                                   cat:'BRS'},
+    {k:22, t:'（R）一度つまずくと、しばらく何も手につかない。',                         cat:'BRS', rev:true},
+    {k:23, t:'気持ちが乱れても、呼吸を整えると立ち上がれる。',                         cat:'BRS'},
+    {k:24, t:'（R）問題が続くと、投げ出したくなる。',                                   cat:'BRS', rev:true},
+    {k:25, t:'自分なりの「戻るルーティン」（例：人に連絡／寝る／食事／歩く など）を持っている。',             cat:'BRS'}
+  ];
+  const LABELS = ['まったく当てはまらない','あまり当てはまらない','どちらともいえない','やや当てはまる','とても当てはまる'];
+
+  // ===== DOM =====
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  const res = $('#result'), pctText = $('#pctText'), bandName = $('#bandName'), bandMsg = $('#bandMsg');
+  const meters = {H:$('#mH'), EA:$('#mEA'), COPE:$('#mCOPE'), MW:$('#mMW'), BRS:$('#mBRS')};
+  const backList = $('#backList'), btnShare = $('#btnShare');
+  const bandImg = $('#bandImg');
+
+  // 戻り先
+  const DEFAULT_BACK = '/shindan/';
+  const src = new URLSearchParams(location.search).get('src');
+  backList.href = src === 'specimens' ? DEFAULT_BACK : DEFAULT_BACK;
+
+  // 質問描画
+  ITEMS.forEach(item=>{
+    const s = document.createElement('section');
+    s.className = 'q';
+    s.innerHTML = `
+      <div class="ttl">Q${item.k}. ${item.t.replace('（R）','')}</div>
+      <div class="scale" role="group" aria-label="Q${item.k}">
+        ${LABELS.map((lab,i)=>{
+          const v=i+1, id=`q${item.k}-${v}`;
+          return `<label class="opt" for="${id}">
+              <input type="radio" name="q${item.k}" id="${id}" value="${v}">
+              <span>${v}. ${lab}</span>
+            </label>`;
+        }).join('')}
+      </div>
+    `;
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  function answeredCount(){ return ITEMS.filter(it => $('input[name="q'+it.k+'"]:checked')).length; }
+  function updateProgress(){
+    const n=answeredCount(), total=ITEMS.length;
+    ptext.textContent = `${n} / ${total}`;
+    pbar.style.width = Math.round(n/total*100)+'%';
+    btnCalc.disabled = n!==total;
+  }
+  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
+  updateProgress();
+
+  // math
+  const rev5 = v => 6 - v;
+  const mean = arr => arr.reduce((a,b)=>a+b,0) / arr.length;
+  function erf(x){const s=Math.sign(x);x=Math.abs(x);const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const t=1/(1+p*x);const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);return s*y;}
+  const cdf = z => 0.5*(1+erf(z/Math.SQRT2));
+
+  // 採点
+  function collect(){
+    const vals={};
+    for(const it of ITEMS){
+      const el = $('input[name="q'+it.k+'"]:checked'); if(!el) return null;
+      vals[it.k] = +el.value;
+    }
+    return vals;
+  }
+  function score(vals){
+    const EA   = mean([ vals[1],vals[2],vals[3],vals[4],vals[5],vals[6], rev5(vals[7]),rev5(vals[8]), vals[9],vals[10] ]);
+    const COPE = mean([ vals[11],vals[12],vals[13],vals[14] ]);
+    const MW   = mean([ vals[15],vals[16],vals[17], rev5(vals[18]), vals[19] ]);
+    const BRS  = mean([ vals[20],vals[21], rev5(vals[22]), vals[23], rev5(vals[24]), vals[25] ]);
+
+    const zEA   = (EA   - 3);
+    const zCOPE = (COPE - 3);
+    const zMW   = (MW   - 3);
+    const zBRS  = (BRS  - 3);
+    const zH = (zEA + zCOPE + zMW - zBRS) / 2; // 近似標準化
+
+    const pct = Math.round(cdf(zH) * 100);
+    return {EA,COPE,MW,BRS,z:{H:zH},pct};
+  }
+
+  function band(zH){
+    if(zH<=-1.0) return {name:'地上係留（ロープ二重結び）', key:'A'};
+    if(zH<=-0.33) return {name:'低空さんぽ', key:'B'};
+    if(zH<=+0.33) return {name:'雲間ピクニック', key:'C'};
+    if(zH<=+0.99) return {name:'雲上トラベラー', key:'D'};
+    if(zH<=+1.64) return {name:'成層圏ランナー', key:'E'};
+    return {name:'宇宙まで気球（通信途絶注意）', key:'F'};
+  }
+  const bandMsgMap = {
+  A: '大地派。逃げすぎず現実にちゃんと足が着いてるタイプ。たまに“雲見休憩”を入れると創造力が育ちます。おすすめは「5分だけ空想→窓際で深呼吸→戻る」のミニ往復。無理はせず、楽しめる範囲で◎',
+  B: '必要な時だけふわっと上がる低空フライト。気晴らしは「短時間×場所指定」にすると罪悪感が減って効果長持ち。例：ベッドでは見ない／台所でだけ動画5分。最後は自分の戻るルーティン（タイマー・一杯の水など）で帰還を。',
+  C: '中間タイプ。頑張るもサボるもバランス上手。疲れた日は「5分雲上→10分タスク→5分帰還」のミニ往復が相性◎。戻る合図はタイマーでも、席を立って水を飲むでもOK。“自分の戻り方”をひとつ決めておくとラクだよ。',
+  D: '没入がやや強めで、上がるのは得意。だからこそ降りるきっかけを先に用意しよう。「通知OFF＋タイマーON」「終わったら人に一言送る」など戻るルーティンを固定すると安定。好きな没入は活かしつつ、帰路だけ確保！',
+  E: '上昇気流が強い帯域。楽しくても酸素（睡眠・ごはん・会話）が切れると一気にしんどくなる。1日のどこかに“帰還ポイント”を固定して、戻るルーティンを短いメモで見える化→目に入る所へ。補給を途切れさせないのがコツ。',
+  F: 'MAX上昇タイプ。気づくと地球圏外まで飛べる人。戻る練習は小さく・毎日同じタイミングで：①姿勢を直す ②水を飲む ③誰かに一言 ④短い用事で体を動かす。反復で帰還がどんどんラクに。推進力はそのまま、安全索だけ太く！'
+};
+  const IMG_MAP = {A:'01', B:'02', C:'03', D:'04', E:'05', F:'06'};
+
+  const pctToWidth = p => Math.max(2, Math.min(100, p));
+  const meanToPct = m => Math.round((m-1)/4*100);
+
+  function renderResult(sc){
+    const b = band(sc.z.H);
+    pctText.textContent = `${sc.pct}%`;
+    bandName.textContent = b.name;
+    bandMsg.textContent = bandMsgMap[b.key];
+
+    // 画像切り替え（01=地上 … 06=宇宙）
+    const num = IMG_MAP[b.key] || '03';
+    bandImg.src = IMG_BASE + num + '.png';
+    bandImg.alt = `${b.name} のイメージ`;
+
+    // メーター
+    meters.H.style.width   = pctToWidth(sc.pct) + '%';
+    meters.EA.style.width  = meanToPct(sc.EA) + '%';
+    meters.COPE.style.width= meanToPct(sc.COPE) + '%';
+    meters.MW.style.width  = meanToPct(sc.MW) + '%';
+    meters.BRS.style.width = meanToPct(sc.BRS) + '%';
+
+    res.style.display = 'block';
+    try{
+      localStorage.setItem('balloon-escape:last', JSON.stringify({pct:sc.pct, band:b.name, when:Date.now()}));
+    }catch{}
+  }
+
+  btnCalc.addEventListener('click', ()=>{
+    const vals = collect(); if(!vals) return;
+    const sc = score(vals);
+    renderResult(sc);
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    updateProgress();
+    res.style.display='none';
+    bandImg.removeAttribute('src');
+  });
+
+  btnShare.addEventListener('click', async ()=>{
+    const pct = pctText.textContent || '';
+    const band = bandName.textContent || '';
+    const shareData = {
+      title: document.title,
+      text: `気球エスケープ診断｜あなたの離陸傾向：${pct}（${band}）`,
+      url: location.href.split('#')[0]
+    };
+    try{
+      if(navigator.share){ await navigator.share(shareData); }
+      else{
+        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+        alert('結果テキストをコピーしました');
+      }
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
