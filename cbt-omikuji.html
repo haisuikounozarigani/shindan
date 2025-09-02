@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CBTおみくじ — あなたの運勢を占います</title>
+<meta name="description" content="CBTおみくじ。今日の運勢とあわせて、役立つCBTワザをワンポイントでご提案。">
+<meta name="theme-color" content="#fff9fe">
+<style>
+  :root{
+    --bg1:#fff9fe; --bg2:#f5f7ff; --paper:#fff; --ink:#1a1623; --muted:#6c6a77;
+    --line:#eee6f4; --accent:#7b5cff; --accent2:#ff88c9; --warn:#c9366f;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    line-height:1.85; letter-spacing:.01em;
+  }
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.08) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:960px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+
+  main{max-width:960px;margin:0 auto;padding:18px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.05)}
+  .lead{color:var(--muted);margin-top:4px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#faf7ff);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+
+  /* Result card */
+  #result{display:none;margin-top:14px}
+  .omk-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .rank{font-size:36px;font-weight:900;letter-spacing:.02em}
+  .tag{display:inline-block;margin-left:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700}
+  .omk-hero{margin:12px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f7f8fb}
+  .omk-hero img{display:block;width:100%;height:auto}
+  .msg{font-size:16px}
+  .cbt{border:1px dashed #e9e1f7;background:#fff;border-radius:12px;padding:10px;margin-top:10px}
+  .cbt .ttl{font-weight:800}
+  .cbt ol{margin:8px 0 0 18px; padding:0}
+  .share{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  /* Disclaimer */
+  .warn{margin-top:14px;border:2px solid var(--warn);background:#fff4f7;border-radius:14px;padding:10px}
+  .warn strong{color:var(--warn)}
+
+  /* Footer bar */
+  .footerbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.88);backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid var(--line);padding:10px}
+  .footerbar .in{max-width:960px;margin:auto;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .footerbar a,.footerbar button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#1c1a22;text-decoration:none;cursor:pointer}
+
+  @media (max-width:420px){ .rank{font-size:32px} }
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>CBTおみくじ</h1>
+  <span class="crumb">あなたの運勢を占います</span>
+</div></header>
+
+<main>
+  <section class="panel">
+    <div class="ttl"><strong>今日の運勢</strong> をひいて、<strong>CBTのワザ</strong>を1つだけ実行してみましょう。</div>
+    <div class="actions">
+      <button id="btnDraw" class="btn primary">おみくじを引く</button>
+      <button id="btnAgain" class="btn" style="display:none">もう一度ひく</button>
+    </div>
+
+    <article id="result" class="panel">
+      <div class="omk-head">
+        <div class="rank" id="rankText">—</div>
+        <span class="tag" id="tagText"></span>
+      </div>
+
+      <figure class="omk-hero" aria-hidden="true"><img id="rankImg" src="" alt=""></figure>
+
+      <p class="msg" id="msgText"></p>
+
+      <div class="cbt">
+        <div class="ttl">CBTワザ｜<span id="cbtName">—</span></div>
+        <ol id="cbtSteps"></ol>
+      </div>
+
+      <div class="share">
+        <button id="btnCopy" class="btn">内容をコピー</button>
+        <button id="btnShare" class="btn">共有</button>
+      </div>
+
+      <aside class="warn" role="note">
+        <p>⚠️ <strong>注意</strong>：本ページはエンタメ＋セルフヘルプのヒント提供を目的とした<strong>占いコンテンツ</strong>です。<br>
+        医療・診断・治療・緊急対応の目的では<strong>ありません</strong>。実践はご自身の判断・<strong>自己責任</strong>で行ってください。体調・心身の不調が続く場合は、医療機関や専門家へご相談ください。</p>
+      </aside>
+    </article>
+  </section>
+</main>
+
+<!-- 戻り導線 -->
+<nav class="footerbar">
+  <div class="in">
+    <a href="/shindan/">診断一覧に戻る</a>
+  </div>
+</nav>
+
+<script>
+(()=>{
+  // ===== 画像の置き場所（必要なら変更） =====
+  const IMG_BASE = '/shindan/assets/results/cbt-omikuji/'; // 01.png〜07.png を配置
+
+  // ===== 画像ファイル番号（運勢→画像） =====
+  const RANK_IMG = { '大吉':'01', '吉':'02', '中吉':'03', '小吉':'04', '末吉':'05', '半吉':'06', '凶':'07' };
+
+  // ===== おみくじ本文（占い風・性格記述なし） =====
+  const DATA = [
+    {rank:'大吉', tag:'追い風の日',
+     msg:'風向きは順。朝のひと押しが一日を軽くします。細かな不安は流しましょう。ラッキータイム：午前中。',
+     cbt:'3分だけ着手（行動活性）',
+     steps:'やることを1つ選ぶ → タイマー3分 → 鳴ったら続きは「やる／やらない」を自分で決める。'},
+
+    {rank:'吉', tag:'静かな自信',
+     msg:'静かな運気。距離感が保てる日。予定は短いメッセージで整えると吉。ラッキーカラー：薄青。',
+     cbt:'事実と解釈の仕分け（認知の再評価）',
+     steps:'紙に「事実｜解釈」と2列を書き、頭の中の“解釈”を事実から切り離す。'},
+
+    {rank:'中吉', tag:'雲間の光',
+     msg:'もやが晴れて光が差す日。最初の一歩が鍵。ラッキーアクション：扉や窓を開ける。',
+     cbt:'5-4-3-2-1グラウンディング',
+     steps:'見える5・触れる4・聞こえる3・嗅ぐ2・味1を順に言語化→今ここへ戻す。'},
+
+    {rank:'小吉', tag:'整える日',
+     msg:'“最初の一手”が効く日。机やデスクトップをひと拭きすると流れが生まれる。',
+     cbt:'最初の小石（課題分割）',
+     steps:'タスクを“最初の30秒行動”に分解（例：ファイルを開く／ペンを持つ）。'},
+
+    {rank:'大吉', tag:'自然体の集中',
+     msg:'追い波到来。短く始めるほど長く乗れる暗示。ご褒美は小さく素早く。',
+     cbt:'ポモドーロ1セット（時間制限）',
+     steps:'25分集中＋5分休憩を1回。終わったらご褒美を小さく。'},
+
+    {rank:'吉', tag:'やさしさの矢印',
+     msg:'やわらかな巡り。あたたかい飲み物が心身を整えてくれる。ラッキーアイテム：マグカップ。',
+     cbt:'ベストフレンド視点（セルフコンパッション）',
+     steps:'“親友が同じ状況なら何と言う？”を自分に向けて一行で書く。'},
+
+    {rank:'末吉', tag:'風待ち',
+     msg:'向かい風。完璧狙いは重くなる日。“ほどよく”で先へ。キーワード：60点で出す。',
+     cbt:'行動実験ミニ',
+     steps:'“予測：笑われる(80%)”→小さく提出→“実測：どうだった？”を書いて見直す。'},
+
+    {rank:'半吉', tag:'軽やかな回避',
+     msg:'賢い切り替えが光る日。短い休憩→再開のリズムで滞りを回避。',
+     cbt:'心配の予約（刺激コントロール）',
+     steps:'心配はメモに入れて“19:00–19:15だけ考える”。今は箱に戻す。'},
+
+    {rank:'中吉', tag:'視点の切替',
+     msg:'ズーム切替で視界クリア。やることを絞るほど運気は整う。ラッキーアクション：一画面にまとめる。',
+     cbt:'一画面ToDo（選択と集中）',
+     steps:'今日やる3つだけ書く（それ以外は明日箱へ）。'},
+
+    {rank:'小吉', tag:'落ち着きの呼吸',
+     msg:'呼吸を整えると波が静まる。静かな集中が戻る暗示。ラッキータイム：夕方前。',
+     cbt:'呼吸4-6（呼吸法）',
+     steps:'4秒吸って6秒吐く×8呼吸。肩・顎・舌をゆるめる。'},
+
+    {rank:'吉', tag:'意味の糸',
+     msg:'ひと言の“なぜ”が背中を押す日。目的を添えるほど道がまっすぐになる。',
+     cbt:'価値カード3語（価値づけ）',
+     steps:'大切にしたい言葉を3つ（例：誠実・学び・安心）→今日の行動に1語ひもづけ。'},
+
+    {rank:'中吉', tag:'ゆるい筋トレ',
+     msg:'薄く積むほど効いてくる日。小さな回数で地力アップ。ラッキーアイテム：チェックリスト。',
+     cbt:'行動活性の最小化',
+     steps:'運動なら1分・勉強なら1ページ・片づけなら1か所だけ。'},
+
+    {rank:'末吉', tag:'ちいさな修理',
+     msg:'大工事は不向き。直せるところを直せば十分。結果は後からついてくる。',
+     cbt:'問題解決5手',
+     steps:'①問題を1行 ②目的 ③選択肢3つ ④一番軽い案 ⑤実行→結果メモ。'},
+
+    {rank:'小吉', tag:'音量の調整',
+     msg:'内なるナレーションは一段小さく。景色がクリアになり、判断が軽くなる。',
+     cbt:'思考ラベリング',
+     steps:'浮かんだ考えに“考えだと気づく”ラベル（例：いま「不安の予言」をしてる）。'},
+
+    {rank:'吉', tag:'受け取り上手',
+     msg:'お願いごとが通りやすい流れ。短く素直に頼むと吉。ラッキー方角：東。',
+     cbt:'ヘルプリクエスト（対人スキル）',
+     steps:'誰に／何を／いつを1行で決め、短く送る。'},
+
+    {rank:'中吉', tag:'余白の力',
+     msg:'空白が幸運を呼ぶ。15分の“何もしない”が最大効率。通知は静かに。',
+     cbt:'刺激コントロール',
+     steps:'通知OFF・机の上は1テーマだけ・タイマー15分で余白を守る。'},
+
+    {rank:'小吉', tag:'ゆる許可',
+     msg:'自分にゆるく“OK”を出すほど流れは軽く。キーワード：許可・減点しない。',
+     cbt:'セルフコンパッション一言',
+     steps:'「今は十分やってる。次は小さくでいい」を声に出す。'},
+
+    {rank:'吉', tag:'再開の合図',
+     msg:'再開のスイッチが見つかる日。音・姿勢・場所いずれかを“合図”に。',
+     cbt:'環境トリガー',
+     steps:'再開したい行動と“合図”をセット（音楽・椅子・アプリ）。合図→即30秒だけ動く。'},
+
+    {rank:'中吉', tag:'夜空のメモ',
+     msg:'夜に増える考えは紙に預けるのが吉。眠りの質が上向く兆し。',
+     cbt:'ブレインダンプ5分',
+     steps:'頭の中を箇条書き→明日やる／後で検討／捨てる に3分で仕分け。'},
+
+    {rank:'大吉', tag:'着地名人',
+     msg:'切り替えが冴える日。戻るコツを言葉にすれば明日も使えるチャームに。',
+     cbt:'着地手順を3行に（対処計画）',
+     steps:'①水を飲む ②姿勢＋呼吸 ③人に一言送る——紙に書いて持ち歩く。'},
+
+    {rank:'凶', tag:'雲の下で一休み',
+     msg:'空は低め。無理に進まず“点で終わらせる”がコツ。切り替えたら今日は勝ち。',
+     cbt:'1分リセット（行動活性）',
+     steps:'①水を飲む ②窓を開けるor肩回し10回 ③30秒だけ片づけ。小さく動いて流れを変える。'}
+  ];
+
+  // ===== DOM =====
+  const $ = (q,root=document)=>root.querySelector(q);
+  const rankText = $('#rankText');
+  const tagText  = $('#tagText');
+  const msgText  = $('#msgText');
+  const cbtName  = $('#cbtName');
+  const cbtSteps = $('#cbtSteps');
+  const rankImg  = $('#rankImg');
+  const resBox   = $('#result');
+  const btnDraw  = $('#btnDraw');
+  const btnAgain = $('#btnAgain');
+  const btnCopy  = $('#btnCopy');
+  const btnShare = $('#btnShare');
+
+  // ===== helpers =====
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+  function render(item){
+    rankText.textContent = item.rank;
+    tagText.textContent  = item.tag;
+    msgText.textContent  = item.msg;
+    cbtName.textContent  = item.cbt;
+    cbtSteps.innerHTML   = ''; // reset
+    // ステップは「。」「→」「／」で分割して整える（1文のものもOK）
+    const parts = (item.steps.includes('→') ? item.steps.split('→') : item.steps.split('。').filter(Boolean));
+    parts.forEach(p=>{
+      const li=document.createElement('li');
+      li.textContent = p.replace(/^・/,'').trim();
+      cbtSteps.appendChild(li);
+    });
+
+    const num = RANK_IMG[item.rank] || '03';
+    rankImg.src = IMG_BASE + num + '.png';
+    rankImg.alt = item.rank + 'のイメージ';
+
+    resBox.style.display = 'block';
+    btnAgain.style.display = 'inline-block';
+    try{ localStorage.setItem('cbt-omikuji:last', JSON.stringify({rank:item.rank,tag:item.tag,at:Date.now()})); }catch{}
+  }
+
+  // ===== events =====
+  btnDraw.addEventListener('click', ()=> render(pick(DATA)));
+  btnAgain.addEventListener('click', ()=> render(pick(DATA)));
+
+  btnCopy.addEventListener('click', async ()=>{
+    const text = [
+      `【CBTおみくじ】${rankText.textContent}「${tagText.textContent}」`,
+      msgText.textContent,
+      `CBTワザ：${cbtName.textContent}`,
+      ...[...cbtSteps.querySelectorAll('li')].map((li,i)=>`(${i+1}) ${li.textContent}`),
+      location.href.split('#')[0]
+    ].join('\n');
+    try{
+      await navigator.clipboard.writeText(text);
+      alert('内容をコピーしました');
+    }catch{}
+  });
+
+  btnShare.addEventListener('click', async ()=>{
+    const shareData = {
+      title: document.title,
+      text: `CBTおみくじ｜${rankText.textContent}「${tagText.textContent}」`,
+      url: location.href.split('#')[0]
+    };
+    try{
+      if(navigator.share){ await navigator.share(shareData); }
+      else{
+        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+        alert('結果テキストをコピーしました');
+      }
+    }catch(e){}
+  });
+
+  // 初回 自動で一回引く（任意）
+  // render(pick(DATA));
+})();
+</script>
+</body>
+</html>
