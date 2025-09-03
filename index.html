@@ -14,7 +14,39 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,7 +78,39 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <meta name="description" content="心の標本。タップで診断の入口が開きます。">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -78,7 +142,39 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <meta property="og:title" content="心の標本">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -110,7 +206,39 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/hero/specimens-hero-1080.png">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -142,7 +270,39 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -174,6 +334,22 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 *{box-sizing:border-box} html,body{height:100%}
 
 
@@ -190,7 +366,39 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -238,7 +446,55 @@ body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;ba
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Splash */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -270,7 +526,39 @@ body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;ba
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -302,7 +590,39 @@ body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;ba
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -334,6 +654,22 @@ body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;ba
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
@@ -350,7 +686,39 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sub{margin:0;color:var(--muted)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -398,7 +766,55 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* closing中は透過して見た目上は消えるが、前面でクリックを吸収 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -446,6 +862,38 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Main */
 
 
@@ -462,7 +910,39 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .wrap{max-width:860px;margin:20px auto 28px;padding:0 14px;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -510,7 +990,55 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Quick bar + filter chips */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -542,7 +1070,39 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .quick .btn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg);cursor:pointer}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -574,6 +1134,22 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 
 
@@ -590,7 +1166,39 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c5763;cursor:pointer}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -638,7 +1246,55 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Cards */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -670,7 +1326,39 @@ h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -702,7 +1390,39 @@ a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(-
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -734,7 +1454,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .emo{font-size:20px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -766,7 +1518,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .mini{font-size:.72em;padding:2px 6px;border-radius:8px;border:1px solid #f0d8ea;background:#fff}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -798,7 +1582,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sub2{color:var(--muted);font-size:.92em;margin-top:2px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -830,7 +1646,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .pill{padding:3px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -878,7 +1726,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Footer */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -910,6 +1806,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:10px;background:rgba(255,255,255,.82);
 
 
@@ -926,7 +1838,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -974,7 +1918,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Share sheet + toast */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1006,7 +1998,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sharesheet .box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:10px;display:flex;gap:8px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1038,7 +2062,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9em;opacity:0;pointer-events:none;transition:opacity .2s}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1086,7 +2142,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 :root[data-font="lg"]{font-size:17px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1118,7 +2222,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1150,7 +2286,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1182,7 +2350,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0" role="button">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1214,7 +2414,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <img class="bg" alt="心の標本のキービジュアル"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1246,7 +2478,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        onerror="this.src='/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png'">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1278,7 +2542,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <h1>心の標本</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1310,6 +2606,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 
 
@@ -1326,7 +2638,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1374,7 +2718,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1" inert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1406,7 +2798,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="quick" id="quick">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1438,7 +2862,24 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <button class="btn" id="btn-continue" style="display:none">つづきから再開</button>
+
 <button class="btn" id="btn-new" aria-pressed="false">NEWだけ</button>
 
 
@@ -1455,7 +2896,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1487,6 +2960,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <button class="chip active" data-filter="all">すべて</button>
 
 
@@ -1503,9 +2992,43 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <button class="chip" data-filter="さくっと">さくっと</button>
+
 <button class="chip" data-filter="ふつう">ふつう</button>
+
 <button class="chip" data-filter="しっかり">しっかり</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1537,7 +3060,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <button class="chip" data-filter="認知">認知</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1569,7 +3124,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1617,7 +3220,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <nav class="links" id="list">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1637,7 +3272,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
 <a class="link" href="/shindan/kizuna-rope.html?src=specimens"
+
+
+
+
 
 
 
@@ -1645,7 +3288,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
    data-keywords="四騎士 ファビング 拒絶 愛着 TAS20 DERS 関係 切れやすさ rope kizuna">
+
+
+
+
 
 
 
@@ -1653,7 +3304,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
   <div>
+
+
+
+
 
 
 
@@ -1661,7 +3320,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
     <div class="sub2">20問で“切れやすさ”を可視化（四騎士/ファビング/拒絶/愛着／TAS-20・DERS簡易）</div>
+
+
+
+
 
 
 
@@ -1669,11 +3336,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
   </div>
 
 
 
+
+
+
+
   <span class="badge">診断へ</span>
+
+
+
+
 
 
 
@@ -1685,7 +3364,31 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
 <!-- ★ 抑制・加速・刺激の鉄道診断（rail-traits.html） -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1717,7 +3420,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="rail-traits" data-tags="性格,短時間" data-mins="3" data-updated="2025-08-26">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1749,7 +3484,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1781,7 +3548,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">12問×5件法の総合スコア → 路線タイプ（各駅停車〜新幹線）（参考：BIS/BAS・UPPS衝動性・Sensation Seeking）</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1813,6 +3612,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
 
 
@@ -1829,7 +3644,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="badge">診断へ</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1877,7 +3724,43 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-- ★ 姫と城下の恋（別世界線） forbidden-love-another.html -->
+
+
+
+
 
 
 
@@ -1885,7 +3768,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
    data-id="forbidden-love-another" data-tags="性格,しっかり,ゲーム風" data-mins="10" data-updated="2025-08-31">
+
+
+
+
 
 
 
@@ -1893,7 +3784,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
   <div>
+
+
+
+
 
 
 
@@ -1901,7 +3800,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
     <div class="sub2">0〜12章・4ルート×3段階エンド。</div>
+
+
+
+
 
 
 
@@ -1909,7 +3816,15 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
   </div>
+
+
+
+
 
 
 
@@ -1917,7 +3832,33 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
 </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1955,7 +3896,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="forbidden-love" data-tags="性格,しっかり,ゲーム風" data-mins="9" data-updated="2025-08-25">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1987,7 +3960,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2019,7 +4024,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">4場面×選択で物語が深まる“読み物寄り”。画像つき長編ルートあり</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2051,7 +4088,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2083,7 +4152,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2116,32 +4233,98 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
     <!-- ★ 気球エスケープ診断（balloon-escape.html） -->
+<a class="link" href="/shindan/balloon-escape.html?src=specimens"
+   data-id="balloon-escape" data-tags="性格,しっかり" data-mins="6" data-updated="2025-09-01"
+   data-keywords="気球 逃避 回避 気晴らし 上の空 戻る ルーティン balloon escape">
+  <span class="emo">🎈</span>
+  <div>
+    <div class="ttl">気球エスケープ診断 <span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">25問で「避けがち⇄向き合える」のバランスを％表示。（参考：AAQ-II / COPE / MW / BRS）</div>
+    <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+
+<!-- ★ スキーマ妖怪 診断（schema-yokai.html） -->
+<a class="link" href="/shindan/schema-yokai.html?src=specimens"
+   data-id="schema-yokai" data-tags="性格,ふつう" data-mins="4" data-updated="2025-09-03"
+   data-keywords="スキーマ 妖怪 Young 早期不適応 スキーマ療法 診断 自己チェック schema yokai">
+  <span class="emo">👻</span>
+  <div>
+    <div class="ttl">スキーマ妖怪 診断（20項目・5件法） <span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">20項目×5件法で“今 出やすい妖怪”を可視化。結果は妖怪イラスト＋CBTワザ付き。</div>
+    <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#ふつう</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+
+
 
 <a class="link" href="/shindan/balloon-escape.html?src=specimens"
 
+
+
    data-id="balloon-escape" data-tags="性格,しっかり" data-mins="6" data-updated="2025-09-01"
+
+
 
    data-keywords="気球 逃避 回避 気晴らし 上の空 戻る ルーティン balloon escape">
 
+
+
   <span class="emo">🎈</span>
+
+
 
   <div>
 
+
+
     <div class="ttl">気球エスケープ診断 <span class="mini new" data-new>NEW</span></div>
+
+
 
     <div class="sub2">25問で「避けがち⇄向き合える」のバランスを％表示。（参考：AAQ-II / COPE / MW / BRS）</div>
 
+
+
     <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+
+
 
   </div>
 
+
+
   <span class="badge">診断へ</span>
+
+
 
 </a>
 
 
 
+
+
+
+
 <!-- 冒険者逆境力診断（7因子） -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2173,7 +4356,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2205,7 +4420,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2237,7 +4484,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">7因子で“逆境への強さ”をざっくり計測。結果カードは画像保存OK</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2269,7 +4548,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2301,7 +4612,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2349,7 +4708,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <a class="link" href="/shindan/chc-cci-shin.html?src=specimens"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2381,7 +4772,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="emo">🧠</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2413,7 +4836,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="ttl">認知プロファイル・チャレンジ（CHC簡易版）</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2445,7 +4900,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="meta"><span class="pill">⏱6分</span><span class="pill">#認知</span><span class="pill">#しっかり</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2477,6 +4964,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="badge">診断へ</span>
 
 
@@ -2493,7 +4996,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2541,7 +5092,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <a class="link" href="/shindan/hanashin.html?src=specimens"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2573,7 +5156,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="emo">🌸</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2605,7 +5220,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="ttl">心模様花診断（オリジナル） <span class="mini new" data-new>NEW</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2637,7 +5284,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2669,6 +5348,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="badge">診断へ</span>
 
 
@@ -2685,7 +5380,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2733,7 +5476,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <a class="link" href="/shindan/housekishin.html?src=specimens"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2765,7 +5540,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="emo">💎</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2797,7 +5604,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="ttl">宝石恋愛診断（LAS/ECR-R参考）</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2829,7 +5668,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2861,6 +5732,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="badge">診断へ</span>
 
 
@@ -2877,7 +5764,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2917,7 +5852,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
 <a class="link" href="/shindan/noh-menhera.html?src=specimens"
+
+
+
+
+
+
+
+
 
 
 
@@ -2933,7 +5884,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
    data-keywords="能面 能面ヘラ 能面メンヘラ メンヘラ 無表情 ひらいて 開いて 能面開いて noh noumen noh-menhera">
+
+
+
+
+
+
+
+
 
 
 
@@ -2949,7 +5916,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
   <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2965,7 +5948,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
     <div class="sub2">“顔は静か・内心は波”の傾向をライトにチェック（参考：TAS-20（失感情）・DERS（情動調整困難）・BDI-II関連の概念）</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2981,7 +5980,23 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2997,7 +6012,31 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
 </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3029,7 +6068,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <a class="link" href="/shindan/drinkshin.html?src=specimens"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3061,7 +6132,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="emo">☕</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3093,7 +6196,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="ttl">飲み物サイコパス（LSRP簡易）</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3125,7 +6260,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3157,6 +6324,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <span class="badge">診断へ</span>
 
 
@@ -3173,7 +6356,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3221,7 +6452,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="ice" data-tags="性格,短時間" data-mins="3" data-updated="2025-05-20">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3253,7 +6516,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3285,7 +6580,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">駆け引き度をスコア化</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3317,7 +6644,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3349,7 +6708,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3397,7 +6804,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="mirror" data-tags="性格,しっかり" data-mins="5" data-updated="2025-04-18">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3429,7 +6868,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3461,7 +6932,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">14問でAdmiration/Rivalry傾向</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3493,7 +6996,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3525,7 +7060,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3573,7 +7156,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="animal" data-tags="性格,短時間" data-mins="3" data-updated="2025-03-05">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3605,7 +7220,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3637,7 +7284,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">5因子を動物メタファで表示</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3669,7 +7348,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3701,7 +7412,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3749,7 +7508,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        data-id="sweet" data-tags="セルフケア,短時間" data-mins="3" data-updated="2025-02-12">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3781,7 +7572,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3813,7 +7636,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="sub2">Saundra Dalton-Smithの提案に基づく</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3845,7 +7700,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3877,7 +7764,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3925,7 +7844,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <p class="note">※ 診断は傾向を示す参考情報です。断定は行いません。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3973,7 +7940,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Footer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4005,7 +8020,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <button id="toggle-font" aria-pressed="false" title="押すと文字が大きくなります">文字を大きく</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4037,7 +8084,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4069,6 +8148,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <a href="/shindan/seikaku.html">自己紹介</a>
 
 
@@ -4085,7 +8180,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <button id="btn-share" type="button" aria-haspopup="dialog" aria-controls="shareSheet" title="このページのURLを共有">🔗 共有</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4133,7 +8260,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Share sheet + toast -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4165,7 +8340,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="box" role="dialog" aria-label="共有メニュー">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4197,7 +8404,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <a id="share-line" href="#" rel="noopener">LINEで共有</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4229,7 +8468,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <button id="share-close" type="button">閉じる</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4261,7 +8532,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4309,7 +8612,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <noscript>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4341,6 +8692,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
 
 
@@ -4357,7 +8724,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4405,7 +8804,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4437,7 +8884,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const $ = (q,root=document)=>root.querySelector(q);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4469,6 +8948,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const splash = $('#splash');
 
 
@@ -4485,7 +8980,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const content = $('#content');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4533,7 +9060,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // ====== 設定 ======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4565,7 +9140,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const GUARD_MS  = 600;             // 露出直後のクリック無効化時間
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4613,7 +9220,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // ---------- Reveal ----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4661,7 +9316,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   function startClickGuard(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4693,7 +9396,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // 捕捉フェーズで先に握りつぶす
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4725,7 +9460,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       if (performance.now() < guardUntil) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4757,7 +9524,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         e.preventDefault();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4789,7 +9588,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         window.removeEventListener('click', guard, true);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4821,7 +9652,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4853,7 +9716,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // 念のため pointer-events でも重ねがけ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4885,6 +9780,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     setTimeout(()=>{ content.style.pointerEvents = ''; }, GUARD_MS);
 
 
@@ -4901,7 +9812,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4949,7 +9908,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(opened) return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4981,7 +9972,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(ev){ try{ ev.preventDefault(); ev.stopPropagation(); }catch{} }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5029,7 +10052,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // ガード発動 → スプラッシュは少し残してイベント吸収
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5061,7 +10132,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     splash.classList.add('closing');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5109,6 +10212,38 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // コンテンツ表示（ただしinertはガード明けに解除）
 
 
@@ -5125,7 +10260,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     content.classList.add('show');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5173,7 +10340,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     setTimeout(()=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5205,7 +10420,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       splash.classList.add('hidden');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5237,7 +10484,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       // inert解除＆フォーカス
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5269,6 +10548,22 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }, Math.max(HIDE_DELAY, GUARD_MS));
 
 
@@ -5285,7 +10580,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5333,7 +10676,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const onPointerUp = (e)=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5365,7 +10740,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(e?.target?.closest?.('a,button,input,label')) return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5397,7 +10804,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5429,7 +10868,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   splash.addEventListener('keydown', e=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5461,7 +10932,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5509,7 +11028,39 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (AUTO_OPEN) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5541,7 +11092,55 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5574,100 +11173,226 @@ a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,
 
 
 // ---------- NEWバッジ + スピード表示 + フィルタ ----------
+
 const today = new Date();
 
+
+
 // “この2つは短時間でも『しっかり』で扱いたい”という上書き
+
 const SPEED_OVERRIDES = { 'kizuna-rope': 'しっかり', 'ice': 'しっかり' };
 
+
+
 // 分→スピード段（さくっと/ふつう/しっかり）
+
 function speedFromMins(mins){
+
   if (isNaN(mins)) return 'ふつう';
+
   if (mins <= 3) return 'さくっと';
+
   if (mins <= 6) return 'ふつう';
+
   return 'しっかり';
+
 }
+
 function speedLabel(slug){
+
   if (slug === 'さくっと') return 'さくっと（〜3分）';
+
   if (slug === 'ふつう')   return 'ふつう（4〜6分）';
+
   return 'しっかり（7分〜）';
+
 }
+
+
 
 // NEWバッジの表示・各カードのスピード表記を整形
+
 $$('#list a.link').forEach(a=>{
+
   // NEWバッジ
+
   const ds = a.dataset.updated, badge = a.querySelector('[data-new]');
+
   if (ds && badge){
+
     const diff = (today - new Date(ds + 'T00:00:00')) / 86400000;
+
     badge.style.display = (diff <= 21) ? 'inline-block' : 'none';
+
   }
+
+
 
   // スピード段（上書き優先→分から自動）
+
   const id   = a.dataset.id || '';
+
   const mins = parseInt(a.dataset.mins || '0', 10);
+
   const sp   = SPEED_OVERRIDES[id] || speedFromMins(mins);
+
   a.dataset.speed = sp;
 
+
+
   // ピルを書き換え：先頭を “さくっと/ふつう/しっかり（分）” に置換
+
   // 2個目以降の「時間系ハッシュタグ（#短時間/#しっかり/#ふつう）」は非表示に
+
   const pills = $$('.meta .pill', a);
+
   if (pills.length){
+
     pills[0].textContent = speedLabel(sp);
+
     pills.slice(1).forEach(p=>{
+
       const t = p.textContent.trim();
+
       if (/^#(短時間|しっかり|ふつう)$/.test(t)) p.remove();
+
     });
+
   }
+
 });
+
+
 
 // フィルタ（さくっと/ふつう/しっかり・性格/認知/ゲーム風・NEWだけ）
+
 const chips = $$('#filters .chip');
+
 let newOnly = false;
 
+
+
 function isNew(a){
+
   const b = a.querySelector('[data-new]');
+
   return b && b.style.display !== 'none';
+
 }
+
+
 
 function applyFilter(){
+
   const act = $('#filters .chip.active')?.dataset.filter || 'all';
+
   $$('#list a.link').forEach(a=>{
+
     const tags = (a.dataset.tags || '').split(',');
+
     const sp   = a.dataset.speed || '';
+
     let show   = true;
 
+
+
     if (act === 'さくっと' || act === 'ふつう' || act === 'しっかり'){
+
       show = (sp === act);                 // 速度フィルタ
+
     } else if (act !== 'all'){
+
       show = tags.includes(act);           // 性格/認知/ゲーム風
+
     }
 
+
+
     if (newOnly) show = show && isNew(a);  // NEWだけ
+
     a.style.display = show ? '' : 'none';
+
   });
+
 }
+
+
 
 chips.forEach(ch=>{
+
   ch.addEventListener('click', ()=>{
+
     chips.forEach(c=>c.classList.remove('active'));
+
     ch.classList.add('active');
+
     vibrate();
+
     applyFilter();
+
   }, {passive:true});
+
 });
 
+
+
 // NEWだけトグル
+
 const btnNew = $('#btn-new');
+
 if (btnNew){
+
   btnNew.addEventListener('click', ()=>{
+
     newOnly = !newOnly;
+
     btnNew.setAttribute('aria-pressed', newOnly ? 'true' : 'false');
+
     btnNew.textContent = newOnly ? 'NEWだけ（解除）' : 'NEWだけ';
+
     vibrate();
+
     applyFilter();
+
   });
+
 }
 
+
+
 applyFilter();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5715,7 +11440,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const CONT_KEY='specimens:last';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5747,7 +11504,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const btn=$('#btn-continue');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5779,7 +11568,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(!raw){btn.style.display='none';return;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5811,7 +11632,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       const obj=JSON.parse(raw);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5843,7 +11696,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       if(!a){btn.style.display='none';return;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5875,7 +11760,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       btn.onclick=()=>{location.href=obj.href;};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5907,7 +11824,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }catch{btn.style.display='none';}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5939,7 +11888,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   $$('#list a.link').forEach(a=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5971,7 +11952,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href:a.getAttribute('href')};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6003,6 +12016,22 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     },{passive:true});
 
 
@@ -6019,7 +12048,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6067,7 +12128,55 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // ---------- おまかせ ----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6099,7 +12208,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const vis=$$('#list a.link').filter(a=>a.style.display!=='none');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6131,7 +12272,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const pick=vis[Math.floor(Math.random()*vis.length)];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6163,7 +12336,55 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6211,7 +12432,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const root=document.documentElement;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6243,7 +12496,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const fontBtn=$('#toggle-font');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6275,7 +12560,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const mode=localStorage.getItem(FONT_KEY)||'';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6307,7 +12624,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const on=(mode==='lg');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6339,7 +12688,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fontBtn.textContent= on ? '標準に戻す' : '文字を大きく';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6371,7 +12752,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6403,7 +12816,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const next=(root.getAttribute('data-font')==='lg')?'':'lg';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6435,7 +12880,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6483,7 +12960,55 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // ---------- 共有 ----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6515,7 +13040,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const sheet=$('#shareSheet');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6547,7 +13104,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const shareData={title:document.title,text:'診断の入口まとめ「心の標本」',url:location.href.split('#')[0]};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6579,7 +13168,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     toast.textContent=msg; toast.classList.add('show');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6611,7 +13232,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6643,7 +13296,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const tw='https://twitter.com/intent/tweet?text='+encodeURIComponent('診断の入口まとめ「心の標本」')+'&url='+encodeURIComponent(shareData.url);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6675,7 +13360,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     $('#share-x').setAttribute('href',tw);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6707,7 +13424,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     sheet.style.display='block';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6739,7 +13488,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   function closeSheet(){ sheet.style.display='none'; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6771,6 +13552,22 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     try{ if(navigator.share){ await navigator.share(shareData);} else{ openSheet(); } vibrate(10);}catch(e){}
 
 
@@ -6787,7 +13584,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6819,7 +13648,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     try{ await navigator.clipboard.writeText(shareData.url); showToast(); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6851,6 +13712,22 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     closeSheet();
 
 
@@ -6867,7 +13744,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6899,7 +13808,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   document.addEventListener('click', (e)=>{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6931,7 +13872,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6963,6 +13936,22 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 })();
 
 
@@ -6979,7 +13968,39 @@ applyFilter();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
