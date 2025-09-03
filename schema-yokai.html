@@ -1,1 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>スキーマ妖怪 診断（20項目・5件法）</title>
+<meta name="description" content="エンタメ用セルフチェック。20項目・0〜4で答えると、あなたの中で顔を出しやすい“スキーマ妖怪”を可視化します。医療目的ではありません。">
+<meta name="theme-color" content="#fff7fd">
+<style>
+  :root{
+    --bg1:#fff7fd; --bg2:#f5f7ff; --paper:#fff; --ink:#14131a; --muted:#6b6a77;
+    --line:#ece4f2; --accent:#8c6bff; --accent2:#ff8fc7;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.85;letter-spacing:.02em}
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.88);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:960px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
 
+  main{max-width:960px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent)}
+  .muted{color:var(--muted)}
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#f0ecfb;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  .yokai-top{display:grid;grid-template-columns:1fr;gap:12px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .score{font-variant-numeric:tabular-nums}
+  .tips li{margin-left:1.2em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}
+  .small{font-size:.95em}
+  .warn{margin-top:14px;border:1px dashed #e5c2d6;background:#fff5fa;color:#432; padding:10px;border-radius:12px}
+  .warn strong{color:#b12a6b}
+  @media (max-width:380px){ .opt{min-width:unset} }
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>スキーマ妖怪 診断</h1>
+  <span class="crumb">20項目・0〜4 → 上位の“妖怪”を表示</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>あなたの中で“顔を出しやすい妖怪”</strong>をゆるっと可視化します。</div>
+      <p class="lead">答え方（0〜4）：0 まったく当てはまらない／1 少し／2 ときどき／3 よく／4 ほとんどいつも</p>
+      <p class="warn"><strong>注意：</strong>この診断はエンタメ用のセルフチェックです。医療・診断・治療を目的としたものではありません。ご利用は自己判断・自己責任で。心身の不調が続く場合は医療機関や専門家にご相談ください。</p>
+    </div>
+
+    <div id="qbox"></div>
+
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 20</div>
+    </div>
+
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+    </div>
+
+    <div id="result" class="panel">
+      <h2 style="margin:0 0 4px;font-size:18px">結果</h2>
+      <p class="lead" id="topLead">あなたの中で今、顔を出しやすい妖怪たち</p>
+
+      <!-- 上位表示 -->
+      <div class="yokai-top" id="topCards"></div>
+
+      <!-- 一覧（スコア＆出没度） -->
+      <h3 style="margin:14px 0 6px;font-size:16px">全体の様子</h3>
+      <div class="grid" id="allCards"></div>
+
+      <p class="warn small">※ 表示はセルフケアの目安です。スコアが高い＝悪いではありません。状況や資質の表と裏として扱ってください。</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(()=> {
+  // ===== 設問（20） =====
+  const ITEMS = [
+    {k:1,  t:'100点じゃないとモヤモヤしやすい。'},
+    {k:2,  t:'人からの評価や「いいね」が気になって仕方ない。'},
+    {k:3,  t:'つらい気持ちは脇に置いて、感じないふりで進めがち。'},
+    {k:4,  t:'誰かに甘えたり寄りかかったりするのが苦手だ。'},
+    {k:5,  t:'親切の裏を読んでしまい、素直に受け取りにくい。'},
+    {k:6,  t:'褒められても「たまたま」と思いがちだ。'},
+    {k:7,  t:'みんなの輪に入っても、どこか外側にいる感じがする。'},
+    {k:8,  t:'小さな失敗でも、全部がダメになる気がして身構える。'},
+    {k:9,  t:'自分の都合を通したくなり、順番やルールを飛ばしたくなることがある。'},
+    {k:10, t:'つい他人を優先して、自分の番を後回しにしてしまう。'},
+    {k:11, t:'予定が少しでも崩れると、やり直したくなって止まる。'},
+    {k:12, t:'無視されたかも…と反応が遅いだけでも不安になる。'},
+    {k:13, t:'泣きたい時でも「平気」を装ってしまう。'},
+    {k:14, t:'親しい人にも本音を頼るより、黙って耐えることが多い。'},
+    {k:15, t:'褒め言葉をそのまま信じられない。裏がある気がする。'},
+    {k:16, t:'自分の欠点が目について、魅力より先に浮かぶ。'},
+    {k:17, t:'誘われても断ってしまい、あとで後悔することがある。'},
+    {k:18, t:'先の心配を膨らませて“最悪”を想像しやすい。'},
+    {k:19, t:'渋滞や行列で「自分だけでも先に…」という気持ちが湧く。'},
+    {k:20, t:'断ると罪悪感が強く、自分の用事をつぶしがちだ。'},
+  ];
+  const SCALE = [
+    {v:0, label:'0 まったく当てはまらない'},
+    {v:1, label:'1 少し当てはまる'},
+    {v:2, label:'2 ときどき当てはまる'},
+    {v:3, label:'3 よく当てはまる'},
+    {v:4, label:'4 ほとんどいつも当てはまる'},
+  ];
+
+  // ===== スキーマ妖怪定義（2項目=満点8） =====
+  const YOKAI = [
+    {key:'tengu',   name:'天狗（完璧主義）',        items:[1,11],
+      catch:'100点以外は通さない門番。',
+      desc:'基準が高く、細部まで整えないと落ち着かないタイプ。良さは“品質の守護神”だけど、疲れやすさと先延ばしを招きやすい。ゴールを「満点」から「目的に合う十分」に調整できると、力が長持ちします。',
+      cbt:['「十分ライン」を一文で決める（例：伝わればOK）。','あえて“7割提出”を一つ入れて、困りごとが起きるか観察。','思考記録：「今、どんな“べき”が浮かんだ？」→反証を一行。']},
+    {key:'rokuro',  name:'ろくろ首（承認・評価）',  items:[2,12],
+      catch:'首が伸びて、他人の視線を追いかけがち。',
+      desc:'評価や「いいね」に気持ちが揺れやすいタイプ。外部の拍手は大事だけど、“自分の評価表”がスカスカだと疲れます。行動の価値を、自分の言葉で採点し直す習慣が効きます。',
+      cbt:['今日の行動を自分基準で★3つ採点（努力・学び・親切）。','SNSの“観客”時間をタイマーで区切る（例：10分）。','「他人の評価＝参考、自分の価値＝自分が決める」と書いて貼る。']},
+    {key:'nurick',  name:'ぬりかべ（感情回避）',    items:[3,13],
+      catch:'気持ちが来ると、すっと壁になる。',
+      desc:'つらさを感じないように“平気”で押し通しがちなタイプ。短期的には楽だけど、未処理の感情が溜まりやすい。まずは“感じて名づける”小さな練習から。',
+      cbt:['1分スキャン：「今は【悲/怒/不安/喜/疲】どれが何割？」','感情に名前→行動を1つ（例：不安60%→深呼吸×3回）。','回避したい場面を“10段階表”に分け、低い段から少し曝露。']},
+    {key:'snow',    name:'雪女（情緒不足）',        items:[4,14],
+      catch:'頼るより凍らせる。',
+      desc:'人に甘える・助けを求めるが苦手で、何でも自分で抱えがち。強さは美点だけど、孤軍奮闘は消耗します。“小さく頼む”の成功体験が、心の温度を戻します。',
+      cbt:['砂糖ひと匙レベルの依頼を1つ（「この封筒だけ渡して」）。','Iメッセージ練習：「私は今ここが難しい。手伝ってもらえる？」','受け取った親切をメモして“借り”ではなく“循環”とラベル替え。']},
+    {key:'fox',     name:'化け狐（不信・警戒）',    items:[5,15],
+      catch:'裏を読みすぎて、笑顔にも罠を感じる。',
+      desc:'人の善意を信じにくく、まず疑ってしまうタイプ。身を守る知恵でもあるけれど、関係が細りやすい。白黒の間に“グレーの証拠”を集めると、心がほどけます。',
+      cbt:['最近の“信用できた小さな事実”を3つメモ。','信頼の段階リストを作り、低リスクのお願いを試す。','自動思考「きっと裏が…」→確率見積り→代案（50%→20%ならOK）。']},
+    {key:'noppe',   name:'のっぺらぼう（恥・欠陥感）',items:[6,16],
+      catch:'鏡を見ると、欠点ばかり。',
+      desc:'ほめ言葉を受け取りにくく、弱み＝自分の全体だと感じやすい。視野が“欠点ズーム”になっているだけのことが多い。事実ベースで“等身大の輪郭”を描き直そう。',
+      cbt:['自分の長所・貢献を“事実つき”で3つ書く。','反証カード：「それでも私がやれている根拠は？」を一行。','鏡の前セルフトーク：「欠点は一部、私は全体」。']},
+    {key:'oneeye',  name:'一つ目小僧（孤立感）',    items:[7,17],
+      catch:'輪の外に立ってしまう。',
+      desc:'誘いを断りがち・距離をとりがちで、あとで後悔することも。“急に深く”より“薄く長く”が続きます。微接触の積み上げが効き目抜群。',
+      cbt:['接触ハードル表を作り、最下段の行動を今日ひとつ（会釈/既読返し）。','会話スターターを3つストック（天気/相手の近況/お礼）。','「10回中3回で十分」を合言葉に、量を先に。']},
+    {key:'umibozu', name:'海坊主（破局化）',        items:[8,18],
+      catch:'小波を見て、津波を想像。',
+      desc:'最悪のシナリオを素早く描いてしまうタイプ。備えの才能でもあるけれど、疲弊もしやすい。確率と対処策を数字で出すと、想像の巨大さが縮みます。',
+      cbt:['最悪の確率を％で推定→根拠→半分に再見積り。','「起きた時のプランA/B」を各2行で用意。','反すう停止語：「今は“目の前の一手”に戻る」。']},
+    {key:'nurari',  name:'ぬらりひょん（特権・自己中）',items:[9,19],
+      catch:'自分の順番だけ、するりと前へ。',
+      desc:'自分ルールを優先しやすく、衝動で割り込みやすい。自己主張の強さ自体は資質。視点取りと“共通ルール”の意識を足せば、周囲と噛み合います。',
+      cbt:['「相手の立場なら？」を30秒だけ想像してから行動。','共通ルールを書き出し、自分だけの例外を1つ減らす。','衝動の合図が来たら10秒停止→代替案を1つ。']},
+    {key:'zashiki', name:'座敷童子（自己犠牲）',    items:[10,20],
+      catch:'人の用事が最優先、つい自分は後回し。',
+      desc:'優しさが看板。でも“常に他人優先”は、静かな怒りと疲れを呼びます。“やさしいNO”と“自分の番”を予定に入れるのがコツ。',
+      cbt:['NOトレ：「今は難しいけど、来週なら手伝える」。','今日の予定に“自分の回復10分”を先に確保。','役割の言い換え：「犠牲」→「選んで与える」。']},
+  ];
+// === 結果画像 ===
+const IMG_BASE = '/shindan/assets/results/schema-yokai/';
+const NUM_MAP = {
+  tengu:'01',    // 天狗
+  rokuro:'02',   // ろくろ首
+  nurick:'03',   // ぬりかべ（コード綴りに合わせる）
+  snow:'04',     // 雪女
+  fox:'05',      // 化け狐
+  noppe:'06',    // のっぺらぼう
+  oneeye:'07',   // 一つ目小僧
+  umibozu:'08',  // 海坊主
+  nurari:'09',   // ぬらりひょん
+  zashiki:'10'   // 座敷わらし/童子
+};
+const imgFor = (key)=> `${IMG_BASE}${NUM_MAP[key]||'01'}.png`;
+  // ===== DOM =====
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  const res = $('#result'), topCards = $('#topCards'), allCards = $('#allCards');
+
+  // 質問描画
+  ITEMS.forEach(item=>{
+    const s = document.createElement('section');
+    s.className = 'q';
+    s.innerHTML = `
+      <div class="ttl">Q${item.k}. ${item.t}</div>
+      <div class="scale" role="group" aria-label="Q${item.k}">
+        ${SCALE.map(sc=>{
+          const id = `q${item.k}-${sc.v}`;
+          return `<label class="opt" for="${id}">
+            <input type="radio" name="q${item.k}" id="${id}" value="${sc.v}">
+            <span>${sc.label}</span>
+          </label>`;
+        }).join('')}
+      </div>`;
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  function answeredCount(){ return ITEMS.filter(it => $('input[name="q'+it.k+'"]:checked')).length; }
+  function updateProgress(){
+    const n=answeredCount(), total=ITEMS.length;
+    ptext.textContent = `${n} / ${total}`;
+    pbar.style.width = Math.round(n/total*100)+'%';
+    btnCalc.disabled = n!==total;
+  }
+  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
+  updateProgress();
+
+  // 集計
+  function collect(){
+    const vals={};
+    for(const it of ITEMS){
+      const el = $('input[name="q'+it.k+'"]:checked'); if(!el) return null;
+      vals[it.k] = +el.value;
+    }
+    return vals;
+  }
+  function score(vals){
+    return YOKAI.map(y=>{
+      const s = (vals[y.items[0]]||0) + (vals[y.items[1]]||0);
+      let level='冬眠中', tag='low';
+      if (s>=6) { level='よく顔を出す'; tag='high'; }
+      else if (s>=4) { level='ときどき出没中'; tag='mid'; }
+      return {key:y.key, name:y.name, score:s, level, tag, catch:y.catch, desc:y.desc, cbt:y.cbt};
+    }).sort((a,b)=>b.score-a.score);
+  }
+
+  // 表示
+  function el(tag, cls, html){ const x=document.createElement(tag); if(cls) x.className=cls; if(html!=null) x.innerHTML=html; return x; }
+
+  function render(scored){
+    // 上位1〜2体
+    topCards.innerHTML='';
+    const top = scored.slice(0,2);
+    top.forEach(({key,name,score,level,catch:ct,desc,cbt})=>{
+      const card = el('article','card');
+      card.innerHTML = `
+        <div class="name">${name} <span class="tag score">合計 ${score}/8</span> <span class="tag">${level}</span></div>
+        <figure style="margin:8px 0;border:1px solid #ece4f2;border-radius:12px;overflow:hidden;background:#fff">
+  <img src="${imgFor(key)}" alt="${name} のイラスト" style="width:100%;height:auto;display:block" loading="lazy">
+</figure>
+<p><strong>キャッチ：</strong>${ct}</p>
+        <p>${desc}</p>
+        <div><strong>今日の手当て（CBT）</strong></div>
+        <ul class="tips">${cbt.map(t=>`<li>${t}</li>`).join('')}</ul>
+      `;
+      topCards.appendChild(card);
+    });
+
+    // 一覧
+    allCards.innerHTML='';
+    scored.forEach(({name,score,level,tag})=>{
+      const card = el('div','card small');
+      const color = tag==='high' ? 'linear-gradient(90deg,#8c6bff,#ff8fc7)' : (tag==='mid' ? '#efe9ff' : '#f7f7fb');
+      const badgeStyle = tag==='high' ? 'color:#fff;border-color:transparent;background:linear-gradient(90deg,#8c6bff,#ff8fc7)' : '';
+      card.innerHTML = `
+        <div class="name" style="display:flex;align-items:center;gap:8px">
+          <span>${name}</span>
+          <span class="tag score" style="${badgeStyle}">${score}/8</span>
+          <span class="tag">${level}</span>
+        </div>
+        <div class="meter" style="height:6px;background:#f0ecfb;border-radius:999px;overflow:hidden;margin-top:8px">
+          <i style="display:block;height:100%;width:${(score/8*100).toFixed(0)}%;background:${color}"></i>
+        </div>
+      `;
+      allCards.appendChild(card);
+    });
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // イベント
+  btnCalc.addEventListener('click', ()=>{
+    const vals = collect(); if(!vals) return;
+    const scored = score(vals);
+    render(scored);
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    updateProgress();
+    res.style.display='none';
+  });
+})();
+</script>
+</body>
+</html>
