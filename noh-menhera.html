@@ -78,7 +78,7 @@ hr.sep{border:0;border-top:1px dashed var(--line);margin:10px 0}
   <header>
     <h1>能面ヘラ度診断</h1>
     <p class="sub">12問×5件法の合計スコアで、あなたの“能面ヘラ度”を6段階（小面→蛇般若）で表示します。</p>
-    <div class="badge">（参考にした尺度：Big Five 神経症傾向 / Ruminative Responses Scale / DERS / ECR-R（愛着：不安・回避）/ Self-Concept Clarity / BIS-11（衝動性）/ Interpersonal Sensitivity & Dependency）</div>
+    <div class="badge">（参考にした研究領域：神経症傾向／反芻傾向／感情調整の困難／愛着（不安・回避）／自己概念の明確さ／衝動性／対人過敏・依存　※非提携・非公式／正式な心理検査の文言・採点は使用していません）</div>
   </header>
 
   <section id="form" class="card">
@@ -228,6 +228,16 @@ hr.sep{border:0;border-top:1px dashed var(--line);margin:10px 0}
 
   <!-- 結果表示枠 -->
   <section id="result" class="card">
+  	<section class="card small" id="legal-note" style="margin-top:12px">
+  <h2 style="margin:6px 0;font-size:1rem">ご利用にあたって</h2>
+  <ul style="margin:6px 0 0 1.2em; padding:0; line-height:1.8">
+    <li><strong>非提携・非公式：</strong>本コンテンツは心理学の研究領域に着想を得た<strong>独自制作</strong>です。公式の質問票（各種スケール）の文言・採点は使用しておらず、権利者の承認・推奨・提携を意味しません。</li>
+    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解を目的としたセルフチェックであり、医療的な診断・治療・助言を目的としません。体調不良や強い苦痛が続く場合は、医療機関や専門家へご相談ください。</li>
+    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
+    <li><strong>表現について：</strong>本ページの「能面」「○○般若」等は創作上の比喩であり、<strong>実在の能面・能楽・関係団体とは無関係</strong>です。</li>
+    <li><strong>免責：</strong>本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+  </ul>
+</section>
     <div class="res-head">
       <img id="resImg" src="" alt="">
       <div>
@@ -244,7 +254,7 @@ hr.sep{border:0;border-top:1px dashed var(--line);margin:10px 0}
   </section>
 
   <!-- 注意書き -->
-  <p class="small note">※本診断は上記心理尺度の概念を参考にアレンジした<strong>娯楽＋自己理解</strong>向けコンテンツです（医療的診断ではありません）。しんどいときはまず睡眠と食事を。</p>
+  <p class="small note">※本診断は上記の研究領域の概念を参考にアレンジした<strong>娯楽＋自己理解</strong>向けコンテンツです（医療的診断ではありません）。しんどいときはまず睡眠と食事を。</p>
   <script>
 (() => {
   // 逆転項目（スコアは 4 − 値）
