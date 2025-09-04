@@ -1,207 +1,423 @@
 <!DOCTYPE html>
+
 <html lang="ja">
+
 <head>
+
   <meta charset="UTF-8">
+
   <title>心の中の性格動物診断</title>
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
   <style>
+
     :root{
+
       --brand:#b86b77; --bg:#fffdf8; --card:#ffffff; --muted:#666; --chip:#fde9ee;
+
       --bar:#fdf1f3; --barfill:#b86b77;
+
     }
+
     body{
+
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+
       background: var(--bg); color:#333; margin:0; padding:22px;
+
     }
+
     .wrap{max-width:900px;margin:0 auto}
+
     h1{color:var(--brand); text-align:center; margin:6px 0 8px; font-size:clamp(20px,3.8vw,28px)}
+
     .lead{text-align:center; color:var(--muted); margin:0 0 16px; font-size:14px}
+
     .legend{display:inline-block;background:var(--chip); color:var(--brand); padding:6px 10px; border-radius:999px; font-size:12px; margin:0 auto 12px; text-align:center}
+
     .card{background:var(--card); border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px}
+
     .question{margin:18px 0 20px}
+
     .question p{margin:0 0 10px}
+
     .scale{display:grid; gap:8px}
+
     .scale label{display:flex; align-items:center; gap:10px; background:#f6f3f1; border-radius:10px; padding:10px; cursor:pointer}
+
     .scale input{accent-color:var(--brand)}
+
     .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px}
+
     .btn{background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer}
+
     .btn.secondary{background:#858585}
+
     .meta{display:flex; justify-content:space-between; align-items:center; margin:6px 2px 0; color:var(--muted); font-size:12px}
+
     #result{display:none; margin-top:18px}
+
     .type{background:#fdf1f3; border-left:6px solid var(--brand); border-radius:10px; padding:12px 14px; margin:10px 0}
+
     .type h3{margin:0 0 6px; color:var(--brand); font-size:18px}
+
     .type small{color:var(--muted)}
+
     .bar{background:var(--bar); border-radius:999px; height:10px; overflow:hidden; margin-top:8px}
+
     .bar > span{display:block; height:100%; width:0%; background:var(--barfill); transition:width .5s ease}
+
     .note{font-size:14px; color:#444; background:#fff7e6; border-left:6px solid #ffbf66; border-radius:8px; padding:10px 12px; margin:14px 0}
+
     .backlink{text-align:center; margin-top:14px}
+
     .alink{display:inline-block; background:var(--brand); color:#fff; text-decoration:none; padding:10px 16px; border-radius:10px}
+
   </style>
+
 </head>
+
 <body>
+
   <div class="wrap">
+
     <h1>🧠 心の中の性格動物診断</h1>
+
     <p class="lead">当てはまる度合いを5件法で選んでね（1=まったく〜5=とても）</p>
+
     <div class="legend">外向性 / 協調性 / 誠実性 / 神経症傾向 / 開放性 を測定</div>
 
+
+
     <div class="card" id="formWrap">
+
       <div class="meta"><span id="progress">未回答 10 / 10</span><span>5件法：1〜5</span></div>
+
       <form id="quizForm"></form>
+
       <div class="actions">
+
         <button class="btn" type="button" onclick="calculate()">診断する</button>
+
         <button class="btn secondary" type="button" onclick="resetForm()">リセット</button>
+
       </div>
+
     </div>
+
+
 
     <div id="result" class="card">
+
       <div id="types"></div>
+
       <div class="note">
+<section id="legal-note-animals" style="margin:8px 0 14px;background:#fff;border:1px solid #e7d9d9;border-radius:10px;padding:10px 12px">
+  <h2 style="margin:4px 0 6px;font-size:1rem;color:#533">ご利用にあたって</h2>
+  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#666">
+    <li><strong>非提携・非公式：</strong>本コンテンツはビッグファイブ（外向性・協調性・誠実性・神経症傾向・開放性）などの一般的知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。公式の心理検査（例：NEO-PI-R／NEO-PI-3、BFI-2、TIPI など）の原文・採点方法は使用しておらず、権利者の承認・提携・推奨を意味しません。</li>
+    <li><strong>医療・選抜用途ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的・法的助言や診断／治療の代替ではありません。就学・採用・配属などの選抜や適性評価への使用もお控えください。</li>
+    <li><strong>「診断」という呼称について：</strong>サイト上の「診断」は一般的な名称であり、専門職による医学的・心理学的な診断行為を意味しません。結果は傾向の目安です。</li>
+    <li><strong>プライバシー：</strong>回答の記録・集計は端末内で完結し、サーバー送信は行いません。共有やコピー機能は端末のクリップボード／共有機能を利用します。</li>
+    <li><strong>表現の配慮：</strong>動物タイプは理解を助けるための比喩です。結果をもって他者を断定・ラベリングしたり、差別や不利益な扱いに用いないでください。</li>
+    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用により生じた一切の損失・損害について、当サイトは責任を負いません。</li>
+  </ul>
+</section>
         🔖 <strong>結果は因子ごとに表示</strong>されます。<br>
+
         <strong>スクショやメモで保存してから</strong>、下のボタンで「心の標本」に戻れます。
+
       </div>
+
       <div class="backlink">
-        <a class="alink" href="https://seikaku.my.canva.site/shindan" target="_blank">🔙 心の標本に戻る</a>
+
+        <a class="alink" href="/shindan/" target="_blank">🔙 診断一覧に戻る</a>
+
       </div>
+
     </div>
+
   </div>
 
+
+
   <script>
+
     // 質問（各因子2問で合計10問）
+
     const questions = [
+
       { text: "初対面でもすぐ打ち解けられる", trait: "extroversion" },
+
       { text: "大勢で過ごすことが好きだ", trait: "extroversion" },
 
+
+
       { text: "困っている人に自然と手を差し伸べる", trait: "agreeableness" },
+
       { text: "人の感情に敏感なほうだ", trait: "agreeableness" },
 
+
+
       { text: "やると決めたことは最後までやり抜く", trait: "conscientiousness" },
+
       { text: "計画的に物事を進める方だ", trait: "conscientiousness" },
 
+
+
       { text: "些細なことで気分が落ち込むことがある", trait: "neuroticism" },
+
       { text: "心配しすぎてしまうことが多い", trait: "neuroticism" },
 
+
+
       { text: "芸術やアイデアに惹かれる", trait: "openness" },
+
       { text: "新しい体験や価値観にワクワクする", trait: "openness" },
+
     ];
+
+
 
     const scaleLabels = [
+
       "1（まったく当てはまらない）",
+
       "2（あまり当てはまらない）",
+
       "3（どちらともいえない）",
+
       "4（やや当てはまる）",
+
       "5（とても当てはまる）"
+
     ];
 
+
+
     // 動物マップ
+
     const animalMap = {
+
       extroversion: {
+
         low:  { animal: "🦥 ナマケモノ", desc: "静かに過ごすことを好む、マイペースな穏やかタイプ。" },
+
         mid:  { animal: "🐿️ リス",       desc: "素早く動き、観察力も高い。好奇心と慎重さをバランスよく持つ。" },
+
         high: { animal: "🐵 サル",       desc: "明るく社交的で、人と関わることに喜びを感じるタイプ。" }
+
       },
+
       agreeableness: {
+
         low:  { animal: "🐈 ネコ",       desc: "自分のペースを大事にするマイワールド派。あっさりタイプ。" },
+
         mid:  { animal: "🦊 キツネ",     desc: "合理的で適度な距離感を保つクールなバランス型。" },
+
         high: { animal: "🐶 犬",         desc: "誠実で思いやり深く、誰とでも仲良くなれる温厚タイプ。" }
+
       },
+
       conscientiousness: {
+
         low:  { animal: "🐐 ヤギ",       desc: "気ままに行動する柔軟タイプ。ルールより直感を優先。" },
+
         mid:  { animal: "🐧 ペンギン",   desc: "安定を求める堅実家。真面目さと遊び心をバランスよく持つ。" },
+
         high: { animal: "🦫 ビーバー",   desc: "努力と計画を重視する完璧主義。信頼される働き者。" }
+
       },
+
       neuroticism: {
+
         low:  { animal: "🐻 クマ",       desc: "心が安定しており、動じにくい安心感のある性格。" },
+
         mid:  { animal: "🐰 ウサギ",     desc: "感受性が豊かで、共感力と繊細さを併せ持つ。" },
+
         high: { animal: "🦔 ハリネズミ", desc: "傷つきやすく繊細。慎重で自己防衛本能が強いタイプ。" }
+
       },
+
       openness: {
+
         low:  { animal: "🦙 アルパカ",   desc: "伝統や安定を好み、のんびりと日々を楽しむ。" },
+
         mid:  { animal: "🐦 オウム",     desc: "物事に柔軟に適応する順応型。好奇心も安定もほどほど。" },
+
         high: { animal: "🐬 イルカ",     desc: "創造的で直感的。自由な発想と芸術的感性を持つ。" }
+
       }
+
     };
 
+
+
     // フォーム描画
+
     const form = document.getElementById("quizForm");
+
     const progressEl = document.getElementById("progress");
+
     questions.forEach((q, i) => {
+
       const div = document.createElement("div");
+
       div.className = "question";
+
       div.innerHTML = `<p>Q${i + 1}. ${q.text}</p>` +
+
         `<div class="scale">` +
+
         scaleLabels.map((label, n) => {
+
           const id = `q${i}_${n+1}`;
+
           return `<label for="${id}">
+
             <input id="${id}" type="radio" name="q${i}" value="${n + 1}" />
+
             ${label}
+
           </label>`;
+
         }).join("") +
+
         `</div>`;
+
       form.appendChild(div);
+
     });
 
+
+
     // 未回答カウント表示
+
     function updateProgress(){
+
       const answered = Array.from({length: questions.length}).filter((_,i)=>document.querySelector(`input[name="q${i}"]:checked`)).length;
+
       progressEl.textContent = `未回答 ${questions.length - answered} / ${questions.length}`;
+
     }
+
     form.addEventListener("change", updateProgress);
+
     updateProgress();
 
+
+
     // リセット
+
     function resetForm(){
+
       form.reset();
+
       updateProgress();
+
       document.getElementById("result").style.display="none";
+
       document.getElementById("types").innerHTML="";
+
       window.scrollTo({top:0,behavior:"smooth"});
+
     }
+
+
 
     // 診断
+
     function calculate(){
+
       // 集計
+
       const sums = {extroversion:0, agreeableness:0, conscientiousness:0, neuroticism:0, openness:0};
+
       const counts = {extroversion:0, agreeableness:0, conscientiousness:0, neuroticism:0, openness:0};
 
+
+
       for(let i=0;i<questions.length;i++){
+
         const sel = document.querySelector(`input[name="q${i}"]:checked`);
+
         if(!sel){ alert(`全ての質問に答えてください（Q${i+1}が未回答）`); return; }
+
         const v = parseInt(sel.value);
+
         const key = questions[i].trait;
+
         sums[key]+=v; counts[key]+=1;
+
       }
 
+
+
       // 平均・レベル判定
+
       const labelMap = {
+
         extroversion: "外向性",
+
         agreeableness: "協調性",
+
         conscientiousness: "誠実性",
+
         neuroticism: "神経症傾向",
+
         openness: "開放性"
+
       };
 
+
+
       const typesDiv = document.getElementById("types");
+
       typesDiv.innerHTML = "";
 
+
+
       Object.keys(sums).forEach(key=>{
+
         const avg = sums[key] / counts[key];            // 1〜5
+
         const pct = Math.round((avg-1)/4*100);          // 0〜100%
+
         const level = avg <= 2.4 ? 'low' : (avg <= 3.6 ? 'mid' : 'high');
+
         const { animal, desc } = animalMap[key][level];
 
+
+
         const box = document.createElement("div");
+
         box.className = "type";
+
         box.innerHTML = `
+
           <h3>${labelMap[key]}：${animal}（平均 ${avg.toFixed(1)} / 5）</h3>
+
           <small>${desc}</small>
+
           <div class="bar"><span style="width:${pct}%"></span></div>
+
         `;
+
         typesDiv.appendChild(box);
+
       });
 
+
+
       document.getElementById("result").style.display = "block";
+
       window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"});
+
     }
+
   </script>
+
 </body>
+
 </html>
