@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>しあわせ星空診断（PERMA+H）</title>
+<meta name="description" content="PERMA+Hをもとに、今日の“しあわせ空模様”を5段階で表示。エンタメ用セルフチェックです（医療目的ではありません）。">
+<meta name="theme-color" content="#f7fbff">
+<style>
+  :root{
+    --bg1:#f7fbff; --bg2:#fff7fd; --paper:#fff; --ink:#14131a; --muted:#6b6a77;
+    --line:#e9e6f2; --accent:#5c87ff; --accent2:#9f6bff;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.85;letter-spacing:.02em}
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #ffc8d9;background:#fff7fb;color:#432;padding:10px;border-radius:12px}
+  .warn strong{color:#b12a6b}
+  .section-title{margin:10px 0 6px;font-size:15px;font-weight:800}
+
+  .qgrp{border-top:1px solid var(--line);padding:12px 0}
+  .qgrp:first-child{border-top:0}
+  .qgrp .gttl{font-weight:800;margin:0 0 6px}
+  .q{padding:8px 0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent)}
+
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#edf2ff;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .stage{display:flex;align-items:center;gap:8px;font-weight:800}
+  .stage .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .copy{color:#4a3d57;margin:6px 0 0}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#edf2ff;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%}
+  .small{font-size:.95em}
+  .muted{color:var(--muted)}
+  @media (max-width:380px){ .opt{min-width:unset} }
+  details{margin-top:10px}
+  summary{cursor:pointer;color:#5c4d7a;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>しあわせ星空診断（PERMA+H）</h1>
+  <span class="crumb">24項目・0〜4 → 5段階の“空模様”</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>今日の“しあわせ空模様”</strong>を、PERMA+Hでやさしく可視化。</div>
+      <p class="lead">答え方（0〜4）：0 まったく当てはまらない／1 少し／2 ときどき／3 よく／4 ほとんどいつも</p>
+      <p class="warn"><strong>注意：</strong>この診断はエンタメ用のセルフチェックです。医療・診断・治療を目的としたものではありません。ご利用は自己判断・自己責任で。心身の不調が続く場合は医療機関や専門家にご相談ください。</p>
+      <details>
+        <summary>PERMA(+H) と空の要素</summary>
+        <div class="small">
+          <p><b>P（ポジ感情）</b>：星の明滅の強さ・星粒の数 ／ <b>E（没入）</b>：流星の尾のなめらかさ・天の川の濃さ ／ <b>R（関係）</b>：星座の結び線の数 ／ <b>M（意味）</b>：北極星の輝き ／ <b>A（達成）</b>：流星の出現数 ／ <b>H（健康）</b>：月相と透明度</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- 質問 -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 24</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel">
+      <h2 class="section-title" style="font-size:18px">結果</h2>
+      <div id="stageBox"></div>
+
+      <figure class="hero"><img id="stageImg" src="" alt="" style="width:100%;height:auto;display:block" loading="lazy"></figure>
+      <p class="copy" id="stageCopy"></p>
+
+      <h3 class="section-title">サブスコア（PERMA+H）</h3>
+      <div class="grid" id="subs"></div>
+
+      <p class="muted small" style="margin-top:10px">※ スコアは“今夜の空模様”の目安です。高低に良し悪しはなく、状況と資源の写し鏡として扱ってください。</p>
+
+<h3 class="section-title">PERMA+Hが高いと期待できること</h3>
+<ul class="small" style="margin:6px 0 0 1.2em">
+  <li>気分の回復が早くなる（レジリエンスが上がる）。</li>
+  <li>人間関係の満足度が高まりやすい（信頼・支援が増える）。</li>
+  <li>集中や没入が起きやすく、学業・仕事のパフォーマンスが安定。</li>
+  <li>意味感・目的意識が強まり、迷いにくくなる。</li>
+  <li>小さな達成が積み重なり、やる気の循環が生まれる。</li>
+  <li>睡眠・食事・活動のリズムが整い、体調管理がしやすい。</li>
+</ul>
+<p class="muted small" style="margin-top:6px">※ 変化を約束するものではありませんが、日々の小さな行動を続けるほど上の傾向が表れやすいと言われます。</p>
+
+<div class="actions" style="justify-content:flex-end;margin-top:8px">
+  <a href="/shindan/" class="btn">診断一覧に戻る</a>
+</div>
+    </div>
+  </section>
+</main>
+
+<script>
+(()=> {
+  // ===== 画像パス =====
+  const IMG_BASE = '/shindan/assets/results/perma-stars/'; // 画像位置に合わせて必要なら変更
+
+  // ===== ステージ（5段階：上がるほど満天）=====
+  const STAGES = {
+    1: {file:'01.png', title:'01：薄雲と一番星',
+        alt:'薄い雲の夜空に一番星が一つだけ光っている',
+        copy:'いまは「幸せの光」が見え始め。雲（疲れや心配）が多めの夜です。できたことを1つ数えて、体のケアを1つ足すと星は増えます。'},
+    2: {file:'02.png', title:'02：星が点々',
+        alt:'点々と星が増え、細い星雲の兆しが見える夜空',
+        copy:'小さな幸せが点で見えています。立ち止まるたび星は増える段階。今日は「よかった3つ」を言葉にして、点を拾い集めていきましょう。'},
+    3: {file:'03.png', title:'03：星座が結ばれる',
+        alt:'小さな星座が線で結ばれ、北極星が目印に輝く夜空',
+        copy:'幸せの要素がつながり始め、意味の北極星も見えてきました。人との一言や小さな達成が、点を線にして空を明るくします。'},
+    4: {file:'04.png', title:'04：天の川がひろがる',
+        alt:'天の川がはっきり流れ、時折流星が走る澄んだ夜空',
+        copy:'安定した幸福感が広がる夜。集中や達成が流星を呼んでいます。合間に休息をはさむほど、空気が澄んで星の密度が上がります。'},
+    5: {file:'05.png', title:'05：満天と流星群',
+        alt:'満天の星と流星群が広がり、細い新月が静かに浮かぶ夜空',
+        copy:'高い幸福度の夜。感謝・没入・つながり・意味・達成・健康のバランスが良好です。誰かの空も照らす小さな行動を1つ足すと持続力が増します。'}
+  };
+
+  // === ミニ介入（1行ヒント） ===
+  const NUDGES = {
+    P: '「よかったこと」を3つメモする（各1行でOK）。',
+    E: '4秒吸って6秒吐く呼吸を8回。タイマー1分でやる。',
+    R: '誰か1人に「おつかれさま！」と一言メッセージを送る。',
+    M: '今週たいせつにしたいことを7文字で書く（例：誠実に進む）。',
+    A: '30秒でできる作業を1つだけ完了（例：ファイルを開く）。',
+    H: '画面を閉じて白湯をひと口。肩回しを左右各10回。'
+  };
+
+  // ===== 設問（各領域4問 × 6 = 24） =====
+  const FORM = {
+    P: ['うれしい・楽しい気持ちになる瞬間があった。','穏やかで安心できる時間を過ごせた。','感謝したい出来事に気づけた。','「今日は悪くない」と思えた。'],
+    E: ['何かに夢中になって時間を忘れた。','取り組みの最中、集中が続いた。','やり始めたら自然にのめり込めた。','難しい作業でも手が止まらなかった。'],
+    R: ['困ったときに相談できる相手がいた。','人に気持ちを分かってもらえたと感じた。','自分から誰かを支える行動ができた。','近しい人と温かいやりとりがあった。'],
+    M: ['いまの行動が自分にとって意味があると感じた。','自分の価値観に合う選択ができた。','誰かの役に立てたと実感する場面があった。','先に進む方向がはっきり見えた。'],
+    A: ['小さな目標を一つ以上達成できた。','やるべきことを計画どおり進められた。','できなかったことより、できたことのほうが多かったと感じた。','難題に対して「やればできる」と思えた。'],
+    H: ['休息をとって、翌朝の体が軽かった。','食事・睡眠・活動のリズムが整っていた。','体を動かす時間をとれた（ストレッチや散歩でも）。','体調の不安が少なく、元気に過ごせた。']
+  };
+  const ORDER  = ['P','E','R','M','A','H'];
+  const LABELS = {P:'P（ポジ感情）',E:'E（没入）',R:'R（関係）',M:'M（意味）',A:'A（達成）',H:'H（健康）'};
+  const SCALE = [
+    {v:0, label:'0 まったく当てはまらない'},
+    {v:1, label:'1 少し当てはまる'},
+    {v:2, label:'2 ときどき当てはまる'},
+    {v:3, label:'3 よく当てはまる'},
+    {v:4, label:'4 ほとんどいつも当てはまる'},
+  ];
+
+  // ===== DOM =====
+  const $  = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  const stageBox = $('#stageBox'), stageImg = $('#stageImg'), stageCopy = $('#stageCopy'), subs = $('#subs');
+  const res = $('#result');
+
+  // ===== 質問描画 =====
+  let qIndex = 0;
+  ORDER.forEach(dim=>{
+    const grp = document.createElement('section');
+    grp.className = 'qgrp';
+    grp.innerHTML = `<h3 class="gttl">${LABELS[dim]}</h3>`;
+    FORM[dim].forEach(text=>{
+      qIndex += 1;
+      const s = document.createElement('div');
+      s.className = 'q';
+      s.innerHTML = `
+        <div class="ttl">Q${qIndex}. ${text}</div>
+        <div class="scale" role="group" aria-label="${LABELS[dim]} Q${qIndex}">
+          ${SCALE.map(sc=>{
+            const id = `q${qIndex}-${sc.v}`;
+            return `<label class="opt" for="${id}">
+              <input type="radio" name="q${qIndex}" id="${id}" value="${sc.v}">
+              <span>${sc.label}</span>
+            </label>`;
+          }).join('')}
+        </div>`;
+      grp.appendChild(s);
+    });
+    qbox.appendChild(grp);
+  });
+
+  // ===== 進捗 =====
+  const TOTAL = 24;
+  function answeredCount(){ let n=0; for(let i=1;i<=TOTAL;i++){ if($('input[name="q'+i+'"]:checked')) n++; } return n; }
+  function updateProgress(){
+    const n=answeredCount();
+    ptext.textContent = `${n} / ${TOTAL}`;
+    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    btnCalc.disabled = n!==TOTAL;
+  }
+  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
+  updateProgress();
+
+  // ===== 集計 =====
+  function collect(){
+    const vals={};
+    for(let i=1;i<=TOTAL;i++){
+      const el = $('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i] = +el.value;
+    }
+    return vals;
+  }
+  function perDim(vals){
+    // 各ディメンション4問（満点16）
+    const map = {};
+    let idx=0;
+    ORDER.forEach(dim=>{
+      let s=0;
+      for(let j=0;j<4;j++){ idx++; s += vals[idx]||0; }
+      const pct = Math.round(s/16*100);
+      map[dim] = {sum:s, pct};
+    });
+    return map;
+  }
+  function band(overallPct){
+    if (overallPct>=80) return 5;
+    if (overallPct>=60) return 4;
+    if (overallPct>=40) return 3;
+    if (overallPct>=20) return 2;
+    return 1;
+  }
+
+  // ===== 表示ユーティリティ =====
+  function el(tag, cls, html){ const x=document.createElement(tag); if(cls) x.className=cls; if(html!=null) x.innerHTML=html; return x; }
+
+  // ===== 結果表示 =====
+  function render(vals){
+    const dim = perDim(vals);
+    const overall = Math.round( ORDER.reduce((a,k)=>a+dim[k].pct,0) / ORDER.length );
+    const lv = band(overall);
+    const st = STAGES[lv];
+
+    // ヘッダ（ステージ名＋総合%）
+    stageBox.innerHTML = `
+      <div class="stage">
+        <span>${st.title}</span>
+        <span class="badge">総合 ${overall}% / Lv.${String(lv).padStart(2,'0')}</span>
+      </div>
+    `;
+
+    // 画像＆コピー
+    stageImg.src = IMG_BASE + st.file;
+    stageImg.alt = st.alt;
+    stageCopy.textContent = st.copy;
+
+    // サブスコア
+    subs.innerHTML = '';
+    ORDER.forEach(key=>{
+      const pct = dim[key].pct;
+      const card = el('div','card small',`
+        <div class="name" style="display:flex;align-items:center;gap:8px">
+          <span>${LABELS[key]}</span>
+          <span class="badge">${pct}%</span>
+        </div>
+        <div class="meter"><i style="width:${pct}%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></i></div>
+        <p class="muted" style="margin:8px 0 0">${NUDGES[key]}</p>
+      `);
+      subs.appendChild(card);
+    });
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // ===== イベント =====
+  btnCalc.addEventListener('click', ()=>{
+    const vals = collect(); if(!vals) return;
+    render(vals);
+  });
+  btnReset.addEventListener('click', ()=>{
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    updateProgress();
+    res.style.display='none';
+    stageImg.removeAttribute('src'); stageImg.removeAttribute('alt'); stageCopy.textContent='';
+    stageBox.innerHTML=''; subs.innerHTML='';
+  });
+})();
+</script>
+</body>
+</html>
