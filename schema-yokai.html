@@ -78,6 +78,16 @@
     </div>
 
     <div id="result" class="panel">
+    	<section class="panel small" id="legal-note" style="margin-top:12px">
+  <h3 style="margin:6px 0;font-size:15px">ご利用にあたって</h3>
+  <ul class="small muted" style="margin:6px 0 0 1.2em;line-height:1.8">
+    <li><strong>非提携・非公式：</strong>「スキーマ」「スキーマ療法」等への言及は研究一般の説明であり、権利者の承認・提携・推奨を意味しません。本ページの設問・配点・結果表現は当サイトの<strong>独自制作</strong>で、公式の質問票（例：Young Schema Questionnaire 等）や採点方法は使用していません。</li>
+    <li><strong>医療用途ではありません：</strong>本コンテンツは娯楽＋自己理解のためのセルフチェックであり、医療的な診断・治療・助言を目的としません。強い苦痛や不調が続く場合は、医療機関や専門家にご相談ください。</li>
+    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
+    <li><strong>表現について：</strong>「妖怪」は創作上の比喩です。実在の民俗・団体等を揶揄する意図はありません。</li>
+    <li><strong>免責：</strong>本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+  </ul>
+</section>
       <h2 style="margin:0 0 4px;font-size:18px">結果</h2>
       <p class="lead" id="topLead">あなたの中で今、顔を出しやすい妖怪たち</p>
 
@@ -255,7 +265,7 @@ const imgFor = (key)=> `${IMG_BASE}${NUM_MAP[key]||'01'}.png`;
 </figure>
 <p><strong>キャッチ：</strong>${ct}</p>
         <p>${desc}</p>
-        <div><strong>今日の手当て（CBT）</strong></div>
+        <div><strong>セルフケアのヒント</strong></div>
         <ul class="tips">${cbt.map(t=>`<li>${t}</li>`).join('')}</ul>
       `;
       topCards.appendChild(card);
