@@ -1,174 +1,357 @@
 <!DOCTYPE html>
+
 <html lang="ja">
+
 <head>
+
   <meta charset="UTF-8" />
-  <title>🪞 鏡ナルシスト診断</title>
+
+<title>🪞 鏡ナルシスト・セルフチェック（独自再構成）</title>
+<meta name="description" content="14問×5件法で“ナルシスト度”の傾向を可視化。自己高揚（Admiration）と競争性（Rivalry）の研究にヒントを得た独自再構成のセルフチェックです。エンタメ＋自己理解向け／公式の心理検査ではありません。">
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+
   <style>
+
     :root{ --brand:#b86b77; --bg:#fdf6f0; --card:#fff; --muted:#6b6b6b; }
+
     *{ box-sizing:border-box }
+
     body{ font-family:sans-serif; background:var(--bg); color:#333; padding:18px; }
+
     h1{ text-align:center; color:var(--brand); margin:0 0 8px; }
+
     .sub{ text-align:center; color:var(--muted); margin:0 0 16px; }
 
+
+
     form{ max-width:900px; margin:0 auto; background:#fff; padding:16px;
+
           border-radius:12px; box-shadow:0 4px 14px rgba(184,107,119,.12);}
+
     .q{ margin:18px 0; }
+
     .q p{ margin:0 0 8px; font-weight:600; }
+
     .opt{ display:block; margin:6px 0; padding:9px 10px; background:#f4f4f4;
+
           border-radius:8px; cursor:pointer; border:1px solid transparent; }
+
     .opt.on{ border-color:#e6c6ce; background:#fff6f8; }
+
     .opt input{ margin-right:6px; }
 
+
+
     button{ display:block; margin:22px auto 0; padding:12px 22px; font-size:1.05em;
+
             background:var(--brand); color:#fff; border:none; border-radius:10px; cursor:pointer; }
 
+
+
     #result{ display:none; max-width:900px; margin:16px auto 0; background:#fff; padding:16px;
+
              border-radius:12px; box-shadow:0 4px 14px rgba(184,107,119,.12);}
+
     #result h2{ margin:0 0 6px; color:#7b3f4a; text-align:center; }
+
     .kpi{ text-align:center; margin:6px 0 10px; color:#7b3f4a; }
+
     .badge{ display:inline-block; background:#fdecef; color:#7b3f4a; padding:4px 10px;
+
             border-radius:999px; font-size:.85em; margin-left:6px; }
+
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
     .card{ background:#fff7f9; border:1px solid #f1cbd2; border-radius:10px; padding:12px; }
+
     .note{ color:#6b6b6b; font-size:.9em; margin-top:10px; text-align:left; }
+
+
 
     .img{width:100%;height:auto;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.08);margin:10px 0}
 
+
+
     .links{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap }
+
     .btnlink{ flex:1; display:inline-block; padding:10px 14px; text-align:center;
+
               background:#ffe7eb; border:1px solid #f1cbd2; color:#7b3f4a;
+
               border-radius:8px; text-decoration:none; font-weight:700; }
+
     @media (max-width:720px){ .row{ grid-template-columns:1fr; } }
+
   </style>
+
 </head>
+
 <body>
-  <h1>🪞 鏡ナルシスト診断</h1>
-  <p class="sub">14問・5件法。結果は％表示＋短い説明＋サイト内画像。</p>
+
+  <h1>🪞 鏡ナルシスト・セルフチェック</h1>
+<p class="sub">14問・5件法。独自制作のエンタメ＋自己理解向けセルフチェック（公式の心理検査ではありません／医療・診断・治療を目的としません）。</p>
+
 
   <form id="quizForm"></form>
+
   <button type="button" onclick="calculate()">診断する</button>
 
+
+
   <section id="result">
+
     <h2 id="title">結果</h2>
+
     <p class="kpi" id="overall"></p>
+
+
 
     <img id="mirrorImg" class="img" alt="結果画像" decoding="async" />
 
+
+
     <div class="row">
+
       <div class="card">
+
         <strong>自己賛美（Admiration）</strong>
+
         <div id="admBrief" class="note"></div>
+
       </div>
+
       <div class="card">
+
         <strong>競争/優越（Rivalry）</strong>
+
         <div id="rivBrief" class="note"></div>
+
       </div>
+
     </div>
+
+
 
     <div class="links">
+
       <a class="btnlink" href="/shindan/">🔙 診断一覧へ戻る</a>
+
       <a class="btnlink" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">🔁 もう一度やる</a>
+
     </div>
+
   </section>
 
+<section class="card" id="legal-note" style="margin:12px auto 0;max-width:900px">
+  <h2 style="margin:6px 0;font-size:1rem;color:#7b3f4a">ご利用にあたって</h2>
+  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#6b6b6b;padding-left:1em">
+    <li><strong>非提携・非公式：</strong>本コンテンツは研究知見（自己高揚／競争性など）に<span style="white-space:nowrap">ヒントを得た</span><strong>独自再構成</strong>です。公式の質問票（例：NARQ／NPI 等）の文言・採点方法は使用しておらず、権利者による承認・提携・推奨を意味しません。</li>
+    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的な診断・治療・助言を目的としません。強い苦痛や不調が続く場合は医療機関や専門家にご相談ください。</li>
+    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
+    <li><strong>表現について：</strong>「ナルシスト」は便宜上の俗称です。価値判断を目的とせず、特定の個人・団体を指すものではありません。</li>
+    <li><strong>免責：</strong>本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+  </ul>
+</section>
+
+  <!-- 注意書き -->
+
+
   <script>
+
     // 設問：前半7=Admiration、後半7=Rivalry
+
     const questions = [
+
       // Admiration
+
       "自分の魅力はもっと評価されても良いと思う",
+
       "初対面で良い印象を与えるのは得意だ",
+
       "注目を浴びるとエネルギーが湧いてくる",
+
       "大きな成功は自分にふさわしいと感じる",
+
       "友人グループでは中心になることが多い",
+
       "自分の意見は他の人より説得力がある方だ",
+
       "鏡やカメラで身だしなみをよく確認する",
+
       // Rivalry
+
       "批判されると、つい反論したくなる",
+
       "自分より目立つ人を見ると負けたくないと思う",
+
       "失敗を認めるのはどちらかといえば苦手だ",
+
       "役に立たないと感じる人とは距離を置きたい",
+
       "自分を軽く見た相手は見返したいと思う",
+
       "ルールは自分の力を制限することがある",
+
       "褒められないと、やる気が下がりやすい"
+
     ];
+
     const labels = ["1（まったく当てはまらない）","2（あまり当てはまらない）","3（どちらともいえない）","4（やや当てはまる）","5（とても当てはまる）"];
 
+
+
     // 質問描画
+
     const form = document.getElementById('quizForm');
+
     questions.forEach((q,i)=>{
+
       const wrap = document.createElement('div');
+
       wrap.className = 'q';
+
       wrap.innerHTML = `<p>Q${i+1}. ${q}</p>` + labels.map((lab,n)=>`
+
         <label class="opt"><input type="radio" name="q${i}" value="${n+1}"> ${lab}</label>
+
       `).join("");
+
       form.appendChild(wrap);
+
     });
+
+
 
     // 選択の視認性アップ（選んだ行をハイライト）
+
     document.addEventListener('change', (e)=>{
+
       if (!e.target.name || !e.target.name.startsWith('q')) return;
+
       const name = e.target.name;
+
       document.querySelectorAll(`input[name="${name}"]`).forEach(inp=>{
+
         inp.closest('.opt').classList.toggle('on', inp.checked);
+
       });
+
     });
 
+
+
     // ％計算と表示テキスト
+
     const pct = (sum,min,max)=> Math.round((sum-min)/(max-min)*100);
 
+
+
     // 総合バンド → 表示ラベル＆一言＆画像用スラッグ
+
     function bandLabel(p){
+
       if (p<=20) return {label:"ゴージャス",  badge:"非常に低い", one:"控えめ・自然体", slug:"gorgeous"};
+
       if (p<=40) return {label:"クリア",      badge:"低い",       one:"落ち着いた自己肯定", slug:"clear"};
+
       if (p<=60) return {label:"ノーマル",    badge:"中くらい",   one:"状況でON/OFF", slug:"normal"};
+
       if (p<=80) return {label:"クラック",    badge:"やや高い",   one:"自己主張・競争心強め", slug:"crack"};
+
       return        {label:"スマッシュ",    badge:"高い",       one:"自己演出＆対抗心が強い", slug:"smash"};
+
     }
+
+
 
     const briefAdm = (p)=>{
+
       if (p<=33) return `自己主張は控えめ（${p}%）。自然体で評価されたいスタイル。`;
+
       if (p<=66) return `自己肯定と謙虚さのバランス良し（${p}%）。場面で上手にスイッチ。`;
+
       return `魅せ方上手（${p}%）。自己プロデュースが得点源。`;
+
     };
+
     const briefRiv = (p)=>{
+
       if (p<=33) return `競争は必要最小限（${p}%）。調和を優先しやすい。`;
+
       if (p<=66) return `健全な競争心（${p}%）。勝ち負けより成長重視。`;
+
       return `勝負勘が鋭い（${p}%）。反骨心がドライブになることも。`;
+
     };
+
+
 
     // 画像表示（PNG→失敗時WebP）
+
     function setImage(imgEl, slug){
+
       const base = `/shindan/assets/results/mirror/${slug}/01`;
+
       imgEl.onerror = null;
+
       imgEl.src = `${base}.png`;
+
       imgEl.onerror = () => { if (imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`; };
+
     }
+
+
 
     function calculate(){
+
       let total=0, adm=0, riv=0;
+
       for (let i=0;i<questions.length;i++){
+
         const v = parseInt(document.querySelector(`input[name="q${i}"]:checked`)?.value);
+
         if (!v){ alert(`全ての質問に答えてください。未回答：Q${i+1}`); return; }
+
         total += v;
+
         if (i<7) adm+=v; else riv+=v;
+
       }
+
       const totalPct = pct(total,14,70);
+
       const admPct   = pct(adm,  7,35);
+
       const rivPct   = pct(riv,  7,35);
 
+
+
       const b = bandLabel(totalPct);
+
       document.getElementById('title').innerHTML = `ナルシスト度 <span class="badge">${totalPct}%｜${b.badge}</span>`;
+
       document.getElementById('overall').textContent = `鏡の状態：${b.label}（${b.one}）`;
+
       document.getElementById('admBrief').textContent = briefAdm(admPct);
+
       document.getElementById('rivBrief').textContent = briefRiv(rivPct);
 
+
+
       const img = document.getElementById('mirrorImg');
+
       setImage(img, b.slug);
 
+
+
       document.getElementById('result').style.display = 'block';
+
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
     }
+
   </script>
+
 </body>
+
 </html>
