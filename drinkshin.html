@@ -1,206 +1,420 @@
 <!DOCTYPE html>
+
 <html lang="ja">
+
 <head>
+
   <meta charset="UTF-8">
-  <title>飲み物でわかるサイコパス診断</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- 置き換え/追記 -->
+<title>飲み物でわかるサイコパス診断（独自再構成・娯楽向け）</title>
+<meta name="description" content="10問×5件法の独自再構成セルフチェック。エンタメ＋自己理解向け（公式の心理検査ではありません／医療用途ではありません／回答は端末内で処理されサーバー送信は行いません／「サイコパス」は便宜上の俗称・比喩表現です）。">
+
   <style>
+
     :root{
+
       --brand:#b86b77; --bg:#fdf6f0; --card:#ffffff; --muted:#666;
+
       --chip:#fde9ee; --bar:#fdf1f3; --barfill:#b86b77;
+
     }
+
     body{
+
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+
       background: var(--bg); color:#333; margin:0; padding:22px;
+
     }
+
     .wrap{max-width:900px;margin:0 auto}
+
     h1{color:var(--brand); text-align:center; margin:6px 0 8px; font-size:clamp(20px,3.8vw,28px)}
+
     .lead{text-align:center; color:var(--muted); margin:0 0 16px; font-size:14px}
+
     .legend{display:inline-block;background:var(--chip); color:var(--brand); padding:6px 10px; border-radius:999px; font-size:12px; margin:0 auto 12px; text-align:center}
+
     .card{background:var(--card); border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px}
+
     .question{margin:18px 0 20px}
+
     .question p{margin:0 0 10px}
+
     .scale{display:grid; gap:8px}
+
     .scale label{display:flex; align-items:center; gap:10px; background:#f6f3f1; border-radius:10px; padding:10px; cursor:pointer}
+
     .scale input{accent-color:var(--brand)}
+
     .meta{display:flex; justify-content:space-between; align-items:center; margin:6px 2px 0; color:var(--muted); font-size:12px}
+
     .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px}
+
     .btn{background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer}
+
     .btn.secondary{background:#858585}
 
+
+
     /* 結果 */
+
     #resultBox{display:none; margin-top:18px}
+
     .resultHead{font-size:1.2em; color:var(--brand); text-align:center; margin:0 0 8px}
+
     .percent{font-size:2rem; font-weight:700; text-align:center}
+
     .drink{font-size:1.2rem; text-align:center; margin-top:6px}
+
     .bar{background:var(--bar); border-radius:999px; height:12px; overflow:hidden; margin:12px auto 0; max-width:460px}
+
     .bar > span{display:block; height:100%; width:0%; background:var(--barfill); transition:width .5s ease}
 
+
+
     .imgWrap{display:grid; place-items:center; margin-top:14px}
+
     .resultImg{width:min(820px,100%); height:auto; display:block; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.10)}
+
     .small{color:#777; font-size:12px; text-align:center; margin-top:6px}
 
+
+
     .ctaRow{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px}
+
     .linkbtn{display:inline-block; background:#fff; color:#b86b77; border:1px solid #e7d9d9; text-decoration:none; padding:10px 14px; border-radius:999px}
+
     .linkbtn.primary{background:#b86b77; color:#fff; border-color:transparent}
+
   </style>
+
 </head>
+
 <body>
+
   <div class="wrap">
+
     <h1>🥤 飲み物でわかるサイコパス診断</h1>
+<section id="legal-note" style="margin:8px 0 14px;background:#fff;border:1px solid #e7d9d9;border-radius:10px;padding:10px 12px">
+  <h2 style="margin:4px 0 6px;font-size:1rem;color:#533">ご利用にあたって</h2>
+  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#666">
+    <li><strong>非提携・非公式：</strong>本コンテンツは研究一般の知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。公式の心理検査（例：LSRP／PCL-R 等）の文言・採点方法は使用しておらず、権利者の承認・提携・推奨を意味しません。</li>
+    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的な診断／治療／助言を目的としません。強い苦痛や不調が続く場合は専門家にご相談ください。</li>
+    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
+    <li><strong>表現について：</strong>本ページの「サイコパス」は便宜上の俗称・比喩であり、特定の個人や集団への価値判断・差別を目的としません。結果をもって他者を断定・ラベリングしないでください。</li>
+    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+  </ul>
+</section>
     <p class="lead">当てはまる度合いを5件法で答えてね（1=まったく〜5=とても）</p>
+
     <div class="legend">最小10点〜最大50点 → 自動でサイコパス度（%）＋サイト内の結果画像を表示</div>
 
+
+
     <div class="card" id="formWrap">
+
       <div class="meta"><span id="progress">未回答 10 / 10</span><span>5件法：1〜5</span></div>
+
       <form id="quizForm"></form>
+
       <div class="actions">
+
         <button class="btn" type="button" onclick="calculate()">診断する</button>
+
         <button class="btn secondary" type="button" onclick="resetForm()">リセット</button>
+
       </div>
+
     </div>
+
+
 
     <div id="resultBox" class="card" aria-live="polite">
+
       <p class="resultHead">診断結果</p>
+
       <div class="percent" id="percentText">— %</div>
+
       <div class="bar"><span id="barFill"></span></div>
+
       <div class="drink" id="drinkText">飲み物タイプ：—</div>
 
+
+
       <!-- サイト内画像 -->
+
       <div class="imgWrap">
+
         <img id="resultImg" class="resultImg" alt="診断結果画像" decoding="async">
+
         <p class="small">画像が表示されない場合は、長押し/右クリックで再読み込みしてみてね。</p>
+
       </div>
+
+
 
       <div class="ctaRow">
+
         <a class="linkbtn" href="/shindan/">診断一覧へ戻る</a>
+
         <button class="linkbtn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">もう一度やる</button>
+
       </div>
+
     </div>
+
   </div>
 
+
+
   <script>
+
     // ===== 質問 =====
+
     const questions = [
+
       "人の秘密を知ると、ちょっと嬉しくなる",
+
       "謝るより、正当化するほうが得意だ",
+
       "感情的な人を見ると、引いてしまう",
+
       "本音よりも演技の方が人間関係はうまくいく",
+
       "誰かのミスを利用するのは悪いことじゃない",
+
       "『共感できる』と言いつつ内心冷めてることがある",
+
       "倫理って、時と場合によっては無視していいと思う",
+
       "自分のルールに従って動く方が正しいと思う",
+
       "人を試すような言動をしてしまうことがある",
+
       "他人の不安や弱みを察知するのが得意だ"
+
     ];
+
+
 
     const scaleLabels = [
+
       "1（まったく当てはまらない）",
+
       "2（あまり当てはまらない）",
+
       "3（どちらともいえない）",
+
       "4（やや当てはまる）",
+
       "5（とても当てはまる）"
+
     ];
 
+
+
     const form = document.getElementById("quizForm");
+
     const progressEl = document.getElementById("progress");
 
+
+
     // 設問描画
+
     questions.forEach((q, i) => {
+
       const div = document.createElement("div");
+
       div.className = "question";
+
       div.innerHTML =
+
         `<p>Q${i + 1}. ${q}</p>` +
+
         `<div class="scale">` +
+
         scaleLabels.map((label, n) => {
+
           const id = `q${i}_${n+1}`;
+
           return `<label for="${id}">
+
             <input id="${id}" type="radio" name="q${i + 1}" value="${n + 1}"> ${label}
+
           </label>`;
+
         }).join("") +
+
         `</div>`;
+
       form.appendChild(div);
+
     });
 
+
+
     // 進捗表示
+
     function updateProgress(){
+
       const answered = Array.from({length: questions.length})
+
         .filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
+
       progressEl.textContent = `未回答 ${questions.length - answered} / ${questions.length}`;
+
     }
+
     form.addEventListener("change", updateProgress);
+
     updateProgress();
 
+
+
     // 合計スコア → 画像番号（01..05）
+
     function bandToFile(total){
+
       if (total <= 15) return "01";
+
       if (total <= 25) return "02";
+
       if (total <= 35) return "03";
+
       if (total <= 42) return "04";
+
       return "05";
+
     }
+
+
 
     // 合計スコア → 飲み物ラベル
+
     function scoreToDrink(total){
+
       if (total <= 15) return "ストロベリーミルク🍓";
+
       if (total <= 25) return "ミルクココア🍫";
+
       if (total <= 35) return "カフェオレ☕️";
+
       if (total <= 42) return "アールグレイ🫖";
+
       return "ブラックコーヒー🖤";
+
     }
+
+
 
     // リセット
+
     function resetForm(){
+
       form.reset();
+
       updateProgress();
+
       document.getElementById("resultBox").style.display="none";
+
       document.getElementById("percentText").textContent="— %";
+
       document.getElementById("drinkText").textContent="飲み物タイプ：—";
+
       document.getElementById("barFill").style.width="0%";
+
       const img = document.getElementById("resultImg");
+
       img.removeAttribute("src");
+
       img.alt = "診断結果画像";
+
       window.scrollTo({top:0,behavior:"smooth"});
+
     }
+
+
 
     function calculate() {
+
       let total = 0;
+
       for (let i = 1; i <= questions.length; i++) {
+
         const val = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
+
         if (!val) return alert(`全ての質問に答えてください。\n未回答の質問があります（Q${i}）。`);
+
         total += val;
+
       }
 
+
+
       // 10〜50 → 0〜100%
+
       let percentage = Math.round((total - 10) / 40 * 100);
+
       if (percentage < 0) percentage = 0;
+
       if (percentage > 100) percentage = 100;
 
+
+
       const drink = scoreToDrink(total);
+
       const fileNo = bandToFile(total);
-      const base = "/shindan/assets/results/drink/lsrp-total/";
+
+      const base = "/shindan/assets/results/drink/fun-total/";
+
       const imgPathPng = `${base}${fileNo}.png`;
+
       const imgPathWebp = `${base}${fileNo}.webp`; // 置いてあればフォールバック
 
+
+
       // 表示
+
       document.getElementById("percentText").textContent = `サイコパス度 ${percentage}%`;
+
       document.getElementById("drinkText").textContent = `飲み物タイプ：${drink}`;
+
       document.getElementById("barFill").style.width = percentage + "%";
 
+
+
       const box = document.getElementById("resultBox");
+
       const img = document.getElementById("resultImg");
 
+
+
       // 画像読み込み（PNG→失敗時はWebP）
+
       img.onerror = null;
+
       img.src = imgPathPng;
+
       img.alt = `結果画像（${drink} / サイコパス度 ${percentage}%）`;
+
       img.onerror = () => {
+
         if (img.src.endsWith(".png")) img.src = imgPathWebp;
+
       };
 
+
+
       box.style.display = "block";
+
       window.scrollTo({top:box.offsetTop - 10, behavior:"smooth"});
+
     }
+
   </script>
+
 </body>
+
 </html>
