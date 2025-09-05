@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>七つの大罪診断（7因子・28項目）</title>
+<meta name="description" content="七つの大罪モチーフで7領域×各4項目・5件法で“あなたの傾向”を可視化します。エンタメ用セルフチェック（医療目的ではありません）。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="七つの大罪診断｜七つの大罪モチーフをマイルド再構成">
+<meta property="og:description" content="7領域×各4項目（5件法）で“いまの傾向”を表示。トップ2因子・全体平均・自己調律指数も確認できます。">
+<meta property="og:image" content="/shindan/assets/results/seven-sins/01.png">
+<meta property="og:url" content="/shindan/seven-sins.html">
+
+<style>
+  :root{
+    --bg1:#fff7fd; --bg2:#f5f7ff; --paper:#ffffff; --ink:#14131a; --muted:#6b6a77;
+    --line:#ebe7f3; --accent:#8c6bff; --accent2:#ff8fc7; --good:#2bb673;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.85;letter-spacing:.02em}
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #e9b6c8;background:#fff7fb;color:#432;padding:10px;border-radius:12px}
+  .warn strong{color:#b12a6b}
+  .section-title{margin:12px 0 8px;font-size:15px;font-weight:800}
+
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#f0ecfb;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--ink)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .stage{display:flex;align-items:center;gap:8px;font-weight:800}
+  .copy{color:#4a3d57;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#f0ecfb;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%}
+  .small{font-size:.95em}
+  a.back{display:inline-flex;align-items:center;gap:8px;margin-top:16px;text-decoration:none;color:var(--muted)}
+  a.back .ico{font-size:18px}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#5c4d7a;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>七つの大罪診断</h1>
+  <span class="crumb">28項目・1〜5 → トップ2＋全体平均＋自己調律</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>七つの大罪モチーフをマイルド再構成</strong>し、7因子×各4項目で“いまの傾向”を表示します。</div>
+      <p class="lead">答え方（1〜5）：1 全くない／2 たまに／3 ときどき／4 よくある／5 ほとんどいつも</p>
+      <p class="warn"><strong>注意：</strong>この診断は<b>エンタメ用のセルフチェック</b>です。医療・診断・治療を目的としません。ご利用は自己判断・自己責任で。<br>※ カテゴリー名は<b>比喩・演出表現</b>です（宗教的・倫理的価値判断は意図していません）。</p>
+    </div>
+
+    <!-- 質問（因子名の表示はしない／順番も毎回ランダム） -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 28</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel">
+      <h2 class="section-title" style="font-size:18px">結果</h2>
+      <div id="head"></div>
+
+      <figure class="hero"><img id="heroImg" src="" alt="" style="width:100%;height:auto;display:block" loading="lazy"></figure>
+      <p class="copy" id="heroCopy"></p>
+
+      <h3 class="section-title">トップ2因子</h3>
+      <div class="grid" id="top2"></div>
+
+      <h3 class="section-title">全体プロファイル（7因子）</h3>
+      <div class="grid" id="all"></div>
+
+      <details>
+        <summary>バンド（%）のめやす</summary>
+        <div class="small muted">
+          <p><b>静穏帯</b> 0–24 ／ <b>安定帯</b> 25–49 ／ <b>揺らぎ帯</b> 50–74 ／ <b>強活性帯</b> 75–100</p>
+        </div>
+      </details>
+
+      <p class="small muted" style="margin-top:10px">※ スコアは“今の傾向”の目安です。高低に良し悪しはありません。扱い方のヒントとしてご利用ください。</p>
+
+      <div style="margin-top:14px">
+        <a href="/shindan/" class="back"><span class="ico">↩</span><span>診断一覧に戻る</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(()=> {
+  // ===== 画像パス =====
+  const IMG_BASE = '/shindan/assets/results/seven-sins/';
+  const IMAGE_BY_KEY = {PR:'01.png', EN:'02.png', WR:'03.png', SL:'04.png', GD:'05.png', GL:'06.png', LU:'07.png'};
+
+  // ===== 表示名（結果で使う見出し：大罪名＋やわらげラベル） =====
+  const DISPLAY = {
+    PR:'傲慢（自己高揚）',
+    EN:'嫉妬（比較感度）',
+    WR:'憤怒（怒り活性）',
+    SL:'怠惰（先送り傾向）',
+    GD:'強欲（所有・収集志向）',
+    GL:'暴食（快楽ドライブ）',
+    LU:'色欲（親密衝動）'
+  };
+
+  // ===== 因子定義（各4項目・rev=逆転）=====
+  const FACTORS = [
+    {key:'PR', name:'自己高揚（Pride）',
+     items:[
+       {t:'実績や努力を、つい強めに伝えたくなる', rev:false},
+       {t:'周囲の場面で主導権を取りたくなる', rev:false},
+       {t:'弱みやミスも、必要なら率直に共有できる', rev:true},
+       {t:'過小評価を感じると、反発したくなる', rev:false},
+     ]},
+    {key:'EN', name:'比較感度（Envy）',
+     items:[
+       {t:'同年代の成功を見ると、気持ちが揺れる', rev:false},
+       {t:'SNSで他人と比べてしまう', rev:false},
+       {t:'人それぞれのペースだと落ち着いて捉え直せる', rev:true},
+       {t:'身近な人への称賛に、焦りが芽生えることがある', rev:false},
+     ]},
+    {key:'WR', name:'怒り活性（Wrath）',
+     items:[
+       {t:'不公平だと感じると、心拍が上がる', rev:false},
+       {t:'小さな無礼でも内心ざわつく', rev:false},
+       {t:'その場で言い返したくなる衝動が出る', rev:false},
+       {t:'高ぶっても、一呼吸おける', rev:true},
+     ]},
+    {key:'SL', name:'先送り傾向（Sloth）',
+     items:[
+       {t:'面倒だと、別の楽な作業に逃げる', rev:false},
+       {t:'気の進まない用事を後回しにしがち', rev:false},
+       {t:'締切直前まで動きが重くなりやすい', rev:false},
+       {t:'短時間でも区切って着手できる', rev:true},
+     ]},
+    {key:'GD', name:'所有・収集志向（Greed）',
+     items:[
+       {t:'役立ちそうな情報や物を集めたくなる', rev:false},
+       {t:'得になりそうな話に心がそわそわする', rev:false},
+       {t:'必要ないものは手放せる', rev:true},
+       {t:'損を避けようとして選択が固くなる', rev:false},
+     ]},
+    {key:'GL', name:'快楽ドライブ（Gluttony）',
+     items:[
+       {t:'気分転換のつもりが長引いてしまう', rev:false},
+       {t:'ご褒美を理由に予定を変えがち', rev:false},
+       {t:'目の前の楽しさに注意が持っていかれる', rev:false},
+       {t:'「気分」と「必要」を分けて考えられる', rev:true},
+     ]},
+    {key:'LU', name:'親密衝動（Lust：マイルド）',
+     items:[
+       {t:'親しい人からの反応が遅いと、すぐ心がざわつく', rev:false},
+       {t:'新しい出会いや会話にときめくと、他の予定を後回しにしがち', rev:false},
+       {t:'送る前に一度見直して、落ち着いて返信できる', rev:true},
+       {t:'さびしさを埋めたくて、予定外の誘いやメッセージを送りたくなる', rev:false},
+     ]},
+  ];
+
+  // 5件法（1..5） ※逆転は (6 - v)
+  const SCALE = [
+    {v:1, label:'1 全くない'},
+    {v:2, label:'2 たまに'},
+    {v:3, label:'3 ときどき'},
+    {v:4, label:'4 よくある'},
+    {v:5, label:'5 ほとんどいつも'},
+  ];
+
+  // ===== 説明＆“やわらげテク” =====
+  const DESC = {
+  PR:'自分の価値を示したい気持ちが前に出やすい状態です。自信やリード力として働きますが、伝え方が強いと関係がぎくしゃくしがち。「共有」のつもりでも相手には「自慢」に見えることもあります。視点を少し入れ替え、周りへのお礼も添えると、力が前向きに使えます。',
+  EN:'比べる気持ちが強めです。目標の火種にもなりますが、行き過ぎると自己効力感が下がります。外の物差しを一度「昨日の自分」との比べに戻すと、落ち着いて進めます。',
+  WR:'不公平に素早く反応し、境界を守ろうとする力が高めです。大事な資質ですが、早い反撃は後悔しがち。体の緊張をほどき、怒りの下にある本当の気持ち（悲しみ・不安・疲れ）に名前をつけると落ち着きやすくなります。',
+  SL:'先延ばしが起きやすい状態です。エネルギー節約の知恵でもありますが、続くと機会を逃します。着手までの摩擦を減らし、作業の入口を小さくする工夫が効きます。',
+  GD:'増やす・守る方向に気持ちが向きやすい状態です。備えの才能ですが、「持つこと」自体が目的になると重くなります。持たなくても満たせる方法を先に探すと、軽く進めます。',
+  GL:'楽しさに舵が切られやすい状態です。回復や創造性には良い反面、短期の楽しさに流されやすい局面でもあります。少し待つ工夫と環境の調整、決めごとの自動化で「気分」と「目的」を合わせられます。',
+  LU:'つながりや承認を求める気持ちが強めです。自然な動機ですが、勢いでの連絡は境界をすり減らすことも。文面の組み立てと別の満たし方を合わせると、関係の質を保ちながら満たせます。'
+};
+
+  const SOFTEN = {
+  PR:[
+    '成果を伝えるときは「自分7・周り/運3」の配分で、お礼も一言添える。',
+    '同じ内容を相手の目線で30秒書き直す（相手の利点→次の一歩）。',
+    '事実→貢献→学び→弱み1行、の順で話す「型」を使う。'
+  ],
+  EN:[
+    '外との比べを「先週の自分」に戻す（数や時間で見える化）。',
+    '嫉妬→願いに翻訳：何に惹かれたかを名詞で書き出し→今日の最小の一歩。',
+    'SNSで気づいたことはメモ1行に写し、アプリはいったん閉じる。'
+  ],
+  WR:[
+    'こぶしを10秒握る→10秒ゆるめる×3で体の熱を下げる。',
+    '怒りの下の気持ち（悲しみ/不安/疲れ）を一語で書く→それ用の対処を1つ。',
+    '強い文面は「明日送る」に設定して寝かせ、朝に見直す。'
+  ],
+  SL:[
+    '60秒だけ環境整え：机の上を3点片づけ、不要タブを5つ閉じる。',
+    '好きな曲1曲分だけ作業。終わってもOK（再開しやすさを優先）。',
+    '入口だけ着手：ファイル名を付ける／ひな形を貼る、までで合格。'
+  ],
+  GD:[
+    '1つ増やす前に1つ手放す（1 in 1 out）。',
+    '買う気持ちが7/10以上の時は48時間寝かせてから決める。',
+    '買わずに満たす案（共有・レンタル・定額サービス）を先に調べる。'
+  ],
+  GL:[
+    '楽しみは15分待ってから。タイマー後に実行OK。',
+    'スマホは白黒表示＋通知はまとめて受ける。',
+    '「～したら→～する」の約束：タスク1つ→休憩5分、を決めて守る。'
+  ],
+  LU:[
+    '送る前に「相手の事情」「自分の願い」を1行ずつメモ。',
+    '短い定型文（目的→要件→選べる時間→猶予）で送る。',
+    'まず3分だけ体をほぐす／外の空気を吸う→それから連絡。'
+  ]
+};
+
+  // DOM
+  const $  = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  const res = $('#result'), head = $('#head'), heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
+  const top2Box = $('#top2'), allBox = $('#all');
+
+  // === 設問をフラット化してシャッフル（因子名は表示しない） ===
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  const QUESTIONS = shuffle(FACTORS.flatMap(f => f.items.map(it => ({ key:f.key, text:it.t, rev:it.rev }))));
+
+  // 質問描画（見出しなし・因子名非表示）
+  QUESTIONS.forEach((q, i)=>{
+    const s = document.createElement('section');
+    s.className = 'q';
+    s.innerHTML = `
+      <div class="ttl">Q${i+1}. ${q.text}</div>
+      <div class="scale" role="group" aria-label="質問 ${i+1}">
+        ${SCALE.map(sc=>{
+          const id = `q${i+1}-${sc.v}`;
+          return `<label class="opt" for="${id}">
+            <input type="radio" name="q${i+1}" id="${id}" value="${sc.v}">
+            <span>${sc.label}</span>
+          </label>`;
+        }).join('')}
+      </div>`;
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  const TOTAL = QUESTIONS.length;
+  function answeredCount(){ let n=0; for(let i=1;i<=TOTAL;i++){ if($('input[name="q'+i+'"]:checked')) n++; } return n; }
+  function updateProgress(){
+    const n=answeredCount();
+    ptext.textContent = `${n} / ${TOTAL}`;
+    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    btnCalc.disabled = n!==TOTAL;
+  }
+  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
+  updateProgress();
+
+  // 集計
+  function collect(){
+    const vals={};
+    for(let i=1;i<=TOTAL;i++){
+      const el = $('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i] = +el.value; // 1..5
+    }
+    return vals;
+  }
+
+  // スコア算出（因子別に合算／%化、自己調律＝逆転項目の“生値”平均%）
+  function compute(vals){
+    const sums = {PR:0,EN:0,WR:0,SL:0,GD:0,GL:0,LU:0};
+    const counts = {PR:0,EN:0,WR:0,SL:0,GD:0,GL:0,LU:0};
+    const revRaw = [];
+
+    QUESTIONS.forEach((q, idx)=>{
+      const v = vals[idx+1];           // 1..5
+      if(q.rev) revRaw.push(v);        // 生値で保持
+      const vv = q.rev ? (6 - v) : v;  // 逆転適用
+      sums[q.key] += vv;
+      counts[q.key] += 1;
+    });
+
+    const factors = Object.keys(sums).map(key=>{
+      const avg = sums[key]/counts[key]; // 1..5
+      const pct = Math.round(((avg-1)/4)*100); // 0..100
+      const name = DISPLAY[key];
+      return {key, name, img:IMAGE_BY_KEY[key], pct, avg:Math.round(avg*10)/10};
+    }).sort((a,b)=>b.pct-a.pct);
+
+    const overallPct = Math.round(factors.reduce((a,x)=>a+x.pct,0)/factors.length);
+    const tuningPct = Math.round(((revRaw.reduce((a,v)=>a+v,0)/revRaw.length - 1)/4)*100);
+
+    return {factors, overallPct, tuningPct};
+  }
+
+  // ラベル
+  function bandLabel(p){ if(p>=75) return '強活性帯'; if(p>=50) return '揺らぎ帯'; if(p>=25) return '安定帯'; return '静穏帯'; }
+
+  function heroText(key, overall, tuning){
+    const head = DISPLAY[key];
+    return `トップ因子は<strong>「${head}」</strong>。これは比喩上の呼称で、善悪の判定ではありません。今はその傾向が少し強めに出ているというサイン。<br>
+    全体平均は<strong>${overall}%</strong>、自己調律指数は<strong>${tuning}%</strong>。自分と環境の噛み合わせを整えれば、資質として活かせます。`;
+  }
+
+  // 描画
+  function el(tag, cls, html){ const x=document.createElement(tag); if(cls) x.className=cls; if(html!=null) x.innerHTML=html; return x; }
+
+  function render(vals){
+    const {factors, overallPct, tuningPct} = compute(vals);
+    const top = factors.slice(0,2);
+    const topKey = top[0].key;
+
+    // ヘッダ
+    head.innerHTML = `
+      <div class="stage">
+        <span class="badge">全体平均 ${overallPct}%</span>
+        <span class="badge">自己調律指数 ${tuningPct}%</span>
+      </div>
+    `;
+
+    // 画像＆コピー（トップ因子に合わせる）
+    heroImg.src = IMG_BASE + IMAGE_BY_KEY[topKey];
+    heroImg.alt = top[0].name + 'のイメージ';
+    heroCopy.innerHTML = heroText(topKey, overallPct, tuningPct);
+
+    // トップ2（長め説明＋“やわらげテク”）
+    top2Box.innerHTML='';
+    top.forEach(f=>{
+      const b = bandLabel(f.pct);
+      const tips = (SOFTEN[f.key]||[]).map(t=>`<li>${t}</li>`).join('');
+      const card = el('article','card',`
+        <div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span>${f.name}</span>
+          <span class="badge">${f.pct}%</span>
+          <span class="badge">${b}</span>
+        </div>
+        <div class="meter"><i style="width:${f.pct}%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></i></div>
+        <p style="margin:.7em 0 0">${DESC[f.key]}</p>
+        <div class="small" style="margin:.6em 0 0"><b>やわらげテク</b></div>
+        <ul class="small" style="margin:.3em 0 0 1.2em;padding:0">${tips}</ul>
+      `);
+      top2Box.appendChild(card);
+    });
+
+    // 全体（短縮表示）
+    allBox.innerHTML='';
+    factors.forEach(f=>{
+      const b = bandLabel(f.pct);
+      const card = el('div','card small',`
+        <div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span>${f.name}</span>
+          <span class="badge">${f.pct}%</span>
+          <span class="badge">${b}</span>
+        </div>
+        <div class="meter"><i style="width:${f.pct}%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></i></div>
+      `);
+      allBox.appendChild(card);
+    });
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // イベント
+  btnCalc.addEventListener('click', ()=>{
+    const vals = collect(); if(!vals) return;
+    render(vals);
+  });
+  btnReset.addEventListener('click', ()=>{
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    $('#pbar').style.width='0%'; $('#ptext').textContent='0 / 28';
+    res.style.display='none';
+    heroImg.removeAttribute('src'); heroImg.removeAttribute('alt'); heroCopy.textContent='';
+    head.innerHTML=''; top2Box.innerHTML=''; allBox.innerHTML='';
+    btnCalc.disabled = true;
+  });
+})();
+</script>
+</body>
+</html>
