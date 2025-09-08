@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>現代ストレス八寒地獄（悲しみベース）｜24項目で“寒さ指数”を可視化</title>
+<meta name="description" content="八寒モチーフで現代の“悲しみ温度”を8因子×各3項目・5件法で可視化するセルフチェック。エンタメ用。医療目的ではありません。">
+<meta name="theme-color" content="#f4f9ff">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="現代ストレス八寒地獄（悲しみベース）">
+<meta property="og:description" content="頞部陀・尼剌部陀・頞哳吒・臛臛婆・虎虎婆・嗢鉢羅・鉢特摩・摩訶鉢特摩の8因子で“寒さ指数”を可視化。">
+<meta property="og:image" content="/shindan/assets/results/eight-cold-hells/01.png">
+<meta property="og:url" content="/shindan/eight-cold-hells.html">
+
+<style>
+  :root{
+    --bg1:#f4f9ff; --bg2:#eef2ff; --paper:#ffffff; --ink:#11131a; --muted:#6b6a77;
+    --line:#e6ecf7; --accent:#4aa8ff; --accent2:#a48bff; /* THEME=cold */
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.85;letter-spacing:.02em}
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #a7c9ff;background:#f7fbff;color:#103654;padding:10px;border-radius:12px}
+  .warn strong{color:#0e61b8}
+  .section-title{margin:12px 0 8px;font-size:15px;font-weight:800}
+
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#eaf2ff;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f9ff);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:#0f172a}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+  .copy{color:#23314a;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#eaf2ff;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .small{font-size:.95em}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#1d4ed8;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>現代ストレス八寒地獄（悲しみベース）</h1>
+  <span class="crumb">24項目・1〜5 → 8因子％＋総合“寒さ指数”</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>八寒地獄モチーフを現代のストレス文脈に再構成</strong>。8因子×各3項目・5件法で“寒さ指数”を可視化します。</div>
+      <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
+      <!-- 法的注意書き（固定文） -->
+      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+    </div>
+
+    <!-- 質問（因子名は非表示・毎回ランダム） -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 24</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel" aria-live="polite">
+      <h2 class="section-title" style="font-size:18px">結果</h2>
+
+      <div id="head" class="stage" style="margin-bottom:8px"></div>
+
+      <!-- ヒーロー：トップ因子の画像＆コピー -->
+      <figure class="hero">
+        <img id="heroImg" src="" alt="" style="width:100%;height:auto;display:block" loading="lazy">
+      </figure>
+      <p class="copy" id="heroCopy"></p>
+
+      <h3 class="section-title">全体プロファイル（8因子）</h3>
+      <div class="grid" id="all"></div>
+
+      <details>
+        <summary>帯域（%）のめやす</summary>
+        <div class="small muted">
+          <p><b>低め</b> 0–39 ／ <b>中間</b> 40–69 ／ <b>高め</b> 70–100</p>
+        </div>
+      </details>
+
+      <div style="margin-top:14px">
+        <a href="/shindan/" class="btn linklike">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(()=> {
+  // ===== 画像パス（頞部陀=01.png … 摩訶鉢特摩=08.png）=====
+  const IMG_BASE = '/shindan/assets/results/eight-cold-hells/';
+  const IMAGE_BY_KEY = {
+    ABD:'01.png', // 頞部陀〈ガス欠〉 Arbuda
+    NRB:'02.png', // 尼剌部陀〈しみる〉 Nirarbuda
+    ATT:'03.png', // 頞哳吒〈ふるえ〉 Atata
+    HKB:'04.png', // 臛臛婆〈反すう〉 Hahava
+    KKB:'05.png', // 虎虎婆〈自己つっこみ〉 Huhuva
+    UBR:'06.png', // 嗢鉢羅〈ひとり傾向〉 Utpala
+    HDM:'07.png', // 鉢特摩〈喪失敏感〉 Padma
+    MKH:'08.png', // 摩訶鉢特摩〈空白感〉 Mahāpadma
+  };
+
+  // ===== 因子キーと表示名 =====
+  const FACTOR_LABEL = {
+    ABD:'頞部陀〈ガス欠〉',
+    NRB:'尼剌部陀〈しみる〉',
+    ATT:'頞哳吒〈ふるえ〉',
+    HKB:'臛臛婆〈反すう〉',
+    KKB:'虎虎婆〈自己つっこみ〉',
+    UBR:'嗢鉢羅〈ひとり傾向〉',
+    HDM:'鉢特摩〈喪失敏感〉',
+    MKH:'摩訶鉢特摩〈空白感〉',
+  };
+
+  // ===== 項目（各3・rev=true は逆転）=====
+  const FACTORS = [
+    {key:'ABD', items:[
+      {t:'予定がない日は、動き出すまでエンジンがかかりにくい。', rev:false},
+      {t:'朝、身支度の合間に小休止が何度も必要になる。', rev:false},
+      {t:'用事が立て込む日のほうが、意外とテンポよく動ける。', rev:true}, // (R)
+    ]},
+    {key:'NRB', items:[
+      {t:'小さな失敗でも、その日全体の気分がじわっと沈みやすい。', rev:false},
+      {t:'楽しみにしていたことでも、直前になると腰が重くなる。', rev:false},
+      {t:'うまくいかないことがあっても、別の楽しみで持ち直せる。', rev:true}, // (R)
+    ]},
+    {key:'ATT', items:[
+      {t:'返信待ちの間、そわそわして手が止まりがち。', rev:false},
+      {t:'初めての場所や予定の前は、行きたくなさが勝ちやすい。', rev:false},
+      {t:'不確定なことがあっても、ふだん通りのペースで過ごせる。', rev:true}, // (R)
+    ]},
+    {key:'HKB', items:[
+      {t:'以前のやらかしが、ふとした拍子に何度も再生される。', rev:false},
+      {t:'寝る前に「別の言い方があったな」と考え出すと止まらない。', rev:false},
+      {t:'嫌な出来事を思い出しても、短時間で気持ちを切り替えられる。', rev:true}, // (R)
+    ]},
+    {key:'KKB', items:[
+      {t:'つい「自分のせいだ」と結論づけがち。', rev:false},
+      {t:'褒められても「たまたま」と受け取ってしまう。', rev:false},
+      {t:'失敗しても、自分を責めすぎず学びに変えられる。', rev:true}, // (R)
+    ]},
+    {key:'UBR', items:[
+      {t:'休憩時間は、雑談より一人で静かにいたいことが多い。', rev:false},
+      {t:'誘われても、先に断る理由を考えてしまう。', rev:false},
+      {t:'誘いがあれば、軽い気持ちで顔を出せる。', rev:true}, // (R)
+    ]},
+    {key:'HDM', items:[
+      {t:'「嫌われたかも」と思うと、一気に距離を置きたくなる。', rev:false},
+      {t:'予定変更の知らせに、まず「終わり」を想像してしまう。', rev:false},
+      {t:'変化があっても、必要以上に不安に引っ張られない。', rev:true}, // (R)
+    ]},
+    {key:'MKH', items:[
+      {t:'何をしても手応えが薄く、時間だけが進む日がある。', rev:false},
+      {t:'好きだったことに取りかかっても、すぐ満足感が切れる。', rev:false},
+      {t:'小さな達成でも、少しの充足をちゃんと感じられる。', rev:true}, // (R)
+    ]},
+  ];
+
+  // 5件法（1..5）
+  const SCALE = [
+    {v:1, label:'1 まったく当てはまらない'},
+    {v:2, label:'2 あまり当てはまらない'},
+    {v:3, label:'3 どちらとも言えない'},
+    {v:4, label:'4 やや当てはまる'},
+    {v:5, label:'5 とても当てはまる'},
+  ];
+
+  // ===== 帯域コメント（低/中/高）＋1行ヒント（ケア要約） ※ユーザー提供文を反映 =====
+  const BAND_COMMENTS = {
+    ABD:{ // Arbuda（ガス欠）
+      high:'燃料が切れやすく、始動と再始動に時間がかかる時期。やる気の問題というより“電池残量”の話。',
+      mid:'始動は遅い日もあるが、予定が回れば持ち直せる。',
+      low:'立ち上がりが安定。がんばり過ぎて燃料切れに気づきにくい面も。',
+      tip:'ケア：①最小着手（30秒だけ）②開始トリガー固定（歯磨き後1分）③完了より“着手”を記録'
+    },
+    NRB:{ // Nirarbuda（しみる）
+      high:'小さな失敗が一日じわっと沁みるタイプ。楽しみ直前の腰の重さも出やすい。',
+      mid:'気分は揺れるが、別の楽しみで回復可能。',
+      low:'気持ちの沁み込みが浅く回復が速い。共感シグナルが薄く見えがち。',
+      tip:'ケア：①予定の“前菜”（5分の軽い楽しみ）②失敗→再挑戦の“次の一手”テンプレ化'
+    },
+    ATT:{ // Atata（ふるえ）
+      high:'不確定要素の前に“行きたくなさ”が勝ちやすい。返信待ちで手が止まりがち。',
+      mid:'そわそわはあるが、手は動かせる。',
+      low:'不確定の中でも平常運転。慎重さが抜けすぎる場面に注意。',
+      tip:'ケア：①待ち時間タスク表②未知の用事は“下見5分”を標準装備／タイマー25分・可視化'
+    },
+    HKB:{ // Hahava（反すう）
+      high:'就寝前“言い方再生”が止まらない。思考がループし、気力を持っていかれやすい。',
+      mid:'たまに再生されるが、切替も可能。',
+      low:'切替上手。学びの“振り返り”まで省略しない工夫を。',
+      tip:'ケア：①“後で考える箱”（メモに預けて就寝）②再生は“3回まで”ルール／3分ボイスメモ'
+    },
+    KKB:{ // Huhuva（自己つっこみ）
+      high:'「自分のせい」に帰着しやすく、誉めが入らない。',
+      mid:'反省と自己受容のバランスは概ね良好。',
+      low:'自責に偏らず健全。ただし学びの具体化は意識。',
+      tip:'ケア：①“他の説明”を3つ挙げる②誉めは“そのまま受け取る”練習／事実-解釈-次の一手'
+    },
+    UBR:{ // Utpala（ひとり傾向）
+      high:'雑談より独り回復が効く反面、誘いを先に断りがち。',
+      mid:'一人時間と交流の切替ができる。',
+      low:'交流寄りで潤うタイプ。オーバーコミットに注意。',
+      tip:'ケア：①“顔出し10分だけ”参加②週1で軽い共有タスク／疲労度で選ぶ交流メニュー'
+    },
+    HDM:{ // Padma（喪失敏感）
+      high:'既読スルーや予定変更に“終わり”を想像しやすい。距離を置きたくなる。',
+      mid:'不安は出るが、事実確認で調整可能。',
+      low:'変化に強く、関係の揺れに耐性あり。見落としに注意。',
+      tip:'ケア：①一次解釈の猶予24h②“確認メッセージ”の定型文／合意メモ（日時・目的・次回）'
+    },
+    MKH:{ // Mahāpadma（空白感）
+      high:'手応えが薄く、好きだったこともすぐ満足が切れやすい。虚無感に飲まれやすい。',
+      mid:'波はあるが、日々の小さな充足で埋め戻せる。',
+      low:'充足を感じ取りやすい。高負荷期は“味わう時間”が削られがち。',
+      tip:'ケア：①“手応えの見える化”（進捗バー）②小達成の“積み木”可視化／1日1枚“手応えスクショ”'
+    },
+  };
+
+  // ===== 総合コメント（テンプレ・ユーザー提供） =====
+  function overallTemplate(p){
+    if(p>=70) return {label:'寒さ指数：高', text:'気持ちが冷えやすいコンディション。まずは反すう・ガス欠・空白感の3点に温かさを配分。ミニ着手→可視化→味わい停止の“温め三段”が効きます。'};
+    if(p>=40) return {label:'寒さ指数：中', text:'日によって冷え込み。しみる/ふるえの波に“前菜5分”と“待ち時間タスク”を常備して、冷えの谷を浅く。'};
+    return {label:'寒さ指数：低', text:'安定期。オーバーランによる燃料切れには注意し、停止時間の予定化でバランス維持。'};
+  }
+
+  // ===== DOM =====
+  const $  = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  const res = $('#result'), head = $('#head'), allBox = $('#all');
+  const heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
+
+  // ===== シャッフル =====
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  // 設問をフラット化 → ランダム
+  const QUESTIONS = shuffle(FACTORS.flatMap(f => f.items.map(it => ({ key:f.key, text:it.t, rev:it.rev }))));
+
+  // 質問描画
+  QUESTIONS.forEach((q, i)=>{
+    const s = document.createElement('section');
+    s.className = 'q';
+    s.innerHTML = `
+      <div class="ttl">Q${i+1}. ${q.text}</div>
+      <div class="scale" role="group" aria-label="質問 ${i+1}">
+        ${SCALE.map(sc=>{
+          const id = `q${i+1}-${sc.v}`;
+          return `<label class="opt" for="${id}">
+            <input type="radio" name="q${i+1}" id="${id}" value="${sc.v}">
+            <span>${sc.label}</span>
+          </label>`;
+        }).join('')}
+      </div>`;
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  const TOTAL = QUESTIONS.length;
+  function answeredCount(){ let n=0; for(let i=1;i<=TOTAL;i++){ if($('input[name="q'+i+'"]:checked')) n++; } return n; }
+  function updateProgress(){
+    const n=answeredCount();
+    ptext.textContent = `${n} / ${TOTAL}`;
+    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    btnCalc.disabled = n!==TOTAL;
+  }
+  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
+  updateProgress();
+
+  // 回答収集
+  function collect(){
+    const vals={};
+    for(let i=1;i<=TOTAL;i++){
+      const el = $('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i] = +el.value; // 1..5
+    }
+    return vals;
+  }
+
+  // スコア計算（因子％、総合％）
+  function compute(vals){
+    const keys = Object.keys(FACTOR_LABEL);
+    const sums = Object.fromEntries(keys.map(k=>[k,0]));
+    const cnts = Object.fromEntries(keys.map(k=>[k,0]));
+
+    QUESTIONS.forEach((q, idx)=>{
+      const v = vals[idx+1];                 // 1..5
+      const vv = q.rev ? (6 - v) : v;        // 逆転適用
+      sums[q.key] += vv;
+      cnts[q.key] += 1;
+    });
+
+    const factors = keys.map(key=>{
+      const avg = sums[key]/cnts[key];       // 1..5
+      const pct = Math.round(((avg-1)/4)*100); // 0..100
+      return {key, name:FACTOR_LABEL[key], pct, avg:Math.round(avg*10)/10};
+    });
+
+    const overallPct = Math.round(factors.reduce((a,x)=>a+x.pct,0)/factors.length);
+    return {factors, overallPct};
+  }
+
+  // 帯域判定
+  function band(p){ if(p>=70) return 'high'; if(p>=40) return 'mid'; return 'low'; }
+  function bandLabel(p){ if(p>=70) return '高'; if(p>=40) return '中'; return '低'; }
+
+  // 結果描画
+  function render(vals){
+    const {factors, overallPct} = compute(vals);
+
+    // トップ因子（％で最大）を決定
+    const top = [...factors].sort((a,b)=>b.pct-a.pct)[0];
+    const ob = overallTemplate(overallPct);
+
+    // ヘッダ（総合）
+    head.innerHTML = `
+      <span class="badge">${ob.label}：${overallPct}%</span>
+      <span class="badge">${ob.text}</span>
+    `;
+
+    // ヒーロー画像＆コピー（トップ因子に対応した01〜08.png）
+    const imgFile = IMAGE_BY_KEY[top.key] || '01.png';
+    heroImg.src = IMG_BASE + imgFile;
+    heroImg.alt = top.name + 'のイメージ';
+    const bc = BAND_COMMENTS[top.key];
+    const btxt = (band(top.pct)==='high') ? bc.high : (band(top.pct)==='mid' ? bc.mid : bc.low);
+    heroCopy.innerHTML = `最も寒さが出ている因子は<strong>「${top.name}」</strong>（<b>${top.pct}%・${bandLabel(top.pct)}</b>）。<br>${btxt}<br><span class="muted"><b>ヒント：</b>${bc.tip}</span>`;
+
+    // 因子カード（01→08の順で表示）
+    allBox.innerHTML='';
+    const order = ['ABD','NRB','ATT','HKB','KKB','UBR','HDM','MKH'];
+    order.map(k => factors.find(f=>f.key===k)).forEach(f=>{
+      const bkey = band(f.pct);
+      const bc = BAND_COMMENTS[f.key];
+      const line = (bkey==='high') ? bc.high : (bkey==='mid' ? bc.mid : bc.low);
+
+      const card = document.createElement('article');
+      card.className = 'card small';
+      card.innerHTML = `
+        <div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span>${f.name}</span>
+          <span class="badge">${f.pct}%</span>
+          <span class="badge">${bandLabel(f.pct)}</span>
+        </div>
+        <div class="meter" aria-hidden="true"><i style="width:${f.pct}%"></i></div>
+        <p style="margin:.7em 0 0">${line}</p>
+        <p class="muted" style="margin:.3em 0 0"><b>ヒント：</b>${BAND_COMMENTS[f.key].tip}</p>
+      `;
+      allBox.appendChild(card);
+    });
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // イベント
+  btnCalc.addEventListener('click', ()=>{
+    const vals = collect(); if(!vals) return;
+    render(vals);
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    pbar.style.width='0%';
+    ptext.textContent='0 / 24';
+    res.style.display='none';
+    head.innerHTML='';
+    allBox.innerHTML='';
+    heroImg.removeAttribute('src');
+    heroImg.alt='';
+    heroCopy.textContent='';
+    btnCalc.disabled = true;
+  });
+})();
+</script>
+</body>
+</html>
