@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>仕事DNA×偉人タイプ診断｜24問で“働き方の骨格”を測定</title>
+<meta name="description" content="24問・5件法で“働き方の骨格”を測定。ダーウィン/テスラ/フランクリン/カーネギー/オグルヴィ/ダ・ヴィンチ/ナイチンゲール/デミング/フォレット/孫子/マゼラン/モンテスキューの12アーキタイプから、あなたのトップタイプと近い候補を提示します（エンタメ用）。">
+<meta name="theme-color" content="#f6fbff">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="仕事DNA×偉人タイプ診断">
+<meta property="og:description" content="24問で“働き方の骨格”を測定。あなたに響く偉人アーキタイプは？">
+<meta property="og:image" content="/shindan/assets/results/great-minds/01.png">
+<meta property="og:url" content="/shindan/great-minds.html">
+
+<style>
+  :root{
+    --bg1:#f6fbff; --bg2:#f4f2ff; --paper:#ffffff; --ink:#14131a; --muted:#6b6a77;
+    --line:#e8ecf6; --accent:#4aa8ff; --accent2:#a48bff; /* THEME="cold" */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--ink);
+    font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.9;letter-spacing:.02em
+  }
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #c7d9ff;background:#f7fbff;color:#1f3352;padding:10px;border-radius:12px}
+  .warn strong{color:#0b63c8}
+  .section-title{margin:12px 0 8px;font-size:15px;font-weight:800}
+
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#eaf2ff;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--ink)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+  .copy{color:#274264;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#eaf2ff;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .small{font-size:.95em}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#365493;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>仕事DNA×偉人タイプ診断</h1>
+  <span class="crumb">24項目・1〜5 → 12タイプ判定＋近い候補</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>12の偉人アーキタイプで“働き方の骨格”を推定</strong>。各タイプ2問・5件法であなたのトップタイプを表示します。</div>
+      <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
+      <!-- 法的注意書き（固定文：文言改変せず） -->
+      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+      データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+      宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+    </div>
+
+    <!-- 質問（毎回ランダム） -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 24</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel">
+      <h2 class="section-title" style="font-size:18px">結果</h2>
+
+      <div id="head" class="stage" style="margin-bottom:8px"></div>
+
+      <!-- ヒーロー：トップタイプの画像＆コピー -->
+      <figure class="hero"><img id="heroImg" src="" alt="" style="width:100%;height:auto;display:block" loading="lazy"></figure>
+      <div class="copy" id="heroCopy"></div>
+
+      <h3 class="section-title">全体プロファイル（12タイプ）</h3>
+      <div class="grid" id="all"></div>
+
+      <details>
+        <summary>スコア換算ルール</summary>
+        <div class="small muted">
+          <p>各タイプの2問平均（1–5）→ <code>pct = Math.round((avg-1)/4*100)</code>。トップとの差が<b>3pt以内</b>なら「近い候補」として表示。</p>
+        </div>
+      </details>
+
+      <div style="margin-top:14px">
+        <a href="/shindan/" class="btn linklike">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(()=> {
+  // ===== 画像ベースパス（01.png..12.png）=====
+  // 指定：01.png=研究（darwin）, 12.png=法務（montesquieu）
+  const IMG_BASE = '/shindan/assets/results/great-minds/';
+  const IMAGE_BY_ORDER = {
+    darwin:'01.png', tesla:'02.png', franklin:'03.png', carnegie:'04.png',
+    ogilvy:'05.png', davinci:'06.png', nightingale:'07.png', deming:'08.png',
+    follett:'09.png', sunzi:'10.png', magellan:'11.png', montesquieu:'12.png'
+  };
+
+  // ===== タイプ定義（名称・一行コピー・職域例）=====
+  const TYPES = [
+  {key:'darwin', name:'ダーウィン｜洞察・研究',
+    copy:'仮説→観察→検証で静かに突破する考証型。',
+    long:'仮説を立て、観察とデータ検証で道を切り開く「研究推進」タイプ。複雑な情報を整理し、結論を丁寧に言語化します。',
+    why:'曖昧な事象をデータで解像し、再現可能な知見に落とし込めるため。意思決定の質を底上げできる。',
+    risks:'完璧な根拠待ちで意思決定が遅れる／分析麻痺に入りやすい。',
+    tips:'「良い十分」基準を先に宣言し、検証の打ち切り条件と次の仮説列を準備する。',
+    fit:'観察・実験の時間とデータアクセスが確保された環境',
+    avoid:'短期成果のみ要求・検証時間がゼロに近い環境',
+    kpi:'検証サイクル数／再現率／発見の業務貢献（工数削減・売上寄与）',
+    jobs:['R&D','リサーチャー','アナリスト','UXリサーチ']},
+
+  {key:'tesla', name:'テスラ｜設計・発明',
+    copy:'頭の中の設計図を現実へ。仕組みで解く創造技術。',
+    long:'仕組みを分解し、要素から最適な設計を組み上げる「創造エンジニア」。発想を図面とプロトタイプで素早く具現化します。',
+    why:'分解→再構成の思考で制約下でも最適案を設計し、手を動かして形にできる。',
+    risks:'作り込み過多／過剰最適化でリードタイムが延びる。',
+    tips:'最小MVP→レビュー→改良の節でWIP3本制限。安全率と保守性の基準をチーム合意にする。',
+    fit:'試作と検証のスロットが常設された現場',
+    avoid:'仕様が流動的なのに検証時間が取れない現場',
+    kpi:'MVP到達時間／欠陥率／保守工数／スループット',
+    jobs:['SWE/設計','データエンジニア','ハード設計','発明']},
+
+  {key:'franklin', name:'フランクリン｜橋渡し・PM',
+    copy:'多様な利害を仕様に落とす合意形成の名手。',
+    long:'関係者の要望を翻訳し、仕様へ落とす「橋渡し役」。合意形成と優先度設計でプロジェクトを前に進めます。',
+    why:'利害を言語化し、誰もが読める仕様に変換できるため摩擦が減る。',
+    risks:'「調整屋」で終わりがち／意思決定が曖昧になる。',
+    tips:'成功条件・非目標・決め方（RACI/DRI）を冒頭で固定。意思決定ログを運用する。',
+    fit:'複数部署が絡む横断プロジェクト',
+    avoid:'権限不明・決裁が属人的で覆りやすい組織',
+    kpi:'合意までのリードタイム／スコープ遵守率／リスク顕在化件数',
+    jobs:['PdM/PM','プロダクトオーナー','要件定義']},
+
+  {key:'carnegie', name:'カーネギー｜営業・交渉',
+    copy:'共感と復元力で関係を前に進めるフロントランナー。',
+    long:'相手の価値観を素早くつかみ、関係を育てる「関係駆動」タイプ。断られても立て直し、次の打ち手に切り替えます。',
+    why:'共感→要約→提案の循環が速く、断られても学びを回して改善できる。',
+    risks:'過剰適応で値引き・スコープ譲歩が積み上がる。',
+    tips:'ICP・失注理由・次アクションを定量で回す。断る基準を先に設定。',
+    fit:'関係構築を重視するBtoBや高単価領域',
+    avoid:'価格のみの短期消耗戦／関係が築けない大量投下型',
+    kpi:'Win率／LTV／解約率／次回アポ率',
+    jobs:['セールス','BD','CS','アカウント']},
+
+  {key:'ogilvy', name:'オグルヴィ｜マーケ・物語',
+    copy:'一言で刺す物語と数字の仮説で市場を動かす。',
+    long:'数字とストーリーを行き来して、価値を一言で届ける「メッセージ設計」。検証と学習で勝ち筋を磨きます.',
+    why:'複雑な価値を“ひとことで届く文脈”に翻訳し、数字で確かめられる。',
+    risks:'スローガン先行／測定不能な施策に流れる。',
+    tips:'顧客ジョブ→ヘッドライン10案→A/B→学びの文書化を定例化。',
+    fit:'テスト可能なデジタルチャネル／検証文化のある組織',
+    avoid:'成果検証なしの大量露出・根性論',
+    kpi:'CVR／CAC↘︎／広告ROAS／ブランド想起',
+    jobs:['マーケ','ブランド','コピー','調査×クリエイティブ']},
+
+  {key:'davinci', name:'ダ・ヴィンチ｜デザイン・創作',
+    copy:'白紙を形へ。美しさと機能の接点を探す。',
+    long:'抽象から具体へ滑らかに降ろす「0→1デザイン」。体験の使い心地と細部の美しさを同時に成立させます。',
+    why:'問題の本質を掴み、体験設計に落として検証できる。美と機能の両立を指揮できる。',
+    risks:'完璧主義で時間超過／個人の審美に寄り過ぎる。',
+    tips:'低忠実度→ユーザテスト→高忠実度の順で進め、デザインシステムを早期に整える。',
+    fit:'ユーザー接点が多く、反復学習できる現場',
+    avoid:'指示待ち一方／理由を説明できない美意識の対立',
+    kpi:'タスク成功率／TTF（完了時間）／NPS／UI欠陥率',
+    jobs:['UI/UX','インダストリアル','アートディレクション']},
+
+  {key:'nightingale', name:'ナイチンゲール｜ケア＆教育',
+    copy:'気づき・寄り添い・伝えるで人を支える。',
+    long:'小さなサインに気づき、相手に合わせて伝える「支援設計」。学びの言い換えと安心設計が得意です。',
+    why:'微細なサイン検出と分かりやすい言い換えで定着を促せる。',
+    risks:'燃え尽き／境界の希薄化で負担過多に陥る。',
+    tips:'境界宣言・負担分散・教材テンプレで仕組み化。セルフケアを予定に固定。',
+    fit:'継続支援・少人数指導・心理的安全が高い組織',
+    avoid:'人数過多で一律対応・評価が成果より情緒依存',
+    kpi:'学習到達率／定着率／相談→改善の実行率',
+    jobs:['教育/研修','看護・福祉','ピープル育成']},
+
+  {key:'deming', name:'デミング｜オペ・品質',
+    copy:'標準化と改善でムラを消す安定ドライブ。',
+    long:'手順を標準化し、再発を潰す「品質×改善」。チェックリストと原因分析で安定稼働をつくります。',
+    why:'手順化・見える化・再発防止が得意で、ばらつきを抑えて再現性を高める。',
+    risks:'官僚的になり速度低下／現場解を無視しがち。',
+    tips:'現場観察→小さな改善→標準化の小循環。ルールは効果検証前提で更新。',
+    fit:'反復業務／品質やSLAが重要な現場',
+    avoid:'ルール軽視のヒーロー文化・属人運用',
+    kpi:'不良率↘︎／サイクルタイム↘︎／SLA遵守率↗︎',
+    jobs:['オペ','品質保証','業務改善','生産管理']},
+
+  {key:'follett', name:'フォレット｜人事・組織',
+    copy:'対立を統合し、成長と協働を設計する。',
+    long:'意見の衝突を資源化し、成長に変える「組織デザイン」。配置と育成、対話の場づくりが強みです。',
+    why:'対立の背景を言語化し、統合解を作れるため組織の摩擦損失を減らす。',
+    risks:'合意疲れ／決め切れない会議が増える。',
+    tips:'決め方のルール・タイムボックス・少人数設計で前進を担保。',
+    fit:'成長途上の組織／変化対応が常態の現場',
+    avoid:'トップダウン硬直で自律の余地ゼロ',
+    kpi:'離職率↘︎／エンゲージメント↗︎／採用充足・オンボード速度',
+    jobs:['人事','組織開発','採用','ファシリテーション']},
+
+  {key:'sunzi', name:'孫子｜戦略・企画',
+    copy:'先手のシナリオで資源を最大活用する戦略家。',
+    long:'先手のシナリオを描き、資源配分で勝ち筋をつくる「戦略設計」。A/B/Cの打ち手を用意して機動的に動きます。',
+    why:'状況を抽象化して多手先の打ち手を用意でき、資源配分で効果最大化が可能。',
+    risks:'計画倒れ／分析過多で着手が遅れる。',
+    tips:'先行指標を決め、可逆な実験を短周期で回す。定石と仮説を分離管理。',
+    fit:'不確実性が高く資源が限られる局面',
+    avoid:'行き当たりばったり・指標不在の意思決定',
+    kpi:'実験成功率／北極星指標の伸び／CACやROIの改善',
+    jobs:['経営企画','戦略','BizDev','コンサル']},
+
+  {key:'magellan', name:'マゼラン｜起業・冒険',
+    copy:'未知を航路に。動きながら地図を描く挑戦者。',
+    long:'小さく試して道を切り開く「探索ドライブ」。不確実性の中でも行動し、学びを次の一手に繋ぎます。',
+    why:'行動→学習の速度が速く、早期に方向修正できる。',
+    risks:'走り過ぎて資源を消耗／記録が薄く学びが残らない。',
+    tips:'撤退条件・資源上限・検証質問を先に設定。学びは週次で意思決定に反映。',
+    fit:'0→1の新規事業・市場探索',
+    avoid:'変化を嫌う定常運用・失敗に厳罰',
+    kpi:'MVPまでの時間／学習サイクル速度／牽引指標の伸び',
+    jobs:['起業','新規事業','事業開拓','グロース']},
+
+  {key:'montesquieu', name:'モンテスキュー｜法務・リスク',
+    copy:'原則と倫理で守りを固めるガバナンスの要。',
+    long:'原則・規程・リスクを整える「ガバナンス設計」。例外運用や実務のリアリティも踏まえて全体最適を図ります。',
+    why:'原則と現場の両立で持続可能な運用を設計し、重大リスクを減らせる。',
+    risks:'保守過多でスピードを阻害／Noと言いがち。',
+    tips:'原則＋例外の窓口を設計。リスク階層と許容度を合意し、教育・監査を四半期で回す。',
+    fit:'規制・信頼が重要な領域／監査や顧客審査が厳格',
+    avoid:'ルール軽視・ドキュメント不在・口約束運用',
+    kpi:'法令違反ゼロ／監査指摘↘︎／教育受講率↗︎',
+    jobs:['法務','コンプラ','内部監査','リスク管理']}
+];
+  const ORDER = TYPES.map(t=>t.key); // 表示順
+
+  // ===== 項目（各タイプ2問）=====
+  const ITEMS = [
+    {key:'darwin',   t:'新しい知識を集めて整理するのが面白くて止まらない。', rev:false},
+    {key:'darwin',   t:'直感よりも、データや根拠を確認してから動きたい。', rev:false},
+    {key:'tesla',    t:'仕組みが分かるまで分解したり試したくなる。', rev:false},
+    {key:'tesla',    t:'頭の中で設計図を組み立てるのが得意だ。', rev:false},
+    {key:'franklin', t:'異なる立場の要望をまとめ、仕様に落とすのは得意。', rev:false},
+    {key:'franklin', t:'部署間の調整役に自然と回されがちだ。', rev:false},
+    {key:'carnegie', t:'初対面でも相手の価値観や関心をつかむのが早い。', rev:false},
+    {key:'carnegie', t:'断られても気持ちを立て直して次にいける。', rev:false},
+    {key:'ogilvy',   t:'魅力を一言で伝えるキャッチを考えるのが楽しい。', rev:false},
+    {key:'ogilvy',   t:'数字と感情の両方から仮説を作るのが好きだ。', rev:false},
+    {key:'davinci',  t:'白紙からアイデアを形にする工程が一番ワクワクする。', rev:false},
+    {key:'davinci',  t:'細部の美しさや使い心地にこだわってしまう。', rev:false},
+    {key:'nightingale', t:'困っている人の“サイン”に気づきやすい。', rev:false},
+    {key:'nightingale', t:'教えるとき、相手に合わせた言い回しを工夫する。', rev:false},
+    {key:'deming',   t:'手順の標準化やチェックリスト作りが好きだ。', rev:false},
+    {key:'deming',   t:'再発防止の原因分析を黙々とやれる。', rev:false},
+    {key:'follett',  t:'意見が分かれた場面で、対立をほどくのが得意。', rev:false},
+    {key:'follett',  t:'人の成長プランや配置を考えるのが楽しい。', rev:false},
+    {key:'sunzi',    t:'先回りのシナリオ（AならB、ダメならC）を描きがち。', rev:false},
+    {key:'sunzi',    t:'限られた資源で効果最大にするのに燃える。', rev:false},
+    {key:'magellan', t:'未知の領域でもまず動きながら地図を描く。', rev:false},
+    {key:'magellan', t:'リスクは怖いが、挑戦しない方が落ち着かない。', rev:false},
+    {key:'montesquieu', t:'契約や規程の抜け漏れを見ると気になる。', rev:false},
+    {key:'montesquieu', t:'ルールの背景にあるリスクや倫理を考えがちだ。', rev:false},
+  ];
+
+  // 5件法（1..5）
+  const SCALE = [
+    {v:1, label:'1 まったく当てはまらない'},
+    {v:2, label:'2 あまり当てはまらない'},
+    {v:3, label:'3 どちらとも言えない'},
+    {v:4, label:'4 やや当てはまる'},
+    {v:5, label:'5 とても当てはまる'},
+  ];
+
+  // DOM
+  const $  = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  const res = $('#result'), head = $('#head'), allBox = $('#all');
+  const heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
+
+  // ユーティリティ
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function pctFromAvg(avg){ return Math.round(((avg-1)/4)*100); }
+  function bandLabel(p){ if(p>=70) return '高め'; if(p>=40) return '中間'; return '低め'; }
+
+  // 設問をランダム化
+  const QUESTIONS = shuffle(ITEMS.map((it,idx)=>({ ...it, idx })));
+
+  // 質問描画
+  QUESTIONS.forEach((q, i)=>{
+    const s = document.createElement('section');
+    s.className = 'q';
+    s.innerHTML = `
+      <div class="ttl">Q${i+1}. ${q.t}</div>
+      <div class="scale" role="group" aria-label="質問 ${i+1}">
+        ${SCALE.map(sc=>{
+          const id = `q${i+1}-${sc.v}`;
+          return `<label class="opt" for="${id}">
+            <input type="radio" name="q${i+1}" id="${id}" value="${sc.v}">
+            <span>${sc.label}</span>
+          </label>`;
+        }).join('')}
+      </div>`;
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  const TOTAL = QUESTIONS.length;
+  function answeredCount(){ let n=0; for(let i=1;i<=TOTAL;i++){ if($('input[name="q'+i+'"]:checked')) n++; } return n; }
+  function updateProgress(){
+    const n=answeredCount();
+    ptext.textContent = `${n} / ${TOTAL}`;
+    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    btnCalc.disabled = n!==TOTAL;
+  }
+  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
+  updateProgress();
+
+  // 回答収集
+  function collect(){
+    const vals={};
+    for(let i=1;i<=TOTAL;i++){
+      const el = $('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i] = +el.value; // 1..5
+    }
+    return vals;
+  }
+
+  // スコア計算
+  function compute(vals){
+    const sums = {}; const cnts = {};
+    ORDER.forEach(k=>{sums[k]=0; cnts[k]=0;});
+    QUESTIONS.forEach((q, idx)=>{
+      const v = vals[idx+1];
+      const vv = q.rev ? (6 - v) : v;
+      sums[q.key] += vv; cnts[q.key] += 1;
+    });
+    const types = ORDER.map(k=>{
+  const avg = sums[k]/(cnts[k]||1);
+  const pct = pctFromAvg(avg);
+  const info = TYPES.find(t=>t.key===k);
+  return {
+    key:k,
+    name:info.name,
+    copy:info.copy,
+    long:info.long,
+    why:info.why,
+    risks:info.risks,
+    tips:info.tips,
+    fit:info.fit,
+    avoid:info.avoid,
+    kpi:info.kpi,
+    jobs:info.jobs,
+    pct,
+    avg:Math.round(avg*10)/10
+  };
+}).sort((a,b)=>b.pct-a.pct || b.avg-a.avg);
+
+    const top = types[0];
+    const near = types.slice(1).filter(t=> (top.pct - t.pct) <= 3).slice(0,2); // 近い候補 最大2
+    return {types, top, near};
+  }
+
+  // 結果描画
+  function render(vals){
+    const {types, top, near} = compute(vals);
+
+    // ヘッダ
+    head.innerHTML = `
+      <span class="badge">あなたの偉人タイプ：${top.name}</span>
+      ${near.length? `<span class="badge">近い候補：${near.map(n=>n.name).join('、')}</span>`:''}
+    `;
+
+    // ヒーロー画像＆コピー
+    const imgFile = IMAGE_BY_ORDER[top.key] || '01.png';
+    heroImg.src = IMG_BASE + imgFile;
+    heroImg.alt = top.name + 'を象徴するイメージ';
+    heroCopy.innerHTML = `
+  <b>${top.name}</b>（<b>${top.pct}%・${bandLabel(top.pct)}</b>）<br>
+  ${top.long}
+  <ul class="small" style="margin:.5em 0 .2em">
+    <li><b>適性の理由：</b>${top.why}</li>
+    <li><b>注意・改善：</b>${top.risks}／<b>次の一手：</b>${top.tips}</li>
+    <li><b>向く環境：</b>${top.fit}／<b>避けたい：</b>${top.avoid}</li>
+    <li><b>相性の良いKPI：</b>${top.kpi}</li>
+  </ul>
+  <span class="muted"><b>向いている仕事：</b>${top.jobs.join(' / ')}</span>
+    `;
+
+    // 全タイプカード
+    allBox.innerHTML='';
+    types.forEach(f=>{
+      const card = document.createElement('article');
+      card.className = 'card small';
+      const img = IMAGE_BY_ORDER[f.key];
+      card.innerHTML = `
+        <div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span>${f.name}</span>
+          <span class="badge">${f.pct}%</span>
+          <span class="badge">${bandLabel(f.pct)}</span>
+        </div>
+        <div class="meter"><i style="width:${f.pct}%"></i></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-top:10px">
+          <img src="${IMG_BASE + img}" alt="${f.name}の象徴イメージ" width="64" height="64" style="width:64px;height:64px;border-radius:10px;border:1px solid var(--line);object-fit:cover" loading="lazy">
+          <div>
+            <p style="margin:.2em 0 .4em">${f.copy}</p>
+            <p class="muted" style="margin:.2em 0 0"><b>職域：</b>${f.jobs.join(' / ')}</p>
+          </div>
+        </div>
+      `;
+      allBox.appendChild(card);
+    });
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // イベント
+  btnCalc.addEventListener('click', ()=>{
+    const vals = collect(); if(!vals) return;
+    render(vals);
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    pbar.style.width='0%';
+    ptext.textContent='0 / 24';
+    res.style.display='none';
+    head.innerHTML='';
+    allBox.innerHTML='';
+    heroImg.removeAttribute('src');
+    heroImg.alt='';
+    heroCopy.textContent='';
+    btnCalc.disabled = true;
+  });
+})();
+</script>
+</body>
+</html>
