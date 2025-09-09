@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>仕事DNA×偉人タイプ診断｜24問で“働き方の骨格”を測定</title>
-<meta name="description" content="24問・5件法で“働き方の骨格”を測定。ダーウィン/テスラ/フランクリン/カーネギー/オグルヴィ/ダ・ヴィンチ/ナイチンゲール/デミング/フォレット/孫子/マゼラン/モンテスキューの12アーキタイプから、あなたのトップタイプと近い候補を提示します（エンタメ用）。">
+<title>仕事DNA×偉人タイプ診断｜36問で“働き方の骨格”を測定</title>
+<meta name="description" content="36問・5件法で“働き方の骨格”を測定。ダーウィン/テスラ/フランクリン/カーネギー/オグルヴィ/ダ・ヴィンチ/ナイチンゲール/デミング/フォレット/孫子/マゼラン/モンテスキューの12アーキタイプから、あなたのトップタイプと近い候補を提示します（エンタメ用）。">
 <meta name="theme-color" content="#f6fbff">
 
 <!-- OG -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="仕事DNA×偉人タイプ診断">
-<meta property="og:description" content="24問で“働き方の骨格”を測定。あなたに響く偉人アーキタイプは？">
+<meta property="og:description" content="36問で“働き方の骨格”を測定。あなたに響く偉人アーキタイプは？">
 <meta property="og:image" content="/shindan/assets/results/great-minds/01.png">
 <meta property="og:url" content="/shindan/great-minds.html">
 
@@ -73,13 +73,13 @@
 <body>
 <header><div class="in">
   <h1>仕事DNA×偉人タイプ診断</h1>
-  <span class="crumb">24項目・1〜5 → 12タイプ判定＋近い候補</span>
+  <span class="crumb">36項目・1〜5 → 12タイプ判定＋近い候補</span>
 </div></header>
 
 <main>
   <section class="panel" id="quiz">
     <div>
-      <div class="ttl"><strong>12の偉人アーキタイプで“働き方の骨格”を推定</strong>。各タイプ2問・5件法であなたのトップタイプを表示します。</div>
+      <div class="ttl"><strong>12の偉人アーキタイプで“働き方の骨格”を推定</strong>。各タイプ3問・5件法であなたのトップタイプを表示します。</div>
       <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
       <!-- 法的注意書き（固定文：文言改変せず） -->
       <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
@@ -93,7 +93,7 @@
     <!-- 進捗 -->
     <div class="progress" aria-live="polite">
       <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
-      <div id="ptext" class="muted">0 / 24</div>
+      <div id="ptext" class="muted">0 / 36</div>
     </div>
 
     <!-- 操作 -->
@@ -119,7 +119,7 @@
       <details>
         <summary>スコア換算ルール</summary>
         <div class="small muted">
-          <p>各タイプの2問平均（1–5）→ <code>pct = Math.round((avg-1)/4*100)</code>。トップとの差が<b>3pt以内</b>なら「近い候補」として表示。</p>
+          <p>各タイプの平均（1–5）→ <code>pct = Math.round((avg-1)/4*100)</code>。トップとの差が<b>3pt以内</b>なら「近い候補」として表示。</p>
         </div>
       </details>
 
@@ -277,33 +277,68 @@
 ];
   const ORDER = TYPES.map(t=>t.key); // 表示順
 
-  // ===== 項目（各タイプ2問）=====
-  const ITEMS = [
-    {key:'darwin',   t:'新しい知識を集めて整理するのが面白くて止まらない。', rev:false},
-    {key:'darwin',   t:'直感よりも、データや根拠を確認してから動きたい。', rev:false},
-    {key:'tesla',    t:'仕組みが分かるまで分解したり試したくなる。', rev:false},
-    {key:'tesla',    t:'頭の中で設計図を組み立てるのが得意だ。', rev:false},
-    {key:'franklin', t:'異なる立場の要望をまとめ、仕様に落とすのは得意。', rev:false},
-    {key:'franklin', t:'部署間の調整役に自然と回されがちだ。', rev:false},
-    {key:'carnegie', t:'初対面でも相手の価値観や関心をつかむのが早い。', rev:false},
-    {key:'carnegie', t:'断られても気持ちを立て直して次にいける。', rev:false},
-    {key:'ogilvy',   t:'魅力を一言で伝えるキャッチを考えるのが楽しい。', rev:false},
-    {key:'ogilvy',   t:'数字と感情の両方から仮説を作るのが好きだ。', rev:false},
-    {key:'davinci',  t:'白紙からアイデアを形にする工程が一番ワクワクする。', rev:false},
-    {key:'davinci',  t:'細部の美しさや使い心地にこだわってしまう。', rev:false},
-    {key:'nightingale', t:'困っている人の“サイン”に気づきやすい。', rev:false},
-    {key:'nightingale', t:'教えるとき、相手に合わせた言い回しを工夫する。', rev:false},
-    {key:'deming',   t:'手順の標準化やチェックリスト作りが好きだ。', rev:false},
-    {key:'deming',   t:'再発防止の原因分析を黙々とやれる。', rev:false},
-    {key:'follett',  t:'意見が分かれた場面で、対立をほどくのが得意。', rev:false},
-    {key:'follett',  t:'人の成長プランや配置を考えるのが楽しい。', rev:false},
-    {key:'sunzi',    t:'先回りのシナリオ（AならB、ダメならC）を描きがち。', rev:false},
-    {key:'sunzi',    t:'限られた資源で効果最大にするのに燃える。', rev:false},
-    {key:'magellan', t:'未知の領域でもまず動きながら地図を描く。', rev:false},
-    {key:'magellan', t:'リスクは怖いが、挑戦しない方が落ち着かない。', rev:false},
-    {key:'montesquieu', t:'契約や規程の抜け漏れを見ると気になる。', rev:false},
-    {key:'montesquieu', t:'ルールの背景にあるリスクや倫理を考えがちだ。', rev:false},
-  ];
+// ===== 項目（各タイプ3問＝計36）=====
+const ITEMS = [
+  // darwin（洞察・研究）
+  {key:'darwin', t:'新しい知識を集めて整理するのが面白くて止まらない。', rev:false},
+  {key:'darwin', t:'直感よりも、データや根拠を確認してから動きたい。', rev:false},
+  {key:'darwin', t:'経験則だけで十分だと思い、検証は最低限でよい。', rev:true},
+
+  // tesla（設計・発明）
+  {key:'tesla', t:'仕組みが分かるまで分解したり試したくなる。', rev:false},
+  {key:'tesla', t:'頭の中で設計図を組み立てるのが得意だ。', rev:false},
+  {key:'tesla', t:'形にする前に考えすぎて手を動かすのが遅くなる。', rev:true},
+
+  // franklin（橋渡し・PM）
+  {key:'franklin', t:'異なる立場の要望をまとめ、仕様に落とすのは得意。', rev:false},
+  {key:'franklin', t:'部署間の調整役に自然と回されがちだ。', rev:false},
+  {key:'franklin', t:'役割や決め方が曖昧でも特に気にならない。', rev:true},
+
+  // carnegie（営業・交渉）
+  {key:'carnegie', t:'初対面でも相手の価値観や関心をつかむのが早い。', rev:false},
+  {key:'carnegie', t:'断られても気持ちを立て直して次にいける。', rev:false},
+  {key:'carnegie', t:'売り込みや交渉の場面は極力避けたい。', rev:true},
+
+  // ogilvy（マーケ・物語）
+  {key:'ogilvy', t:'魅力を一言で伝えるキャッチを考えるのが楽しい。', rev:false},
+  {key:'ogilvy', t:'数字と感情の両方から仮説を作るのが好きだ。', rev:false},
+  {key:'ogilvy', t:'計測や検証より、勘と勢いで進めたい。', rev:true},
+
+  // davinci（デザイン・創作）
+  {key:'davinci', t:'白紙からアイデアを形にする工程が一番ワクワクする。', rev:false},
+  {key:'davinci', t:'細部の美しさや使い心地にこだわってしまう。', rev:false},
+  {key:'davinci', t:'見た目や体験より、動けばOKだと思う。', rev:true},
+
+  // nightingale（ケア＆教育）
+  {key:'nightingale', t:'困っている人の“サイン”に気づきやすい。', rev:false},
+  {key:'nightingale', t:'教えるとき、相手に合わせた言い回しを工夫する。', rev:false},
+  {key:'nightingale', t:'相手の状態に合わせて伝え方を変えるのは苦手だ。', rev:true},
+
+  // deming（オペ・品質）
+  {key:'deming', t:'手順の標準化やチェックリスト作りが好きだ。', rev:false},
+  {key:'deming', t:'再発防止の原因分析を黙々とやれる。', rev:false},
+  {key:'deming', t:'ルールや手順より現場のノリで回したい。', rev:true},
+
+  // follett（人事・組織）
+  {key:'follett', t:'意見が分かれた場面で、対立をほどくのが得意。', rev:false},
+  {key:'follett', t:'人の成長プランや配置を考えるのが楽しい。', rev:false},
+  {key:'follett', t:'衝突は避け、議論はなるべく短く終えたい。', rev:true},
+
+  // sunzi（戦略・企画）
+  {key:'sunzi', t:'先回りのシナリオ（AならB、ダメならC）を描きがち。', rev:false},
+  {key:'sunzi', t:'限られた資源で効果最大にするのに燃える。', rev:false},
+  {key:'sunzi', t:'プランより行き当たりばったりの方が性に合う。', rev:true},
+
+  // magellan（起業・冒険）
+  {key:'magellan', t:'未知の領域でもまず動きながら地図を描く。', rev:false},
+  {key:'magellan', t:'リスクは怖いが、挑戦しない方が落ち着かない。', rev:false},
+  {key:'magellan', t:'失敗の可能性があるなら、挑戦は後回しにしたい。', rev:true},
+
+  // montesquieu（法務・リスク）
+  {key:'montesquieu', t:'契約や規程の抜け漏れを見ると気になる。', rev:false},
+  {key:'montesquieu', t:'ルールの背景にあるリスクや倫理を考えがちだ。', rev:false},
+  {key:'montesquieu', t:'ルールは形式的で、細かな遵守は重視しない。', rev:true},
+];
 
   // 5件法（1..5）
   const SCALE = [
