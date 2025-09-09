@@ -1470,13 +1470,13 @@ nav.links .link > .badge{
 
 <!-- ★ 仕事DNA×偉人タイプ診断（great-minds.html） -->
 <a class="link" href="/shindan/great-minds.html?src=specimens"
-   data-id="great-minds" data-tags="仕事,適性" data-mins="5" data-updated="2025-09-08"
-   data-keywords="偉人タイプ 仕事 適職 診断 12タイプ 24問 キャリア">
+   data-id="great-minds" data-tags="仕事,適性,しっかり" data-mins="5" data-updated="2025-09-08"
+   data-keywords="偉人タイプ 仕事 適職 診断 12タイプ 36問 キャリア">
   <span class="emo">🧭</span>
   <div>
     <div class="ttl">仕事DNA×偉人タイプ診断<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">12タイプ×各2項目（5件法）で“働き方の骨格”を測定</div>
-    <div class="meta"><span class="pill">⏱5分</span><span class="pill">#仕事</span><span class="pill">#適性</span></div>
+    <div class="sub2">12タイプ×各3項目（5件法）で“働き方の骨格”を測定</div>
+    <div class="meta"><span class="pill">⏱5分</span><span class="pill">#仕事</span><span class="pill">#適性</span><span class="pill">#しっかり</span></div>
   </div>
   <span class="badge">診断へ</span>
 </a>
@@ -5104,7 +5104,21 @@ nav.links .link > .badge{
 
   // 上書き（短時間でも「しっかり」に扱いたいID）
 
-  const SPEED_OVERRIDES = { 'kizuna-rope': 'しっかり', 'ice': 'しっかり' };
+  // 上書き（速度タグを手動指定するID）
+const SPEED_OVERRIDES = {
+  // しっかりにしたい
+  'great-minds': 'しっかり',            // 偉人
+  'seven-sins': 'しっかり',             // 7つの大罪
+  'adventure': 'しっかり',              // 冒険者
+  'chc-cci': 'しっかり',                // 認知
+  'houseki': 'しっかり',                 // 恋愛（宝石）
+  'forbidden-love': 'しっかり',         // 恋愛（本編）
+  'forbidden-love-another': 'しっかり', // 恋愛（別世界線）
+
+  // ふつうに直したい
+  'kizuna-rope': 'ふつう',              // 関係の切れやすさ
+  'ice': 'ふつう'                       // アイスクリーム
+};
 
 
 
@@ -5487,3 +5501,4 @@ nav.links .link > .badge{
 
 
 </body></html>
+
