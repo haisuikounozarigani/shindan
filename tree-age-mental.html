@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>メンタル樹齢診断｜視点交換・情動調律・メタ認知・遅延満足・時間展望を15問で測定</title>
+<meta name="description" content="5因子（視点交換/情動調律/メタ認知/遅延満足/時間展望）×各3問=全15問・5件法。0–100で可視化して“樹齢ランク”と実践的アドバイスを表示します（エンタメ用）。">
+<meta name="theme-color" content="#f6fbff">
+
+<!-- OG（任意差し替え可） -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="メンタル樹齢診断">
+<meta property="og:description" content="5因子×15問で、あなたの“メンタルの年輪”を可視化。">
+<meta property="og:image" content="/shindan/assets/results/tree-age-mental/01.png">
+<meta property="og:url" content="/shindan/tree-age-mental.html">
+
+<style>
+  :root{
+    --bg1:#f6fbff; --bg2:#f4f2ff; --paper:#ffffff; --ink:#14131a; --muted:#6b6a77;
+    --line:#e8ecf6; --accent:#4aa8ff; --accent2:#a48bff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--ink);
+    font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.9;letter-spacing:.02em
+  }
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #c7d9ff;background:#f7fbff;color:#1f3352;padding:10px;border-radius:12px}
+  .warn strong{color:#0b63c8}
+  .section-title{margin:12px 0 8px;font-size:15px;font-weight:800}
+
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#eaf2ff;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--ink)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+  .copy{color:#274264;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#eaf2ff;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .small{font-size:.95em}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#365493;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>メンタル樹齢診断</h1>
+  <span class="crumb">5因子×各3問（逆転各1）・5件法 → 0–100＋樹齢ランク</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>5因子</strong>で“メンタルの年輪”を推定。全15問・5件法でスコア化します。</div>
+      <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
+
+      <!-- 法的注意書き（固定文：文言改変せず） -->
+      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+      データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+      宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+    </div>
+
+    <!-- 質問（毎回ランダム） -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 15</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel">
+      <h2 class="section-title" style="font-size:18px">結果</h2>
+
+      <div id="head" class="stage" style="margin-bottom:8px"></div>
+
+      <!-- ヒーロー：総合のビジュアル（樹齢ランク別 01〜09.png を自動選択） -->
+      <figure class="hero" aria-hidden="true"><img id="heroImg" src="/shindan/assets/results/tree-age-mental/01.png" alt="" style="width:100%;height:auto;display:block" loading="lazy"></figure>
+      <div class="copy" id="heroCopy"></div>
+
+      <h3 class="section-title">因子別プロファイル（5因子）</h3>
+      <div class="grid" id="all"></div>
+
+      <details>
+        <summary>スコア換算ルール</summary>
+        <div class="small muted">
+          <p>逆転項目は <code>6 − 回答</code>。各因子は3項目の平均（1–5）→ <code>pct = Math.round((avg-1)/4*100)</code>。総合＝5因子の平均（0–100）。</p>
+          <p>樹齢ランク：0–14=赤ちゃん/芽、15–24=幼稚園/苗木、25–34=小学生/若木、35–44=中学生/細幹、45–54=高校生/成長期、55–64=大学生/若樹、65–74=社会人/成樹、75–84=おじいちゃん/老樹、85–100=仙人/巨樹。</p>
+        </div>
+      </details>
+
+      <div style="margin-top:14px">
+        <a href="/shindan/" class="btn linklike">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ===== ヒーロー画像（01〜09） =====
+  var HERO_IMG_BASE = '/shindan/assets/results/tree-age-mental/';
+  function heroImageFor(p){
+    var idx = 1;
+    if (p<=14) idx=1;
+    else if(p<=24) idx=2;
+    else if(p<=34) idx=3;
+    else if(p<=44) idx=4;
+    else if(p<=54) idx=5;
+    else if(p<=64) idx=6;
+    else if(p<=74) idx=7;
+    else if(p<=84) idx=8;
+    else idx=9;
+    return ('0' + idx).slice(-2) + '.png'; // padStart互換
+  }
+
+  // ===== 因子定義 =====
+  var FACTORS = [
+    {key:'PT', name:'視点交換（木陰）', desc:'他者の立場・文脈で捉え直す力（PT）'},
+    {key:'EQ', name:'情動調律（水やり）', desc:'感情を察知・言語化し落ち着かせる力（EQ）'},
+    {key:'MC', name:'メタ認知（剪定）', desc:'自分の状態と思考のクセを俯瞰する力（MC）'},
+    {key:'DG', name:'遅延満足（果実待ち）', desc:'目先より長期価値を選べる力（DG）'},
+    {key:'TP', name:'時間展望（年輪設計）', desc:'過去‐現在‐未来をつないで逆算する力（TP）'}
+  ];
+
+  // ===== 項目（15問）=====  rev: true が逆転
+  var ITEMS = [
+    // PT
+    {key:'PT', t:'相手の事情を想像して、言い方を少し変えることが多い。', rev:false},
+    {key:'PT', t:'反対意見にも「なるほど」と思える理由を先に探す。', rev:false},
+    {key:'PT', t:'自分と違う価値観は、すぐ「間違い」と感じがちだ。', rev:true},
+    // EQ
+    {key:'EQ', t:'気持ちが荒れたら、落ち着くための手順を持っている。', rev:false},
+    {key:'EQ', t:'感情を言葉にして人に伝えるのが得意だ。', rev:false},
+    {key:'EQ', t:'イラッとすると、そのまま言葉がきつくなりがちだ。', rev:true},
+    // MC
+    {key:'MC', t:'今の自分が“何モード”かを自覚できる。', rev:false},
+    {key:'MC', t:'うまくいかない時、原因を仮説で切り分けて試す。', rev:false},
+    {key:'MC', t:'調子が崩れると、全てがダメに見えやすい。', rev:true},
+    // DG
+    {key:'DG', t:'先のご褒美のために、今の誘惑をスルーできる。', rev:false},
+    {key:'DG', t:'長めの課題を“小分け”にして積み上げるのが得意だ。', rev:false},
+    {key:'DG', t:'楽しい予定があると、重要だけど地味な用事は後回しだ。', rev:true},
+    // TP
+    {key:'TP', t:'未来の自分から逆算して、今週の優先を三つに絞れる。', rev:false},
+    {key:'TP', t:'締切から逆カレンダーを引いて段取りを作る。', rev:false},
+    {key:'TP', t:'過去の失敗に引っ張られて、前に進みにくい。', rev:true}
+  ];
+
+  // 5件法
+  var SCALE = [
+    {v:1, label:'1 まったく当てはまらない'},
+    {v:2, label:'2 あまり当てはまらない'},
+    {v:3, label:'3 どちらとも言えない'},
+    {v:4, label:'4 やや当てはまる'},
+    {v:5, label:'5 とても当てはまる'}
+  ];
+
+  // DOM
+  function $(q,root){ return (root||document).querySelector(q); }
+  function $$(q,root){ return Array.prototype.slice.call((root||document).querySelectorAll(q)); }
+  var qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  var btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  var res = $('#result'), head = $('#head'), allBox = $('#all');
+  var heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
+
+  // ユーティリティ
+  function shuffle(a){
+    for(var i=a.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+  function pctFromAvg(avg){ return Math.round(((avg-1)/4)*100); }
+
+  // 設問をランダム化
+  var QUESTIONS = shuffle(ITEMS.map(function(it, idx){ return { key: it.key, t: it.t, rev: it.rev, idx: idx }; }));
+  var TOTAL = QUESTIONS.length;
+
+  // ===== 質問描画（ここが無いと一切出ません） =====
+  QUESTIONS.forEach(function(q, i){
+    var s = document.createElement('section');
+    s.className = 'q';
+    var radios = SCALE.map(function(sc){
+      var id = 'q' + (i+1) + '-' + sc.v;
+      return '<label class="opt" for="'+id+'">' +
+               '<input type="radio" name="q'+(i+1)+'" id="'+id+'" value="'+sc.v+'">' +
+               '<span>'+sc.label+'</span>' +
+             '</label>';
+    }).join('');
+    s.innerHTML =
+      '<div class="ttl">Q'+(i+1)+'. '+q.t+'</div>' +
+      '<div class="scale" role="group" aria-label="質問 '+(i+1)+'">'+radios+'</div>';
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  function answeredCount(){
+    var n=0; for(var i=1;i<=TOTAL;i++){ if($('input[name="q'+i+'"]:checked')) n++; } return n;
+  }
+  function updateProgress(){
+    var n=answeredCount();
+    ptext.textContent = n + ' / ' + TOTAL;
+    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    btnCalc.disabled = n!==TOTAL;
+  }
+  document.addEventListener('change', function(e){
+    var n = e && e.target ? e.target.name : '';
+    if(n && n.indexOf('q') === 0) updateProgress();
+  });
+  updateProgress();
+
+  function rankLabel(p){
+    if(p<=14) return '赤ちゃん／芽';
+    if(p<=24) return '幼稚園／苗木';
+    if(p<=34) return '小学生／若木';
+    if(p<=44) return '中学生／細幹';
+    if(p<=54) return '高校生／成長期';
+    if(p<=64) return '大学生／若樹';
+    if(p<=74) return '社会人／成樹';
+    if(p<=84) return 'おじいちゃん／老樹';
+    return '仙人／巨樹';
+  }
+
+  // ===== 総合コメント =====
+  function overallStory(p){
+    var rank = rankLabel(p);
+    if(p<=14) return {
+      title:'総合：はじめの一歩（' + rank + '）',
+      text:'今は基礎づくりの段階。まずは「落ち着く・考える・動く」を小さく回すのが現実的です。<br>' +
+           '<b>推奨（毎日3分）</b>：①ゆっくり呼吸×3回 ②今の気持ちに1語ラベル ③今日やる1つをメモ。<br>' +
+           '<b>注意</b>：一気に変えようとせず、行動を最小単位に分ける（CBTの行動活性化）。'
+    };
+    if(p<=24) return {
+      title:'総合：基礎を作る時期（' + rank + '）',
+      text:'セルフマネジメントは形になり始めています。続ける仕組みを先に作りましょう。<br>' +
+           '<b>推奨（週間）</b>：日曜に「今週の優先3つ」を決め、予定表に固定（実行意図：もし月曜朝になったら、優先1を25分だけやる）。<br>' +
+           '<b>注意</b>：結果より手順を評価して自己効力感を貯める。'
+    };
+    if(p<=34) return {
+      title:'総合：習慣が根づく前段（' + rank + '）',
+      text:'やるべきことは理解できています。脱線対策を加えると安定します。<br>' +
+           '<b>推奨</b>：環境調整（通知オフ・お菓子は別室）＋誘惑の前に60秒ルール。<br>' +
+           '<b>注意</b>：できなかった日の振り返りは「次にどうするか」だけを書く。'
+    };
+    if(p<=44) return {
+      title:'総合：中くらいの安定（' + rank + '）',
+      text:'計画と実行のバランスはまずまず。優先の取り違えに注意。<br>' +
+           '<b>推奨</b>：朝5分でタスクを「今やる/後で/やらない」に仕分け。<br>' +
+           '<b>注意</b>：議論は「要約→質問→自分の意見」の順で、誤解を減らす（アサーティブ・コミュニケーション）。'
+    };
+    if(p<=54) return {
+      title:'総合：安定運用へ（' + rank + '）',
+      text:'自己調整が機能しています。負荷が高い週でも崩れにくい基盤づくりを。<br>' +
+           '<b>推奨</b>：週1で短いふり返り（出来たこと/学び/次の一手）。<br>' +
+           '<b>注意</b>：完璧主義により開始が遅れるなら「十分に良い」の基準を先に定義。'
+    };
+    if(p<=64) return {
+      title:'総合：再現性が高い（' + rank + '）',
+      text:'落ち着きと計画に再現性があります。小さな実験で最適化を。<br>' +
+           '<b>推奨</b>：仕事の開始儀式を固定（場所・時間・合図）。<br>' +
+           '<b>注意</b>：多忙時ほど睡眠・食事・運動の基本を先に確保（健康心理学の基礎介入）。'
+    };
+    if(p<=74) return {
+      title:'総合：周囲へ良い影響（' + rank + '）',
+      text:'自分の整えに加え、人とのやり取りも安定。支援スキルを形式化できます。<br>' +
+           '<b>推奨</b>：リフレクティブリスニング（相手の要点→感情→確認）を会議で1回必ず入れる。<br>' +
+           '<b>注意</b>：抱え込みすぎない境界設定（時間・役割を明確に伝える）。'
+    };
+    if(p<=84) return {
+      title:'総合：高い自己調整（' + rank + '）',
+      text:'難しい場面でも落ち着いて選べます。盲点は「慣れ」。<br>' +
+           '<b>推奨</b>：毎週15分のバイアス点検（他の見方は？証拠は？）。<br>' +
+           '<b>注意</b>：疲労の早期サイン（睡眠の質・集中の波）を記録し、休息を前倒し。'
+    };
+    return {
+      title:'総合：非常に高い自己調整（' + rank + '）',
+      text:'ストレス状況でも行動を選べます。次は周囲への展開と維持。<br>' +
+           '<b>推奨</b>：スキルの言語化と共有（手順書・観察→介入→評価）。<br>' +
+           '<b>注意</b>：努力のオーバーランを避け、休息も計画に入れる。'
+    };
+  }
+
+  // ===== 因子別コメント（高/中/低） =====
+  var FACTOR_STORY = {
+    PT:{ hi:{title:'視点交換：強みがはっきり', text:'相手の立場で考える習慣があります。<br><b>次の一歩</b>：重要な会話は「要約→確認→自分の提案」の順に固定。議事メモに残すと誤解が減ります。'},
+         mid:{title:'視点交換：安定前', text:'相手の意図をとらえられる日と、感情が先に立つ日が混在。<br><b>具体策</b>：返信前に「相手が大事にしている点」を1行書いてから送る（認知の再評価）。'},
+         low:{title:'視点交換：改善ポイント', text:'「正しさ」に寄りすぎる傾向。<br><b>練習</b>：反対意見を聞いたら、まず理由を3つ書き出す→その後に自分の主張を書く（ディベート型CBT）。'} },
+    EQ:{ hi:{title:'情動調律：安定', text:'感情を観察し調整できます。<br><b>継続策</b>：落ち着く手順（場所・時間・合図）を固定し、同じ手順で再現（状態依存学習を利用）。'},
+         mid:{title:'情動調律：発展途上', text:'落ち着ける日も多いが、イライラで言葉が強くなる時あり。<br><b>具体策</b>：「呼吸3回→感情ラベル→次の一手」のセットを毎回実施。'},
+         low:{title:'情動調律：優先介入', text:'感情の波が大きいと判断がぶれます。<br><b>応急手順</b>：場を60秒離れる→水分→「私は今◯◯だ」と言語化→必要なら時間を置いて返信（反応遅延）。'} },
+    MC:{ hi:{title:'メタ認知：機能的', text:'自分の状態を把握し、思考の偏りに気づけます。<br><b>強化</b>：失敗ログは「事実／解釈／次の試し方」で記録（CBTの思考記録）。'},
+         mid:{title:'メタ認知：安定前', text:'俯瞰できる日とできない日がある。<br><b>具体策</b>：毎晩1分「今日の自分のモード」を1語で記録→週末に傾向を確認。'},
+         low:{title:'メタ認知：立て直し', text:'調子が落ちると「全部ダメ」に見えやすい。<br><b>介入</b>：「まだ機能している3つ」を先に列挙→次に最小タスク1つだけ着手（行動活性化）。'} },
+    DG:{ hi:{title:'遅延満足：良好', text:'長期メリットを選べます。<br><b>強化</b>：ご褒美は「達成条件を満たしたら解禁」の形で運用（実行意図）。'},
+         mid:{title:'遅延満足：環境次第', text:'状況によって誘惑に引っ張られます。<br><b>具体策</b>：誘惑まで物理的距離を置く（別室・別フォルダ）＋開始儀式25分タイマー（ポモドーロ）。'},
+         low:{title:'遅延満足：強化が必要', text:'短期の心地よさを優先しがち。<br><b>介入</b>：課題を小分け→「もし◯時になったら、◯◯を25分だけ」＋楽しみは終わってから5分（テンテーション・バンドリング）。'} },
+    TP:{ hi:{title:'時間展望：明確', text:'逆算で計画できます。<br><b>継続</b>：締切→逆算→カレンダー固定→毎朝3分で優先3つ確認（実行管理）。'},
+         mid:{title:'時間展望：ばらつき', text:'計画は立てられるが、実行が崩れる日がある。<br><b>具体策</b>：週頭に逆カレンダーを5分で作成。見通しを短く刻む。'},
+         low:{title:'時間展望：再訓練', text:'過去に引っ張られ、未来の見通しが弱い。<br><b>介入</b>：WOOP（願い/結果/障害/計画）で一つだけ設定→「障害が出たらこうする」まで書く。'} }
+  };
+
+  function factorComment(key, pct){
+    var s = FACTOR_STORY[key];
+    if(!s) return {title:'', text:''};
+    if(pct>=70) return s.hi;
+    if(pct>=40) return s.mid;
+    return s.low;
+  }
+  function band(p){ return p>=70 ? '高め' : (p>=40 ? '中間' : '低め'); }
+
+  function compute(vals){
+    var sums={}, cnts={};
+    FACTORS.forEach(function(f){ sums[f.key]=0; cnts[f.key]=0; });
+    QUESTIONS.forEach(function(q, idx){
+      var v = vals[idx+1];
+      if(q.rev) v = 6 - v; // 逆転
+      sums[q.key] += v; cnts[q.key] += 1;
+    });
+    var factors = FACTORS.map(function(f){
+      var avg = sums[f.key]/(cnts[f.key]||1);
+      var pct = pctFromAvg(avg);
+      return {key:f.key, name:f.name, desc:f.desc, pct:pct, avg:Math.round(avg*10)/10};
+    });
+    var overall = Math.round(factors.reduce(function(a,b){return a+b.pct;},0)/factors.length);
+    return {factors:factors, overall:overall};
+  }
+
+  // 結果描画
+  function render(vals){
+    var obj = compute(vals);
+    var factors = obj.factors, overall = obj.overall;
+
+    // ヘッダ
+    head.innerHTML =
+      '<span class="badge">樹齢スコア：<b>'+overall+'</b> ／ ランク：<b>'+rankLabel(overall)+'</b></span>';
+
+    // ヒーロー画像＆ 総合コメント
+    var imgFile = heroImageFor(overall);
+    heroImg.src = HERO_IMG_BASE + imgFile;
+    heroImg.alt = '樹齢ランク：' + rankLabel(overall) + '（画像 ' + imgFile + '）';
+
+    var o = overallStory(overall);
+    heroCopy.innerHTML =
+      '<b>'+o.title+'</b><br>' +
+      o.text +
+      '<div class="small muted" style="margin-top:.6em">※アドバイスは心理学の一般的知見（CBT/実行意図/行動活性化など）を参考にした一般情報です。医療行為ではありません。</div>';
+
+    // 因子カード
+    allBox.innerHTML='';
+    factors.forEach(function(f){
+      var cm = factorComment(f.key, f.pct);
+      var card = document.createElement('article');
+      card.className = 'card small';
+      card.innerHTML =
+        '<div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+          '<span>'+f.name+'</span>' +
+          '<span class="badge">'+f.pct+'%</span>' +
+          '<span class="badge">'+band(f.pct)+'</span>' +
+        '</div>' +
+        '<div class="muted" style="margin:.2em 0 .4em">'+f.desc+'</div>' +
+        '<div class="meter"><i style="width:'+f.pct+'%"></i></div>' +
+        '<div style="margin-top:.6em">' +
+          '<div style="font-weight:700">'+cm.title+'</div>' +
+          '<div>'+cm.text+'</div>' +
+        '</div>';
+      allBox.appendChild(card);
+    });
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // 進行
+  btnCalc.addEventListener('click', function(){
+    var vals = collect(); if(!vals) return;
+    render(vals);
+  });
+
+  // 回答収集
+  function collect(){
+    var vals={};
+    for(var i=1;i<=TOTAL;i++){
+      var el = document.querySelector('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i] = +el.value;
+    }
+    return vals;
+  }
+
+  btnReset.addEventListener('click', function(){
+    $$('input[type="radio"]').forEach(function(i){ i.checked=false; });
+    pbar.style.width='0%';
+    ptext.textContent='0 / 15';
+    res.style.display='none';
+    head.innerHTML='';
+    allBox.innerHTML='';
+    heroImg.removeAttribute('src');
+    heroImg.alt='';
+    heroCopy.textContent='';
+    btnCalc.disabled = true;
+  });
+})();
+</script>
+</body>
+</html>
+<!--  -->
