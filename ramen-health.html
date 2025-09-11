@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ラーメン健康診断｜20項目で“いまの整い度”をチェック</title>
+<meta name="description" content="健康習慣＝ラーメンの仕込みに見立てる20項目・5因子のセルフチェック。0–100で整い度を可視化し、6ラベル（塩/醤油/鶏白湯/味噌/家系/二郎系）と実践的アドバイスを表示（娯楽＋自己理解用）。">
+<meta name="theme-color" content="#fff7f0">
+<style>
+  :root{--bg1:#fff7f0;--bg2:#fff1f1;--paper:#fff;--ink:#1c1714;--muted:#776b64;--line:#f0e5da;--accent:#ff994d;--accent2:#ffc864}
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.9;letter-spacing:.02em}
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.05) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #ffd7b8;background:#fff8ef;color:#3f2a1b;padding:10px;border-radius:12px}
+  .warn strong{color:#c35a00}
+  .section-title{margin:12px 0 8px;font-size:15px;font-weight:800}
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#ffe8d6;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#faf7f2);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--ink)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+  #result{margin-top:18px;display:none}
+  .stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .big{font-size:20px;font-weight:900}
+  .copy{color:#3a2a1f;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#ffe8d6;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .small{font-size:.95em}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#6b4020;font-weight:700}
+  .tips ul{margin:.3em 0 .2em 1.2em;padding:0}
+  .tips li{margin:.12em 0}
+  .savebar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .footnote{color:#806b5d;margin-top:14px}
+</style>
+<!-- 結果カード保存（任意）。オフラインでも動作するようCDNを使用、失敗時は印刷にフォールバック -->
+<script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+<header><div class="in">
+  <h1>ラーメン健康診断</h1>
+  <span class="crumb">20項目×5因子・5件法 → 0–100＋6ラベル</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>5因子</strong>（スープ/麺/チャーシュー/ネギ/海苔）で“いまの整い度”をチェック。20項目・5件法でスコア化します。</div>
+      <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
+      <p class="warn"><strong>注意：</strong>本コンテンツは<b>娯楽＋自己理解の目安</b>を目的としたセルフチェックです。医療的な診断・治療・助言を目的としません。強い不調が続く場合は医療機関や専門家へ。<br>表示ラベル（塩/醤油/…）は<b>比喩</b>であり、実在商品・業態の優劣や関連を意味しません。回答は端末内で処理され、個人情報の送信は行いません。</p>
+    </div>
+
+    <!-- 質問 -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 20</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel">
+      <div id="resultCard">
+        <h2 class="section-title" style="font-size:18px">結果</h2>
+        <div id="head" class="stage" style="margin-bottom:8px"></div>
+        <div class="copy" id="heroCopy"></div>
+
+        <h3 class="section-title">因子プロファイル（5因子）</h3>
+        <div class="grid" id="all"></div>
+
+        <div class="tips" id="quick"></div>
+
+        <details>
+          <summary>スコア換算ルール</summary>
+          <div class="small muted">
+            <p>逆転項目：<code>vR = 6 - v</code>。各因子は4項目平均（1–5）→ <code>pct = Math.round(((avg-1)/4)*100)</code>（0–100）。総合＝5因子の平均（四捨五入）。</p>
+            <p>ラベル：90–100=塩／75–89=醤油／60–74=鶏白湯／45–59=味噌／30–44=家系／0–29=二郎系。</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="savebar">
+        <button id="btnSave" class="btn">結果カードを画像保存</button>
+        <button id="btnPrint" class="btn">印刷/保存（PDF）</button>
+      </div>
+
+      <div class="footnote small">
+        概念の説明（専門版）：
+        <ul>
+          <li><b>スープ＝睡眠（SLP）</b>：量・質・タイミング・回復感の総合。入眠≤30分、就起時刻の分散が小、日中の眠気低が目安。慢性睡眠不足・社会的時差は食欲調整と情動制御に波及。</li>
+          <li><b>麺＝食事リズム（TIM）</b>：概日時計に沿う摂食タイミングの安定性。朝食の定着、就寝3h前の摂食回避、カロリー前倒しは血糖応答と睡眠を支える。</li>
+          <li><b>チャーシュー＝栄養（NUT）</b>：主食・主菜・副菜のバランス。十分なたんぱく、食物繊維/微量栄養、精製度の低い主食。UPF・高GI/GLの過多は満腹感・血糖安定・体重管理に不利。</li>
+          <li><b>ネギ＝活動（MOV）</b>：NEAT＋中強度。長座位の分断（毎時1–2分起立/歩行）、速歩10分ブロック、日光曝露が睡眠・気分・代謝に波及。</li>
+          <li><b>海苔＝回復（REC）</b>：自律神経のリカバリーと認知的オフローディング。終業の儀式、Worryリスト→次の一手、画面オフが入眠・情動反応性を整える。</li>
+        </ul>
+        <div class="muted">※医療の代替ではありません。体調不良が続く場合は専門機関へ。</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ===== 因子定義（コード/名称） =====
+  var FACTORS = [
+    { key:'SLP', name:'スープ＝睡眠', desc:'就起時刻の一貫性・入眠潜時・日中の眠気など' },
+    { key:'TIM', name:'麺＝食事リズム', desc:'朝食・就寝3h前の食止め・食事時間の安定' },
+    { key:'NUT', name:'チャーシュー＝栄養', desc:'たんぱく・食物繊維・UPF/揚げ物の頻度' },
+    { key:'MOV', name:'ネギ＝活動', desc:'NEAT＋中強度（長座位の分断・速歩・日光）' },
+    { key:'REC', name:'海苔＝回復', desc:'終業の儀式・通知コントロール・リラクゼーション' }
+  ];
+
+  // ===== 質問（20項目・逆転Rあり） =====
+  var ITEMS = [
+    // SLP
+    {key:'SLP', t:'就寝・起床の時刻はおおむね一定にできている。', rev:false},
+    {key:'SLP', t:'布団に入ってから30分以内に眠れている。', rev:false},
+    {key:'SLP', t:'（R）週の半ばは寝不足で、日中の眠気がつづきやすい。', rev:true},
+    {key:'SLP', t:'就寝前は画面時間を短くできている。', rev:false},
+
+    // TIM
+    {key:'TIM', t:'朝食を食べる習慣がある。', rev:false},
+    {key:'TIM', t:'就寝3時間前以降は食べないことが多い。', rev:false},
+    {key:'TIM', t:'（R）夜遅い時間にドカ食いしてしまうことが多い。', rev:true},
+    {key:'TIM', t:'1日の食事時間帯が大きくブレない。', rev:false},
+
+    // NUT
+    {key:'NUT', t:'毎食、肉・魚・卵・大豆などのたんぱく源を意識している。', rev:false},
+    {key:'NUT', t:'野菜や食物繊維をしっかり摂れている。', rev:false},
+    {key:'NUT', t:'（R）菓子や清涼飲料が主な間食になりがちだ。', rev:true},
+    {key:'NUT', t:'超加工食品や揚げ物を“連日”にしないよう調整できる。', rev:false},
+
+    // MOV
+    {key:'MOV', t:'速歩など中強度の活動を、1日合計30分以上できている。', rev:false},
+    {key:'MOV', t:'長時間座りっぱなしにならないよう、小休止を挟めている。', rev:false},
+    {key:'MOV', t:'（R）休日はほぼ一日中座って過ごすことが多い。', rev:true},
+    {key:'MOV', t:'日光や外気に触れる時間を意識的につくっている。', rev:false},
+
+    // REC
+    {key:'REC', t:'仕事や勉強の終わりに、オフへ切り替える“儀式”がある。', rev:false},
+    {key:'REC', t:'ストレスが高い日は、人に相談したり書き出したりできる。', rev:false},
+    {key:'REC', t:'（R）夜までスマホ通知に追われ、気が休まらないことが多い。', rev:true},
+    {key:'REC', t:'入浴・ストレッチ・呼吸など、リラックス時間を取れている。', rev:false}
+  ];
+
+  // 5件法
+  var SCALE = [
+    {v:1, label:'1 まったく当てはまらない'},
+    {v:2, label:'2 あまり当てはまらない'},
+    {v:3, label:'3 どちらとも言えない'},
+    {v:4, label:'4 やや当てはまる'},
+    {v:5, label:'5 とても当てはまる'}
+  ];
+
+  // DOM
+  function $(q,root){return (root||document).querySelector(q)}
+  function $$(q,root){return Array.prototype.slice.call((root||document).querySelectorAll(q))}
+  var qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  var btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  var res = $('#result'), head = $('#head'), allBox = $('#all');
+  var heroCopy = $('#heroCopy'), quick = $('#quick');
+
+  // Utils
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function pctFromAvg(avg){ var p=Math.round(((avg-1)/4)*100); if(p<0)p=0; if(p>100)p=100; return p; }
+
+  // ラベル
+  function overallLabel(p){
+    if(p>=90) return '塩（仕込み完璧）';
+    if(p>=75) return '醤油（整え上手）';
+    if(p>=60) return '鶏白湯（ほどよい濃度）';
+    if(p>=45) return '味噌（やや重ため）';
+    if(p>=30) return '家系（調整が必要）';
+    return '二郎系（まず一箇所だけ緩める）';
+  }
+
+  // 総合コメント
+  function overallStory(p){
+    if(p>=90) return '仕込み完璧。睡眠リズムと回復の“火入れ”が決まり、1日を通して澄んだキレ。今の型を壊さないよう、<b>週1の“完全休息”をレシピ化</b>して守ると長持ち。';
+    if(p>=75) return '整え上手。基礎が揃い、時折の崩れも戻せる段取り。詰めるなら<b>座りっぱなしの分断</b>と<b>就寝前の画面オフ</b>をもう一段。';
+    if(p>=60) return 'ほどよい濃度。ベースは良く、数点のクセが濁りに。最短効果は<b>就寝3時間前の食止め</b>＋<b>朝の外光</b>。';
+    if(p>=45) return 'やや重ため。睡眠/食事/活動のどれかが滞留気味。<b>一箇所だけ</b>狙い撃ちで改善（例：毎時1–2分の立ち上がり）。';
+    if(p>=30) return '調整が必要。濃度は魅力的だが、回復の海苔が溶けてるかも。<b>夜の通知制限</b>と<b>短い散歩</b>から。';
+    return 'まず一箇所だけ緩める。全部やろうとせず、<b>最もラクな一手</b>（例：寝る30分前に画面を伏せる）を14日固定。';
+  }
+
+  // 因子別フィードバック（75+/50–74/<50）
+  var FB = {
+    SLP:{hi:'深みのあるスープ。<b>起床時刻の一貫性</b>を核に継続。', mid:'質は出ている。<b>入眠前30分の光量ダウン</b>で+5を狙える。', low:'社会的時差の影響大。<b>起床固定→朝光→カフェインは14時まで</b>を2週。'},
+    TIM:{hi:'麺上がり良好。<b>前倒しカロリー</b>を意識すると粘りUP。', mid:'終盤に崩れがち。<b>就寝3h前の食止め</b>を“曜日固定”で。', low:'夜型ドカ食いが主因。<b>朝一口＋昼しっかり</b>の2本立てに。'},
+    NUT:{hi:'チャーシュー厚い。<b>たんぱく×食物繊維</b>の型を維持。', mid:'間食が濁り。<b>水分→高カカオ/ナッツ</b>に置換。', low:'UPF過多。<b>平日“連日しない”</b>ルール→週1だけ解禁。'},
+    MOV:{hi:'ネギが香る。<b>速歩10分×3</b>の維持で睡眠にも波及。', mid:'座位が長い。<b>毎時“立つ”トリガー</b>（給水/トイレ/階段）。', low:'まずは<b>家内移動の増量</b>→<b>日光5–10分</b>から。'},
+    REC:{hi:'海苔で輪郭くっきり。<b>終業→入浴/散歩</b>の儀式が効いてる。', mid:'通知に裂け目。<b>19–翌7時は通知OFF</b>を試用。', low:'心身の“出汁抜け”。<b>湯船10分＋呼吸1分</b>で“切替え”を作る。'}
+  };
+
+  // Quick Tips（最下位=3行／次点=2行）
+  var TIPS_PRIMARY = {
+    SLP:['起床時刻を毎日固定','朝の外光を2–10分','カフェインは14時まで'],
+    TIM:['就寝3h前に食止め','朝は一口でも摂る','食事時間を毎日だいたい同じに'],
+    NUT:['毎食たんぱく源を入れる','間食は水分→ナッツ/高カカオへ','UPF/揚げ物は“連日しない”'],
+    MOV:['毎時1–2分立つ/歩く','速歩10分を1〜3セット','日光/外気に5–10分'],
+    REC:['終業→入浴/散歩の儀式','通知の夜間OFFを試す','湯船10分＋呼吸1分']
+  };
+  var TIPS_SECONDARY = {
+    SLP:['就寝前30分の減光','布団に入る時刻の目標化'],
+    TIM:['昼に主カロリーを寄せる','夜の間食は別室/買い置きしない'],
+    NUT:['野菜は先に盛る/先に食べる','飲料は無糖ベースに'],
+    MOV:['階段/遠回りを選ぶ','家事NEAT（掃除/洗濯）を増やす'],
+    REC:['Worryリスト→次の一手','寝る30分前に画面伏せ']
+  };
+
+  // ランダム化（毎回）
+  var QUESTIONS = shuffle(ITEMS.map(function(it,idx){return { key:it.key, t:it.t, rev:it.rev, idx:idx };}));
+  var TOTAL = QUESTIONS.length;
+
+  // 質問描画
+  QUESTIONS.forEach(function(q,i){
+    var s=document.createElement('section'); s.className='q';
+    var inner = '<div class="ttl">Q'+(i+1)+'. '+q.t+'</div><div class="scale" role="group" aria-label="質問 '+(i+1)+'">';
+    inner += SCALE.map(function(sc){
+      var id='q'+(i+1)+'-'+sc.v;
+      return '<label class="opt" for="'+id+'"><input type="radio" name="q'+(i+1)+'" id="'+id+'" value="'+sc.v+'"><span>'+sc.label+'</span></label>';
+    }).join('');
+    inner += '</div>';
+    s.innerHTML = inner;
+    qbox.appendChild(s);
+  });
+
+  // 進捗
+  function answeredCount(){ var n=0; for(var i=1;i<=TOTAL;i++){ if(document.querySelector('input[name="q'+i+'"]:checked')) n++; } return n; }
+  function updateProgress(){
+    var n=answeredCount();
+    ptext.textContent = n+' / '+TOTAL;
+    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    btnCalc.disabled = n!==TOTAL;
+  }
+  document.addEventListener('change', function(e){
+    var nm = e && e.target ? e.target.name : '';
+    if(nm && nm.indexOf('q')===0) updateProgress();
+  });
+  updateProgress();
+
+  // 集計
+  function collect(){
+    var vals={};
+    for(var i=1;i<=TOTAL;i++){
+      var el=document.querySelector('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i]=+el.value;
+    }
+    return vals;
+  }
+  function compute(vals){
+    var sums={}, cnts={}; FACTORS.forEach(function(f){sums[f.key]=0; cnts[f.key]=0;});
+    QUESTIONS.forEach(function(q,idx){
+      var v = vals[idx+1]; if(q.rev) v = 6 - v;
+      sums[q.key]+=v; cnts[q.key]+=1;
+    });
+    var factors = FACTORS.map(function(f){
+      var avg = sums[f.key]/(cnts[f.key]||1);
+      var pct = pctFromAvg(avg);
+      return { key:f.key, name:f.name, desc:f.desc, pct:pct, avg:Math.round(avg*10)/10 };
+    }).sort(function(a,b){ return b.pct-a.pct || b.avg-a.avg; });
+    var overall = Math.round(factors.reduce(function(a,b){return a+b.pct;},0)/factors.length);
+    return {factors:factors, overall:overall};
+  }
+
+  // 因子コメント
+  function factorComment(k,pct){
+    var s=FB[k]; if(!s) return '';
+    if(pct>=75) return s.hi;
+    if(pct>=50) return s.mid;
+    return s.low;
+  }
+  function band(p){ if(p>=75) return '高め'; if(p>=50) return '中間'; return '低め'; }
+
+  // 結果描画
+  function render(vals){
+    var out = compute(vals), factors=out.factors, overall=out.overall;
+
+    // ヘッダ
+    head.innerHTML =
+      '<span class="badge">総合：<span class="big">'+overall+'</span></span>'+
+      '<span class="badge">ラベル：<b>'+overallLabel(overall)+'</b></span>';
+
+    // 総合コメント
+    heroCopy.innerHTML =
+      '<div><b>総合コメント</b></div>'+
+      '<div>'+overallStory(overall)+'</div>';
+
+    // 因子カード
+    allBox.innerHTML='';
+    factors.forEach(function(f){
+      var card=document.createElement('article'); card.className='card small';
+      var inner =
+        '<div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
+          '<span>'+f.name+'</span>'+
+          '<span class="badge">'+f.pct+'%</span>'+
+          '<span class="badge">'+band(f.pct)+'</span>'+
+        '</div>'+
+        '<div class="muted" style="margin:.2em 0 .4em">'+f.desc+'</div>'+
+        '<div class="meter"><i style="width:'+f.pct+'%"></i></div>'+
+        '<div style="margin-top:.6em">'+factorComment(f.key, f.pct)+'</div>';
+      card.innerHTML=inner;
+      allBox.appendChild(card);
+    });
+
+    // Quick Tips（最下位／次点）
+    var low  = factors.slice(-1)[0];
+    var low2 = factors.slice(-2,-1)[0];
+    function li(items){ return '<ul>'+items.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>'; }
+    var tip1 = TIPS_PRIMARY[low.key] || [];
+    var tip2 = TIPS_SECONDARY[low2.key] || [];
+    quick.innerHTML =
+      '<h3 class="section-title">まず1つだけ整えるなら</h3>'+
+      '<div class="card small"><div class="name">'+low.name+'（現状 '+low.pct+'%）</div>'+li(tip1.slice(0,3))+'</div>'+
+      '<div class="card small"><div class="name">次に '+low2.name+'（'+low2.pct+'%）</div>'+li(tip2.slice(0,2))+'</div>';
+
+    res.style.display='block';
+    res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // ボタン
+  $('#btnCalc').addEventListener('click', function(){ var vals=collect(); if(!vals) return; render(vals); });
+  $('#btnReset').addEventListener('click', function(){
+    $$('input[type="radio"]').forEach(function(i){i.checked=false;});
+    pbar.style.width='0%'; ptext.textContent='0 / 20';
+    res.style.display='none'; head.innerHTML=''; allBox.innerHTML=''; heroCopy.textContent=''; quick.innerHTML='';
+    $('#btnCalc').disabled=true;
+  });
+
+  // 保存機能
+  $('#btnSave').addEventListener('click', function(){
+    try{
+      if(window.html2canvas){
+        var node = document.getElementById('resultCard');
+        html2canvas(node,{scale:2,backgroundColor:'#ffffff'}).then(function(cv){
+          var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='ramen-health-result.png'; a.click();
+        });
+      } else { window.print(); }
+    }catch(e){ window.print(); }
+  });
+  $('#btnPrint').addEventListener('click', function(){ window.print(); });
+})();
+</script>
+</body>
+</html>
