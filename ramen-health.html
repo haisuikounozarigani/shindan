@@ -7,6 +7,7 @@
 <meta name="description" content="健康習慣＝ラーメンの仕込みに見立てる20項目・5因子のセルフチェック。0–100で整い度を可視化し、6ラベル（塩/醤油/鶏白湯/味噌/家系/二郎系）と実践的アドバイスを表示（娯楽＋自己理解用）。">
 <meta name="theme-color" content="#fff7f0">
 <style>
+	figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
   :root{--bg1:#fff7f0;--bg2:#fff1f1;--paper:#fff;--ink:#1c1714;--muted:#776b64;--line:#f0e5da;--accent:#ff994d;--accent2:#ffc864}
   *{box-sizing:border-box} html,body{height:100%}
   body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.9;letter-spacing:.02em}
@@ -91,6 +92,10 @@
       <div id="resultCard">
         <h2 class="section-title" style="font-size:18px">結果</h2>
         <div id="head" class="stage" style="margin-bottom:8px"></div>
+        <!-- ヒーロー画像（01=塩 … 06=二郎系） -->
+<figure class="hero" aria-hidden="true">
+  <img id="heroImg" src="" alt="" style="width:100%;height:auto;display:block" loading="lazy">
+</figure>
         <div class="copy" id="heroCopy"></div>
 
         <h3 class="section-title">因子プロファイル（5因子）</h3>
@@ -186,12 +191,25 @@
   var qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
   var btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
   var res = $('#result'), head = $('#head'), allBox = $('#all');
-  var heroCopy = $('#heroCopy'), quick = $('#quick');
+  var heroImg = $('#heroImg'), heroCopy = $('#heroCopy'), quick = $('#quick');
 
   // Utils
   function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   function pctFromAvg(avg){ var p=Math.round(((avg-1)/4)*100); if(p<0)p=0; if(p>100)p=100; return p; }
+// 画像フォルダ（必要ならパスを書き換えてください）
+  var HERO_IMG_BASE = '/shindan/assets/results/ramen-health/';
 
+  // 総合スコア→画像ファイル名（01=塩 … 06=二郎系）
+  function heroImageFor(p){
+    var idx;
+    if(p>=90) idx=1;      // 塩
+    else if(p>=75) idx=2; // 醤油
+    else if(p>=60) idx=3; // 鶏白湯
+    else if(p>=45) idx=4; // 味噌
+    else if(p>=30) idx=5; // 家系
+    else idx=6;           // 二郎系
+    return ('0'+idx).slice(-2)+'.png';
+  }
   // ラベル
   function overallLabel(p){
     if(p>=90) return '塩（仕込み完璧）';
@@ -310,10 +328,16 @@
       '<span class="badge">総合：<span class="big">'+overall+'</span></span>'+
       '<span class="badge">ラベル：<b>'+overallLabel(overall)+'</b></span>';
 
-    // 総合コメント
-    heroCopy.innerHTML =
-      '<div><b>総合コメント</b></div>'+
-      '<div>'+overallStory(overall)+'</div>';
+// ヒーロー画像
+var imgFile = heroImageFor(overall);
+if (heroImg){
+  heroImg.src = HERO_IMG_BASE + imgFile;
+  heroImg.alt = '総合ラベル：' + overallLabel(overall) + '（画像 ' + imgFile + '）';
+}
+// 総合コメント
+heroCopy.innerHTML =
+  '<div><b>総合コメント</b></div>' +
+  '<div>' + overallStory(overall) + '</div>';
 
     // 因子カード
     allBox.innerHTML='';
