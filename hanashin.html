@@ -1,169 +1,490 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <!-- 既存 <title> はそのままでもOK。追記/差し替え例 -->
-<title>花タイプ診断（独自再構成・6問×5件法）</title>
-<meta name="description" content="6問×5件法の独自再構成セルフチェック。エンタメ＋自己理解向け（公式の心理検査ではありません／医療用途ではありません／回答は端末内で処理されサーバー送信は行いません）。">
-  <style>
-    :root{ --brand:#8e5a5a; --bg1:#fffdf9; --bg2:#f3f0e7; --muted:#666; }
-    body{
-      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
-      background: linear-gradient(var(--bg1),var(--bg2));
-      color:#333; margin:0; padding:22px;
-    }
-    .wrap{max-width:720px;margin:0 auto}
-    h1{color:var(--brand); text-align:center; margin:6px 0 10px; font-size:clamp(20px,3.8vw,28px)}
-    .card{background:#fff; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.08)}
-    .meta{display:flex; justify-content:space-between; color:var(--muted); font-size:12px; margin:0 2px 8px}
-    .question{margin:18px 0 20px}
-    .question p{margin:0 0 10px}
-    .scale{display:grid; gap:8px}
-    .scale label{display:flex; gap:10px; align-items:center; padding:10px; background:#f6f3f1; border-radius:10px; cursor:pointer}
-    .scale input{accent-color:var(--brand)}
-    .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px}
-    .btn{background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer}
-    .btn.secondary{background:#8a8a8a}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>魂の花診断 ─ あなたの核が咲くとき</title>
+<meta name="description" content="10問×5択で、あなたの“魂の花”タイプ（白い薔薇/向日葵/百合/杏/フリージア）を判定。段階（芽・蕾・花）とコメントを表示（娯楽＋自己理解用）。">
+<meta name="theme-color" content="#fff5fb">
 
-    /* result */
-    #result{margin-top:18px}
-    .result-head{ text-align:center; margin:0 0 10px; }
-    .result-img{ width:100%; height:auto; display:block; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.10) }
-    .result-ctas{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px }
-    .linkbtn{ display:inline-block; text-decoration:none; background:#fff; border:1px solid #e7d9d9; color:#533; padding:10px 14px; border-radius:999px }
-    .linkbtn.primary{ background:var(--brand); color:#fff; border-color:transparent }
-    .note{ color:var(--muted); text-align:center; margin-top:10px; font-size:.92em }
-  </style>
+<style>
+	figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+figure.hero img{display:block;width:100%;height:auto}
+  :root{
+    --bg1:#fff5fb; --bg2:#f3f4ff; --paper:#fff; --ink:#2b2330; --muted:#7b6a79;
+    --line:#f0d8ea; --accent:#ff9ecf; --accent2:#b69cff;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{
+    margin:0;color:var(--ink);
+    font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.9;letter-spacing:.02em
+  }
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.05) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+  .warn{margin:12px 0;border:1px dashed #e9cbe0;background:#fff7fd;color:#513a4d;padding:10px;border-radius:12px}
+  .warn strong{color:#79406d}
+  .section-title{margin:12px 0 8px;font-size:15px;font-weight:800}
+
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:grid;gap:8px;margin-top:8px}
+  .opt{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#f7e8f4;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbf7fd);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--ink)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+
+  /* Results */
+  #result{margin-top:18px;display:none}
+  .stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .big{font-size:20px;font-weight:900}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .small{font-size:.95em}
+  .meter{height:6px;background:#f7e8f4;border-radius:999px;overflow:hidden;margin-top:8px}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .savebar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#5f4770;font-weight:700}
+
+  .footnote{color:#7a6674;margin-top:14px}
+</style>
+
+<!-- 結果カード保存（画像化）。CDN一本、失敗時はアラート表示のみ -->
+<script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <h1>🌸 花タイプ診断 🌸</h1>
+<header><div class="in">
+  <h1>魂の花診断</h1>
+  <span class="crumb">10問×5択 → メイン花＋段階（芽/蕾/花）</span>
+</div></header>
 
-<section id="legal-note" style="margin:8px 0 12px;background:#fff;border:1px solid #e7d9d9;border-radius:10px;padding:10px 12px">
-  <h2 style="margin:4px 0 6px;font-size:1rem;color:#533">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#666">
-    <li><strong>非提携・非公式：</strong>本コンテンツは研究一般の知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。公式の質問票や採点方法は使用しておらず、権利者の承認・提携・推奨を意味しません。</li>
-    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的な診断／治療／助言を目的としません。強い苦痛や不調が続く場合は専門家にご相談ください。</li>
-    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
-    <li><strong>表現について：</strong>花タイプ名は創作上の比喩であり、人物評価の断定やラベリングの意図はありません。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用に伴う損失・損害について当サイトは責任を負いません。</li>
-  </ul>
-</section>
-    <div class="card">
-      <div class="meta"><span id="progress">未回答 6 / 6</span><span>5件法：1〜5</span></div>
-      <form id="quizForm"></form>
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>5タイプ</strong>（白い薔薇/向日葵/百合/杏/フリージア）から“いまの核”を判定。10問の選択でメイン花＋段階を表示します。</div>
+      <p class="lead">答え方：各問で最も近い選択肢をひとつ選んでください。</p>
+      <p class="warn"><strong>注意：</strong>このコンテンツは<b>娯楽＋自己理解の目安</b>です。医療的な診断・治療・助言を目的としません。結果名（花/段階）は<b>比喩</b>であり、価値の優劣や特定個人の断定を意図しません。回答は端末内で処理され、個人情報の送信は行いません。</p>
+    </div>
 
-      <div class="actions">
-        <button type="button" class="btn" onclick="calculate()">診断する</button>
-        <button type="button" class="btn secondary" onclick="resetForm()">リセット</button>
+    <!-- 質問 -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 10</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel">
+      <div id="resultCard">
+        <h2 class="section-title" style="font-size:18px">結果</h2>
+        <div id="head" class="stage" style="margin-bottom:8px"></div>
+
+        <h3 class="section-title">あなたの花</h3>
+        <div class="grid" id="mainArea"></div>
+
+        <div id="subWrap" style="display:none">
+          <h3 class="section-title">サブ花（接戦）</h3>
+          <div class="grid" id="subArea"></div>
+        </div>
+
+        <details>
+          <summary>集計ルール</summary>
+          <div class="small muted">
+            <p>各問は A〜E が 1点加算。花ごとの合計（0–10）→ 段階：0–2=芽／3–5=蕾／6–10=花。<br>最多タイプをメイン花、2位が接戦（差≤2点）ならサブ花として併記。</p>
+          </div>
+        </details>
       </div>
 
-      <div id="result" aria-live="polite"></div>
+      <div class="savebar">
+        <button id="btnSave" class="btn">結果カードを画像保存</button>
+      </div>
+
+      <div class="footnote small">
+        <b>免責：</b>本コンテンツは娯楽＋自己理解のセルフチェックです。医療的な診断・治療・助言を目的としません。結果名称は比喩表現で、価値の優劣を示すものではありません。
+      </div>
     </div>
-  </div>
+  </section>
+</main>
 
-  <script>
-  // 設問
-  const items = [
-    "曇りの日の方が、気持ちが落ち着く",
-    "昔の写真や手紙を、ふと見返したくなる",
-    "世界の細部に『意味』を感じてしまう",
-    "音楽や匂いで、一瞬にして記憶が蘇る",
-    "自分の感情に敏感だ",
-    "季節の変わり目に、心が揺れる"
+<script>
+(function(){
+  // ====== ユーティリティ ======
+  function $(q,root){return (root||document).querySelector(q)}
+  function $$(q,root){return Array.prototype.slice.call((root||document).querySelectorAll(q))}
+  function vibrate(ms){ try{ if('vibrate' in navigator) navigator.vibrate(ms||10);}catch{} }
+
+// ====== 定義：花タイプ（占いトーン） ======
+const FLOWERS = {
+  A:{ key:'A', code:'rose', name:'白い薔薇',
+      essence:'理知の透明さと率直な勇気',
+      poem:'静かな光で道を切りひらく白い薔薇。芯は凛としてまっすぐ、凍った空気すらきらめきに変える人。',
+      signs:['窓辺の白い光が目に入る','紙とペンで一行書けたら芽がほどける','ティーの湯気が合図'],
+      lucky:{ color:'ミルクホワイト', item:'無地のカード', time:'午前10時台', word:'「真実は味方」' },
+      words:'純潔・尊敬・新たな始まり'
+  },
+  B:{ key:'B', code:'sunflower', name:'向日葵',
+      essence:'やさしさで場をあたためる中心',
+      poem:'雲間から差す光のように、向日葵は誰かの背中にそっと太陽を貼る。あなたの笑顔は場の羅針盤。',
+      signs:['名前を呼ばれる回数が増える','温かい飲み物がやけにおいしい','黄色が視界にひらく'],
+      lucky:{ color:'ハニーイエロー', item:'やわらかなハンカチ', time:'正午', word:'「だいじょうぶ」' },
+      words:'あこがれ・敬慕・情熱'
+  },
+  C:{ key:'C', code:'lily', name:'百合',
+      essence:'品のある集中と静かな炎',
+      poem:'水面に落ちる白の一滴。百合は声を荒げずに芯で伝える。静けさがそのまま力になる日。',
+      signs:['深呼吸が一度で深くなる','机の上がすっと整う','小さな整音が心地よい'],
+      lucky:{ color:'パール', item:'細い栞', time:'夕暮れ前の青', word:'「静けさは翼」' },
+      words:'純潔・威厳・無垢'
+  },
+  D:{ key:'D', code:'apricot', name:'杏',
+      essence:'先読みと信頼を編む守護',
+      poem:'薄桃の光で境界を縁取る杏。見えない危うさをやさしく包み、安心という土壌をつくる人。',
+      signs:['チェックが一つ埋まる音が心地いい','鍵の小さな金属音','角のない返事が返ってくる'],
+      lucky:{ color:'アプリコット', item:'小さなポーチ', time:'16時', word:'「守るから進む」' },
+      words:'気品・節度・先見'
+  },
+  E:{ key:'E', code:'freesia', name:'フリージア',
+      essence:'慎重と明るさのハーモニー',
+      poem:'春先の風みたいに、フリージアは場をふわりとやわらげる。怖さを抱きしめたまま笑える、あたたかな勇気。',
+      signs:['靴紐を結び直す小さな所作','ほのかな香りに足を止める','「ありがとう」を先に言える'],
+      lucky:{ color:'レモンクリーム', item:'小さな付箋', time:'朝の散歩前後', word:'「軽やかに、やさしく」' },
+      words:'友情・信頼・無邪気'
+  }
+};
+
+// 占いトーンの長文コメント + 段階別ひと言
+const FORTUNE = {
+  A: { // 白い薔薇
+    long: 'あなたは事実と誠実を軸に、場の視界を澄ませる人。正しさと美しさの両方を大切にし、難しい本題ほどまっすぐ言葉を選べます。期待されると静かに燃え、孤独な準備も苦にしない。気づけば周囲はあなたの基準で整い、 “この人が言うなら” と空気が決まっていく。凛とした透明感は、勝ち負けを越えて信頼を集める才能です。',
+    stage: {
+      '芽': '芯はもう見えている段階。小さな会議や少人数の場で、あなたの一言が自然に方向を決め始めます。',
+      '蕾': '輪郭が整い始めた時期。説明が短くなるほど伝わり、納得のうなずきが増えるでしょう。',
+      '花': '存在そのものが羅針盤。あなたの名前が出るだけで場が締まり、物事が前へ進みます。'
+    }
+  },
+  B: { // 向日葵
+    long: 'あなたは人の心に灯りをともす太陽。誰かの不安を見つけるのが早く、さりげない一言で空気をやわらげます。頼られるほど力が出て、 “つい任せたくなる” 安心感をまとっている。感性はあたたかく、責任感はしなやか。ありがとうが自然と集まるのは、あなたが場の中心で温度を保っている証です。',
+    stage: {
+      '芽': 'やさしさの光が差し始める頃。挨拶や相づちだけで場の緊張がほどけ、話が進みやすくなります。',
+      '蕾': '人が自分から集まる時期。相談が増え、あなたを起点にチームの流れがなめらかになります。',
+      '花': '明るさが伝播する完成期。あなたの笑顔が場の羅針盤になり、自然に人と成果がつながっていきます。'
+    }
+  },
+  C: { // 百合
+    long: 'あなたは静けさを力に変える人。声を荒げず、本質だけをすっと差し出す所作に気品が宿ります。細部まで目が届き、余白を大切にできるから、伝えたいことが澄んで届く。無駄を嫌う潔さは冷たさではなく、相手への敬意のかたち。気づけば “丁寧だから信じられる” と、静かな信頼が積み上がっています。',
+    stage: {
+      '芽': '繊細な集中が芽吹く頃。机や言葉の整いが周囲にも伝わり、「任せたい」が密かに増えます。',
+      '蕾': '品のある存在感が立ち上がる時期。短い一文や一枚の資料で、場の理解が揃っていきます。',
+      '花': '静謐が説得力になる完成期。あなたの落ち着きが基準となり、判断が美しく速くまとまります。'
+    }
+  },
+  D: { // 杏
+    long: 'あなたは未来の安心を編む守護者。見えにくいリスクを先回りで包み、みんなが前に出られる地面を固めます。約束は守られ、仕組みは途切れない。控えめでも存在は大きく、 “気がつくといつも守られている” と信頼が蓄えられる人。慎重さは臆病ではなく、長く続く価値のための知恵です。',
+    stage: {
+      '芽': '静かな用心が芽を出す頃。小さな抜け漏れに気づけるあなたに、鍵や重要タスクが集まり始めます。',
+      '蕾': '信用が形になる時期。あなたのチェック一回で、みんなの不安がすっと消えていきます。',
+      '花': '安心の象徴として完成。あなたが関わる領域は長く安定し、挑戦の後ろ盾として語られます。'
+    }
+  },
+  E: { // フリージア
+    long: 'あなたは慎重さと明るさを同時に持つ春風。場の微細な緊張を感じ取り、やわらかくほどく天性の間合いがあります。小さな安全を積み重ねるから、気づけば遠くまで来ている。人はあなたのそばで素直になり、笑いながら本音を話したくなる。軽やかな配慮は、続ける強さというやさしい魔法です。',
+    stage: {
+      '芽': 'やさしい感受が芽吹く頃。声のトーンや所作ひとつで、周りの肩の力がふっと抜けていきます。',
+      '蕾': '明るい慎重さが安定する時期。あなたがいると「大丈夫」と思える場面が確実に増えます。',
+      '花': '軽やかさが人を前に進める完成期。あなたの雰囲気自体が、続けられる未来の合図になります。'
+    }
+  }
+};
+
+  const stageOf = n => (n<=2?'芽': n<=5?'蕾':'花');
+  const SUB_MARGIN = 2;
+  const TIEBREAK = ['A','B','C','D','E'];
+
+  // ====== 質問（10問×5択） ======
+  const QUESTIONS = [
+    { q:'一度だけ透明になれる。何に使う？',
+      A:'競合の企画を見て勝ち筋を作る',
+      B:'困ってる人の手がかりを探す',
+      C:'尊敬する人の手元を見て学ぶ',
+      D:'リスク調査して適切に報告',
+      E:'混乱を避けて安全確認だけ' },
+    { q:'封筒に現金と“不正の証拠”。どうする？',
+      A:'中身を精査→公表の段取りを組む',
+      B:'被害者を守る形で届け出る',
+      C:'匿名で投函し静かに離れる',
+      D:'証拠保全し手順通り申告',
+      E:'落とし主の安全を先に確かめる' },
+    { q:'部下の案が自分の構想に近い。発表は？',
+      A:'自分の戦略に統合し先導する',
+      B:'本人の功績として前に出す',
+      C:'二人の連名で静かに出す',
+      D:'ルールに沿い権利を整理',
+      E:'無理なく続く形で少しずつ' },
+    { q:'時間を1時間だけ止められる。何をする？',
+      A:'先回りで成果の詰めを完了',
+      B:'困っている人の手助け',
+      C:'じっくり準備と練習',
+      D:'事故やトラブルの予防',
+      E:'休憩と整頓で調子を戻す' },
+    { q:'SNSの批判が炎上直前。あなたは？',
+      A:'反証を用意し主導して収束',
+      B:'相手の不安に言葉を向ける',
+      C:'いったん静観し誤解を解く',
+      D:'事実確認し手順で対応',
+      E:'空気を和らげ一言で鎮める' },
+    { q:'社内の重大ミスに気づいた。まだ誰も気づかない。',
+      A:'上に直談判し主導で立て直す',
+      B:'当事者を守りつつ声かけ',
+      C:'小さく直せる所から修正',
+      D:'証跡を残し正式に報告',
+      E:'距離をとって様子見つつ支援' },
+    { q:'駅でお年寄りが転倒しそう。走れば商談に遅刻。',
+      A:'遅刻覚悟で助け、成果で取り返す',
+      B:'迷わず助けて遅れは謝る',
+      C:'近くの人に声をかけ連携',
+      D:'駅員を呼びルートを確保',
+      E:'声かけしつつ周囲に明るく依頼' },
+    { q:'秘密の新企画に“偶然”アクセスできた。',
+      A:'中を見て勝てる戦略を描く',
+      B:'仲間にできそうな人を探す',
+      C:'見なかったことにして戻る',
+      D:'上司に話し利用可否を確認',
+      E:'触らず警告だけ出して閉じる' },
+    { q:'AIがあなたの功績を“別人の手柄”に誤認。',
+      A:'公表しつつ周囲を説得し是正',
+      B:'チーム功績なら一つは気にしない',
+      C:'水面下で静かに修正依頼',
+      D:'手順に沿って正式申請',
+      E:'場の空気を整え穏やかに是正' },
+    { q:'未来の自分に一通だけメッセージ。',
+      A:'「勝ち筋を逃すな。真実で押せ」',
+      B:'「人を信じて、灯りを絶やすな」',
+      C:'「小さな一歩で十分。続けろ」',
+      D:'「境界を守れ。それが最短路」',
+      E:'「無理をしない。整えて進め」' }
   ];
-  const scaleLabels = [
-    "1（まったくそう思わない）",
-    "2（あまりそう思わない）",
-    "3（どちらともいえない）",
-    "4（少しそう思う）",
-    "5（とてもそう思う）"
-  ];
 
-  // 花タイプ定義（表示名）
-  const FLOWERS = {
-    airisu:     { name:"アイリス（蒼の境界線）" },
-    ajisai:     { name:"アジサイ（水面の記憶）" },
-    suzuran:    { name:"スズラン（祈りの音）" },
-    sakura:     { name:"桜（散り際の美学）" },
-    shiroibara: { name:"白いバラ（静けさの誓い）" },
-    himawari:   { name:"ひまわり（向光のまなざし）" }
-  };
+  // ====== DOM ======
+  const qbox   = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const btnCalc= $('#btnCalc'), btnReset = $('#btnReset');
+  const res    = $('#result'), head = $('#head');
+  const mainArea = $('#mainArea'), subWrap = $('#subWrap'), subArea = $('#subArea');
 
-  // フォーム描画
-  const form = document.getElementById("quizForm");
-  const progressEl = document.getElementById("progress");
-  items.forEach((q, i) => {
-    const div = document.createElement("div");
-    div.className = "question";
-    div.innerHTML = `<p>Q${i+1}. ${q}</p>
-      <div class="scale">
-        ${scaleLabels.map((label, n) => {
-          const id = `q${i+1}_${n+1}`;
-          return `<label for="${id}">
-            <input id="${id}" type="radio" name="q${i+1}" value="${n+1}"> ${label}
-          </label>`;
-        }).join("")}
-      </div>`;
-    form.appendChild(div);
+  // ====== 質問描画 ======
+  QUESTIONS.forEach((q, i)=>{
+    const sec = document.createElement('section');
+    sec.className = 'q';
+    // fieldset+legendでアクセシビリティ確保
+    let inner = '<fieldset><legend class="ttl">Q'+(i+1)+'. '+q.q+'</legend><div class="scale" role="group" aria-label="質問 '+(i+1)+'">';
+    ['A','B','C','D','E'].forEach(letter=>{
+      const id = 'q'+(i+1)+'-'+letter;
+      inner += '<label class="opt" for="'+id+'">'+
+                 '<input type="radio" name="q'+(i+1)+'" id="'+id+'" value="'+letter+'">'+
+                 '<span>'+q[letter]+'</span>'+
+               '</label>';
+    });
+    inner += '</div></fieldset>';
+    sec.innerHTML = inner;
+    qbox.appendChild(sec);
   });
 
-  function updateProgress(){
-    const answered = items.filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
-    progressEl.textContent = `未回答 ${items.length - answered} / ${items.length}`;
+  // ====== 進捗 ======
+  function answeredCount(){
+    let n=0;
+    for(let i=1;i<=QUESTIONS.length;i++){
+      if (document.querySelector('input[name="q'+i+'"]:checked')) n++;
+    }
+    return n;
   }
-  form.addEventListener("change", updateProgress);
+  function updateProgress(){
+    const n = answeredCount();
+    ptext.textContent = n+' / '+QUESTIONS.length;
+    pbar.style.width = Math.round(n/QUESTIONS.length*100)+'%';
+    btnCalc.disabled = n!==QUESTIONS.length;
+  }
+  document.addEventListener('change', function(e){
+    const nm = e && e.target ? e.target.name : '';
+    if (nm && nm.indexOf('q')===0) updateProgress();
+  });
   updateProgress();
 
-  // 合計点→タイプ判定
-  function judge(total){
-    if (total <= 10) return "airisu";
-    if (total <= 14) return "ajisai";
-    if (total <= 18) return "suzuran";
-    if (total <= 22) return "sakura";
-    if (total <= 26) return "shiroibara";
-    return "himawari";
-  }
-
-  function calculate(){
-    let total = 0;
-    for(let i=1;i<=items.length;i++){
-      const val = parseInt(document.querySelector(`input[name="q${i}"]:checked`)?.value);
-      if(!val){ alert(`すべての質問に答えてください。\n未回答の設問があります（Q${i}）。`); return; }
-      total += val;
+  // ====== 採点 ======
+  function scoreAnswers(getVal){
+    const s = {A:0,B:0,C:0,D:0,E:0};
+    for(let i=0;i<QUESTIONS.length;i++){
+      const v = getVal(i);
+      if (s[v]!=null) s[v] += 1;
     }
-    const type = judge(total);
-    renderResult({ total, type });
-    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+    const entries = Object.entries(s);
+    entries.sort((a,b)=>{
+      if(b[1]!==a[1]) return b[1]-a[1];
+      return TIEBREAK.indexOf(a[0]) - TIEBREAK.indexOf(b[0]);
+    });
+    const [topKey, topScore] = entries[0];
+    const sub = entries.slice(1).find(([k,n]) => (topScore - n) <= SUB_MARGIN);
+    return {
+      totals: s,
+      main: { key: topKey, score: topScore, stage: stageOf(topScore) },
+      sub:  sub ? { key: sub[0], score: sub[1], stage: stageOf(sub[1]) } : null
+    };
   }
 
-  function resetForm(){
-    form.reset();
-    document.getElementById("result").innerHTML = "";
-    updateProgress();
-    window.scrollTo({top:0, behavior:"smooth"});
+  // ====== カード描画（占いトーン） ======
+function cardFor(key, score, stage, shorten){
+  const f = FLOWERS[key];
+  const fortune = FORTUNE[key];
+  const meter = Math.round(score/10*100);
+  const el = document.createElement('article');
+  el.className = 'card';
+
+  // 長文はサブ花なら先頭2文だけ
+  const longTxt = shorten
+    ? (()=>{ const s=fortune.long.split('。'); return (s.slice(0,2).join('。') + (s.length>1?'。':'')); })()
+    : fortune.long;
+
+  // signsを2〜3個だけ（サブ花は2つ）
+  const sig = (shorten ? f.signs.slice(0,2) : f.signs.slice(0,3))
+               .map(s => '<li>'+s+'</li>').join('');
+
+  const luck =
+    '<div class="small muted" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:.4em">'
+    + '<span class="badge">色：'+f.lucky.color+'</span>'
+    + '<span class="badge">アイテム：'+f.lucky.item+'</span>'
+    + '<span class="badge">時間：'+f.lucky.time+'</span>'
+    + '<span class="badge">ことば：'+f.lucky.word+'</span>'
+    + '</div>';
+
+  el.innerHTML =
+    '<div class="name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+      + '<span>'+f.name+'（'+stage+'）</span>'
+      + '<span class="badge">得点 '+score+' / 10</span>'
+    + '</div>'
+    + '<div class="meter" aria-hidden="true"><i style="width:'+meter+'%"></i></div>'
+    + '<div style="margin-top:.6em" class="small">'
+      + '<div style="font-size:1.05em"><b>'+longTxt+'</b></div>'
+      + '<div style="margin-top:.35em"><b>いまの段階：</b>'+fortune.stage[stage]+'</div>'
+      + '<div style="margin-top:.5em"><b>今週の「咲くサイン」</b><ul style="margin:.3em 0 .2em 1.2em">'+sig+'</ul></div>'
+      + luck
+      + '<div class="muted" style="margin-top:.4em"><b>花言葉：</b>'+f.words+'</div>'
+    + '</div>';
+
+  return el;
+}
+
+// ====== 結果画像（メイン花→ファイル） ======
+// 01=白い薔薇, 02=百合, 03=向日葵, 04=杏, 05=フリージア
+const HERO_BASE = '/shindan/assets/results/hanashin/';
+function heroFileFor(key){
+  switch(key){
+    case 'A': return '01.png'; // 白い薔薇
+    case 'C': return '02.png'; // 百合
+    case 'B': return '03.png'; // 向日葵
+    case 'D': return '04.png'; // 杏
+    case 'E': return '05.png'; // フリージア
+    default:  return '01.png';
+  }
+}
+
+// ====== 集計 → 描画 ======
+function render(){
+  // 回答収集（A〜E）
+  const vals = {};
+  for(let i=1;i<=QUESTIONS.length;i++){
+    const el = document.querySelector('input[name="q'+i+'"]:checked');
+    if(!el) return; // 念のため
+    vals[i] = el.value;
   }
 
-  // 結果描画：画像表示＋導線（再診断／一覧へ）
-  function renderResult({ total, type }){
-    const flowerName = FLOWERS[type].name;
-    const imgPath = `/shindan/assets/results/hana/${type}/01.png`; // 保存した画像へ
+  const result = scoreAnswers(i=>vals[i+1]);
 
-    const html = `
-      <div class="result-head">
-        <p>あなたの合計は <strong>${total} 点</strong>。</p>
-        <p>花タイプ：<strong>${flowerName}</strong></p>
-      </div>
-      <img class="result-img" src="${imgPath}" alt="${flowerName} の結果画像" loading="eager"
-           onerror="this.alt='結果画像が見つかりません'; this.style.opacity=.3;">
-      <div class="result-ctas">
-        <a class="linkbtn primary" href="/shindan/hanashin.html">もう一度診断</a>
-        <a class="linkbtn" href="https://haisuikounozarigani.github.io/shindan/">診断一覧へ戻る</a>
-      </div>
-      <p class="note">※ 画像はサイト内（/assets/results/hana/...）に保存された結果イメージです。</p>
-    `;
-    document.getElementById("result").innerHTML = html;
+  // ヘッダ（概要）
+  head.innerHTML =
+    '<span class="badge">メイン：<span class="big">'+FLOWERS[result.main.key].name+'</span></span>'+
+    '<span class="badge">段階：<b>'+result.main.stage+'</b></span>'+
+    (result.sub ? '<span class="badge">サブ：'+FLOWERS[result.sub.key].name+'（'+result.sub.stage+'）</span>' : '');
+
+  // ヒーロー画像
+  const hero = document.getElementById('heroImg');
+  if (hero){
+    hero.src = HERO_BASE + heroFileFor(result.main.key);
+    hero.alt = FLOWERS[result.main.key].name + 'のイメージ';
   }
-  </script>
+
+  // メインカード
+  mainArea.innerHTML = '';
+  mainArea.appendChild(cardFor(result.main.key, result.main.score, result.main.stage, false));
+
+  // サブ（接戦のみ）
+  if (result.sub){
+    subArea.innerHTML = '';
+    subArea.appendChild(cardFor(result.sub.key, result.sub.score, result.sub.stage, true));
+    subWrap.style.display = '';
+  } else {
+    subWrap.style.display = 'none';
+    subArea.innerHTML = '';
+  }
+
+  res.style.display = 'block';
+  res.scrollIntoView({behavior:'smooth',block:'start'});
+  vibrate(12);
+}
+
+  // ====== ボタン ======
+  btnCalc.addEventListener('click', render);
+  btnReset.addEventListener('click', function(){
+    $$('input[type="radio"]').forEach(i=>i.checked=false);
+    pbar.style.width='0%'; ptext.textContent='0 / 10';
+    res.style.display='none'; head.innerHTML=''; mainArea.innerHTML=''; subArea.innerHTML='';
+    btnCalc.disabled = true;
+    vibrate(6);
+  });
+
+  // ====== 画像保存 ======
+  $('#btnSave').addEventListener('click', function(){
+    try{
+      if(window.html2canvas){
+        const node = document.getElementById('resultCard');
+        html2canvas(node, {scale:2, backgroundColor:'#ffffff'}).then(cv=>{
+          const a=document.createElement('a');
+          a.href=cv.toDataURL('image/png');
+          a.download='hanashin-result.png';
+          a.click();
+        });
+      } else {
+        alert('保存機能を利用できません（html2canvasの読み込み失敗）。');
+      }
+    }catch(e){
+      alert('保存に失敗しました。もう一度お試しください。');
+    }
+  });
+})();
+</script>
 </body>
 </html>
