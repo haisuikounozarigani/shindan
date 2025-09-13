@@ -142,6 +142,11 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px);letter-spacing:.02em}
         </div>
 
         <div id="factorsArea" class="section"></div>
+
+<!-- 戻るボタン（ページ末尾に表示） -->
+<div class="section" id="backArea" style="display:flex;justify-content:center">
+  <a class="btn" id="btn-back-list" href="/shindan/" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+</div>
       </div>
     </section>
   </div>
@@ -160,7 +165,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px);letter-spacing:.02em}
 <script>
 (() => {
   // ====== 設定 ======
-  const RANK_BADGE_BASE = "/shindan/assets/sleep-sheep/bed-"; // bed-01.png(S良)〜bed-05.png(D悪)
+  const RANK_BADGE_BASE = "/shindan/assets/results/sleep-sheep/"; // 01.png〜05.png
   const RANK_IMAGES = { S:"01", A:"02", B:"03", C:"04", D:"05" };
   const STORAGE_KEY = "sleep-sheep:v1:answers";
 
