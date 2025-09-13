@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>眠りの羊診断｜ゆめかわセレクター</title>
+<meta name="description" content="40問で睡眠の“いま”を総点検。クロノタイプ・10因子レーダーと因子別の対策つき。">
+<meta name="theme-color" content="#fff5fb">
+<link rel="preload" as="image" href="/shindan/assets/hero/specimens-hero-1080.png">
+<!-- libs -->
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;
+  --accent:#ff9ecf;--accent2:#b69cff;--good:#2e7d32;--mid:#ef6c00;--bad:#c62828
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+a{color:inherit}
+.hidden{display:none!important}
+.wrap{max-width:980px;margin:18px auto 24px;padding:0 14px}
+.header{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;margin:14px 0 6px}
+.logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#ffd6ea,#e7dbff);display:grid;place-items:center;font-size:34px}
+h1{margin:0;font-size:clamp(22px,4.5vw,34px);letter-spacing:.02em}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.95em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 6px 18px rgba(255,158,207,.12)}
+.card h2{margin:2px 0 10px;font-size:1.15rem}
+.section{margin:16px 0}
+.qrow{padding:10px 10px;border:1px solid #f1d9e8;border-radius:12px;margin:10px 0;background:#fff}
+.qrow .ttl{font-weight:700}
+.scale{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.scale label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #efdeea;border-radius:999px;background:#fff;cursor:pointer}
+.scale input{accent-color:#b69cff}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.stickybar{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #f3e3f0;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#f3e3f0;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd6ea,#b69cff)}
+.sheep{font-size:18px}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+.cols{display:grid;grid-template-columns:1fr;gap:12px} /* 常に1カラム */
+.meta{display:flex;gap:8px;flex-wrap:wrap;color:#7b6571}
+.pill{padding:4px 8px;border:1px solid #efdeea;border-radius:999px;background:#fff}
+.res-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rank-large{display:flex;align-items:center;gap:12px}
+/* 画像を少し大きく（端末幅に合わせて伸縮） */
+.rank-large img{
+  width:clamp(96px, 18vw, 128px);
+  height:clamp(96px, 18vw, 128px);
+  border-radius:16px;border:1px solid #efdeea;background:#fff;object-fit:contain
+}
+.rank-large .score{font-size:28px;font-weight:800}
+.rank-name{font-weight:800}
+.chartbox{padding:10px;border:1px dashed #ead6e7;border-radius:12px;display:grid;place-items:center}
+/* レーダーを中くらいのサイズに */
+#radar{width:320px;height:320px;max-width:85vw;max-height:85vw}
+.factor{border:1px solid #f1d9e8;border-radius:12px;padding:10px;margin-top:10px}
+.bar{height:10px;background:#f3e3f0;border-radius:999px;overflow:hidden;margin:6px 0}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,#ffd6ea,#b69cff);width:0}
+.eval{font-weight:700}
+.eval.good{color:var(--good)} .eval.mid{color:var(--mid)} .eval.bad{color:var(--bad)}
+.small{color:var(--muted);font-size:.92em}
+.savebox{display:flex;gap:10px;flex-wrap:wrap}
+.rf-note{padding:10px;border-left:4px solid var(--bad);background:#fff3f3;border-radius:10px}
+.footer{color:var(--muted);font-size:.92em;margin-top:14px}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="header">
+    <div class="logo">🐑</div>
+    <div>
+      <h1>眠りの羊診断</h1>
+      <p class="sub">5件法×40問で睡眠の全部を総点検。結果は「睡眠フィット指数」＋10因子レーダー＋クロノタイプ。</p>
+    </div>
+  </header>
+
+  <div class="stickybar card" aria-live="polite">
+    <span class="sheep">🐑</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <span class="sheep">🛏️</span>
+    <button class="btn primary" id="btn-score">結果を見る</button>
+  </div>
+
+  <div class="cols">
+    <!-- 設問 -->
+    <section id="formArea" class="card section">
+      <h2>設問（5件法：1=まったく〜5=とても）</h2>
+      <div id="qContainer"></div>
+
+      <div class="section">
+        <h2>任意：レッドフラグ（スコア外）</h2>
+        <p class="small">※「強く当てはまる」が <strong>2つ以上</strong>なら医療機関への相談をおすすめする注意文を表示します。</p>
+        <div id="rfContainer"></div>
+      </div>
+
+      <div class="section" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btn-clear">回答をクリア</button>
+        <button class="btn primary" id="btn-score2">結果を見る</button>
+      </div>
+    </section>
+
+    <!-- 結果（設問の下に表示） -->
+    <section id="result" class="card section" aria-live="polite">
+      <div id="resEmpty">
+        <div class="badge">まだ結果はありません</div>
+        <p class="small">上の設問に回答すると、こちらに結果が表示されます。</p>
+      </div>
+
+      <div id="resArea" class="hidden">
+        <div id="result-card" class="section">
+          <div class="res-header">
+            <div class="rank-large">
+              <img id="rankImg" src="" alt="ベッドバッジ">
+              <div>
+                <div class="score"><span id="scoreNum">0</span><span style="font-size:.6em">/100</span></div>
+                <div class="rank-name" id="rankName">—</div>
+                <div class="small" id="chronoText">—</div>
+              </div>
+            </div>
+          </div>
+          <div class="meta" style="margin-top:8px">
+            <span class="pill">睡眠フィット指数（CT除く9因子平均）</span>
+            <span class="pill" id="rfBadge" style="display:none">⚠ レッドフラグ注意あり</span>
+          </div>
+        </div>
+
+        <div id="rfNote" class="rf-note hidden">
+          いくつかのレッドフラグに強く当てはまりました。<br>
+          <strong>「強く当てはまる」が2つ以上</strong>続く場合は、念のため医療機関・専門家への相談をご検討ください。
+        </div>
+
+        <div class="savebox section">
+          <button class="btn" id="btn-save">結果カードを画像保存</button>
+          <button class="btn" id="btn-share">URLをコピー</button>
+        </div>
+
+        <div class="section chartbox">
+          <canvas id="radar" width="320" height="320" aria-label="10因子レーダーチャート" role="img"></canvas>
+          <p class="small">※CT（朝晩タイプ）はスタイル表示。レーダーには参考として含めています。</p>
+        </div>
+
+        <div id="factorsArea" class="section"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="footer card">
+    <h2>ご利用にあたって</h2>
+    <ul>
+      <li><strong>非提携・非公式：</strong>学術の一般知見を参考にした<strong>独自制作</strong>で、特定尺度の原文・採点は使用していません。</li>
+      <li><strong>医療用途ではありません：</strong>自己理解・生活改善の目安です。強い不調やレッドフラグがある場合は医療機関へ。</li>
+      <li><strong>プライバシー：</strong>回答は<strong>端末内のみで処理</strong>し、サーバー送信は行いません。</li>
+      <li><strong>免責：</strong>法令上許される範囲で損害等の責任を負いません。</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(() => {
+  // ====== 設定 ======
+  const RANK_BADGE_BASE = "/shindan/assets/sleep-sheep/bed-"; // bed-01.png(S良)〜bed-05.png(D悪)
+  const RANK_IMAGES = { S:"01", A:"02", B:"03", C:"04", D:"05" };
+  const STORAGE_KEY = "sleep-sheep:v1:answers";
+
+  // ====== データ：設問（因子名はUIに出さない） ======
+  const DATA = {
+    CT: { name:"CT｜朝晩タイプ（Chronotype）", short:"CT", items:[
+      {id:"CT1", t:"朝の方が頭がよく働く。"},
+      {id:"CT2", t:"夜遅くなるほど作業がはかどる。", r:true},
+      {id:"CT3", t:"目覚ましより早く自然に目が覚める。"},
+      {id:"CT4", t:"就寝が23時以降でないと落ち着かない。", r:true},
+    ]},
+    AL: { name:"AL｜体内時計の一致（Alignment）", short:"AL", items:[
+      {id:"AL1", t:"平日と休日で起床時刻はほぼ同じだ。"},
+      {id:"AL2", t:"今の開始時刻は自分のベスト時間帯と合っている。"},
+      {id:"AL3", t:"週明けに“時差ボケ”のような眠気を感じる。", r:true},
+      {id:"AL4", t:"理想の時間帯で寝起きできている。"},
+    ]},
+    DU: { name:"DU｜睡眠時間の充足（Duration）", short:"DU", items:[
+      {id:"DU1", t:"ふだんの合計睡眠時間は自分に十分だと思う。"},
+      {id:"DU2", t:"週のどこかで“寝だめ”が必要になる。", r:true},
+      {id:"DU3", t:"起床後、日中ずっとエネルギーが保てる。"},
+      {id:"DU4", t:"寝不足サイン（あくび/集中低下）が頻繁だ。", r:true},
+    ]},
+    ON: { name:"ON｜寝つきの良さ（Onset）", short:"ON", items:[
+      {id:"ON1", t:"布団に入ってから15〜20分以内に眠れる。"},
+      {id:"ON2", t:"ベッドで考え事が止まらず目が冴える。", r:true},
+      {id:"ON3", t:"ベッドに入ると自然に眠気が来る。"},
+      {id:"ON4", t:"寝つきに30分以上かかる日が多い。", r:true},
+    ]},
+    CO: { name:"CO｜中途覚醒の少なさ（Continuity）", short:"CO", items:[
+      {id:"CO1", t:"夜中に起きても、すぐ再び眠れる。"},
+      {id:"CO2", t:"夜間に何度も目が覚める。", r:true},
+      {id:"CO3", t:"トイレで起きる回数は週を通して少ない。"},
+      {id:"CO4", t:"早朝覚醒後、そのまま眠れないことが多い。", r:true},
+    ]},
+    DS: { name:"DS｜日中眠気の少なさ（Sleepiness）", short:"DS", items:[
+      {id:"DS1", t:"座っているときにウトウトは少ない。"},
+      {id:"DS2", t:"移動中に居眠りしてしまう。", r:true},
+      {id:"DS3", t:"会議や授業で眠気と戦うことが多い。", r:true},
+      {id:"DS4", t:"仮眠がなくてもおおむね調子は保てる。"},
+    ]},
+    RU: { name:"RU｜頭の静けさ（Rumination↓）", short:"RU", items:[
+      {id:"RU1", t:"就寝時点で“今日の心配”を切り替えられている。"},
+      {id:"RU2", t:"寝る前に同じ考えがぐるぐる回る。", r:true},
+      {id:"RU3", t:"「眠れないかも」という不安は少ない。"},
+      {id:"RU4", t:"布団の中のニュース/SNSで脳が冴える。", r:true},
+    ]},
+    HY: { name:"HY｜光・画面の整え（Hygiene-Light）", short:"HY", items:[
+      {id:"HY1", t:"就寝1時間前は画面/強光を控えめにしている。"},
+      {id:"HY2", t:"朝の外光を意識して浴びている。"},
+      {id:"HY3", t:"寝る直前まで明るい画面や照明で過ごす。", r:true},
+      {id:"HY4", t:"夜の通知は“おやすみモード”等で抑えている。"},
+    ]},
+    SB: { name:"SB｜刺激物コントロール（Substances）", short:"SB", items:[
+      {id:"SB1", t:"夕方以降のカフェインは避けている。"},
+      {id:"SB2", t:"寝酒で寝つきを“調整”することがある。", r:true},
+      {id:"SB3", t:"ニコチンで眠りが浅くなると感じる。", r:true},
+      {id:"SB4", t:"夜食/重い食事は就寝2–3時間前までに済ませる。"},
+    ]},
+    EN: { name:"EN｜環境と習慣（Environment & Routine）", short:"EN", items:[
+      {id:"EN1", t:"寝室の温度・明るさ・音は快適に保てている。"},
+      {id:"EN2", t:"枕やマットの合わなさで目が覚めることは少ない。"},
+      {id:"EN3", t:"就寝前のルーティン（同じ順番）がある。"},
+      /* ←← ここを変更：文言を具体化しつつR項目のまま維持 */
+      {id:"EN4", t:"寝室にPCやデスクがあり、仕事/勉強モードが続いてしまう。", r:true},
+    ]},
+  };
+
+  const RED_FLAGS = [
+    "大きないびき／呼吸が止まると指摘されたことがある",
+    "朝の頭痛が続く",
+    "脚のむずむずで眠れない/足を動かしたくなる",
+    "夢の中で暴れる/寝相が激しい",
+    "ほぼ毎日、入眠困難または早朝覚醒で強い苦痛",
+    "運転中に眠気でヒヤリとしたことがある",
+  ];
+
+  // ====== 因子別 目安・対策・概念 ======
+  const GUIDE = {
+    AL: {range:[75,50], labels:["良","要調整","ずれ大"],
+      tips:["起床時刻の固定（±30分）","休日の寝坊は＋1h以内","朝光5–15分"],
+      what:"生体リズムと社会時刻のズレ（ソーシャル・ジェットラグ）"},
+    DU: {range:[75,50], labels:["良","やや不足","不足"],
+      tips:["理想就床・起床の“逆算固定”","夕方以降の予定の棚卸し","短時間仮眠（15–20分まで）"],
+      what:"必要睡眠量（個体差）と実睡眠の差"},
+    ON: {range:[75,50], labels:["良","不安定","低下"],
+      tips:["就寝前ルーティン化","入床=睡眠の条件づけ（寝床で仕事/動画しない）","眠れない時は一旦ベッドを出る"],
+      what:"入眠潜時（入床→睡眠までの時間）"},
+    CO: {range:[75,50], labels:["安定","やや中断","中断多"],
+      tips:["寝室の温度・遮光","就寝前の水分/利尿確認","夜間覚醒時は時計を見ない"],
+      what:"睡眠の連続性（維持）"},
+    DS: {range:[75,50], labels:["低眠気","中等","高眠気"],
+      tips:["昼前後の自然光","午後の軽運動","必要なら短いパワーナップ"],
+      what:"過度な眠気（ESS的概念）"},
+    RU: {range:[75,50], labels:["静","やや騒","騒"],
+      tips:["明日のToDoは寝る2h前に外在化","呼吸/ボディスキャン3–5分","“眠れない不安”を正常反応として許可"],
+      what:"就床前の認知的覚醒（反芻/心配）"},
+    HY: {range:[75,50], labels:["良","中","不良"],
+      tips:["就寝1h前は照度ダウン","端末はナイトモード/通知オフ","朝は窓際or外光"],
+      what:"光時刻が概日リズムに与える影響"},
+    SB: {range:[75,50], labels:["良","中","不良"],
+      tips:["カフェインは起床後～午後早めまで","寝酒は“効くようで浅くする”","夜食は軽め＆早め"],
+      what:"カフェイン/アルコール/ニコチン/食事の睡眠影響"},
+    EN: {range:[75,50], labels:["整備","要調整","難"],
+      tips:["18–22℃目安/遮光/静音","枕・マットの見直し","毎夜同じ順番のプリスリープ"],
+      what:"寝室・寝具・ルーティンの合算効果"},
+    CT: {range:[999,999], labels:["—","—","—"], tips:[], what:"朝晩タイプ（健康点に合算せず、スタイル表示）"}
+  };
+  // ====== コーチ用アクションバンク（短期～継続の実行タスク） ======
+const ACTION_BANK = {
+  AL: [
+    "起床時刻を±30分に固定", "朝起きたら外光を5–15分浴びる",
+    "昼寝は15–20分/16時まで", "休日の寝坊は＋1時間以内に収める",
+    "夕方以降は予定を詰めすぎない", "就寝・起床を“逆算固定”する"
+  ],
+  DU: [
+    "必要睡眠時間を仮置き(例7.5h)", "就寝→起床を逆算で決める",
+    "会議や家事の時間を前倒しにする", "日中の仮眠は15–20分まで",
+    "就寝1時間前のタスクを減らす", "休日の“寝だめ”は＋1時間以内"
+  ],
+  ON: [
+    "就寝1時間前はスクリーン/強光OFF", "ベッドでは仕事/動画をしない",
+    "眠れなければ20分で一旦ベッドを出る", "就寝前ルーティンを2–3個決める",
+    "カフェインは14時(夜型16時)まで", "“眠れない不安”をメモに外出し"
+  ],
+  CO: [
+    "寝室を18–22℃/暗め/静かに整える", "就寝2–3h前の大量の水分を控える",
+    "夜中に時計を見ない/スマホ触らない", "トイレ動線＆足元灯を整える",
+    "再入眠できない時は静かな読書へ", "夕方以降の利尿作用(カフェイン/酒)に注意"
+  ],
+  DS: [
+    "午前中に外光＋5–10分散歩", "昼食後に15–20分仮眠(16時まで)",
+    "午後に軽い運動(10–20分)", "糖質過多/ドカ食いを避ける",
+    "90分集中→15分休憩のリズム", "就寝前のSNS/仕事を切る"
+  ],
+  RU: [
+    "不安/ToDoを書き出して“駐車”", "呼吸/ボディスキャン3–5分",
+    "ベッドで悩む代わりに静かな椅子へ", "情報摂取は就寝1h前に止める",
+    "“眠れないのは正常反応”とラベル付け", "ベッド内スマホを撤去"
+  ],
+  HY: [
+    "21時以降はナイトモード/輝度↓", "就寝1h前は間接照明で暗めに",
+    "朝は窓辺/屋外で光を浴びる", "夜の通知は“おやすみモード”",
+    "端末は寝室外/ベッド外で操作", "夜の強光(白/青白)を避ける"
+  ],
+  SB: [
+    "カフェイン最終14時(夜型16時)", "寝酒は飲むなら少量/就寝3h前まで",
+    "就寝3h前に食事を終える", "ニコチン摂取を控える/代替策を用意",
+    "水/ハーブティー/デカフェに置換", "“酒は眠りを浅くする”を理解"
+  ],
+  EN: [
+    "寝室からPC/デスクを撤去or覆う", "枕の高さ/マットの硬さを見直す",
+    "遮光カーテン/アイマスク導入", "耳栓/ホワイトノイズを試す",
+    "就寝前ルーティン(同じ順番)を決める", "寝床=睡眠の条件づけを徹底"
+  ],
+};
+
+function pickActions(fkey, pct){
+  const base = ACTION_BANK[fkey] || [];
+  if (pct < 50)   return { today: base.slice(0,2), week: base.slice(2,4), keep: base.slice(4,6) };
+  if (pct < 75)   return { today: [base[0], base[4]].filter(Boolean), week: base.slice(2,3), keep: base.slice(5,6) };
+  return { today: ["維持：今の習慣を継続"], week: base.slice(4,5), keep: base.slice(5,6) };
+}
+function factorLabel(k){ return (DATA[k]?.name || k).replace(/^..｜/,""); }
+function topWeak(pcts){
+  return Object.keys(pcts).filter(k=>k!=="CT").sort((a,b)=>pcts[a]-pcts[b]).slice(0,3);
+}
+
+  // ====== DOM ======
+  const qContainer = document.getElementById("qContainer");
+  const rfContainer = document.getElementById("rfContainer");
+  const prog = document.getElementById("prog");
+  const resEmpty = document.getElementById("resEmpty");
+  const resArea = document.getElementById("resArea");
+  const scoreNum = document.getElementById("scoreNum");
+  const rankName = document.getElementById("rankName");
+  const rankImg = document.getElementById("rankImg");
+  const chronoText = document.getElementById("chronoText");
+  const rfBadge = document.getElementById("rfBadge");
+  const rfNote = document.getElementById("rfNote");
+  const factorsArea = document.getElementById("factorsArea");
+
+  // ====== ビルド：設問UI（因子見出しは表示しない） ======
+  function buildQuestions(){
+    let html = "";
+    for (const key of Object.keys(DATA)){
+      const sec = DATA[key];
+      sec.items.forEach((it)=>{
+        const name = it.id;
+        html += `
+          <div class="qrow" data-factor="${key}">
+            <div class="ttl">${it.t}</div>
+            <div class="scale" role="radiogroup" aria-label="${it.t}">
+              ${[1,2,3,4,5].map(v => `
+                <label><input type="radio" name="${name}" value="${v}">${v}</label>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      });
+    }
+    qContainer.innerHTML = html;
+
+    // レッドフラグ
+    rfContainer.innerHTML = `${RED_FLAGS.map((t,i)=>`
+  <div class="qrow">
+    <div class="ttl">RF${i+1}. ${t}</div>
+    <div class="scale">
+      <label><input type="radio" name="RF${i+1}" value="0">当てはまらない</label>
+      <label><input type="radio" name="RF${i+1}" value="1">やや当てはまる</label>
+      <label><input type="radio" name="RF${i+1}" value="2">強く当てはまる</label>
+    </div>
+  </div>
+`).join("")}`;
+
+    // 進捗監視
+    document.querySelectorAll('input[type="radio"]').forEach(el=>{
+      el.addEventListener('change', updateProgress, {passive:true});
+    });
+  }
+
+  // ====== 進捗 ======
+  function updateProgress(){
+    const total = 40; // main items only
+    const answered = Object.values(DATA).flatMap(s=>s.items).filter(it=>{
+      return !!document.querySelector(`input[name="${it.id}"]:checked`);
+    }).length;
+    const pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+  }
+
+  // ====== 回答の取得 ======
+  function readAnswers(){
+    const out = {};
+    for (const key of Object.keys(DATA)){
+      const sec = DATA[key];
+      out[key] = sec.items.map(it=>{
+        const val = document.querySelector(`input[name="${it.id}"]:checked`);
+        return { id: it.id, r: !!it.r, v: val ? parseInt(val.value,10) : null };
+      });
+    }
+    const rf = [];
+    for (let i=1;i<=RED_FLAGS.length;i++){
+      const el = document.querySelector(`input[name="RF${i}"]:checked`);
+      rf.push(el ? parseInt(el.value,10) : 0);
+    }
+    return { main: out, rf };
+  }
+
+  // ====== バリデーション ======
+  function validate(ans){
+    let missing = [];
+    for (const key of Object.keys(DATA)){
+      ans.main[key].forEach(o=>{ if(o.v==null) missing.push(o.id); });
+    }
+    if (missing.length){
+      alert(`未回答があります（${missing.slice(0,6).join(", ")}${missing.length>6 ? " ほか" : ""}）。すべての40問に回答してください。`);
+      return false;
+    }
+    return true;
+  }
+
+  // ====== スコアリング ======
+  function factorPercent(values){
+    const n = values.length;
+    let raw = 0;
+    values.forEach(o=>{
+      const x = o.v ?? 0;
+      raw += o.r ? (6 - x) : x; // Rは反転
+    });
+    let pct = ((raw - n) / (4*n)) * 100;
+    if (pct<0) pct=0;
+    if (pct>100) pct=100;
+    return { raw, pct, mean: raw/n };
+  }
+
+  function classifyChrono(meanCT){
+    if (meanCT >= 3.6) return {type:"朝ひつじ", note:"朝光×午前タスク集中、夕方以降はクールダウン", code:"morning"};
+    if (meanCT <= 2.4) return {type:"よるひつじ", note:"朝は強い光/軽運動、就寝前の光＆活動を絞る", code:"evening"};
+    return {type:"ひるひつじ", note:"ズレを作らない“毎日同じ”が最適", code:"intermediate"};
+  }
+
+  function rankByScore(score){
+    if (score>=85) return {grade:"S", title:"もふもふ熟睡🛏️S"};
+    if (score>=70) return {grade:"A", title:"ふわふわ安定A"};
+    if (score>=55) return {grade:"B", title:"まどろみB"};
+    if (score>=40) return {grade:"C", title:"うとうとC"};
+    return {grade:"D", title:"寝不足ひつじD"};
+  }
+
+  // ====== 因子カード ======
+  function evalLabel(fkey, pct){
+    const g = GUIDE[fkey];
+    const [hi, mid] = g.range;
+    if (pct>=hi) return {txt:g.labels[0], cls:"good"};
+    if (pct>=mid) return {txt:g.labels[1], cls:"mid"};
+    return {txt:g.labels[2], cls:"bad"};
+  }
+  function makeFactorCard(fkey, pct){
+  const sec = DATA[fkey];
+  const g   = GUIDE[fkey];
+
+  // --- CT は特別レイアウト（評価や行動リストは非表示） ---
+  if (fkey === "CT"){
+    return `
+      <div class="factor">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+          <div><strong>${sec.short}</strong>｜${sec.name.replace(/^..｜/,"")}</div>
+          <div><strong>${Math.round(pct)}%</strong></div>
+        </div>
+        <div class="bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+        <div class="small"><strong>◇クロノタイプとは？</strong>
+          内的時刻の<strong>早晩の個人差</strong>（朝型・中間型・夜型）。良し悪しではなく「<strong>自分に合う時間帯</strong>」の指標です。
+          予定とのズレが大きいほど眠気や集中低下が起きやすく、<strong>朝の外光／毎日同じ就寝・起床</strong>で整えられます。
+        </div>
+        <div class="small">※この因子は健康点に<strong>合算しません</strong>（スタイル表示）。レーダーには参考として含めています。</div>
+      </div>
+    `;
+  }
+
+  // --- それ以外の因子は従来どおり ---
+  const ev  = (()=>{
+    const [hi, mid] = g.range;
+    if (pct>=hi) return {txt:g.labels[0], cls:"good"};
+    if (pct>=mid) return {txt:g.labels[1], cls:"mid"};
+    return {txt:g.labels[2], cls:"bad"};
+  })();
+
+  const tipsHtml = g.tips.length
+    ? `<div class="small">対策：${g.tips.map((s,i)=>"①②③④⑤⑥".charAt(i)+s).join(" / ")}</div>`
+    : "";
+
+  // 行動バンク（今日/今週/継続）。定義がない因子は非表示
+  const acts = (typeof pickActions === "function") ? (ACTION_BANK[fkey] ? pickActions(fkey, pct) : null) : null;
+  const actsHtml = acts ? `
+    <ul class="small" style="margin:6px 0 0;padding-left:1.1em;line-height:1.6">
+      <li><strong>今日：</strong>${(acts.today||[]).join(" / ")}</li>
+      <li><strong>今週：</strong>${(acts.week ||[]).join(" / ")}</li>
+      <li><strong>継続：</strong>${(acts.keep ||[]).join(" / ")}</li>
+    </ul>` : "";
+
+  return `
+    <div class="factor">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <div><strong>${sec.short}</strong>｜${sec.name.replace(/^..｜/,"")}</div>
+        <div><strong>${Math.round(pct)}%</strong></div>
+      </div>
+      <div class="bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+      <div class="eval ${ev.cls}">評価：${ev.txt}</div>
+      ${tipsHtml}
+      <div class="small">◇とは：${g.what}</div>
+      ${actsHtml}
+    </div>
+  `;
+}
+
+  // ====== レーダー ======
+  let radarChart=null;
+  function drawRadar(pcts){
+    const labels = Object.keys(DATA).map(k=>k);
+    const values = Object.keys(DATA).map(k=>pcts[k]);
+    const ctx = document.getElementById('radar').getContext('2d');
+    if (radarChart){ radarChart.destroy(); }
+    radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels,
+        datasets: [{
+          label: '因子スコア（%）',
+          data: values,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 1,
+        scales: { r: { beginAtZero:true, max:100, ticks:{stepSize:20} } },
+        plugins: { legend: { display:false } }
+      }
+    });
+  }
+function ensureCoachArea(){
+  let coach = document.getElementById("coachArea");
+  if (!coach){
+    coach = document.createElement("div");
+    coach.id = "coachArea";
+    coach.className = "section";
+    const chartbox = document.querySelector(".chartbox");
+    (chartbox?.parentNode || document.getElementById("resArea")).insertBefore(coach, chartbox || document.getElementById("factorsArea"));
+  }
+  return coach;
+}
+
+function renderCoach(pcts, chrono, hasRF){
+  const weak = topWeak(pcts);
+  const items = weak.map((k,i)=>{
+    const acts = pickActions(k, pcts[k]);
+    return `
+      <div class="factor">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>${i+1}. ${k}</strong>｜${factorLabel(k)}</div>
+          <div><strong>${Math.round(pcts[k])}%</strong></div>
+        </div>
+        <ul class="small" style="margin:6px 0 0;padding-left:1.1em;line-height:1.6">
+          <li><strong>今日：</strong>${(acts.today||[]).join(" / ")}</li>
+          <li><strong>今週：</strong>${(acts.week ||[]).join(" / ")}</li>
+          <li><strong>継続：</strong>${(acts.keep ||[]).join(" / ")}</li>
+        </ul>
+      </div>`;
+  }).join("");
+
+  const chronoHint =
+    chrono.code==="morning"      ? "朝型：朝活◎／夜は光と活動を早めに絞る" :
+    chrono.code==="evening"      ? "夜型：起床直後の強めの光＋軽運動／就寝前は光・活動を強く絞る" :
+                                   "中間型：毎日同じ時刻で“ズレを作らない”が最適";
+
+  const rfHint = hasRF
+    ? `<div class="rf-note" style="margin-top:8px">レッドフラグが2つ以上でした。安全第一で、必要なら医療機関・専門家への相談をご検討ください。</div>`
+    : "";
+
+  return `
+    <div class="card" style="border:1px solid #efdeea;border-radius:12px;padding:12px">
+      <div class="res-header" style="margin-bottom:6px">
+        <span class="badge">あなたへのコーチング</span>
+        <span class="small">（弱い順に上から優先）</span>
+      </div>
+      <div class="small" style="margin-bottom:6px">クロノタイプヒント：${chronoHint}</div>
+      ${items}
+      ${rfHint}
+    </div>`;
+}
+  // ====== 結果計算 ======
+
+  function computeAndRender(){
+    const ans = readAnswers();
+    if (!validate(ans)) return;
+
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(ans)); }catch{}
+
+    const pcts = {};
+    const means = {};
+    for (const k of Object.keys(DATA)){
+      const {pct, mean} = factorPercent(ans.main[k]);
+      pcts[k] = pct;
+      means[k] = mean;
+    }
+
+    const healthKeys = Object.keys(DATA).filter(k=>k!=="CT");
+    const total = Math.round( healthKeys.reduce((s,k)=>s+pcts[k],0) / healthKeys.length );
+    const rk = rankByScore(total);
+
+    const chrono = classifyChrono(means.CT);
+ensureCoachArea().innerHTML = renderCoach(pcts, chrono, (ans.rf||[]).filter(v=>v===2).length>=2);
+
+    const strongCount = (ans.rf||[]).filter(v=>v===2).length;
+    const hasRF = strongCount>=2;
+    rfBadge.style.display = hasRF ? "" : "none";
+    rfNote.classList.toggle("hidden", !hasRF);
+
+    scoreNum.textContent = String(total);
+    rankName.textContent = rk.title + `（ランク${rk.grade}）`;
+    chronoText.textContent = `クロノタイプ：${chrono.type}｜${chrono.note}`;
+    const imgCode = RANK_IMAGES[rk.grade] || "05";
+    rankImg.src = `${RANK_BADGE_BASE}${imgCode}.png`;
+    rankImg.alt = `ベッドバッジ ${rk.grade}`;
+
+    drawRadar(pcts);
+
+    const order = ["AL","DU","ON","CO","DS","RU","HY","SB","EN","CT"];
+    factorsArea.innerHTML = order.map(k=>makeFactorCard(k, pcts[k])).join("");
+
+    resEmpty.classList.add("hidden");
+    resArea.classList.remove("hidden");
+    try{ document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"}); }catch{}
+
+    try{
+      const params = new URLSearchParams();
+      params.set("score", String(total));
+      params.set("ct", chrono.code);
+      history.replaceState(null,"", location.pathname+"?"+params.toString());
+    }catch{}
+  }
+
+  // ====== 回復・保存・イベント ======
+  function restore(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const ans = JSON.parse(raw);
+      for (const k of Object.keys(DATA)){
+        ans.main[k].forEach(o=>{
+          if (o.v!=null){
+            const el = document.querySelector(`input[name="${o.id}"][value="${o.v}"]`);
+            if (el) el.checked = true;
+          }
+        });
+      }
+      (ans.rf||[]).forEach((v,i)=>{
+        const el = document.querySelector(`input[name="RF${i+1}"][value="${v}"]`);
+        if (el) el.checked = true;
+      });
+      updateProgress();
+    }catch{}
+  }
+
+  async function saveCard(){
+    const node = document.getElementById("result-card");
+    try{
+      const canvas = await html2canvas(node, {backgroundColor:null, scale:2});
+      const url = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url; a.download = "sleep-sheep-result.png"; a.click();
+    }catch(e){ alert("画像保存に失敗しました。"); }
+  }
+
+  async function copyURL(){
+    try{
+      await navigator.clipboard.writeText(location.href.split("#")[0]);
+      alert("URLをコピーしました。");
+    }catch{
+      prompt("このURLをコピーしてください", location.href.split("#")[0]);
+    }
+  }
+
+  buildQuestions();
+  restore();
+  document.getElementById("btn-score").addEventListener("click", computeAndRender);
+  document.getElementById("btn-score2").addEventListener("click", computeAndRender);
+  document.getElementById("btn-save").addEventListener("click", saveCard);
+  document.getElementById("btn-share").addEventListener("click", copyURL);
+  document.getElementById("btn-clear").addEventListener("click", ()=>{
+    if(!confirm("すべての回答をクリアしますか？")) return;
+    document.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
+    try{ localStorage.removeItem(STORAGE_KEY);}catch{}
+    updateProgress();
+    resEmpty.classList.remove("hidden");
+    resArea.classList.add("hidden");
+    document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+})();
+</script>
+</body>
+</html>
