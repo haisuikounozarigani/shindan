@@ -1,80 +1,102 @@
-<!doctype html><html lang="ja"><head>
+<!doctype html>
+<html lang="ja">
+<head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>心の標本｜ゆめかわセレクター</title>
-<meta name="description" content="心の標本。タップで診断の入口が開きます。">
+<meta name="description" content="心の標本。検索とタグでサッと探せる、ゆめかわ診断の入口。">
 <meta name="theme-color" content="#ffeef7">
 <meta property="og:title" content="心の標本">
-<meta property="og:description" content="タップで診断の入口が開きます。">
+<meta property="og:description" content="検索とタグでサッと探せる、ゆめかわ診断の入口。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/">
 <meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/hero/specimens-hero-1080.png">
 <link rel="preload" as="image" href="/shindan/assets/hero/specimens-hero-1080.png">
 <style>
-:root{--bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;--accent:#ff9ecf;--accent2:#b69cff}
+:root{
+  --bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;
+  --accent:#ff9ecf;--accent2:#b69cff;--chip:#f6eef8;--chipb:#eadffc
+}
 *{box-sizing:border-box} html,body{height:100%} html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
 .hidden{display:none!important}
+
 /* Splash */
 .splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;cursor:pointer}
 .splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
 .splash .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
 .splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
 .splash .hero{position:relative;z-index:1;text-align:center;padding:22px}
-h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em}
+h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em;text-wrap:balance}
 .sub{margin:0;color:var(--muted)}
 .tap{margin-top:14px;font-size:.95em;color:#7a6a77}
-/* closing中は透過して見た目上は消えるが、前面でクリックを吸収 */
 .splash.closing{opacity:0;transition:opacity .28s ease;pointer-events:auto}
+
 /* Main */
-.wrap{max-width:860px;margin:20px auto 28px;padding:0 14px max(28px,env(safe-area-inset-bottom));opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
+.wrap{max-width:980px;margin:20px auto 28px;padding:0 14px max(28px,env(safe-area-inset-bottom));opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
 .wrap.show{opacity:1;transform:none}
-/* Quick bar + filter chips */
-.quick{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
-.quick .btn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg);cursor:pointer}
-.quick .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-.chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c5763;cursor:pointer;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
-.chip.active{background:var(--fg);color:#fff;border-color:var(--fg)}
+
+/* Controls (検索＋タグ) */
+.controls{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin:6px 0 10px;box-shadow:0 8px 22px rgba(255,158,207,.10)}
+.controls .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input[type="search"]{flex:1;padding:12px 14px;border:1px solid #ead6f0;border-radius:12px;font-size:16px}
+.btn{appearance:none;border:1px solid #ead6f0;background:#fff;border-radius:12px;padding:10px 12px;font-size:14px;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
+.btn:focus-visible, .chip:focus-visible{outline:3px solid #c7b6ff;outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{padding:8px 12px;border:1px solid #ead6f0;border-radius:999px;background:var(--chip);cursor:pointer;user-select:none;color:#5c4a55;line-height:1.2}
+.chip.active{background:var(--chipb);box-shadow:inset 0 0 0 2px #b69cff;border-color:transparent}
+
+/* Switcher (サイト切替) */
+.switcher{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.segbtn{
+  appearance:none;border:1px solid #ead6f0;background:#fff;border-radius:999px;
+  padding:10px 14px;font-size:14px;line-height:1;text-decoration:none;color:inherit;
+  display:inline-flex;align-items:center;gap:8px;min-height:44px
+}
+.segbtn.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(182,156,255,.18)}
+
 /* Cards */
-.links{display:grid;gap:12px;margin-top:10px}
-a.link{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
+.links{display:grid;gap:12px;margin-top:10px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+a.link{
+  display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
   background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;
-  box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+  box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease
+}
 a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,.18);border-color:#efd7ff}
-.emo{display:inline-flex;width:24px;height:24px;align-items:center;justify-content:center;font-size:20px;line-height:1}
-.ttl{font-weight:700;display:flex;align-items:center;gap:6px}
-.mini{font-size:.72em;padding:2px 6px;border-radius:8px;border:1px solid #f0d8ea;background:#fff;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+a.link .emo{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;font-size:22px;line-height:1;flex:0 0 auto}
+a.link > div{flex:1 1 auto;min-width:0}
+.ttl{
+  font-weight:800;margin:0;display:block;line-height:1.35;letter-spacing:.01em;text-wrap:balance;
+  font-size:clamp(15px,3.8vw,17px);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.mini{font-size:.72em;padding:2px 6px;border-radius:8px;border:1px solid #f0d8ea;background:#fff;display:inline-flex;align-items:center;line-height:1;vertical-align:middle;white-space:nowrap}
 .mini.new{background:linear-gradient(90deg,#ffd6ea,#e7dbff);color:#624c4c;border-color:transparent}
-.sub2{color:var(--muted);font-size:.92em;margin-top:2px}
-.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.pill{padding:3px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
-.badge{margin-left:auto;padding:7px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+.sub2{
+  color:var(--muted);font-size:.92em;margin:4px 0 0;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{padding:4px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+.badge{margin-left:auto;padding:8px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+
+/* Thumbnail mode */
+.link.with-thumb{display:grid;grid-template-rows:auto 1fr auto;padding:0}
+.link.with-thumb .thumb{margin:0;position:relative;aspect-ratio:1200/630;background:#faf7ff;border-bottom:1px solid var(--line);overflow:hidden;border-top-left-radius:16px;border-top-right-radius:16px}
+.link.with-thumb .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.link.with-thumb .emo{display:none}
+.link.with-thumb .body{padding:12px 14px}
+.link.with-thumb .badge{margin:0 12px 12px auto}
+
 /* Footer */
 .note{color:var(--muted);text-align:center;margin:18px 0}
 .footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;padding:10px;background:rgba(255,255,255,.82);
   backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
-.footerbar a{padding:8px 12px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer;flex:0 0 auto;white-space:nowrap;line-height:1;display:inline-flex;align-items:center}
-/* Share sheet + toast */
+.footerbar a{padding:12px 14px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer;flex:0 0 auto;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;min-height:44px}
 
-
-@media (max-width:360px){.badge{display:none}}
-</style>
-<style>
-/* --- FIX: インデックスカードの横幅ズレ防止（左右固定） --- */
-nav.links .link{
-  display:flex;              /* 左=emo / 中=本文 / 右=ボタン */
-  align-items:center;
-}
-nav.links .link > .emo{
-  flex:0 0 auto;             /* 左アイコンは固定幅（縮まない） */
-  line-height:1;
-}
-nav.links .link > div{
-  flex:1 1 auto;             /* 中央カラムだけ可変 */
-  min-width:0;               /* 折返し時でも右を押し出さない */
-}
-nav.links .link > .badge{
-  flex:0 0 auto;             /* 右ボタンは固定（縮ませない） */
-  white-space:nowrap;        /* 文言で幅が変動しにくくする */
-  margin-left:12px;          /* 任意：中央との間隔 */
+@media (max-width:400px){
+  .links{grid-template-columns:1fr}
+  a.link{padding:12px}
+  .badge{display:none}
 }
 </style>
 </head>
@@ -90,376 +112,356 @@ nav.links .link > .badge{
     <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
   </div>
 </section>
+
 <main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1" inert>
-  <!-- Quick actions & Filters -->
-    <div class="quick" id="quick">
-  <button class="btn" id="btn-unplayed" aria-pressed="false">未プレイだけ</button>
-  <button class="btn" id="btn-continue" style="display:none">つづきから再開</button>
-  <button class="btn" id="btn-new" aria-pressed="false">NEWだけ</button>
-</div>
-  <div class="filters" id="filters">
-    <button class="chip active" data-filter="all">すべて</button>
-<button class="chip" data-filter="さくっと">さくっと</button>
-<button class="chip" data-filter="ふつう">ふつう</button>
-<button class="chip" data-filter="しっかり">しっかり</button>
-    <button class="chip" data-filter="性格">性格</button>
-    <button class="chip" data-filter="認知">認知</button>
-    <button class="chip" data-filter="ゲーム風">ゲーム風</button>
-  </div>
-  
-  
+  <!-- Controls -->
+  <section class="controls" aria-label="検索とタグ">
+    <!-- サイト切替：現在ページを強調 -->
+    <div class="row switcher" aria-label="サイト切替">
+      <a class="segbtn active" href="/shindan/" aria-current="page">🌟 心の標本</a>
+      <a class="segbtn" href="/quiz/" rel="noopener">🔎 知識の水槽</a>
+    </div>
+
+    <div class="row">
+      <input id="q" type="search" placeholder="キーワード or #タグ（例：#さくっと / #こころ）" aria-label="検索">
+      <button id="btnNew" class="btn" type="button" aria-pressed="false" aria-label="NEWだけ表示">NEWだけ</button>
+      <button id="clearBtn" class="btn" type="button" aria-label="検索とタグをクリア">クリア</button>
+    </div>
+    <div id="chips" class="chips" role="listbox" aria-multiselectable="false" aria-label="タグ（1つ選択で絞り込み）"></div>
+  </section>
+
   <!-- Cards -->
-  <nav class="links" id="list">
-  	
-  
-  <!-- ★ 眠りの羊診断（sleep-sheep.html） -->
-<a class="link" href="/shindan/sleep-sheep.html?src=specimens"
-   data-id="sleep-sheep" data-tags="セルフケア,しっかり" data-mins="7" data-updated="2025-09-13"
-   data-keywords="睡眠 眠気 クロノタイプ 朝型 夜型 中間型 体内時計 寝つき 中途覚醒 仮眠 光 睡眠衛生 レーダー 可視化">
-  <span class="emo">🐑</span>
-  <div>
-    <div class="ttl">眠りの羊診断　40問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">5件法×40問で“いま”の睡眠を総点検。睡眠フィット指数（9因子平均）＋10因子レーダー＋クロノタイプ＋レッドフラグ注意</div>
-    <div class="meta"><span class="pill">⏱7分</span><span class="pill">#セルフケア</span><span class="pill">#しっかり</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-  
-<!-- ★ ラーメン健康診断（ramen-health.html） -->
-<a class="link" href="/shindan/ramen-health.html?src=specimens"
-   data-id="ramen-health" data-tags="セルフケア,ふつう" data-mins="4" data-updated="2025-09-11"
-   data-keywords="ラーメン 健康 習慣 睡眠 食事 活動 回復 栄養 診断 5因子 20項目">
-  <span class="emo">🍜</span>
-  <div>
-    <div class="ttl">ラーメン健康診断　20問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">5因子×各4項目（5件法）で“いまの整い度”をチェック</div>
-    <div class="meta"><span class="pill">⏱4分</span><span class="pill">#セルフケア</span><span class="pill">#ふつう</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ メンタル樹齢診断（tree-age-mental.html） -->
-<a class="link" href="/shindan/tree-age-mental.html?src=specimens"
-   data-id="tree-age-mental" data-tags="こころ,実用,さくっと" data-mins="3" data-updated="2025-09-10"
-   data-keywords="メンタル 樹齢 診断 5因子 15問 CBT 実行意図 行動活性化 時間展望">
-  <span class="emo">🌳</span>
-  <div>
-    <div class="ttl">メンタル樹齢診断　15問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">5因子×各3項目（5件法）で“メンタルの年輪”を可視化｜実践アドバイス付き</div>
-    <div class="meta"><span class="pill">⏱3分</span><span class="pill">#こころ</span><span class="pill">#実用</span><span class="pill">#さくっと</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ 仕事DNA×偉人タイプ診断（great-minds.html） -->
-<a class="link" href="/shindan/great-minds.html?src=specimens"
-   data-id="great-minds" data-tags="仕事,適性,しっかり" data-mins="5" data-updated="2025-09-08"
-   data-keywords="偉人タイプ 仕事 適職 診断 12タイプ 36問 キャリア">
-  <span class="emo">🧭</span>
-  <div>
-    <div class="ttl">仕事DNA×偉人タイプ診断　36問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">12タイプ×各3項目（5件法）で“働き方の骨格”を測定</div>
-    <div class="meta"><span class="pill">⏱5分</span><span class="pill">#仕事</span><span class="pill">#適性</span><span class="pill">#しっかり</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ 現代ストレス八寒地獄（eight-cold-hells.html） -->
-<a class="link" href="/shindan/eight-cold-hells.html?src=specimens"
-   data-id="eight-cold-hells" data-tags="性格,ふつう" data-mins="5" data-updated="2025-09-08"
-   data-keywords="八寒地獄 悲しみ ストレス 8因子 24項目 可視化">
-  <span class="emo" style="line-height:1">❄️</span>
-  <div>
-    <div class="ttl">現代ストレス八寒地獄　24問（悲しみベース）<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">8因子×各3項目（5件法）で“寒さ指数”を可視化</div>
-    <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#ふつう</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-  	<!-- ★ 現代ストレス八熱地獄（eight-hot-hells.html） -->
-<a class="link" href="/shindan/eight-hot-hells.html?src=specimens"
-   data-id="eight-hot-hells" data-tags="性格,ふつう" data-mins="5" data-updated="2025-09-06"
-   data-keywords="八熱地獄 怒り ストレス 8因子 24項目 可視化">
-  <span class="emo">🔥</span>
-  <div>
-    <div class="ttl">現代ストレス八熱地獄　24問（怒りベース）<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">8因子×各3項目（5件法）で“怒り温度”を可視化</div>
-    <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#ふつう</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ 七つの大罪診断（seven-sins.html） -->
-<a class="link" href="/shindan/seven-sins.html?src=specimens"
-   data-id="seven-sins" data-tags="性格,しっかり" data-mins="5" data-updated="2025-09-05"
-   data-keywords="七つの大罪 seven sins 七つの傾向 プロファイル 性格 しっかり">
-  <span class="emo">🧩</span>
-  <div>
-    <div class="ttl">七つの大罪診断（7因子・28項目）<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">七つの大罪モチーフをマイルド再構成。7領域×各4項目・5件法で傾向を可視化</div>
-    <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ スキーマ妖怪 診断（schema-yokai.html） -->
-<a class="link" href="/shindan/schema-yokai.html?src=specimens"
-   data-id="schema-yokai" data-tags="性格,ふつう" data-mins="4" data-updated="2025-09-03"
-   data-keywords="スキーマ 妖怪 Young 早期不適応 スキーマ療法 診断 自己チェック schema yokai">
-  <span class="emo">👻</span>
-  <div>
-    <div class="ttl">スキーマ妖怪 診断（20項目・5件法） <span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">20項目×5件法で“今 出やすい妖怪”を可視化。結果は妖怪イラスト＋CBTワザ付き。</div>
-    <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#ふつう</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-  <!-- ★ CBTおみくじ（cbt-omikuji.html） -->
-<a class="link" href="/shindan/cbt-omikuji.html?src=specimens"
-   data-id="cbt-omikuji" data-tags="セルフケア,短時間" data-mins="2" data-updated="2025-09-05"
-   data-keywords="CBT おみくじ 認知行動療法 コーピング 行動実験 再評価 マインドフル">
-  <span class="emo">🎴</span>
-  <div>
-    <div class="ttl">CBTおみくじ 　1問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">1枚引きで「いま試せる」CBTワザを提案（研究一般の知見にヒントを得た独自構成）</div>
-    <div class="meta"><span class="pill">⏱2分</span><span class="pill">#セルフケア</span><span class="pill">#短時間</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ しあわせ星空診断（perma-stars.html） -->
-<a class="link" href="/shindan/perma-stars.html?src=specimens"
-   data-id="perma-stars" data-tags="セルフケア,しっかり" data-mins="6" data-updated="2025-09-04"
-   data-keywords="しあわせ 幸福 星 天の川 星空 ウェルビーイング プロファイル">
-  <span class="emo">🌌</span>
-  <div>
-    <div class="ttl">しあわせ星空診断（24問で“しあわせ空模様”を5段階で可視化）<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">有名な幸福の枠組みにヒントを得て再構成</div>
-    <div class="meta"><span class="pill">⏱6分</span><span class="pill">#セルフケア</span><span class="pill">#しっかり</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-    <!-- ★ 関係の切れやすさ診断（kizuna-rope.html） -->
-<a class="link" href="/shindan/kizuna-rope.html?src=specimens"
-   data-id="kizuna-rope" data-tags="性格,短時間" data-mins="4" data-updated="2025-08-27"
-   data-keywords="関係 切れやすさ rope kizuna">
-  <span class="emo">🪢</span>
-  <div>
-    <div class="ttl">関係の切れやすさ診断 　20問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">20問で“切れやすさ”を可視化（既存研究の枠組みを参考に、独自項目で可視化しています）</div>
-    <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<a class="link" href="/shindan/balloon-escape.html?src=specimens"
-   data-id="balloon-escape" data-tags="性格,しっかり" data-mins="6" data-updated="2025-09-01"
-   data-keywords="気球 逃避 回避 気晴らし 上の空 戻る ルーティン balloon escape">
-  <span class="emo">🎈</span>
-  <div>
-    <div class="ttl">気球エスケープ診断　 25問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">25問で「避けがち⇄向き合える」のバランスを％表示。（既存研究の枠組みを参考に、独自項目で可視化しています）</div>
-    <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-
-
-<!-- ★ 抑制・加速・刺激の鉄道診断（rail-traits.html） -->
-    <a class="link" href="/shindan/rail-traits.html?src=specimens"
-       data-id="rail-traits" data-tags="性格,短時間" data-mins="3" data-updated="2025-08-26">
-      <span class="emo">🚆</span>
-      <div>
-        <div class="ttl">抑制・加速・刺激の鉄道診断　12問 <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">12問×5件法の総合スコア → 路線タイプ（各駅停車〜新幹線）（既存研究の枠組みを参考に、独自項目で可視化しています）</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+  <nav class="links" id="list" aria-label="診断一覧（検索結果）">
+    <!-- 以降のカードはそのまま（data-tags内の「性格」はJSで「こころ」に正規化されます） -->
+    <!-- ★ 眠りの羊診断 -->
+    <a class="link" href="/shindan/sleep-sheep.html?src=specimens"
+       data-id="sleep-sheep" data-tags="セルフケア,しっかり" data-mins="7" data-updated="2025-09-13"
+       data-keywords="睡眠 眠気 クロノタイプ 朝型 夜型 中間型 体内時計 寝つき 中途覚醒 仮眠 光 睡眠衛生 整える 可視化">
+      <span class="emo">🐑</span>
+      <div class="body">
+        <div class="ttl">眠りの羊診断 40問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">眠りの癖・日中の冴え・生活リズムの噛み合いを総点検。今日から整えるヒントも。</div>
+        <div class="meta"><span class="pill" data-min>⏱7分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
-        <!-- ★ 能面ヘラ度診断（noh-menhera.html） -->
-<a class="link" href="/shindan/noh-menhera.html?src=specimens"
-   data-id="noh-menhera" data-tags="性格,短時間" data-mins="3" data-updated="2025-08-27"
-   data-keywords="能面 能面ヘラ 能面メンヘラ メンヘラ 無表情 ひらいて 開いて 能面開いて noh noumen noh-menhera">
-  <span class="emo">🎭</span>
-  <div>
-    <div class="ttl">能面ヘラ度診断　12問 <span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">“顔は静か・内心は波”の傾向をライトにチェック（既存研究の枠組みを参考に、独自項目で可視化しています）</div>
-    <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-    
-    
-    <!-- ★ 姫と城下の恋（別世界線） forbidden-love-another.html -->
-<a class="link" href="/shindan/forbidden-love-another.html?src=specimens"
-   data-id="forbidden-love-another" data-tags="性格,しっかり,ゲーム風" data-mins="10" data-updated="2025-08-31">
-  <span class="emo">🏰</span>
-  <div>
-    <div class="ttl">姫と城下の恋・Another（別世界線） <span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">0〜12章・4ルート×3段階エンド。</div>
-    <div class="meta"><span class="pill">⏱10分</span><span class="pill">#性格</span><span class="pill">#しっかり</span><span class="pill">#ゲーム風</span></div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
 
+    <!-- ★ ラーメン健康診断 -->
+    <a class="link" href="/shindan/ramen-health.html?src=specimens"
+       data-id="ramen-health" data-tags="セルフケア,ふつう" data-mins="4" data-updated="2025-09-11"
+       data-keywords="ラーメン 健康 習慣 睡眠 食事 活動 回復 栄養 整える">
+      <span class="emo">🍜</span>
+      <div class="body">
+        <div class="ttl">ラーメン健康診断 20問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">食事・睡眠・活動の整い度をラーメン比喩で可視化。ムリなく整えるコツを提案。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
+    <!-- ★ メンタル樹齢診断 -->
+    <a class="link" href="/shindan/tree-age-mental.html?src=specimens"
+       data-id="tree-age-mental" data-tags="こころ,セルフケア,さくっと" data-mins="3" data-updated="2025-09-10"
+       data-keywords="メンタル 樹齢 折れにくさ 回復 前向き 行動ヒント">
+      <span class="emo">🌳</span>
+      <div class="body">
+        <div class="ttl">メンタル樹齢診断 15問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">折れにくさ・回復の早さ・前向きさの“年輪感”を見える化。すぐ試せる行動ヒント付き。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 仕事DNA×偉人タイプ診断 -->
+    <a class="link" href="/shindan/great-minds.html?src=specimens"
+       data-id="great-minds" data-tags="仕事,適性,しっかり" data-mins="5" data-updated="2025-09-08"
+       data-keywords="偉人タイプ 仕事 適職 キャリア 得意 苦手">
+      <span class="emo">🧭</span>
+      <div class="body">
+        <div class="ttl">仕事DNA×偉人タイプ診断 36問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">働き方の軸や得意シーンを偉人モチーフで可視化。相性の良いタスク傾向も。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 現代ストレス八寒地獄 -->
+    <a class="link" href="/shindan/eight-cold-hells.html?src=specimens"
+       data-id="eight-cold-hells" data-tags="性格,ふつう" data-mins="5" data-updated="2025-09-08"
+       data-keywords="八寒 悲しみ 落ち込み 空白 感情 可視化">
+      <span class="emo">❄️</span>
+      <div class="body">
+        <div class="ttl">現代ストレス八寒地獄 24問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">落ち込みやすさ・孤立感・空白感など“冷え”の方向性を見える化。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 現代ストレス八熱地獄 -->
+    <a class="link" href="/shindan/eight-hot-hells.html?src=specimens"
+       data-id="eight-hot-hells" data-tags="性格,ふつう" data-mins="5" data-updated="2025-09-06"
+       data-keywords="八熱 怒り イライラ 蒸し返し 焦り 可視化">
+      <span class="emo">🔥</span>
+      <div class="body">
+        <div class="ttl">現代ストレス八熱地獄 24問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">イラッとしやすさ・蒸し返し・時間の焦りなど“熱さ”の向きを把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 七つの大罪診断 -->
+    <a class="link" href="/shindan/seven-sins.html?src=specimens"
+       data-id="seven-sins" data-tags="性格,しっかり" data-mins="5" data-updated="2025-09-05"
+       data-keywords="七つの大罪 衝動 執着 羨望 プロファイル">
+      <span class="emo">🧩</span>
+      <div class="body">
+        <div class="ttl">七つの大罪診断 28問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">衝動・執着・羨望などのクセを七つの罪になぞらえてライトに把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ スキーマ妖怪 診断 -->
+    <a class="link" href="/shindan/schema-yokai.html?src=specimens"
+       data-id="schema-yokai" data-tags="こころ,ふつう" data-mins="4" data-updated="2025-09-03"
+       data-keywords="スキーマ 思考パターン つまずき 対処">
+      <span class="emo">👻</span>
+      <div class="body">
+        <div class="ttl">スキーマ妖怪診断 20問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">つまずきやすい思考パターン（“妖怪”）を可視化。手なずけるコツも。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ CBTおみくじ -->
+    <a class="link" href="/shindan/cbt-omikuji.html?src=specimens"
+       data-id="cbt-omikuji" data-tags="セルフケア,さくっと" data-mins="2" data-updated="2025-09-05"
+       data-keywords="CBT コーピング 行動実験 再評価 マインドフル">
+      <span class="emo">🎴</span>
+      <div class="body">
+        <div class="ttl">CBTおみくじ 1問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">今の気分に効きやすいCBTワザを1枚引きで提案。</div>
+        <div class="meta"><span class="pill" data-min>⏱2分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ しあわせ星空診断 -->
+    <a class="link" href="/shindan/perma-stars.html?src=specimens"
+       data-id="perma-stars" data-tags="セルフケア,しっかり" data-mins="6" data-updated="2025-09-04"
+       data-keywords="しあわせ 充足 つながり 没頭 ウェルビーイング">
+      <span class="emo">🌌</span>
+      <div class="body">
+        <div class="ttl">しあわせ星空診断 24問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">充足感・つながり・没頭など“しあわせ空模様”を俯瞰。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 関係の切れやすさ診断 -->
+    <a class="link" href="/shindan/kizuna-rope.html?src=specimens"
+       data-id="kizuna-rope" data-tags="こころ,さくっと" data-mins="4" data-updated="2025-08-27"
+       data-keywords="関係 ほどけやすさ 距離感 結び直し">
+      <span class="emo">🪢</span>
+      <div class="body">
+        <div class="ttl">関係の切れやすさ診断 20問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">人間関係がほどけやすい場面の傾向をチェック。結び直すヒントも。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 気球エスケープ診断 -->
+    <a class="link" href="/shindan/balloon-escape.html?src=specimens"
+       data-id="balloon-escape" data-tags="こころ,しっかり" data-mins="6" data-updated="2025-09-01"
+       data-keywords="逃避 切り替え 気晴らし ルーティン">
+      <span class="emo">🎈</span>
+      <div class="body">
+        <div class="ttl">気球エスケープ診断 25問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">現実逃避しがち？それとも切り替え上手？そのバランスを％で表示。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 抑制・加速・刺激の鉄道診断 -->
+    <a class="link" href="/shindan/rail-traits.html?src=specimens"
+       data-id="rail-traits" data-tags="性格,さくっと" data-mins="3" data-updated="2025-08-26">
+      <span class="emo">🚆</span>
+      <div class="body">
+        <div class="ttl">抑制・加速・刺激の鉄道診断 12問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">慎重さ・スピード感・刺激欲の“走り方”を路線で表現。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 能面ヘラ度診断 -->
+    <a class="link" href="/shindan/noh-menhera.html?src=specimens"
+       data-id="noh-menhera" data-tags="こころ,さくっと" data-mins="3" data-updated="2025-08-27"
+       data-keywords="無表情 感情ギャップ 表情 調子">
+      <span class="emo">🎭</span>
+      <div class="body">
+        <div class="ttl">能面ヘラ度診断 12問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">感情は揺れるのに顔は静か——そのギャップの出やすさをライトに。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 姫と城下の恋（別世界線） -->
+    <a class="link" href="/shindan/forbidden-love-another.html?src=specimens"
+       data-id="forbidden-love-another" data-tags="性格,しっかり,ゲーム風" data-mins="10" data-updated="2025-08-31">
+      <span class="emo">🏰</span>
+      <div class="body">
+        <div class="ttl">姫と城下の恋・Another<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">選択で分岐する読み物系。性格の傾向が物語に反映されます。</div>
+        <div class="meta"><span class="pill" data-min>⏱10分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 姫と城下の恋（本編） -->
     <a class="link" href="/shindan/forbidden-love.html?src=specimens"
        data-id="forbidden-love" data-tags="性格,しっかり,ゲーム風" data-mins="9" data-updated="2025-08-25">
       <span class="emo">🏰</span>
-      <div>
-        <div class="ttl">姫と城下の恋診断（ストーリー分岐） <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">4場面×選択で物語が深まる“読み物寄り”。画像つき長編ルートあり</div>
-        <div class="meta"><span class="pill">⏱9分</span><span class="pill">#性格</span><span class="pill">#しっかり</span><span class="pill">#ゲーム風</span></div>
+      <div class="body">
+        <div class="ttl">姫と城下の恋診断<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">4場面の選択で物語が深まる“読み物寄り”。長編ルートもあり。</div>
+        <div class="meta"><span class="pill" data-min>⏱9分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
 
-
-<!-- 冒険者逆境力診断（7因子） -->
+    <!-- ★ 冒険者逆境力診断 -->
     <a class="link" href="/shindan/adventure-shin.html?src=specimens"
        data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
       <span class="emo">🗺️</span>
-      <div>
-        <div class="ttl">冒険者逆境力診断　28問（7因子で“逆境への強さ”をざっくり計測。結果カードは画像保存OK） <span class="mini new" data-new>NEW</span></div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span><span class="pill">#ゲーム風</span></div>
+      <div class="body">
+        <div class="ttl">冒険者逆境力診断 28問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">逆境への踏ん張り・切り替え・助けの使い方をクエスト風に測ります。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
-    <!-- CHC まとめテスト -->
+
+    <!-- ★ 認知プロファイル・チャレンジ -->
     <a class="link" href="/shindan/chc-cci-shin.html?src=specimens"
        data-id="chc-cci" data-tags="認知,しっかり" data-mins="6" data-updated="2025-08-15">
       <span class="emo">🧠</span>
-      <div>
-        <div class="ttl">認知プロファイル・チャレンジ（Gf/Gc/Gv/Gs/Gwmを一発計測・結果は画像保存OK）</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱6分</span><span class="pill">#認知</span><span class="pill">#しっかり</span></div>
+      <div class="body">
+        <div class="ttl">認知プロファイル・チャレンジ</div>
+        <div class="sub2">ひらめき・知識・視野・スピード・作業記憶のバランス感をざっくり把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
-    <!-- 宝石×恋愛スタイル（尺度明記） -->
+
+    <!-- ★ 宝石恋愛診断 -->
     <a class="link" href="/shindan/housekishin.html?src=specimens"
-       data-id="houseki" data-tags="性格,しっかり" data-mins="6" data-updated="2025-06-10">
+       data-id="houseki" data-tags="こころ,しっかり" data-mins="6" data-updated="2025-06-10">
       <span class="emo">💎</span>
-      <div>
-        <div class="ttl">宝石恋愛診断　32問（恋愛6タイプ×愛着4タイプで24タイプ）</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+      <div class="body">
+        <div class="ttl">宝石恋愛診断 32問</div>
+        <div class="sub2">恋のスタイルを宝石になぞらえて読み解く。相性のヒントも。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
 
-
+    <!-- ★ 飲み物サイコパス -->
     <a class="link" href="/shindan/drinkshin.html?src=specimens"
-       data-id="drink" data-tags="性格,短時間" data-mins="3" data-updated="2025-05-01">
+       data-id="drink" data-tags="性格,さくっと" data-mins="3" data-updated="2025-05-01">
       <span class="emo">☕</span>
-      <div>
-        <div class="ttl">飲み物サイコパス（10問で“毒気”をライトに測定）</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      <div class="body">
+        <div class="ttl">飲み物サイコパス診断 10問</div>
+        <div class="sub2">ちょい毒の駆け引き気質を、飲み物ジョークでゆるくチェック。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
+
+    <!-- ★ 冷酷アイスクリーム -->
     <a class="link" href="/shindan/iceshin.html?src=specimens"
-       data-id="ice" data-tags="性格,短時間" data-mins="3" data-updated="2025-05-20">
+       data-id="ice" data-tags="性格,さくっと" data-mins="3" data-updated="2025-05-20">
       <span class="emo">🍦</span>
-      <div>
-        <div class="ttl">冷酷アイスクリーム　20問（駆け引き度をスコア化）</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      <div class="body">
+        <div class="ttl">冷酷アイスクリーム診断 20問</div>
+        <div class="sub2">距離の取り方や計算高さの出やすさを、甘く冷たく表現。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
+
+    <!-- ★ 鏡ナルシスト -->
     <a class="link" href="/shindan/mirorshin.html?src=specimens"
-       data-id="mirror" data-tags="性格,しっかり" data-mins="5" data-updated="2025-04-18">
+      data-id="mirror" data-tags="性格,さくっと" data-mins="5" data-updated="2025-04-18">
       <span class="emo">🪞</span>
-      <div>
-        <div class="ttl">鏡ナルシスト（14問でナルシスト傾向をスコア化）</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱5分</span><span class="pill">#性格</span><span class="pill">#しっかり</span></div>
+      <div class="body">
+        <div class="ttl">鏡ナルシスト診断 14問</div>
+        <div class="sub2">自己像の扱い方や自己演出の傾向をチェック。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
+
+    <!-- ★ 7つの休息 × スイーツ診断 -->
     <a class="link" href="/shindan/sweetshin.html?src=specimens"
-       data-id="sweet" data-tags="セルフケア,短時間" data-mins="3" data-updated="2025-02-12">
+       data-id="sweet" data-tags="セルフケア,さくっと" data-mins="3" data-updated="2025-02-12">
       <span class="emo">🍰</span>
-      <div>
-        <div class="ttl">7つの休息 × スイーツ診断　14問</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱3分</span><span class="pill">#セルフケア</span><span class="pill">#短時間</span></div>
+      <div class="body">
+        <div class="ttl">7つの休息 × スイーツ診断 14問</div>
+        <div class="sub2">疲れ方のタイプを見極め、合う休み方をスイーツに例えて提案。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
-        <a class="link" href="/shindan/animalshin.html?src=specimens"
-       data-id="animal" data-tags="性格,短時間" data-mins="3" data-updated="2025-03-05">
+
+    <!-- ★ 性格動物診断 -->
+    <a class="link" href="/shindan/animalshin.html?src=specimens"
+       data-id="animal" data-tags="性格,さくっと" data-mins="3" data-updated="2025-03-05">
       <span class="emo">🐾</span>
-      <div>
-        <div class="ttl">性格動物診断　10問（5因子を動物メタファで表示）</div>
-        <div class="sub2">既存研究の枠組みを参考に、独自項目で可視化しています</div>
-        <div class="meta"><span class="pill">⏱4分</span><span class="pill">#性格</span><span class="pill">#短時間</span></div>
+      <div class="body">
+        <div class="ttl">性格動物診断 10問</div>
+        <div class="sub2">性格のざっくり輪郭を動物メタファで楽しく把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
       </div>
       <span class="badge">診断へ</span>
     </a>
-    
-    
-    <!-- ★ 魂の花診断（hanashin.html） -->
-<a class="link" href="/shindan/hanashin.html?src=specimens"
-   data-id="hanashin" data-tags="こころ,占い,さくっと" data-mins="3" data-updated="2025-09-12"
-   data-keywords="魂の花 診断 白い薔薇 向日葵 百合 杏 フリージア 占い タイプ 芽 蕾 花 10問">
-  <span class="emo">🌸</span>
-  <div>
-    <div class="ttl">魂の花診断　10問<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">5タイプ（白い薔薇/向日葵/百合/杏/フリージア）×段階（芽・蕾・花）｜占いトーンのメッセージ</div>
-    <div class="meta">
-      <span class="pill">⏱3分</span><span class="pill">#こころ</span><span class="pill">#占い</span><span class="pill">#さくっと</span>
-    </div>
-  </div>
-  <span class="badge">診断へ</span>
-</a>
-    
-    
+
+    <!-- ★ 魂の花診断 -->
+    <a class="link" href="/shindan/hanashin.html?src=specimens"
+       data-id="hanashin" data-tags="こころ,占い,さくっと" data-mins="3" data-updated="2025-09-12"
+       data-keywords="魂の花 白い薔薇 向日葵 百合 杏 フリージア 占い メッセージ">
+      <span class="emo">🌸</span>
+      <div class="body">
+        <div class="ttl">魂の花診断 10問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">内面の雰囲気と伸び方を花にたとえてメッセージ。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
   </nav>
-  <section id="legal-note" role="note" aria-label="ご利用にあたって">
-  <h2>ご利用にあたって</h2>
-  <ul>
-    <li><strong>非提携・非公式：</strong>本サイトの各コンテンツは研究一般の知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。各種の公式心理検査・尺度の<strong>原文項目や正式な採点方法は使用しておらず</strong>、権利者の承認・提携・推奨を意味しません。</li>
-    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安を目的としたセルフチェックで、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛や不調が続く場合は、医療機関や専門家へご相談ください。</li>
-    <li><strong>プライバシー：</strong>各診断ページの回答処理は<strong>ブラウザ内（端末内）で完結</strong>し、サーバーへの送信は行いません。進行状況や一部の表示設定のみローカルストレージに保存されることがあります。</li>
-    <li><strong>表現について：</strong>「職業」「タイプ」「サイコパス」等の呼称は<strong>比喩・俗称・ゲーミフィケーション表現</strong>であり、特定の個人・集団への価値判断や差別を意図しません。結果をもって他者を断定・ラベリングしないでください。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本サイトの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
-  </ul>
-</section>
+
+  <section id="legal-note" role="note" aria-label="ご利用にあたって" class="note">
+    <h2 style="font-size:1.05em;margin:18px 0 10px">ご利用にあたって</h2>
+    <ul style="margin:0 0 10px 18px;padding:0;line-height:1.7">
+      <li><strong>非提携・非公式：</strong>本サイトの各コンテンツは研究一般の知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。各種の公式心理検査・尺度の<strong>原文項目や正式な採点方法は使用しておらず</strong>、権利者の承認・提携・推奨を意味しません。</li>
+      <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安を目的としたセルフチェックで、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛や不調が続く場合は、医療機関や専門家へご相談ください。</li>
+      <li><strong>プライバシー：</strong>各診断ページの回答処理は<strong>ブラウザ内（端末内）で完結</strong>し、サーバーへの送信は行いません。進行状況や一部の表示設定のみローカルストレージに保存されることがあります。</li>
+      <li><strong>表現について：</strong>「職業」「タイプ」「サイコパス」等の呼称は<strong>比喩・俗称・ゲーミフィケーション表現</strong>であり、特定の個人・集団への価値判断や差別を意図しません。結果をもって他者を断定・ラベリングしないでください。</li>
+      <li><strong>免責：</strong>法令で認められる範囲で、本サイトの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+    </ul>
+  </section>
 </main>
+
 <!-- Footer -->
-<nav class="footerbar">
+<nav class="footerbar" aria-label="フッターナビ">
   <a href="https://x.com/oki2a?s=21" target="_blank" rel="noopener">X</a>
   <a href="https://www.instagram.com/zariganitabetai7?igsh=MTdzc245MDJrdWZzYw%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
   <a href="https://lin.ee/KUtaxdD" target="_blank" rel="noopener">公式LINE</a>
@@ -467,201 +469,150 @@ nav.links .link > .badge{
 </nav>
 
 <noscript>
-  <div style="max-width:860px;margin:16px auto;padding:0 14px max(28px,env(safe-area-inset-bottom));color:#7a6a77">
+  <div style="max-width:980px;margin:16px auto;padding:0 14px max(28px,env(safe-area-inset-bottom));color:#7a6a77">
     JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
   </div>
 </noscript>
+
 <script>
 (function(){
   const $  = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+
   const splash  = $('#splash');
   const content = $('#content');
   const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
-  // ====== 設定 ======
-  const AUTO_OPEN = false;
-  const GUARD_MS  = 600;
-  const HIDE_DELAY= 300;
-  // ====== ストレージキー & ヘルパー（早めに定義） ======
-  const CONT_KEY ='specimens:last';
-  const PLAY_KEY ='specimens:played';
 
-  function getPlayed(){
-    try{ return new Set(JSON.parse(localStorage.getItem(PLAY_KEY)||'[]')); }
-    catch{ return new Set(); }
-  }
-  function setPlayed(set){ localStorage.setItem(PLAY_KEY, JSON.stringify([...set])); }
-  // ---------- Reveal ----------
-  let opened=false, guardUntil=0, autoTimer=null;
+  // Splash open
+  const GUARD_MS=600, HIDE_DELAY=300; let opened=false, guardUntil=0;
   function startClickGuard(){
-    guardUntil = performance.now() + GUARD_MS;
-    const guard = (e)=>{
-      if (performance.now() < guardUntil){ e.stopPropagation(); e.preventDefault(); }
-      else { window.removeEventListener('click', guard, true); }
-    };
-    window.addEventListener('click', guard, true);
-    content.style.pointerEvents = 'none';
-    setTimeout(()=>{ content.style.pointerEvents = ''; }, GUARD_MS);
+    guardUntil=performance.now()+GUARD_MS;
+    const guard=(e)=>{ if(performance.now()<guardUntil){ e.stopPropagation(); e.preventDefault(); } else { window.removeEventListener('click',guard,true); } };
+    window.addEventListener('click',guard,true);
+    content.style.pointerEvents='none'; setTimeout(()=>{content.style.pointerEvents='';},GUARD_MS);
   }
   function reveal(ev){
-    if(opened) return;
-    opened = true;
+    if(opened) return; opened=true;
     if(ev){ try{ ev.preventDefault(); ev.stopPropagation(); }catch{} }
-    clearTimeout(autoTimer);
     startClickGuard();
-    splash.classList.add('closing');
-    splash.setAttribute('aria-hidden','true');
-    content.classList.add('show');
-    vibrate(12);
-    setTimeout(()=>{
-      splash.classList.add('hidden');
-      splash.classList.remove('closing');
-      try{ content.removeAttribute('inert'); content.focus({preventScroll:true}); }catch{}
-    }, Math.max(HIDE_DELAY, GUARD_MS));
+    splash.classList.add('closing'); splash.setAttribute('aria-hidden','true');
+    content.classList.add('show'); vibrate(12);
+    setTimeout(()=>{ splash.classList.add('hidden'); splash.classList.remove('closing'); try{ content.removeAttribute('inert'); content.focus({preventScroll:true}); }catch{} }, Math.max(HIDE_DELAY,GUARD_MS));
   }
-  const onPointerUp = (e)=>{
-    if(e?.target?.closest?.('a,button,input,label')) return;
-    reveal(e);
-  };
-  splash.addEventListener('pointerup', onPointerUp);
-  splash.addEventListener('keydown', e=>{
-    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(e); }
-  });
-  if (AUTO_OPEN) {
-    window.addEventListener('load', ()=>{ autoTimer=setTimeout(()=>reveal(), 3000); });
-  }
-  // ---------- NEWバッジ + スピード表示 + フィルタ ----------
-  const today = new Date();
-  // 上書き（短時間でも「しっかり」に扱いたいID）
-  // 上書き（速度タグを手動指定するID）
-const SPEED_OVERRIDES = {
-  // しっかりにしたい
-  'great-minds': 'しっかり',            // 偉人
-  'seven-sins': 'しっかり',             // 7つの大罪
-  'adventure': 'しっかり',              // 冒険者
-  'chc-cci': 'しっかり',                // 認知
-  'houseki': 'しっかり',                 // 恋愛（宝石）
-  'forbidden-love': 'しっかり',         // 恋愛（本編）
-  'forbidden-love-another': 'しっかり', // 恋愛（別世界線）
-  // ふつうに直したい
-  'kizuna-rope': 'ふつう',              // 関係の切れやすさ
-  'ice': 'ふつう'                       // アイスクリーム
-};
-  function speedFromMins(mins){
-    if (isNaN(mins)) return 'ふつう';
-    if (mins <= 3) return 'さくっと';
-    if (mins <= 6) return 'ふつう';
-    return 'しっかり';
-  }
-  function speedLabel(slug){
-    if (slug==='さくっと') return 'さくっと（〜3分）';
-    if (slug==='ふつう')   return 'ふつう（4〜6分）';
-    return 'しっかり（7分〜）';
-  }
-  // NEWバッジとスピード表記整形
+  splash.addEventListener('pointerup', e=>{ if(e?.target?.closest?.('a,button,input,label')) return; reveal(e); });
+  splash.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(e); } });
+
+  // NEWバッジ（21日以内）
+  const today=new Date();
   $$('#list a.link').forEach(a=>{
-    const ds = a.dataset.updated, badge = a.querySelector('[data-new]');
-    if (ds && badge){
-      const diff = (today - new Date(ds + 'T00:00:00')) / 86400000;
-      badge.style.display = (diff <= 21) ? 'inline-block' : 'none';
-    }
-    const id   = a.dataset.id || '';
-    const mins = parseInt(a.dataset.mins || '0', 10);
-    const sp   = SPEED_OVERRIDES[id] || speedFromMins(mins);
-    a.dataset.speed = sp;
-    const pills = $$('.meta .pill', a);
-    if (pills.length){
-      pills[0].textContent = speedLabel(sp);
-      pills.slice(1).forEach(p=>{
-        const t = p.textContent.trim();
-        if (/^#(短時間|しっかり|ふつう)$/.test(t)) p.remove();
-      });
-    }
+    const badge=a.querySelector('[data-new]'); const ds=a.dataset.updated;
+    if(badge && ds){ const diff=(today - new Date(ds+'T00:00:00'))/86400000; badge.style.display=(diff<=21)?'inline-flex':'none'; }
   });
-  // フィルタ（速度/カテゴリー + NEWだけ + 未プレイだけ）
-  const chips = $$('#filters .chip');
-  let newOnly=false, unplayedOnly=false;
-  function isNew(a){
-    const b = a.querySelector('[data-new]');
-    return b && b.style.display !== 'none';
-  }
-  function applyFilter(){
-    const played = getPlayed();
-    const act = $('#filters .chip.active')?.dataset.filter || 'all';
-    $$('#list a.link').forEach(a=>{
-      const tags = (a.dataset.tags || '').split(',');
-      const sp   = a.dataset.speed || '';
-      let show   = true;
-      if (act==='さくっと' || act==='ふつう' || act==='しっかり'){
-        show = (sp === act);
-      } else if (act !== 'all'){
-        show = tags.includes(act);
+
+  // data-thumb → サムネ（指定カードのみ）
+  $$('#list a.link').forEach(a=>{
+    const src=a.dataset.thumb; if(!src) return;
+    a.classList.add('with-thumb');
+    const fg=document.createElement('figure'); fg.className='thumb';
+    const img=new Image(); img.loading='lazy'; img.src=src; img.alt=(a.querySelector('.ttl')?.textContent||'診断')+'のサムネイル';
+    fg.appendChild(img); a.insertBefore(fg,a.firstChild);
+  });
+
+  // 検索・タグ（単一選択）
+  const q=$('#q'), chipsWrap=$('#chips'), btnNew=$('#btnNew'), clearBtn=$('#clearBtn');
+
+  // エイリアス正規化：「性格」→「こころ」、「短時間」→「さくっと」
+  const ALIAS={ '性格':'こころ', '短時間':'さくっと' };
+  const ORDER=['こころ','セルフケア','認知','仕事','占い','ゲーム風','さくっと','ふつう','しっかり','適性'];
+
+  // カードのタグ正規化 + メタ整形
+  $$('#list a.link').forEach(a=>{
+    const tags=(a.dataset.tags||'').split(',').map(s=>s.trim()).filter(Boolean).map(t=>ALIAS[t]||t);
+    a.dataset.tags=[...new Set(tags)].join(',');
+    const meta=a.querySelector('.meta'); meta.innerHTML='';
+    const mins=a.dataset.mins; if(mins){ const s=document.createElement('span'); s.className='pill'; s.textContent=`⏱${mins}分`; meta.appendChild(s); }
+  });
+
+  // タグ候補（存在するもののみ）
+  const counts={};
+  $$('#list a.link').forEach(a=>{
+    (a.dataset.tags||'').split(',').filter(Boolean).forEach(t=>{ counts[t]=(counts[t]||0)+1; });
+  });
+  const tagsSorted=Object.keys(counts).sort((a,b)=>{
+    const ai=ORDER.indexOf(a), bi=ORDER.indexOf(b);
+    if(ai!==-1 || bi!==-1){ return (ai===-1?999:ai) - (bi===-1?999:bi); }
+    return a.localeCompare(b,'ja');
+  });
+
+  // チップ生成（単一選択）
+  let activeTag=null; const chipMap=new Map();
+  tagsSorted.forEach(tag=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='chip'; b.textContent='#'+tag; b.dataset.tag=tag;
+    b.setAttribute('role','option'); b.setAttribute('aria-selected','false');
+    b.addEventListener('click',()=> setActiveTag(activeTag===tag? null : tag));
+    b.addEventListener('keydown',e=>{
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); b.click(); }
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault(); const chips=[...chipsWrap.querySelectorAll('.chip')];
+        const i=chips.indexOf(document.activeElement); if(i>-1){ chips[(i+(e.key==='ArrowRight'?1:-1)+chips.length)%chips.length].focus(); }
       }
-      if (newOnly)      show = show && isNew(a);
-      if (unplayedOnly) show = show && !played.has(a.dataset.id || '');
-      a.style.display = show ? '' : 'none';
     });
-  }
-  chips.forEach(ch=>{
-    ch.addEventListener('click', ()=>{
-      chips.forEach(c=>c.classList.remove('active'));
-      ch.classList.add('active');
-      vibrate();
-      applyFilter();
-    }, {passive:true});
+    chipsWrap.appendChild(b); chipMap.set(tag,b);
   });
-  // NEWだけトグル
-  const btnNew = $('#btn-new');
-  if (btnNew){
-    btnNew.addEventListener('click', ()=>{
-      newOnly = !newOnly;
-      btnNew.setAttribute('aria-pressed', newOnly ? 'true' : 'false');
-      btnNew.textContent = newOnly ? 'NEWだけ（解除）' : 'NEWだけ';
-      vibrate();
-      applyFilter();
-    });
+
+  function setActiveTag(tag){
+    activeTag=tag;
+    chipMap.forEach((btn,t)=>{ const on=(t===tag); btn.classList.toggle('active',on); btn.setAttribute('aria-selected',on?'true':'false'); });
+    if(tag){ history.replaceState({},'', '#tag='+encodeURIComponent(tag)); } else { history.replaceState({},'', location.pathname + location.search); }
+    apply();
   }
-  // 未プレイだけトグル
-  const btnUnplayed = $('#btn-unplayed');
-  if (btnUnplayed){
-    const updateUnplayedBtn = ()=>{
-      btnUnplayed.setAttribute('aria-pressed', unplayedOnly ? 'true' : 'false');
-      btnUnplayed.textContent = unplayedOnly ? '未プレイだけ（解除）' : '未プレイだけ';
-      btnUnplayed.classList.toggle('primary', unplayedOnly);
-    };
-    btnUnplayed.addEventListener('click', ()=>{
-      unplayedOnly = !unplayedOnly;
-      updateUnplayedBtn();
-      vibrate();
-      applyFilter();
-    });
-    updateUnplayedBtn();
-  }
-  applyFilter();
-  // ---------- 続きから ----------
-  function updateContinue(){
-    const btn=$('#btn-continue');
-    const raw=localStorage.getItem(CONT_KEY);
-    if(!raw){btn.style.display='none';return;}
-    try{
-      const obj=JSON.parse(raw);
-      const a=$(`#list a.link[data-id="${obj.id}"]`);
-      if(!a){btn.style.display='none';return;}
-      btn.textContent=`つづきから再開：${obj.title}`;
-      btn.onclick=()=>{location.href=obj.href;};
-      btn.style.display='inline-block';
-    }catch{btn.style.display='none';}
-  }
-  // クリックで「続きから」＆「既プレイ」を保存
-  $$('#list a.link').forEach(a=>{
-    a.addEventListener('click',()=>{
-      const data={id:a.dataset.id,title:$('.ttl',a)?.textContent?.trim()||'診断',href:a.getAttribute('href')};
-      localStorage.setItem(CONT_KEY, JSON.stringify(data));
-      const played=getPlayed(); played.add(a.dataset.id); setPlayed(played);
-      vibrate();
-    },{passive:true});
+
+  // 初期：#tag= or ?q=
+  const params=new URLSearchParams(location.search);
+  q.value=params.get('q')||'';
+  const initTag=location.hash.startsWith('#tag=') ? decodeURIComponent(location.hash.slice(5)) : '';
+  if(initTag && chipMap.has(initTag)) setActiveTag(initTag);
+
+  // 入力：末尾 #タグ を同期
+  q.addEventListener('input', ()=>{
+    const m=q.value.match(/(^|\s)#([^\s#]+)$/);
+    if(m){ const t=m[2]; if(chipMap.has(t)) setActiveTag(t); }
+    apply();
   });
-  updateContinue();
+
+  // NEWだけ
+  let newOnly=false;
+  btnNew.addEventListener('click', ()=>{
+    newOnly=!newOnly; btnNew.classList.toggle('primary',newOnly);
+    btnNew.setAttribute('aria-pressed', newOnly?'true':'false');
+    btnNew.textContent=newOnly?'NEWだけ（解除）':'NEWだけ';
+    apply();
+  });
+
+  // クリア
+  clearBtn.addEventListener('click', ()=>{ q.value=''; setActiveTag(null); apply(); });
+
+  // フィルタ
+  function apply(){
+    const kw=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
+    let shown=0;
+    $$('#list a.link').forEach(a=>{
+      const tags=(a.dataset.tags||'').split(',').filter(Boolean);
+      const text=(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase();
+      const okTag = activeTag ? tags.includes(activeTag) : true;
+      const okKw  = kw.length ? kw.every(w=>text.includes(w)) : true;
+      const isNew = (()=>{ const b=a.querySelector('[data-new]'); return b && b.style.display!=='none'; })();
+      const show  = okTag && okKw && (newOnly? isNew : true);
+      a.style.display=show?'':'none'; if(show) shown++;
+    });
+    $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+  }
+  apply();
+
+  // Escで検索クリア
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ q.value=''; setActiveTag(null); apply(); } });
 })();
 </script>
-</body></html>
+</body>
+</html>
