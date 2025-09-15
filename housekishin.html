@@ -647,7 +647,7 @@ summary::-webkit-details-marker{display:none}
     $("#kvAttach").textContent = ATTACH_JP[attach];
 
     const no = {secure:"01", avoidant:"02", anxious:"03", fearful:"04"}[attach];
-    const src = `/shindan/assets/results/houseki-chara/${style}/${no}.png`;
+    const src = `/shindan/assets/results/houseki-bundle/${style}/${no}.png`;
     const img = $("#resultImg"), ph=$("#imgPh");
     ph.style.display="grid";
     img.alt = `${GEM_NAME[style][attach]}（${STYLE_JP[style]} × ${ATTACH_JP[attach]}）のイメージイラスト`;
