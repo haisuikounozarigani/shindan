@@ -1,538 +1,746 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="ja">
-
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>宝石恋愛タイプ診断 48問</title>
+<meta name="description" content="恋愛スタイル6×愛着4を可視化。イラスト＋棒グラフ＋テキスト解説。">
+<meta name="theme-color" content="#ffeef7">
+<style>
+:root{
+  --bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#7e6572;
+  --accent:#ff9ecf;--accent2:#b69cff;
+}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:linear-gradient(150deg,var(--bg1),var(--bg2));color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:20px 14px 28px}
+h1{margin:8px 0 6px;font-size:clamp(22px,6vw,32px);letter-spacing:.02em;text-wrap:balance}
+.lead{margin:0 0 10px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 22px rgba(182,156,255,.12)}
 
-  <meta charset="UTF-8" />
+/* 凡例 */
+.legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}
+.legend .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #efdeea;background:#fff;border-radius:999px;padding:6px 10px;font-size:.92em;white-space:nowrap}
 
-  <!-- head 内の差し替え -->
-<title>宝石タイプ恋愛診断（独自再構成・32問）</title>
-<meta name="description" content="32問×5件法で恋愛スタイルと愛着傾向をゆるく可視化する独自再構成のセルフチェック。エンタメ＋自己理解向け（公式の心理検査ではありません／医療用途ではありません／回答は端末内で処理されサーバー送信されません）。">
+/* 質問フォーム */
+.qitem{padding:12px;border:1px solid #efdeea;border-radius:12px;margin:10px 0;background:#fff}
+.qtxt{margin:0 0 10px;font-weight:600;line-height:1.55}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.scale label{display:flex;align-items:center;gap:6px;border:1px solid #efdeea;border-radius:999px;padding:8px 10px;cursor:pointer;user-select:none;min-width:44px;justify-content:center}
+.scale input{appearance:none;width:16px;height:16px;border:1px solid #cbb7c5;border-radius:50%;display:inline-block;position:relative}
+.scale input:checked{background:radial-gradient(circle at 50% 50%,var(--accent) 0 45%,transparent 46%)}
+.formbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:12px}
+.btn{appearance:none;border:1px solid #ead6f0;background:#fff;border-radius:12px;padding:12px 16px;cursor:pointer;text-decoration:none;color:inherit;display:inline-flex;align-items:center}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.progress{margin-left:auto;color:#6b5963}
 
-  <meta name="theme-color" content="#fdf6f0">
+/* 結果 */
+.result{display:none}
+.result.show{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.kv{display:inline-block;margin:6px 6px 0 0;padding:6px 10px;border:1px solid #efdeea;border-radius:10px;background:#fff}
+.himg{
+  margin:10px auto 14px;position:relative;background:#f7f4ff;border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;width:min(100%, 380px);
+}
+#resultImg{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.himg .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.95em}
+h2{font-size:clamp(18px,4.5vw,22px);margin:12px 0 8px;text-wrap:balance}
+.section{margin-top:12px}
 
-  <style>
+/* bars */
+.bars{display:grid;grid-template-columns:1fr;gap:8px}
+.bar{background:#fff;border:1px solid #efdeea;border-radius:12px;padding:8px 10px}
+.bhead{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:6px}
+.bname{font-weight:700}
+.track{height:10px;background:#f2e9f6;border:1px solid #e7d7e5;border-radius:999px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pct{font-variant-numeric:tabular-nums}
 
-    :root{ --brand:#b86b77; --card:#fff; --bg:#fdf6f0; --muted:#7b6b6b; }
+/* details（下位因子だけで使用） */
+details{border:1px dashed #e6d7e9;border-radius:12px;padding:8px 10px;background:#fffcff}
+details[open]{background:#fff}
+summary{cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
 
-    *{ box-sizing:border-box }
+/* 解説ビジュアル改善 */
+.desc-card{padding:14px;background:#fff;border:1px solid #efdeea;border-radius:14px}
+#descBase{display:block;background:#fff;border:1px dashed #e6d7e9;border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;color:var(--fg);line-height:1.85;font-size:.98em}
+#descBase .note-list{margin:6px 0 0 18px;line-height:1.9}
+.desc-grid{display:grid;gap:8px;grid-template-columns:1fr;margin-top:8px}
+@media (min-width:760px){.desc-grid{grid-template-columns:1fr 1fr}}
+.note{color:var(--fg);font-size:.96em;margin-top:0;background:#fff;border:1px solid #efdeea;border-radius:10px;padding:10px 12px;line-height:1.75}
+.note strong{display:inline-block;margin-right:8px;padding:2px 8px;border-radius:8px;border:1px solid #f5d9e9;background:#fff1f8}
 
-    body{
+/* 法務メモ（常時表示） */
+#legalMemo{padding:12px;border:1px solid #efdeea;border-left:4px solid var(--accent2);border-radius:12px;background:#fff}
+#legalMemo h3{margin:0 0 6px;font-size:1em}
+#legalMemo ul{margin:8px 0 0 18px;line-height:1.8;padding:0}
 
-      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
-
-      background: var(--bg); color:#333; margin:0; padding:22px;
-
-    }
-
-    .wrap{ max-width:960px; margin:0 auto }
-
-    h1{ text-align:center; color:var(--brand); margin:4px 0 14px; font-size:clamp(20px,4vw,30px) }
-
-    .card{ background:var(--card); padding:20px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.08) }
-
-    .meta{ display:flex; justify-content:space-between; gap:12px; color:#666; font-size:12px; margin:0 2px 12px }
-
-    .question{ margin:20px 0 }
-
-    .question p{ margin:0 0 10px; font-weight:600 }
-
-    .scale{ display:grid; gap:8px }
-
-    .scale label{ display:flex; align-items:center; gap:10px; background:#f4f4f4; padding:10px; border-radius:10px; cursor:pointer }
-
-    .scale input{ accent-color:var(--brand) }
-
-    .actions{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:18px }
-
-    .btn{ background:var(--brand); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-size:16px; cursor:pointer }
-
-    .btn.secondary{ background:#8a8a8a }
-
-    .btn.linklike{ background:#fff; color:var(--brand); border:1px solid #e8d3d6 }
-
-    #resultArea{ margin-top:22px }
-
-    #resultTitle{ color:var(--brand); text-align:center; margin:0 0 10px; white-space:pre-line }
-
-    #resultImgWrap{ display:grid; place-items:center; gap:8px }
-
-    #resultImg{ width:min(780px,100%); height:auto; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.12) }
-
-    #tips{ color:var(--muted); font-size:12px; text-align:center }
-
-    .scores{ margin-top:16px; color:#555; font-size:14px }
-
-    .scores h3{ margin:8px 0 6px; font-size:15px; color:#6d5559 }
-
-    .scores .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px }
-
-    .scores .item{ background:#f7f3f1; border:1px solid #efe3e2; border-radius:10px; padding:8px 10px }
-
-    .footerActions{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin:18px 0 4px }
-
-    .note{ color:#766; text-align:center; font-size:12px; margin-top:10px }
-
-    a.inline{ color:var(--brand); text-decoration:none; border-bottom:1px dashed currentColor }
-
-  </style>
-
+/* フッタ操作 */
+.footer{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+.note-list{margin:6px 0 0 18px;padding-left:0}
+.note-list li{margin:4px 0}
+</style>
 </head>
-
 <body>
+<div class="wrap">
+  <h1>宝石タイプ恋愛診断 48問</h1>
+  <p class="lead">恋愛スタイル6×愛着4を、イメージイラストと棒グラフで可視化。5件法×48問。未回答があると結果は出ません。</p>
 
-  <div class="wrap">
-
-    <h1>💎 宝石タイプ 恋愛診断</h1>
-<section id="legal-note" style="max-width:960px;margin:10px auto 14px;background:#fff;border:1px solid #efe3e2;border-radius:10px;padding:12px">
-  <h2 style="margin:4px 0 6px;font-size:1rem;color:#6d5559">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#7b6b6b">
-    <li><strong>非提携・非公式：</strong>本コンテンツは研究領域（恋愛スタイル／愛着等）に<span style="white-space:nowrap">ヒントを得た</span><strong>独自再構成</strong>です。公式の質問票や採点方法は使用しておらず、権利者の承認・提携・推奨を意味しません。</li>
-    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的な診断／治療／助言を目的としません。つらさや不調が続く場合は専門家へご相談ください。</li>
-    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
-    <li><strong>表現について：</strong>宝石名は創作上の比喩であり、人物評価の断定やラベリングの意図はありません。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用に伴う損失・損害について当サイトは責任を負いません。</li>
-  </ul>
-</section>
-
-
-    <div class="card">
-
-      <div class="meta" role="status" aria-live="polite">
-
-        <span id="progress">未回答 32 / 32</span>
-
-        <span>5件法：1（まったく当てはまらない）〜5（とても当てはまる）</span>
-
-      </div>
-
-
-
-      <form id="quizForm"></form>
-
-
-
-      <div class="actions">
-
-        <button type="button" class="btn" onclick="calculate()">診断する</button>
-
-        <button type="button" class="btn secondary" onclick="resetForm()">リセット</button>
-
-      </div>
-
-
-
-      <!-- 結果表示 -->
-
-      <section id="resultArea" class="hidden" aria-label="診断結果">
-
-        <h2 id="resultTitle"></h2>
-
-
-
-        <div id="resultImgWrap">
-
-          <img id="resultImg" alt="診断結果画像" decoding="async">
-
-          <div class="actions">
-
-            <button id="showSummary" type="button" class="btn linklike">相性まとめ（05）を見る</button>
-
-            <button id="showMain" type="button" class="btn linklike hidden">診断結果（タイプ×愛着）に戻す</button>
-
-          </div>
-
-          <p id="tips">画像がうまく表示されない場合は、長押しで再読み込み・保存できます。</p>
-
-        </div>
-
-
-
-        <!-- スコアの概要（上位傾向を把握しやすくするオマケ） -->
-
-        <div class="scores" id="scoreBox" hidden>
-
-          <h3>あなたの傾向（スコア）</h3>
-
-          <div class="grid" id="scoreGrid"></div>
-
-        </div>
-
-
-
-        <div class="footerActions">
-
-          <a class="btn secondary" href="/shindan/" aria-label="診断一覧に戻る">診断一覧へ戻る</a>
-
-          <button class="btn linklike" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">ページ上部へ</button>
-
-        </div>
-
-
-
-        <p class="note">※ 本診断は傾向を示す参考情報です。医療・心理的アセスメントの代替ではありません。</p>
-
-      </section>
-
-    </div>
-
+  <!-- 5件法の凡例（タイトル直下） -->
+  <div class="legend" aria-label="5件法の説明" id="scaleHelp">
+    <span class="chip"><strong>1</strong> 全くあてはまらない</span>
+    <span class="chip"><strong>2</strong> あまりあてはまらない</span>
+    <span class="chip"><strong>3</strong> どちらともいえない</span>
+    <span class="chip"><strong>4</strong> わりとあてはまる</span>
+    <span class="chip"><strong>5</strong> とてもあてはまる</span>
   </div>
 
-
-
-  <script>
-
-    // --- 質問（32問） ---
-
-    const questions = [
-
-      // Eros（情熱）
-
-      "恋愛は運命のようなものであると感じる",
-
-      "一目惚れすることが多い",
-
-      "恋愛中は理想を追い求めがち",
-
-      "恋愛は感情がすべてだと思う",
-
-      // Ludus（遊戯）
-
-      "恋愛はゲームのような楽しさが大事",
-
-      "複数の人に同時に好意を持つことがある",
-
-      "恋愛に自由が必要だと思う",
-
-      "深刻すぎる恋愛は苦手",
-
-      // Storge（友愛）
-
-      "恋愛は友情から始まるのが理想",
-
-      "信頼関係を大事にしたい",
-
-      "恋人とは長い時間をかけて関係を築きたい",
-
-      "恋人と親友のような関係が理想",
-
-      // Mania（熱狂）
-
-      "相手が自分をどう思っているか常に気になる",
-
-      "恋人に不安を感じることが多い",
-
-      "恋愛中は相手に依存しやすい",
-
-      "少しの変化で不安になる",
-
-      // Pragma（実利）
-
-      "相手の条件（仕事・性格など）を重視する",
-
-      "恋愛において損得を考えることがある",
-
-      "安定した将来を想像できる相手を選ぶ",
-
-      "恋人選びは計画的にしたい",
-
-      // Agape（無償）
-
-      "相手の幸せを自分のことのように思う",
-
-      "恋愛では自分を犠牲にしても構わない",
-
-      "相手の成長を支えたいと思う",
-
-      "恋人に無条件の愛を注ぐべきだと思う",
-
-      // 不安（Anxious）
-
-      "恋人が離れていくのではと不安になる",
-
-      "些細なことで嫌われたと感じてしまう",
-
-      "恋人の返信が遅いと気になってしまう",
-
-      "恋愛関係が壊れるのが怖い",
-
-      // 回避（Avoidant）
-
-      "人に頼ることが苦手",
-
-      "恋愛に踏み込みすぎると不安になる",
-
-      "親密になると逃げたくなる",
-
-      "距離感を保った関係の方が落ち着く"
-
-    ];
-
-
-
-    const scaleLabels = [
-
-      "1（まったく当てはまらない）",
-
-      "2（あまり当てはまらない）",
-
-      "3（どちらともいえない）",
-
-      "4（やや当てはまる）",
-
-      "5（とても当てはまる）"
-
-    ];
-
-
-
-    // --- フォーム描画 ---
-
-    const form = document.getElementById("quizForm");
-
-    const progressEl = document.getElementById("progress");
-
-    questions.forEach((q, i) => {
-
-      const div = document.createElement("div");
-
-      div.className = "question";
-
-      div.innerHTML = `<p>Q${i + 1}. ${q}</p>
-
-        <div class="scale">
-
-          ${scaleLabels.map((label, n) => `
-
-            <label><input type="radio" name="q${i + 1}" value="${n + 1}"> ${label}</label>
-
-          `).join("")}
-
-        </div>`;
-
-      form.appendChild(div);
-
+  <!-- ====== FORM ====== -->
+  <section id="form" class="card">
+    <div id="qList"></div>
+    <div class="formbar">
+      <button id="btnReset" class="btn" type="button">クリア</button>
+      <div class="progress" id="prog">0 / 48</div>
+      <button id="btnSubmit" class="btn primary" type="button">結果を見る</button>
+    </div>
+  </section>
+
+  <!-- ====== RESULT（縦積み配置） ====== -->
+  <section id="result" class="result">
+    <div class="card">
+      <h2 id="resultTitle" style="margin:0">結果</h2>
+      <div>
+        <span class="kv" id="kvStyle">–</span>
+        <span class="kv" id="kvAttach">–</span>
+      </div>
+
+      <!-- 画像（縦長・少し小さめ表示） -->
+      <div class="himg section">
+        <img id="resultImg" alt="結果イメージイラスト" loading="lazy">
+        <div class="ph" id="imgPh" aria-hidden="true">画像を読み込み中…</div>
+      </div>
+
+      <!-- メイン因子 -->
+      <div class="section">
+        <h3 style="margin:6px 0 8px">メイン因子（6）</h3>
+        <div id="barsMain" class="bars"></div>
+      </div>
+
+      <!-- 下位因子 -->
+      <div class="section">
+        <details>
+          <summary>下位因子（12）をひらく</summary>
+          <div id="barsSub" class="bars" style="margin-top:8px"></div>
+        </details>
+      </div>
+
+      <!-- 解説（視認性アップ版） -->
+      <div class="section">
+        <h3 style="margin:12px 0 6px">解説</h3>
+        <div class="card desc-card">
+          <div id="descBase"></div>
+          <div class="desc-grid">
+            <p class="note"><strong>あるある：</strong><span id="descAru"></span></p>
+            <p class="note"><strong>悪い点：</strong><span id="descWeak"></span></p>
+            <p class="note"><strong>相性が良い：</strong><span id="descMatch"></span></p>
+            <p class="note"><strong>相性が悪い：</strong><span id="descTaboo"></span></p>
+            <p class="note" style="grid-column:1/-1"><strong>愛着スタイル：</strong><span id="descAttach"></span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 法務メモ（常時表示） -->
+      <div class="section card" id="legalMemo">
+        <h3><strong>法務メモ</strong></h3>
+        <ul>
+          <li><strong>非提携・非公式：</strong>研究一般の知見にヒントを得た<strong>独自制作</strong>です。原版項目や正式な採点方法は用いておらず、権利者の承認・提携・推奨を意味しません。</li>
+          <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安であり、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛が続く場合は専門機関へ。</li>
+          <li><strong>プライバシー：</strong>回答処理は<strong>端末内</strong>で完結します（サーバー送信なし）。進行状況など一部設定をローカルに保存することがあります。</li>
+          <li><strong>表現について：</strong>「タイプ」「サイコパス」等の語は<strong>比喩・ゲーミフィケーション</strong>です。他者への断定・ラベリングを避けてください。</li>
+          <li><strong>免責：</strong>法令で認められる範囲で、本サイト利用に伴う損失・損害について当サイトは責任を負いません。</li>
+        </ul>
+      </div>
+
+      <div class="footer">
+        <a class="btn" href="/shindan/">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$= (q,root=document)=>[...root.querySelectorAll(q)];
+
+  // ラベル辞書
+  const STYLE_JP = { eros:"情熱", ludus:"遊戯", storge:"友愛", pragma:"実利", mania:"熱狂", agape:"無償" };
+  const ATTACH_JP= { secure:"安定", avoidant:"回避", anxious:"不安", fearful:"恐れ回避" };
+  const ATTACH_DESC = {
+    secure:   "相手を信じやすく、落ち着いて話し合える。日常のやり取りが安定しやすい。",
+    avoidant: "自立を大事にする。踏み込みが深いと負担に感じやすい。距離感の合意があると安心。",
+    anxious:  "不安を感じやすい。反応が遅いと気になりやすい。確認できる仕組みがあると安心。",
+    fearful:  "近づきたい気持ちと不安の両方がある。小さい成功体験を重ねると安心できる範囲が広がる。"
+  };
+  const GEM_NAME = {
+    eros:   { secure:"ルビー",             avoidant:"アルマンディーガーネット", anxious:"レッドスピネル",     fearful:"パイロープガーネット" },
+    ludus:  { secure:"シトリン",           avoidant:"インペリアルトパーズ",     anxious:"レモンクォーツ",     fearful:"ウイスキークォーツ"   },
+    storge: { secure:"エメラルド",         avoidant:"クロムトルマリン",         anxious:"ペリドット",         fearful:"プラシオライト"       },
+    pragma: { secure:"サファイア",         avoidant:"アイオライト",             anxious:"ブルージルコン",     fearful:"グレースピネル"       },
+    mania:  { secure:"ピンクトルマリン",   avoidant:"ルベライト",               anxious:"ローズクォーツ",     fearful:"クンツァイト"         },
+    agape:  { secure:"ダイヤモンド",       avoidant:"ゴシェナイト",             anxious:"モルガナイト",       fearful:"ムーンストーン"       }
+  };
+  const STYLE_ORDER = ["eros","ludus","storge","pragma","mania","agape"];
+  const LS_KEY = "houseki48_answers_v1";
+
+  function saveAnswers(){
+    const data = {};
+    ITEMS.forEach(q=>{
+      const inp = document.querySelector(`input[name="q${q.id}"]:checked`);
+      if(inp) data[q.id] = Number(inp.value);
     });
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch{}
+  }
+  function loadAnswers(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      const data = JSON.parse(raw);
+      Object.entries(data).forEach(([id,val])=>{
+        const sel = document.querySelector(`input[name="q${id}"][value="${val}"]`);
+        if(sel) sel.checked = true;
+      });
+    }catch{}
+  }
 
+  // 質問（1..48 / r:true=逆転）
+  const ITEMS = [
+    {id:1,t:"恋愛中は気持ちが高まると行動が早くなる。",dom:"eros",sub:"ideal"},
+    {id:2,t:"初対面でも強く惹かれることがある。",dom:"eros",sub:"ideal"},
+    {id:3,t:"相手が喜ぶなら予定を変えてもいいと思う。",dom:"eros",sub:"action"},
+    {id:4,t:"サプライズや特別感を大切にしたい。",dom:"eros",sub:"action"},
+    {id:5,t:"相手の嬉しそうな反応を想像すると他の用事を後回しにしがち。",dom:"eros",sub:"ideal"},
+    {id:6,t:"気持ちが高ぶっても、一晩おけばだいたい落ち着く。",dom:"eros",sub:"action",r:true},
 
+    {id:7,t:"軽いデートや気楽な関係が好きだ。",dom:"ludus",sub:"light"},
+    {id:8,t:"深刻な話題が続くと距離を置きたくなる。",dom:"ludus",sub:"free"},
+    {id:9,t:"交際中でも個人の自由時間は必要だ。",dom:"ludus",sub:"free"},
+    {id:10,t:"ノリの良さやユーモアを重視する。",dom:"ludus",sub:"light"},
+    {id:11,t:"予定は当日の気分で変えてもいいと思う。",dom:"ludus",sub:"free"},
+    {id:12,t:"交際が進めば、最低限の決まりは必要だと思う。",dom:"ludus",sub:"light",r:true},
 
-    function updateProgress(){
+    {id:13,t:"友達の延長のような関係が理想だ。",dom:"storge",sub:"安心"},
+    {id:14,t:"普段の連絡や小さな習慣を大事にしたい。",dom:"storge",sub:"習慣"},
+    {id:15,t:"一緒に過ごす時間が安定すると安心できる。",dom:"storge",sub:"安心"},
+    {id:16,t:"大きなイベントより日常の積み重ねが重要だ。",dom:"storge",sub:"習慣"},
+    {id:17,t:"記念日よりも、普段の小さな習慣を大切にしたい。",dom:"storge",sub:"習慣"},
+    {id:18,t:"会えない期間が続いても、自然に続くと思う。",dom:"storge",sub:"安心",r:true},
 
-      const answered = Array.from({length: questions.length})
+    {id:19,t:"価値観や生活リズムが合うかを重視する。",dom:"pragma",sub:"適合"},
+    {id:20,t:"将来設計（家計・住環境など）を早めに話したい。",dom:"pragma",sub:"設計"},
+    {id:21,t:"役割分担や家事分担を明確にしたい。",dom:"pragma",sub:"設計"},
+    {id:22,t:"条件や相性が合わないと長続きしにくいと感じる。",dom:"pragma",sub:"適合"},
+    {id:23,t:"生活の計画が曖昧だと不安になる。",dom:"pragma",sub:"設計"},
+    {id:24,t:"その場の流れで何とかなると思うことが多い。",dom:"pragma",sub:"適合",r:true},
 
-        .filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length;
+    {id:25,t:"返信が遅いと落ち着かない。",dom:"mania",sub:"確かめ"},
+    {id:26,t:"相手の小さな変化でも不安になる。",dom:"mania",sub:"調律"},
+    {id:27,t:"関係の確かさを確認したくなる。",dom:"mania",sub:"確かめ"},
+    {id:28,t:"気持ちが乱れると他のことが手につかない。",dom:"mania",sub:"調律"},
+    {id:29,t:"相手にお願いした後、返事が来るまで他のことに集中しづらい。",dom:"mania",sub:"確かめ"},
+    {id:30,t:"荒れそうなときは自分から距離を取り気持ちを整えられる。",dom:"mania",sub:"調律",r:true},
 
-      progressEl.textContent = `未回答 ${questions.length - answered} / ${questions.length}`;
+    {id:31,t:"困っているなら自分の予定を調整しても助けたい。",dom:"agape",sub:"支援"},
+    {id:32,t:"相手の都合を優先しがちだ。",dom:"agape",sub:"支援"},
+    {id:33,t:"相手の成長や挑戦を応援したい。",dom:"agape",sub:"支援"},
+    {id:34,t:"自分のことより相手の気持ちを優先することがある。",dom:"agape",sub:"支援"},
+    {id:35,t:"相手のためなら負担が増えても支えることがある。",dom:"agape",sub:"支援"},
+    {id:36,t:"助ける前に自分の余力を先に確かめる。",dom:"agape",sub:"自己保全",r:true},
 
+    {id:37,t:"些細なことで嫌われたと感じてしまう。",dom:"anx",sub:"評価"},
+    {id:38,t:"会えないときは不安になりやすい。",dom:"anx",sub:"見捨て"},
+    {id:39,t:"相手の機嫌や反応に過敏だ。",dom:"anx",sub:"評価"},
+    {id:40,t:"関係が壊れるのが怖い。",dom:"anx",sub:"見捨て"},
+    {id:41,t:"相手の反応の小さな違いが気になる。",dom:"anx",sub:"評価"},
+    {id:42,t:"会えない期間が続いても、関係は大丈夫だと感じている。",dom:"anx",sub:"見捨て",r:true},
+
+    {id:43,t:"人に頼るのが苦手だ。",dom:"avd",sub:"自立"},
+    {id:44,t:"親密な話題になると避けたくなる。",dom:"avd",sub:"親密"},
+    {id:45,t:"近づきすぎると距離を取りたくなる。",dom:"avd",sub:"親密"},
+    {id:46,t:"一定の距離感がある方が安心だ。",dom:"avd",sub:"自立"},
+    {id:47,t:"深い話題になると別の話題に変えたくなる。",dom:"avd",sub:"親密"},
+    {id:48,t:"親密な場面でも頼ってよいと思える相手がいる。",dom:"avd",sub:"自立",r:true},
+  ];
+
+  // 下位因子キー
+  const SUB_KEYS = [
+    ["eros","action"], ["eros","ideal"],
+    ["ludus","free"],  ["ludus","light"],
+    ["storge","習慣"], ["storge","安心"],
+    ["pragma","設計"], ["pragma","適合"],
+    ["mania","確かめ"],["mania","調律"],
+    ["agape","支援"], ["agape","自己保全"]
+  ];
+
+  // 一言チューニング
+  const SUB_TIPS = {
+    "eros:action":"行動が先行しやすい。前日に計画を再確認すると安定。",
+    "eros:ideal":"理想が先行しやすい。期待値と現実の線引きを共有。",
+    "ludus:free":"自由時間が重要。週の“ひとり時間”を先に確保。",
+    "ludus:light":"軽さ重視。大事な話は時間を区切って短時間で。",
+    "storge:習慣":"習慣が安心につながる。定時連絡を作ると楽。",
+    "storge:安心":"一緒の静かな時間で回復。無理な予定は入れない。",
+    "pragma:設計":"段取り思考が強い。ToDo共有でストレス減。",
+    "pragma:適合":"価値観の擦り合わせが重要。合わない所は早めに合意。",
+    "mania:確かめ":"確認欲求が強い。頻度の上限を合意。",
+    "mania:調律":"感情の波を整えたい。休む合図を用意。",
+    "agape:支援":"支える力が強い。頼まれた時だけ受けるを意識。",
+    "agape:自己保全":"自分の余力を守れる。断り文句を準備。"
+  };
+
+  // 第二因子ヒント
+  const SECONDARY_HINT = {
+    eros:"二次：情熱が強め。決断は速いが過密になりやすい。",
+    ludus:"二次：自由志向が強め。約束は少数精鋭で守る。",
+    storge:"二次：日常志向が強め。習慣づけが安心を作る。",
+    pragma:"二次：現実志向が強め。条件整理は得意だが硬く見えやすい。",
+    mania:"二次：確認欲求が強め。頻度の合意を先に。",
+    agape:"二次：献身が強め。自己保全ラインを先に。"
+  };
+
+  // 上位2因子テンプレ（グローバル）
+  const ORDER = ["eros","ludus","storge","pragma","mania","agape"];
+  const pairKey = (a,b)=>[a,b].sort((x,y)=>ORDER.indexOf(x)-ORDER.indexOf(y)).join("+");
+  const PAIR_TEMPLATE = {
+    "eros+ludus": { one:"ワクワクと自由。楽しいぶん、約束が軽くなりやすい。", do:["大事な用事は短時間で決める","体験デート＋前後に少し休む"], dont:["当日の大きな変更を何度もする","勢いだけで高い買い物"], comm:["変更は○時間前までに一言","決めたことは3行でメモ"], risk:["予定が詰まりすぎる","言った言わないが起きる"], fix:["翌日にもう一度確認する","週のフリー時間を先に確保"] },
+    "eros+storge": { one:"情熱と日常。サプライズも安定も大事にできる。", do:["日常:非日常を7:3にする","イベント翌日は休む日にする"], dont:["日常のリズムを崩しすぎる","期待だけで即決する"], comm:["毎日1通＋用事の時に追加","嬉しかったことを短く共有"], risk:["疲れの積み重なり","ルーティンが軽く扱われる"], fix:["週1でふり返りタイム","休息を予定に固定"] },
+    "eros+pragma": { one:"熱量と実利。スピード差に注意。", do:["感情→条件の順で決める","やりたい体験はリスト化＋予算枠"], dont:["ノリで高額決定","片方だけで条件を確定する"], comm:["結論＋理由を短く共有","締切と見直し条件を添える"], risk:["温度差のストレス","決め急ぎ"], fix:["24時間の保留ルール","代替案を1つ用意"] },
+    "eros+mania": { one:"盛り上がるほど不安も動きやすい。", do:["確認回数の上限を決める","おやすみ定型など安心サインを作る"], dont:["質問を連投する","未読のまま長時間放置"], comm:["今の状況＋次の返信時刻を添える","要件は箇条書きで簡潔に"], risk:["高揚→不安のループ","寝不足"], fix:["30分休んで再開時間を宣言","夜は軽い話題に切り替える"] },
+    "eros+agape": { one:"熱量とやさしさ。尽くしすぎに注意。", do:["できる/できないを先に伝える","小さなお祝い・労いをこまめに"], dont:["無制限に引き受ける","片方の予定を食い尽くす"], comm:["お願いは事前に相談","感謝はその場で言葉にする"], risk:["負担の片寄り","時間とお金の使いすぎ"], fix:["週1のOFFデーを固定","支出・時間の上限を決める"] },
+    "ludus+storge": { one:"軽さと安心。両立しやすい組み合わせ。", do:["基本ルーティン＋自由日を作る","月1だけ“深い話”の時間"], dont:["大事な話を先延ばしにする","自由枠をゼロにする"], comm:["定時連絡＋自由日は既読ゆるめでOK","決め事は最小限でメモ"], risk:["軽い/堅いの受け取り違い","ドタ変更の増加"], fix:["変更は○時まで等の期限ルール","ToDoを3件に絞って合意"] },
+    "ludus+pragma": { one:"自由と実利。小さく決めて広く自由に。", do:["最小限のルールを先に合意","タスクは見える化して共有"], dont:["細かく決めすぎる","長距離ノープラン移動"], comm:["連絡の窓口を1つにする","変更は○時まで＋理由を一言"], risk:["当日変更vs計画重視の衝突","責任が曖昧になる"], fix:["役割を固定し見直し日を設定","自由枠を必ず確保"] },
+    "ludus+mania": { one:"軽さと安心の線引きが大事。", do:["会う/連絡の最低頻度をカレンダーに","短い肯定メッセージを習慣に"], dont:["長い放置","曖昧返答で期待だけ残す"], comm:["OK/保留/却下の3択で即答","保留は再開時刻を伝える"], risk:["追う↔逃げるの循環","小さな衝突の積み重ね"], fix:["安心の証拠を軽く共有（写真1枚など）","雑談タイムと要件タイムを分ける"] },
+    "ludus+agape": { one:"自由と献身。合わせすぎない工夫を。", do:["お願いは1日1個まで","やりたいことを交互に叶える"], dont:["無限に合わせる","送迎などが片方だけに偏る"], comm:["軽く早く返す／重要は日程を切って話す","感謝は短文で即時に"], risk:["一方的なサービス","不満の積み上がり"], fix:["週1でフェアか点検","やんわり断る言い方を共有"] },
+    "storge+pragma": { one:"日常と実利。運用は強いが、ロマン不足に見えやすい。", do:["家事・家計の簡単な運用表","週15分の運営ミーティング"], dont:["気持ちの共有を省く","効率だけでイベントを減らす"], comm:["議題/決定/次回を一行ずつ","連絡は同じ時刻帯に"], risk:["マンネリ感","情緒が乾きやすい"], fix:["月1の“ロマン枠”を確保","感謝を言葉にする回数を増やす"] },
+    "storge+mania": { one:"予測できる安心を一緒に作る。", do:["会う・連絡の固定枠を作る","不安時の合図と対処を事前に決める"], dont:["黙って我慢する","夜更かしで長時間の議論"], comm:["朝夕の定時連絡＋緊急合図","要件は1メッセ1テーマ"], risk:["依存が強まる","予定が不安で埋まりがち"], fix:["自己ケア時間を固定","確認回数の上限を合意"] },
+    "storge+agape": { one:"温かく穏やか。自己犠牲だけ気をつける。", do:["ケア当番日を交互にする","自分時間と休息を先に確保"], dont:["頼まれる前のやりすぎ","NOを言わず抱え込む"], comm:["やさしい定型＋要件は簡潔に","お願いは“お願い”の形で伝える"], risk:["慢性的な疲れ","不満の遅れての爆発"], fix:["時間/お金/体力の境界線カード","月1で負担の偏りを点検"] },
+    "pragma+mania": { one:"正論が不安を強めやすい。順番を整えると◎。", do:["まず感情を要約→次に条件","期限と基準をはっきりさせる"], dont:["“落ち着いて”だけで打ち切る","根拠だけで返す"], comm:["受領→対応予定→完了の順で共有","質問はまとめて一度に"], risk:["冷たく見える誤解","質問の連打"], fix:["共感→要件の順を固定","Q&Aタイムをあらかじめ確保"] },
+    "pragma+agape": { one:"運用は強い。片寄りが出ないように。", do:["役割と“ケアの持ち回り”を分ける","手伝い時間の上限を決める"], dont:["無制限に引き受ける","見えない裏方が固定化する"], comm:["タスクはボードで可視化","お願いは期限・目的・負担も書く"], risk:["一方的なサービス化","気持ちが置いてけぼり"], fix:["月1で役割を見直す","“ありがとう”を数や言葉で可視化"] },
+    "mania+agape": { one:"追う×尽くすで疲れやすい。やさしく区切る。", do:["助ける前に“必要？”を確認","確認回数と時間帯に上限をつける"], dont:["察してほしいだけの依頼","夜の長時間通話を続ける"], comm:["OK/保留をすぐ返す","保留は“いつ再開”かを伝える"], risk:["お互いに消耗","境界線があいまいになる"], fix:["クールダウン合図＋再開時間","週1のNOデーを固定"] }
+  };
+
+  // 愛着チューニング
+  function attachTuning(attach, anxSum, avdSum){
+    const base = {
+      secure:{comm:"毎日1回＋用事のとき追加", reply:"当日中（〜12時間）", ok:"今夜話そう／明日○時に連絡するね", ng:"既読スルー放置"},
+      anxious:{comm:"毎日1〜2回", reply:"2〜6時間以内", ok:"今忙しい→○時に返すね", ng:"『後で』だけ（時間指定なし）"},
+      avoidant:{comm:"2日に1回〜週3回", reply:"24〜48時間以内", ok:"考える時間が欲しい→○日○時に返すね", ng:"詰める質問ラッシュ"},
+      fearful:{comm:"毎日1回（短文でOK）", reply:"当日中（〜12時間）", ok:"今は不安／嬉しかったを短く共有", ng:"沈黙で我慢"}
+    }[attach];
+    if(anxSum>=24) base.reply = "2〜4時間以内（合意できる範囲で）";
+    if(avdSum>=24) base.comm  = "2〜3日に1回（会える日はオフライン重視）";
+    return base;
+  }
+
+  // 警戒サイン
+  function alerts(main, anxSum, avdSum){
+    const a=[];
+    if(main.mania>=70 || anxSum>=24) a.push("確認が増え会話が質問だけになる→“今は雑談タイム”と切り替え宣言");
+    if(main.ludus>=70 || avdSum>=24) a.push("話題転換・予定先送りが増える→決める項目を3つに絞り短時間で合意");
+    if(main.pragma>=70)              a.push("正論で詰めがち→“感情→条件”の順で話す");
+    if(main.agape>=70)               a.push("“やってあげすぎ”で疲労→週の自分時間を先に確保");
+    if(a.length===0) a.push("大きな偏りは少ない。ペース配分を保てば良好");
+    return a.join("／");
+  }
+
+  // サブ優勢
+  function subDominance(style, subs){
+    const pairs = {
+      eros:["eros:action","eros:ideal"],
+      ludus:["ludus:free","ludus:light"],
+      storge:["storge:習慣","storge:安心"],
+      pragma:["pragma:設計","pragma:適合"],
+      mania:["mania:確かめ","mania:調律"],
+      agape:["agape:支援","agape:自己保全"]
+    }[style];
+    const a = subs[pairs[0]] ?? 0, b = subs[pairs[1]] ?? 0;
+    const diff = Math.abs(a-b);
+    const topKey = a>=b ? pairs[0] : pairs[1];
+    if(diff>=8 || Math.max(a,b)>=65){
+      return `サブ傾向：${SUB_TIPS[topKey]||""}`;
+    }else{
+      return "サブ傾向：二要素がバランス。状況に応じて切り替えやすい。";
     }
+  }
 
-    form.addEventListener("change", updateProgress);
+  // 解説データ
+  const DESC = {
+    eros:{ // 情熱
+      base:"感情が高まるとすぐ動く。相手が喜ぶことを優先しやすい。",
+      strength:"行動力と感情表現が得意。先回りの配慮ができる。",
+      aruaru:"即レス／予定の前倒し／サプライズ多め。",
+      weak:"勢いで決めて後で調整が増える。自分の予定が崩れやすい。",
+      care:"重要な決定は一晩置いて確認。休む時間を先に確保。",
+      texting:"即レス・絵文字多め。温度感が伝わると安心。",
+      date:"イベントや非日常を好む。体験型デートと相性◎。",
+      decision:"気持ち重視→後から計画を整える傾向。",
+      conflict:"期待が高く語気が強くなりやすい。",
+      repair:"一晩置いて再確認。事実と希望を分けて話す。",
+      boundary:"睡眠・予算・仕事の優先度を先に決める。",
+      longrun:"週のルーティンと休息を固定。“嬉しかったこと”共有を習慣化。",
+      good:[
+        {style:"storge", why:"日常のペースが気持ちの高まりを落ち着かせやすい"},
+        {style:"agape",  why:"配慮で負担の偏りを減らせる"}
+      ],
+      bad:[
+        {style:"pragma", why:"手順や計画重視の相手と決め方が合いにくい"},
+        {style:"mania",  why:"相手が不安を感じやすいと起伏が大きくなりやすい"}
+      ]
+    },
+    ludus:{ // 遊戯
+      base:"気軽さと自由時間を重視。重い話題が続くと距離を取りたくなる。",
+      strength:"場を明るくする。柔軟で誘いやすい。",
+      aruaru:"既読スルーはムラ／誘いは軽め／深い話題を後回し。",
+      weak:"大事な場面で決め切れない。役割分担が曖昧になりやすい。",
+      care:"重要な話は日時を決めて短時間で合意形成。",
+      texting:"短文・テンポ重視。連絡頻度の合意があると楽。",
+      date:"ライトな外出・ノープラン許容。気分で選ぶ。",
+      decision:"当日決めが得意。細かい縛りは苦手。",
+      conflict:"重い話題を避けて先送りしがち。",
+      repair:"時間を区切って要点だけ決める。ToDoを明確化。",
+      boundary:"“一人時間を週○時間”など自由枠を宣言。",
+      longrun:"自由と責任の範囲を明文化。月1の深い対話を固定。",
+      good:[
+        {style:"storge", why:"自由と安心のバランスを取りやすい"},
+        {style:"pragma", why:"枠組みが決まると自由を確保しやすい"}
+      ],
+      bad:[
+        {style:"mania",  why:"確認が多い相手には負担に感じやすい"},
+        {style:"agape",  why:"合わせてもらいすぎて不均衡になりやすい"}
+      ]
+    },
+    storge:{ // 友愛
+      base:"日常の連絡や習慣を大切にする。安定した時間があると安心できる。",
+      strength:"継続力と思いやり。生活運用に強い。",
+      aruaru:"朝夕の挨拶・定例連絡・同じルーティンが心地よい。",
+      weak:"変化が苦手で新しい試みを避けがち。",
+      care:"定期的に小さな変化を試す。感謝を言葉に。",
+      texting:"丁寧で安定。定時連絡があると安心。",
+      date:"自宅時間・散歩・定番の店など日常系が得意。",
+      decision:"話し合いで合意形成。無理はしない方針。",
+      conflict:"不満を溜めて静かに距離を置きがち。",
+      repair:"定例ふり返り＋Iメッセージ（私は〜と感じた）。",
+      boundary:"家族・友人時間を予定に固定して守る。",
+      longrun:"“月1で新しいこと”を追加。小さな記念の言語化。",
+      good:[
+        {style:"pragma", why:"生活面の合意を取りやすい"},
+        {style:"agape",  why:"思いやりが日常の安心を高める"}
+      ],
+      bad:[
+        {style:"ludus",  why:"積み重ねを軽く扱われやすく安心が育ちにくい"},
+        {style:"storge", why:"二人とも距離を取りがちだと停滞しやすい", attach:"avoidant"}
+      ]
+    },
+    pragma:{ // 実利
+      base:"合うかを早めに確認し、生活面の合意を重視する。",
+      strength:"計画・段取り・問題解決が得意。",
+      aruaru:"費用や家事分担を具体化。計画やToDo共有。",
+      weak:"感情表現が少なく冷たく見えることがある。",
+      care:"条件の話と感情の共有をセットに。",
+      texting:"要点短文・目的明確。連絡の窓口を決めると良い。",
+      date:"予定と予算を最適化。混雑回避など実用重視。",
+      decision:"コスト・実行性・リスクで判断。",
+      conflict:"正論で詰めがちで、感情が置き去りになりやすい。",
+      repair:"まず感情→次に条件。選択肢を3つ提示して合意。",
+      boundary:"お金・家事・時間のルールを明文化し、見直し日を設定。",
+      longrun:"月1は“ロマン枠”を確保。感情表現を意識的に増やす。",
+      good:[
+        {style:"storge", why:"日常運用と設計の相性が良い"},
+        {style:"agape",  why:"配慮が加わることで合意がスムーズ"}
+      ],
+      bad:[
+        {style:"eros",   why:"勢い重視の相手と進め方の速度差が大きい"},
+        {style:"ludus",  why:"自由重視の相手と取り決めの濃さで対立しやすい"}
+      ]
+    },
+    mania:{ // 熱狂
+      base:"関係の確かさをよく確認したくなる。返信や表情の変化が気になる。",
+      strength:"情熱・観察力・コミットが強い。",
+      aruaru:"レスの速さが気になる／気持ちを何度も確認。",
+      weak:"気分の波が大きく、相手が負担に感じやすい。",
+      care:"確認頻度を取り決め。しんどい時は合図→休む。",
+      texting:"頻繁。既読やレス速度の合意が安心につながる。",
+      date:"相手の予定に合わせがち。安心感を得やすい構成が◎。",
+      decision:"安心度を最優先に判断。",
+      conflict:"不安で追いかけ質問が増えやすい。",
+      repair:"“今30分クールダウン→20時再開”など合図と再開時間を決める。",
+      boundary:"確認回数・時間帯の上限を決める（例：22時以降は翌朝）。",
+      longrun:"安心の仕組み（週○回会う／毎日1通）＋自己ケアを固定。",
+      good:[
+        {style:"storge", why:"落ち着いた習慣が安心の土台になる"},
+        {style:"agape",  why:"ケアが安定感につながりやすい"}
+      ],
+      bad:[
+        {style:"ludus",  why:"相手が“重い”と感じやすい"},
+        {style:"pragma", why:"合理優先の相手は距離を置きやすく不安が増えやすい", attach:"avoidant"}
+      ]
+    },
+    agape:{ // 無償
+      base:"相手を助けたい気持ちが強い。相手の都合に合わせやすい。",
+      strength:"支援・共感・思いやりが厚い。",
+      aruaru:"送迎・差し入れ・予定調整を自発的に引き受ける。",
+      weak:"自分の負担に気づきにくい。境界線が曖昧になりやすい。",
+      care:"できる／できないを先に伝える。休む時間を確保。",
+      texting:"相手都合に合わせやすい。丁寧で長文ケアも。",
+      date:"相手の挑戦や用事に同伴・サポートする傾向。",
+      decision:"相手優先で決めやすく、不満が溜まることも。",
+      conflict:"ため込み→突然限界に達しやすい。",
+      repair:"希望と限界を具体的に“お願い”の形で伝える。",
+      boundary:"頻度・時間・お金の線引きを宣言して守る。",
+      longrun:"自分時間を予定に固定。対等性の“定期チェック”を入れる。",
+      good:[
+        {style:"storge", why:"安定した日常の中で支援が無理なく活きる"},
+        {style:"eros",   why:"相手の熱量を認めつつ過不足を調整しやすい"}
+      ],
+      bad:[
+        {style:"ludus",  why:"自由重視に合わせすぎると負担が偏りやすい"},
+        {style:"pragma", why:"現実面の要求に応え続けると疲れやすい"}
+      ]
+    }
+  };
 
-    updateProgress();
+  // 質問UI生成
+  const qList = $("#qList");
+  ITEMS.forEach(q=>{
+    const box=document.createElement("div");
+    box.className="qitem";
+    box.dataset.id=q.id;
 
+    const title=document.createElement("p");
+    title.className="qtxt";
+    title.textContent = `${q.id}. ${q.t}${q.r?'（R）':''}`;
+    box.appendChild(title);
 
+    const scale=document.createElement("div");
+    scale.className="scale";
+    scale.setAttribute("aria-describedby","scaleHelp");
+    for(let v=1; v<=5; v++){
+      const lab=document.createElement("label");
+      const input=document.createElement("input");
+      input.type="radio"; input.name="q"+q.id; input.value=String(v);
+      input.setAttribute("aria-label", v+"");
+      lab.appendChild(input); lab.appendChild(document.createTextNode(String(v)));
+      scale.appendChild(lab);
+    }
+    box.appendChild(scale);
+    qList.appendChild(box);
+  });
 
-    // --- ラベル・パス設定 ---
+  loadAnswers();
 
-    const loveJP = { eros:"情熱", ludus:"遊戯", storge:"友愛", mania:"熱狂", pragma:"実利", agape:"無償" };
+  // 進捗
+  const prog=$("#prog"), btnSubmit=$("#btnSubmit"), btnReset=$("#btnReset");
+  const answered = ()=> $$("input:checked").length;
+  const updateProg = ()=>{
+    prog.textContent = `${answered()} / ${ITEMS.length}`;
+    btnSubmit.disabled = answered() < ITEMS.length;
+  };
+  document.addEventListener("change", e=>{
+    if(e.target.matches("input[type=radio]")){
+      updateProg();
+      saveAnswers();
+    }
+  });
+  updateProg();
+  btnReset.addEventListener("click", ()=>{
+    $$("input:checked").forEach(i=>i.checked=false);
+    try{ localStorage.removeItem(LS_KEY); }catch{}
+    updateProg();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
 
-    const attachJP = { secure:"安定", anxious:"不安", avoidant:"回避", fearful:"恐れ回避" };
-
-
-
-    // 画像は houseki-bundle/{style}/01..05.png を使用
-
-    const ATTACH_TO_NO = { secure:"01", avoidant:"02", anxious:"03", fearful:"04" }; // 05 はまとめ
-
-
-
-    // --- スタイル×愛着 → 宝石名（表示用） ---
-
-    const gemMap = {
-
-      eros:   { anxious:"ファイアオパール",   secure:"ガーネット",          avoidant:"スピネル",           fearful:"ルビー" },
-
-      ludus:  { anxious:"タンザナイト",       secure:"シトリン",            avoidant:"ターコイズ",         fearful:"アパタイト" },
-
-      storge: { anxious:"ムーンストーン",     secure:"アクアマリン",        avoidant:"ペリドット",         fearful:"ラブラドライト" },
-
-      pragma: { anxious:"ブルートパーズ",     secure:"サファイア",          avoidant:"ブラックオニキス",   fearful:"スモーキークォーツ" },
-
-      mania:  { anxious:"エメラルド",         secure:"アレキサンドライト", avoidant:"オブシディアン",     fearful:"オパール" },
-
-      agape:  { anxious:"ピンクトルマリン",   secure:"ダイヤモンド",        avoidant:"モルガナイト",       fearful:"ローズクォーツ" }
-
-    };
-
-
-
-    // --- 診断処理 ---
-
-    function calculate() {
-
-      let s = {
-
-        eros:0, ludus:0, storge:0, mania:0, pragma:0, agape:0,
-
-        anxiety:0, avoidance:0
-
-      };
-
-
-
-      for (let i = 1; i <= questions.length; i++) {
-
-        const v = parseInt(document.querySelector(`input[name='q${i}']:checked`)?.value);
-
-        if (!v) { alert(`全ての質問に答えてください。\n未回答の設問があります（Q${i}）。`); return; }
-
-        if (i <=  4) s.eros      += v;
-
-        else if (i <=  8) s.ludus  += v;
-
-        else if (i <= 12) s.storge += v;
-
-        else if (i <= 16) s.mania  += v;
-
-        else if (i <= 20) s.pragma += v;
-
-        else if (i <= 24) s.agape  += v;
-
-        else if (i <= 28) s.anxiety += v;
-
-        else              s.avoidance += v;
-
+  // 値取得
+  const valOf = (qid)=>{
+    const inp = document.querySelector(`input[name="q${qid}"]:checked`);
+    if(!inp) return null;
+    const raw = Number(inp.value);
+    const itm = ITEMS.find(x=>x.id===qid);
+    return itm.r ? (6-raw) : raw;
+  };
+  const ensureAll = ()=>{
+    for(const q of ITEMS){
+      if(valOf(q.id)==null){
+        const el = qList.querySelector(`.qitem[data-id="${q.id}"]`);
+        el.style.outline="3px solid #ff99bb";
+        el.scrollIntoView({behavior:"smooth",block:"center"});
+        setTimeout(()=>{ el.style.outline=""; }, 1400);
+        return false;
       }
+    }
+    return true;
+  };
+  function sum(ids){ return ids.reduce((a,b)=>a+(valOf(b)||0),0); }
+  function pctFrom(ids){
+    const s = sum(ids), min=ids.length*1, max=ids.length*5;
+    return Math.round((s - min) / (max - min) * 100);
+  }
 
+  function compute(){
+    const byDom = {}; for(const d of ["eros","ludus","storge","pragma","mania","agape","anx","avd"]) byDom[d]=[];
+    ITEMS.forEach(it=>byDom[it.dom].push(it.id));
 
+    const main = {}; for(const k of STYLE_ORDER) main[k]=pctFrom(byDom[k]);
 
-      // 恋愛スタイル最大値
-
-      const loveType = Object.entries(s).slice(0,6).sort((a,b)=>b[1]-a[1])[0][0];
-
-
-
-      // 愛着タイプ判定（各4〜20点想定。しきい値は経験的に11）
-
-      let attachType = "secure";
-
-      if (s.anxiety >= 11 && s.avoidance >= 11) attachType = "fearful";
-
-      else if (s.anxiety >= 11) attachType = "anxious";
-
-      else if (s.avoidance >= 11) attachType = "avoidant";
-
-
-
-      // 表示
-
-      const gemName = gemMap[loveType]?.[attachType] || "（宝石名）";
-
-      const title = `あなたの宝石タイプは「${gemName}」\n（恋愛スタイル：${loveJP[loveType]} × 愛着：${attachJP[attachType]}）`;
-
-      const resultTitle = document.getElementById("resultTitle");
-
-      resultTitle.textContent = title;
-
-
-
-      // 画像パス（結果）
-
-      const base = "/shindan/assets/results/houseki-bundle";
-
-      const imgMain = `${base}/${loveType}/${ATTACH_TO_NO[attachType]}.png`; // 01..04
-
-      const imgSummary = `${base}/${loveType}/05.png`;
-
-
-
-      const img = document.getElementById("resultImg");
-
-      const area = document.getElementById("resultArea");
-
-      const showSummaryBtn = document.getElementById("showSummary");
-
-      const showMainBtn = document.getElementById("showMain");
-
-
-
-      // 画像読み込み（エラー時はまとめにフォールバック）
-
-      img.src = imgMain;
-
-      img.onerror = () => { img.onerror = null; img.src = imgSummary; };
-
-
-
-      // 切替ボタン
-
-      showSummaryBtn.onclick = () => { img.src = imgSummary; showSummaryBtn.classList.add("hidden"); showMainBtn.classList.remove("hidden"); };
-
-      showMainBtn.onclick    = () => { img.src = imgMain;    showMainBtn.classList.add("hidden");    showSummaryBtn.classList.remove("hidden"); };
-
-
-
-      area.classList.remove("hidden");
-
-
-
-      // スコア概観（上位2スタイルが分かる）
-
-      const sg = document.getElementById("scoreGrid");
-
-      const sb = document.getElementById("scoreBox");
-
-      const pairs = Object.entries({eros:s.eros,ludus:s.ludus,storge:s.storge,mania:s.mania,pragma:s.pragma,agape:s.agape})
-
-        .sort((a,b)=>b[1]-a[1]);
-
-      sg.innerHTML = pairs.map(([k,v],i)=>`<div class="item">${i<2?'⭐️':''}${loveJP[k]}：${v} 点</div>`).join("");
-
-      sb.hidden = false;
-
-
-
-      updateProgress();
-
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-
+    const subs={}; for(const [dom,sub] of SUB_KEYS){
+      const ids = ITEMS.filter(it=>it.dom===dom && it.sub===sub).map(it=>it.id);
+      subs[dom+":"+sub] = pctFrom(ids);
     }
 
-
-
-    function resetForm(){
-
-      form.reset();
-
-      document.getElementById("resultArea").classList.add("hidden");
-
-      document.getElementById("resultTitle").textContent = "";
-
-      document.getElementById("scoreGrid").innerHTML = "";
-
-      document.getElementById("scoreBox").hidden = true;
-
-      updateProgress();
-
-      window.scrollTo({top:0, behavior:"smooth"});
-
+    const anxSum=sum(byDom["anx"]), avdSum=sum(byDom["avd"]);
+    let attach="secure";
+    if(anxSum<=15 && avdSum<=15) attach="secure";
+    else if(anxSum>=18 && avdSum>=18) attach="fearful";
+    else if(anxSum>=18 && avdSum<=15) attach="anxious";
+    else if(avdSum>=18 && anxSum<=15) attach="avoidant";
+    else{
+      const dist = {
+        secure:  Math.hypot(Math.max(0,anxSum-15), Math.max(0,avdSum-15)),
+        fearful: Math.hypot(Math.max(0,18-anxSum), Math.max(0,18-avdSum)),
+        anxious: Math.hypot(Math.max(0,18-anxSum), Math.max(0,avdSum-15)),
+        avoidant:Math.hypot(Math.max(0,anxSum-15), Math.max(0,18-avdSum))
+      };
+      attach = Object.entries(dist).sort((a,b)=>a[1]-b[1])[0][0];
     }
 
+    const maxVal = Math.max(...Object.values(main));
+    const top = Object.keys(main).filter(k=>main[k]===maxVal);
+    let primary = top[0];
+    if(top.length>1){
+      const sd = (k)=>{
+        const ids = byDom[k], vals = ids.map(id=>valOf(id)), avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+        const v = vals.reduce((a,b)=>a+(b-avg)**2,0)/vals.length; return v;
+      };
+      primary = top.sort((a,b)=> sd(a)-sd(b) || (STYLE_ORDER.indexOf(a)-STYLE_ORDER.indexOf(b)) )[0];
+    }
+    return { main, subs, attach, primary, anxSum, avdSum };
+  }
 
+  function barRow(name, pct){
+    const row=document.createElement("div");
+    row.className="bar";
+    row.innerHTML = `
+      <div class="bhead"><span class="bname">${name}</span><span class="pct">${pct}%</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+    `;
+    return row;
+  }
 
-    // small helper
+  function showResult(){
+    const r = compute();
+    const style = r.primary, attach = r.attach;
 
-    function $(sel){ return document.querySelector(sel); }
+    $("#resultTitle").textContent = `${GEM_NAME[style][attach]}（${STYLE_JP[style]} × ${ATTACH_JP[attach]}）`;
+    $("#kvStyle").textContent = STYLE_JP[style];
+    $("#kvAttach").textContent = ATTACH_JP[attach];
 
-    // 初期 hidden 用
+    const no = {secure:"01", avoidant:"02", anxious:"03", fearful:"04"}[attach];
+    const src = `/shindan/assets/results/houseki-chara/${style}/${no}.png`;
+    const img = $("#resultImg"), ph=$("#imgPh");
+    ph.style.display="grid";
+    img.alt = `${GEM_NAME[style][attach]}（${STYLE_JP[style]} × ${ATTACH_JP[attach]}）のイメージイラスト`;
+    img.onload = ()=>{ ph.style.display="none"; };
+    img.onerror= ()=>{ ph.textContent="画像を読み込めませんでした。"; };
+    img.src = src;
 
-    document.querySelectorAll('.hidden').forEach(()=>{});
+    const mainWrap=$("#barsMain"); mainWrap.innerHTML="";
+    for(const k of STYLE_ORDER) mainWrap.appendChild(barRow(STYLE_JP[k], r.main[k]));
 
-  </script>
+    const subWrap=$("#barsSub"); subWrap.innerHTML="";
+    for(const [dom,sub] of SUB_KEYS) subWrap.appendChild(barRow(`${STYLE_JP[dom]}：${({action:"行動",ideal:"理想観",free:"自由度",light:"軽さ"})[sub]||sub}`, r.subs[dom+":"+sub]));
 
-  <style>.hidden{ display:none !important }</style>
+    const d = DESC[style];
 
+    // 第二因子
+    const sorted = Object.entries(r.main).sort((a,b)=>b[1]-a[1]);
+    const secondary = sorted[1]?.[0];
+
+    // 上位2因子テンプレ描画
+    const pk = (style && secondary) ? pairKey(style, secondary) : null;
+    const baseCard = $("#descBase").closest(".desc-card");
+    const oldPair = document.getElementById("pairTemplate");
+    if(oldPair) oldPair.remove();
+
+    if(pk && PAIR_TEMPLATE[pk]){
+      const t = PAIR_TEMPLATE[pk];
+      const title = `上位2因子テンプレ（主：${STYLE_JP[style]} × 従：${STYLE_JP[secondary]}）`;
+      const html = `
+      <div id="pairTemplate" class="note" style="margin-top:8px">
+        <strong>${title}</strong>
+        <ul class="note-list">
+          <li>要約：${t.one}</li>
+          <li>活かし方：${t.do.join("／")}</li>
+          <li>避けたい：${t.dont.join("／")}</li>
+          <li>連絡：${t.comm.join("／")}</li>
+          <li>リスク：${t.risk.join("／")} ／ 立て直し：${t.fix.join("／")}</li>
+        </ul>
+      </div>`;
+      baseCard.insertAdjacentHTML("beforeend", html);
+    }
+
+    // サブ傾向・愛着チューニング・警戒サイン
+    const subLine   = subDominance(style, r.subs);
+    const tune      = attachTuning(attach, r.anxSum, r.avdSum);
+    const secLine   = secondary ? `第二因子：${STYLE_JP[secondary]}。${SECONDARY_HINT[secondary]||""}` : "";
+    const alertLine = `注意報：${alerts(r.main, r.anxSum, r.avdSum)}`;
+    const phraseLine= `フレーズ例：OK「${tune.ok}」／避けたい「${tune.ng}」`;
+    const commLine  = `連絡頻度の目安：${tune.comm}。返信目安：${tune.reply}`;
+
+    // 恋愛傾向（総評）
+    const lines = [
+      d.base && `基本：${d.base}`,
+      d.strength && `強み：${d.strength}`,
+      (d.weak || d.care) && `つまずきやすい：${d.weak || ""}`,
+      subLine,
+      secLine,
+      d.texting && `連絡：${d.texting}`,
+      commLine,
+      d.date && `デート・過ごし方：${d.date}`,
+      d.decision && `決め方：${d.decision}`,
+      (d.conflict || d.repair) && `衝突時：${d.conflict || ""} ／ 立て直し：${d.repair || ""}`,
+      phraseLine,
+      d.boundary && `境界線：${d.boundary}`,
+      (d.longrun || d.care) && `長続きのコツ：${d.longrun || d.care || ""}`,
+      alertLine
+    ].filter(Boolean).map(s=>`<li>${s}</li>`).join("");
+    $("#descBase").innerHTML = `<strong>恋愛傾向：</strong><ul class="note-list">${lines}</ul>`;
+
+    // あるある／悪い点
+    $("#descAru").textContent  = d.aruaru || "";
+    $("#descWeak").textContent = d.weak  || "";
+
+    // 相性
+    $("#descMatch").textContent = (d.good||[]).map(({style:s, why, attach:aOverride})=>{
+      const a2 = aOverride || attach;
+      return `${STYLE_JP[s]}（${GEM_NAME[s][a2]}）：${why}`;
+    }).join(" / ");
+    $("#descTaboo").textContent = (d.bad||[]).map(({style:s, why, attach:aOverride})=>{
+      const a2 = aOverride || attach;
+      return `${STYLE_JP[s]}（${GEM_NAME[s][a2]}） — ${why}`;
+    }).join(" / ");
+
+    // 愛着スタイルの説明
+    $("#descAttach").textContent = ATTACH_DESC[attach];
+
+    $("#form").style.display="none";
+    $("#result").classList.add("show");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  $("#btnSubmit").addEventListener("click", ()=>{ if(ensureAll()) showResult(); });
+})();
+</script>
 </body>
-
 </html>
