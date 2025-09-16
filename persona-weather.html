@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ペルソナ天気人格診断</title>
+<meta name="description" content="空模様（晴れ/雷/雪/風）と12元型からあなたの働き方のクセを判定。全20問・必須回答・グラフ可視化。エンタメ用。">
+<meta name="theme-color" content="#f6fbff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ペルソナ天気人格診断">
+<meta property="og:description" content="空模様（晴れ/雷/雪/風）と12元型からあなたの働き方のクセを判定。全20問・必須回答・グラフ可視化。エンタメ用。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/persona-weather.html">
+<meta property="og:image" content="/shindan/assets/results/persona-archetype/01.png">
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --bg1:#f6fbff;--bg2:#f7f6ff;--card:#fff;--line:#e9edf7;--fg:#1f2430;--muted:#667085;
+  --accent:#4aa8ff;--accent2:#a48bff
+}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN",Meiryo,Roboto,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+a{color:inherit}
+.hidden{display:none!important}
+.wrap{max-width:1040px;margin:18px auto 24px;padding:0 14px}
+.header{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;margin:14px 0 6px}
+.logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#d9efff,#e7dbff);display:grid;place-items:center;font-size:34px}
+h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.95em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 6px 18px rgba(74,168,255,.10)}
+.section{margin:16px 0}
+.qrow{padding:12px;border:1px solid var(--line);border-radius:12px;margin:12px 0;background:#fff}
+.qrow .ttl{font-weight:700}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.opts label{display:block;padding:12px 14px;border:1px solid #e6ebff;border-radius:12px;background:#fff;cursor:pointer;line-height:1.6;font-size:15px}
+.opts input{position:absolute;opacity:0}
+.opts input:checked+span{outline:2px solid var(--accent);border-radius:10px;outline-offset:2px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.stickybar{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e8eefc;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#e8eefc;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#bfe3ff,#a48bff)}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+.cols{display:grid;grid-template-columns:1fr;gap:12px}
+
+/* 結果ヘッダ強化：画像大きめ */
+.res-header{display:grid;grid-template-columns:minmax(260px,clamp(360px,56vw,640px)) 1fr;gap:16px;align-items:center}
+.rank-large{display:contents}
+.rank-large img{width:100%;height:auto;border-radius:18px;border:1px solid #e6ebff;background:#fff;object-fit:contain}
+
+/* タイトル等 */
+.rank-large .title{font-size:clamp(22px,3.6vw,30px);font-weight:800;margin-bottom:6px}
+.pills{display:flex;gap:8px;flex-wrap:wrap;color:#54607a}
+.pill{padding:4px 8px;border:1px solid #e6ebff;border-radius:999px;background:#fff}
+
+/* グラフは横向き＋小さめ */
+.chartbox{padding:10px;border:1px dashed #dfe7ff;border-radius:12px}
+.chartbox canvas{max-width:100%;height:120px!important}
+
+.small{color:var(--muted);font-size:.92em}
+.footer{color:var(--muted);font-size:.92em;margin-top:14px}
+.backline{display:flex;justify-content:center;margin-top:12px}
+.warn{background:#fff;border:1px dashed #d7d7e6;border-radius:12px;padding:12px;color:#503a46;font-size:13px}
+.hl{box-shadow:0 0 0 3px rgba(255,127,147,.25)}
+.more{margin-top:10px}
+.more .lead{font-weight:700;margin:6px 0}
+@media (max-width:720px){
+  .opts{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="header">
+    <div class="logo">🌦️</div>
+    <div>
+      <h1>ペルソナ天気人格診断</h1>
+      <p class="sub">20問で「空模様×元型」を判定。結果は〈空模様の元型〉と横向きのバーグラフで表示します。</p>
+    </div>
+  </header>
+
+  <div class="stickybar card" aria-live="polite">
+    <span>🧭</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <span class="small" id="progText">0/20</span>
+    <button class="btn primary" id="btn-score">結果を見る</button>
+  </div>
+
+  <div class="cols">
+    <section class="card section">
+      <h2>説明</h2>
+      <p>直感で選んでください（全問必須）。</p>
+      <div class="warn">
+        <strong>ご利用にあたって</strong><br>
+        ・このコンテンツは<strong>エンタメ目的</strong>の自己理解ツールです。医療・診断・治療・カウンセリング等には使えません。<br>
+        ・<strong>最終判断はご自身で</strong>お願いします。業務や進路など重要な決定の唯一の根拠にはしないでください。<br>
+        ・<strong>プライバシー</strong>：回答は端末内で処理し、サーバー送信は想定していません（ご利用環境によりアクセス解析が動作する場合があります）。<br>
+        ・<strong>データの扱い</strong>：入力内容は保存しません（ブラウザのローカル保存をクリアすれば消去されます）。<br>
+        ・<strong>表現について</strong>：名称や比喩は演出表現であり、宗教的・倫理的価値判断を意図しません。
+      </div>
+    </section>
+
+    <!-- 設問：ここに生成 -->
+    <section id="formArea" class="card section" aria-label="設問エリア">
+      <h2>設問（全20問／各4択）</h2>
+      <div id="qContainer"></div>
+      <div class="section" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btn-clear">回答をクリア</button>
+        <button class="btn primary" id="btn-score2">結果を見る</button>
+        <a class="btn" href="/shindan/" id="btnBack" role="button">診断一覧に戻る</a>
+      </div>
+    </section>
+
+    <!-- 結果 -->
+    <section id="result" class="card section" aria-live="polite">
+      <div id="resEmpty">
+        <div class="badge">まだ結果はありません</div>
+        <p class="small">上の設問にすべて回答すると、こちらに結果が表示されます。</p>
+      </div>
+
+      <div id="resArea" class="hidden">
+        <div class="res-header rank-large">
+          <img id="heroImg" src="/shindan/assets/results/persona-archetype/01.png" alt="元型イラスト" loading="lazy" onerror="this.alt='画像を表示できません';this.style.background='#eef2ff'">
+          <div>
+            <div class="title" id="titleText">—</div>
+            <div class="small" id="weatherLine">—</div>
+            <div class="pills" style="margin-top:8px">
+              <span class="pill" id="pillWeather">空模様：—</span>
+              <span class="pill" id="pillType">元型：—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="more" id="moreText"></div>
+
+        <div class="section chartbox">
+          <h2 style="margin:0 0 8px;font-size:1.05rem">グラフ</h2>
+          <div class="small">上：空模様の傾き（4本）／下：元型の上位3（3本）</div>
+          <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px">
+            <canvas id="chartWeather" width="640" height="120" aria-label="空模様スコア" role="img"></canvas>
+            <canvas id="chartTop3" width="640" height="120" aria-label="元型トップ3" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="backline">
+          <a class="btn" id="back2" href="/shindan/" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="footer card">
+    <h2>ご利用にあたって</h2>
+    <ul>
+      <li><strong>エンタメ用途：</strong>自己理解のきっかけ作りのためのコンテンツです。医療・診断・治療・カウンセリング等の目的では利用できません。</li>
+      <li><strong>最終判断はご自身で：</strong>結果の解釈・活用はご自身の責任で行ってください。業務上の重要判断や進路決定の唯一の根拠にはしないでください。</li>
+      <li><strong>プライバシー：</strong>回答は<strong>端末内で処理</strong>し、サーバーへの送信は想定していません（ご利用環境によりアクセス解析が動作する場合があります）。</li>
+      <li><strong>データの扱い：</strong>入力内容は保存しません（ブラウザのローカル保存をクリアすれば消去されます）。</li>
+      <li><strong>表現について：</strong>因子名・比喩は演出表現です。宗教的・倫理的価値判断を意図しません。</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = "persona-weather:v1:answers";
+  const IMG_BASE = "/shindan/assets/results/persona-archetype/";
+  const WEATHER_NAME = { hare:"晴れ", kaminari:"雷", yuki:"雪", kaze:"風" };
+  const WEATHER_FIXED = {
+    hare:"晴れ：場の雰囲気や段取りを整えて、みんなが動きやすい状態をつくりやすい。",
+    kaminari:"雷：方向を示して決めるのが速く、迷いを小さくして前に進めやすい。",
+    yuki:"雪：物事の筋道や根拠を整え、仕組みで進めるのが得意。",
+    kaze:"風：空気や流れを変えて、巻き込みながら前向きな雰囲気を作る。"
+  };
+  const WEATHER_PRIORITY = ["kaminari","yuki","kaze","hare"];
+
+  // 12元型（01=英雄, 02=賢者, 03=創造者, 04=守護者, 05=統率者, 06=探求者, 07=恋人, 08=道化, 09=純真, 10=隣人, 11=反逆者, 12=魔術師）
+  const TYPES = {
+    eiyu:{name:"英雄", idx:1,
+      one:"困りごとが起きたときに前へ出て道を作ろうとします。",
+      good:"推進力があり、人を引っぱる力がある",
+      care:"抱え込みすぎると疲れやすい",
+      tip:"最初に『ここまで』の線引きを決めてから動く",
+      do:["ゴールを一行で宣言","難所の“入口作り”に集中","朝いちに今日の突破口を決める"],
+      dont:["全部自分で背負う","勢いで即断しすぎる","締切直前の仕様追加"],
+      comm:["結論→理由→お願いの順で短く伝える"]
+    },
+    kenja:{name:"賢者", idx:2,
+      one:"情報を整え、納得できる道筋をつくります。",
+      good:"整理・言語化・合意形成が得意",
+      care:"考えすぎで遅れがち",
+      tip:"『前提の確認→次の一歩』で小さく進める",
+      do:["前提/目的/制約を共有","用語を定義してズレを減らす","選択肢は最大3つに整理"],
+      dont:["保留を増やすだけの検討","専門用語で押し切る","根拠のない断定"],
+      comm:["要点3行で共有し、変更は履歴に残す"]
+    },
+    sozosha:{name:"創造者", idx:3,
+      one:"既存の枠を組み替え、新しい形を作ります。",
+      good:"設計・再構成・試作が速い",
+      care:"作り込みすぎに注意",
+      tip:"まず“雑でも動く原型”をひとつ作る",
+      do:["最小実装→レビュー→改良","捨て案を先に3つ出す","制約を“素材”にして設計"],
+      dont:["無限スコープ拡張","要件未確定で着工","レビューなしの一本勝負"],
+      comm:["図や試作品を見せながら話す"]
+    },
+    shugosha:{name:"守護者", idx:4,
+      one:"人や資源を守り、安心して働ける土台を作ります。",
+      good:"ケア・リスク回避・基盤づくり",
+      care:"抱え込みやすい",
+      tip:"“今守る/後で試す”を分けて安心を作る",
+      do:["リスクと備えを見える化","休息/交代要員を先に確保","落ち着く導線を作る"],
+      dont:["我慢で抱え込む","曖昧なお願いの自己解釈","緊急と重要の混同"],
+      comm:["事実→影響→対処→お願いの順で共有"]
+    },
+    tososha:{name:"統率者", idx:5, // ← ここは 'tososha' ではなく 'tososha' になっていたのを後続と合わせて修正
+      one:"全体最適を見て、優先順位をつけて決め切ります。",
+      good:"意思決定と配分が速い",
+      care:"早決しすぎると現場が置いていかれる",
+      tip:"『目的→優先→担当→期限』を1枚にまとめる",
+      do:["WBSで道筋を見える化","進捗/障害の短い棚卸し","決める場と議論の場を分ける"],
+      dont:["Askなしのトップダウン","指示だけで伴走なし","指標なしの根性論"],
+      comm:["“なぜ今これか”を先に説明する"]
+    },
+    tankyu:{name:"探求者", idx:6,
+      one:"小さく試し、学びを積み重ねる実験タイプです。",
+      good:"検証・学習・改善ループ",
+      care:"検証が長引きやすい",
+      tip:"“仮説→試す→学ぶ”の周期を短く保つ",
+      do:["小実験→学びメモ→次の仮説","失敗条件も先に定義","評価軸は一つに絞る"],
+      dont:["検証のための検証","目的の頻繁な入替え","学びの共有なし"],
+      comm:["結果は数字＋一言所感で共有"]
+    },
+    koibito:{name:"恋人", idx:7,
+      one:"関係を温め直し、やる気が戻るよう伴走します。",
+      good:"共感・関係調整・雰囲気づくり",
+      care:"情に傾きすぎると線引きが曖昧に",
+      tip:"『人→目的→やり方』の順で話を整える",
+      do:["感情の要約で受け止める","小さな成功体験を作る","感謝の可視化を習慣に"],
+      dont:["察して待ち続ける","限界まで引き受ける","境界線の曖昧化"],
+      comm:["Iメッセージで率直に伝える"]
+    },
+    doka:{name:"道化", idx:8,
+      one:"空気をやわらげ、再開のスイッチを押します。",
+      good:"場面転換・ムードメーカー",
+      care:"軽さだけで終わらない工夫が必要",
+      tip:"笑い→要点1行→次の動き の三段構え",
+      do:["緊張をほぐす仕掛け","休憩や投票で切り替え","難題は小分けにして再開"],
+      dont:["本題が曖昧なまま進行","茶化しで終わる","冗長な雑談"],
+      comm:["ユーモア＋要点1行で締める"]
+    },
+    junshin:{name:"純真", idx:9,
+      one:"守るべき線を見極め、まっすぐ進みます。",
+      good:"原点回帰・純度の維持",
+      care:"0/100で止まりやすい",
+      tip:"『今いちばん大事な一本線は？』を言葉にする",
+      do:["原則/例外を先に定義","最小完成(MLP)を明確に","品質の境界線を可視化"],
+      dont:["論点ズレの放置","理想だけで決める"],
+      comm:["“なぜ大事か”を短く共有する"]
+    },
+    rinjin:{name:"隣人", idx:10,
+      one:"等身大の言葉で橋渡しし、合意を積み上げます。",
+      good:"通訳役・合意づくり・伴走",
+      care:"板挟みで消耗しやすい",
+      tip:"小さな合意を積み重ねて前へ進む",
+      do:["双方の言葉を要約して返す","合意の種(小条件)を作る","温度差の見取り図を作る"],
+      dont:["主語の入替えで誤解を生む","曖昧なYESで先送り"],
+      comm:["YES/NO/保留を明確にする"]
+    },
+    hangyakusha:{name:"反逆者", idx:11,
+      one:"不公平や不便に向き合い、変化の口火を切ります。",
+      good:"是正・突破・変革",
+      care:"対立を生まない言い回しがカギ",
+      tip:"不満→事実→代案→合意 の順で伝える",
+      do:["小さな実証を先に出す","痛点→効果→コストで提案","味方の輪を先に作る"],
+      dont:["人格否定","成果なき対立","勢い任せの破壊"],
+      comm:["敬意ある語尾と事実ベースで話す"]
+    },
+    majutsushi:{name:"魔術師", idx:12,
+      one:"仕組みをつなぎ替え、流れ自体を作り変えます。",
+      good:"再設計・自動化・レバレッジ",
+      care:"複雑化しすぎに注意",
+      tip:"“やらない/自動/まとめる”を先に決める",
+      do:["手作業→自動化の地図を作る","成果を数値で伝える","入口と出口を一本化"],
+      dont:["ブラックボックス化","機能過多の設計","説明なしの大改修"],
+      comm:["プロトタイプで見せて短く説明"]
+    }
+  };
+
+  // 統率者キーを 'tososha' に統一（表記ゆれ吸収）
+  const TYPE_PRIORITY = ["eiyu","kenja","sozosha","shugosha","tososha","tankyu","koibito","doka","junshin","rinjin","hangyakusha","majutsushi"];
+  const normalizeTypeKey = (k) => {
+    if(!k) return k;
+    const s = k.replace(/\s+/g,"");
+    return (s==="tososha" || s==="tososha") ? "tososha" : s;
+  };
+
+  // 追加スナップ
+  const SNAP = {
+    eiyu:{ shine:"締切前やトラブル時ほどスイッチが入り、最初の一歩を自分が切り開くと周りがついてきます。",
+           trap:"一人で抱え込むほどペースが乱れがち。助けを頼むタイミングを早めるほど成果が安定します。",
+           seen:"「行くぞ」と背中を押してくれる人だと見られやすい。" },
+    kenja:{ shine:"情報が散らばっているほど力を発揮。前提と論点を整えるほど議論がなめらかになります。",
+            trap:"考えが深まるほど着手が遅れがち。小さく試すと進みやすいです。",
+            seen:"“話を短く要点にしてくれる人”だと認識されやすい。" },
+    sozosha:{ shine:"白紙や制約が多いほどワクワク。試作品を素早く出すほど周囲の理解が進みます。",
+              trap:"作り込みすぎで時間が溶けがち。締切を味方に“まず動く原型”が鍵。",
+              seen:"「形にして見せてくれる人」として頼られやすい。" },
+    shugosha:{ shine:"混乱した場で落ち着きを取り戻し、被害を広げない導線づくりが得意です。",
+               trap:"自分だけで受け止めるほど疲弊。守る線と任せる線を分けると楽になります。",
+               seen:"“安心の土台を作ってくれる人”と見られがち。" },
+    tososha:{ shine:"やることが多い時ほど優先を決め切り、配分して前に進めます。",
+              trap:"決めが速すぎると現場の納得が置いてけぼりに。ひと声の合意で失速を防げます。",
+              seen:"“方向を決めてくれる人”という期待を集めやすい。" },
+    tankyu:{ shine:"答えが見えない探索局面に強く、小さな検証で確かさを積み上げます。",
+             trap:"検証が長引きがち。出口条件を先に決めると区切れます。",
+             seen:"“まず試してくれる人”として信頼されやすい。" },
+    koibito:{ shine:"関係が冷えた時に温度を戻し、やる気を灯し直せます。",
+              trap:"情に傾くと境界が曖昧に。頻度と時間の約束が自分も相手も守ります。",
+              seen:"“気持ちをわかってくれる人”という安心感を与えます。" },
+    doka:{ shine:"重い空気をほどいて再開のスイッチを押すのが上手です。",
+           trap:"軽さだけで終わると本題に戻りづらい。要点1行を添えると締まります。",
+           seen:"“切り替え上手”として場に頼られやすい。" },
+    junshin:{ shine:"大事な線を守り、品質や原則をぶらさずに進めます。",
+              trap:"0/100で止まりやすい。最小完成を先に決めると動き出せます。",
+              seen:"“筋を通す人”として信頼されがち。" },
+    rinjin:{ shine:"温度差や言葉のズレを橋渡しし、小さな合意を積み上げます。",
+             trap:"板挟みで消耗しやすい。休む仕組みと担当の線引きが守りになります。",
+             seen:"“みんなの通訳”と呼ばれやすい。" },
+    hangyakusha:{ shine:"不公平に向き合い、変化の口火を切れます。",
+                  trap:"感情の炎だけだと対立に。事実→代案の順で伝えると味方が増えます。",
+                  seen:"“言いにくいことを言ってくれる人”という期待を受けやすい。" },
+    majutsushi:{ shine:"複雑な流れを繋ぎ替え、仕組みで一気に楽にします。",
+                 trap:"複雑化しすぎに注意。まず“やらない/自動/まとめる”の一歩から。",
+                 seen:"“仕組みで解決してくれる人”として評価されがち。" }
+  };
+
+  // 設問
+  const Q_WEATHER = [ /* （あなたの現状の設問配列をそのまま） */ 
+    { t:"会議が長くなりそう。あなたなら？",
+      a:["みんなが話しやすいように要点を一つにまとめる","終わりの時間と決め事をはっきり言って進める","話題を分けて、整理し直してから続ける","小休止や進め方チェンジを提案して流れを変える"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"初めましての場がちょっと固い…",
+      a:["全員が安心できる自己紹介の順番を作る","今日の目的とゴールを先に伝える","メンバーや背景をサッと把握して質問してみる","軽い小ネタで空気をゆるめる"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"誰かの作業が遅れているとき",
+      a:["手が空いてる人と組ませて負担を整える","締切と役割を明確にして優先度を伝える","詰まりの原因を分けて、具体手順に直す","やり方を入れ替える提案で気分を切り替える"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"新しい企画の初日。方針はまだふわっと…",
+      a:["合意事項と共有ルールを先につくる","旗を立てて仮の進路で走りながら整える","成功条件と評価のものさしを決めてから動く","試作品やストーリーでイメージを合わせる"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"クレームが来たとき",
+      a:["まず気持ちを落ち着け、関係を大事に対応する","事実確認と再発防止の担当を決める","事実と推測を分けて原因をたどる","伝え方と順番を工夫してわかりやすく話す"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"大事な資料が直前に差し替えられた！",
+      a:["影響を確認して関係者へすぐ共有する","要点だけで乗り切る方針をその場で決める","差分を洗い出して要旨を作り直す","見せ方を切り替えて理解の取りこぼしを減らす"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"雑談で進行が止まりがち",
+      a:["いったん拾ってからやわらかく本筋へ戻す","『ここから本題！』と区切りを宣言する","今の議題に関係ある点だけ残す","軽いワークや投票で再スタートする"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"期限と品質、どっちも大事…どうする？",
+      a:["みんなの許容ラインを合わせて妥協点を作る","期限優先で出し、足りない所は次で回収する","必須と任意を分けて最小完成形を決める","見せ方で期待値を調整してリリースする"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"オンライン会議で沈黙が続くとき",
+      a:["全員一巡のひとことタイムを提案する","自分の結論を先に言って意見をもらう","判断材料を共有してから質問する","画像や例を出して話しやすい空気に変える"],
+      k:["hare","kaminari","yuki","kaze"] },
+    { t:"新人さんが来た！",
+      a:["受け入れ準備とサポート役を整える","目標と役割をはっきりさせて早めに実戦へ","学びのステップと評価の見取り図を作る","まず現場体験で小さな成功を一緒に作る"],
+      k:["hare","kaminari","yuki","kaze"] }
+  ];
+
+  const Q_TYPE = [
+    { t:"後輩が大きなミス…まずどう動く？",
+      a:["自分が前に出てパッと火消しに向かう","まず安全と心をケアして落ち着ける","何が起きたか一緒に振り返って学びにする","失敗談を共有して肩の力をぬいてもらう"],
+      k:["eiyu","shugosha","kenja","rinjin"] },
+    { t:"新しい市場に入ってみたい",
+      a:["小さく試して確かめながら進む","既存を壊して別の道を切り開く","仕組みを組み替えて流れごと変える","体制や役割を決めて組織的に動く"],
+      k:["tankyu","hangyakusha","majutsushi","tososha"] },
+    { t:"会議が堂々巡り…",
+      a:["情報を整えて要点と前提をはっきりさせる","進行役や書記を立てて合意の道筋を作る","いったん笑いで空気をやわらげて再開する","別案のたたき台をその場で見せる"],
+      k:["kenja","rinjin","doka","sozosha"] },
+    { t:"チームの元気が落ちているとき",
+      a:["自分が先頭に立って元気をつくる","一人ひとりの思いを聴き関係を温め直す","小さな達成を作って雰囲気を軽くする","原点や目的を思い出して整える"],
+      k:["eiyu","koibito","doka","junshin"] },
+    { t:"不公平な評価を見かけたら",
+      a:["空気より正しさ。はっきり是正を求める","根拠と基準を示して正す","当事者の気持ちを拾い直して場を整える","評価の仕組み自体を見直す場をつくる"],
+      k:["hangyakusha","kenja","rinjin","tososha"] },
+    { t:"期限と品質のせめぎ合い（再び）",
+      a:["全体最適を見てスパッと決める","既成概念を外して別解をつくる","いま必要な線だけを守る純度で進める","人と資源を無理させない配慮を優先"],
+      k:["tososha","sozosha","junshin","shugosha"] },
+    { t:"取引先からちょっと無茶な要望",
+      a:["自分が矢面で現場調整する","条件を繋ぎ替えて双方が得する形に変える","試作で当たりを取り無理な線を見極める","関係を傷めない提案に切り替える"],
+      k:["eiyu","majutsushi","tankyu","koibito"] },
+    { t:"新サービスの立ち上げ",
+      a:["コンセプトと原型をサッと形にする","小さく検証を回す前線をつくる","役割と判断線を決めて進行管理する","仕組み全体を再配置して動かす"],
+      k:["sozosha","tankyu","tososha","majutsushi"] },
+    { t:"仲間同士がピリピリしている",
+      a:["対話の場を作って関係を温め直す","双方の本音を等身大で橋渡しする","休ませ見守り、距離をとって回復を待つ","いったん笑いでほぐしてから本題へ戻す"],
+      k:["koibito","rinjin","shugosha","doka"] },
+    { t:"会社の古い慣習が壁に…",
+      a:["正面から切り込み、変化の口火を切る","置き換え可能な構造に作り直す","根拠を示し、納得の筋道で合意を取る","自分が前に出て突破口を開く"],
+      k:["hangyakusha","sozosha","kenja","eiyu"] }
+  ];
+
+  // DOM
+  const qContainer = document.getElementById("qContainer");
+  const prog = document.getElementById("prog");
+  const progText = document.getElementById("progText");
+  const resEmpty = document.getElementById("resEmpty");
+  const resArea = document.getElementById("resArea");
+  const heroImg = document.getElementById("heroImg");
+  const titleText = document.getElementById("titleText");
+  const weatherLine = document.getElementById("weatherLine");
+  const pillWeather = document.getElementById("pillWeather");
+  const pillType = document.getElementById("pillType");
+  const moreText = document.getElementById("moreText");
+
+  // 質問生成
+  function buildQuestions(){
+    let html = "";
+    Q_WEATHER.forEach((q,i)=>{
+      const qn = i+1;
+      html += `
+        <div class="qrow" data-group="weather">
+          <div class="ttl">Q${qn}. ${q.t}</div>
+          <div class="opts" role="radiogroup" aria-label="Q${qn}">
+            ${q.a.map((t,idx)=>`
+              <label>
+                <input type="radio" name="Q${qn}" value="${q.k[idx]}"><span>${"ABCD".charAt(idx)}. ${t}</span>
+              </label>`).join("")}
+          </div>
+        </div>`;
+    });
+    Q_TYPE.forEach((q,i)=>{
+      const qn = 11+i;
+      html += `
+        <div class="qrow" data-group="type">
+          <div class="ttl">Q${qn}. ${q.t}</div>
+          <div class="opts" role="radiogroup" aria-label="Q${qn}">
+            ${q.a.map((t,idx)=>`
+              <label>
+                <input type="radio" name="Q${qn}" value="${normalizeTypeKey(q.k[idx])}"><span>${"ABCD".charAt(idx)}. ${t}</span>
+              </label>`).join("")}
+          </div>
+        </div>`;
+    });
+    qContainer.innerHTML = html;
+    document.querySelectorAll('#qContainer input[type="radio"]').forEach(el=>{
+      el.addEventListener('change', updateProgress, {passive:true});
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const total = 20;
+    let answered = 0;
+    for(let i=1;i<=20;i++){
+      if(document.querySelector(`input[name="Q${i}"]:checked`)) answered++;
+    }
+    const pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    progText.textContent = `${answered}/20`;
+  }
+
+  // 回答読み取り
+  function readAnswers(){
+    const missing = [];
+    const weatherAns = [];
+    const typeAns = [];
+    for(let i=1;i<=10;i++){
+      const el = document.querySelector(`input[name="Q${i}"]:checked`);
+      if(!el) missing.push(i); else weatherAns.push(el.value);
+    }
+    for(let i=11;i<=20;i++){
+      const el = document.querySelector(`input[name="Q${i}"]:checked`);
+      if(!el) missing.push(i); else typeAns.push(normalizeTypeKey(el.value));
+    }
+    return { missing, weatherAns, typeAns };
+  }
+
+  // 勝者決定
+  function resolveWinner(counts, lastIdxMap, priority){
+    const entries = Object.entries(counts);
+    const maxVal = Math.max(...entries.map(e=>e[1]));
+    const cand = entries.filter(e=>e[1]===maxVal).map(e=>e[0]);
+    if(cand.length===1) return cand[0];
+    let best = null, bestLast=-1;
+    cand.forEach(k=>{
+      const li = lastIdxMap[k] ?? -1;
+      if(li>bestLast){best=k;bestLast=li;}
+    });
+    const stillTie = cand.filter(k=> (lastIdxMap[k]??-1)===bestLast);
+    if(stillTie.length===1) return stillTie[0];
+    for(const p of priority){ if(stillTie.includes(p)) return p; }
+    return cand[0];
+  }
+
+  // 集計
+  function tally(weatherAns, typeAns){
+    const wCount = {hare:0,kaminari:0,yuki:0,kaze:0};
+    const wLast  = {hare:-1,kaminari:-1,yuki:-1,kaze:-1};
+    weatherAns.forEach((code, i)=>{ if(wCount[code]!=null){ wCount[code]++; wLast[code]=i+1; }});
+    const weather = resolveWinner(wCount, wLast, WEATHER_PRIORITY);
+
+    const tKeys = ["eiyu","kenja","sozosha","shugosha","tososha","tankyu","koibito","doka","junshin","rinjin","hangyakusha","majutsushi"];
+    const tCount = Object.fromEntries(tKeys.map(k=>[k,0]));
+    const tLast  = Object.fromEntries(tKeys.map(k=>[k,-1]));
+    typeAns.forEach((code, i)=>{ if(tCount[code]!=null){ tCount[code]++; tLast[code]=10+i+1; }});
+    const type = resolveWinner(tCount, tLast, TYPE_PRIORITY);
+
+    const top3 = Object.entries(tCount)
+      .sort((a,b)=> b[1]-a[1] || (tLast[b[0]]-tLast[a[0]]) || (TYPE_PRIORITY.indexOf(a[0]) - TYPE_PRIORITY.indexOf(b[0])) )
+      .slice(0,3);
+
+    return { weather, wCount, type, tCount, top3 };
+  }
+
+  // 横向きグラフ
+  let chartWeather=null, chartTop3=null;
+  function drawCharts(r){
+    const wLabels = ["晴れ","雷","雪","風"];
+    const wData = [r.wCount.hare, r.wCount.kaminari, r.wCount.yuki, r.wCount.kaze];
+    const ctxW = document.getElementById('chartWeather').getContext('2d');
+    if(chartWeather) chartWeather.destroy();
+    chartWeather = new Chart(ctxW, {
+      type:'bar',
+      data:{ labels:wLabels, datasets:[{label:'選択数（全10問）', data:wData}] },
+      options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} },
+        scales:{ x:{ beginAtZero:true, max:10, ticks:{ stepSize:2 } } } }
+    });
+
+    const tLabels = r.top3.map(([k])=>TYPES[k] ? TYPES[k].name : k);
+    const tData = r.top3.map(([,v])=>v);
+    const ctxT = document.getElementById('chartTop3').getContext('2d');
+    if(chartTop3) chartTop3.destroy();
+    chartTop3 = new Chart(ctxT, {
+      type:'bar',
+      data:{ labels:tLabels, datasets:[{label:'選択数（全10問）', data:tData}] },
+      options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} },
+        scales:{ x:{ beginAtZero:true, max:10, ticks:{ stepSize:2 } } } }
+    });
+  }
+
+  // 結果コメント
+  function buildNarrative(r){
+    const wName = WEATHER_NAME[r.weather];
+    const wLine = WEATHER_FIXED[r.weather].replace(/^.*?：/,"").replace(/。$/,"");
+    const mainKey = r.type;
+    const t = TYPES[mainKey];
+    const s = SNAP[mainKey] || {shine:"",trap:"",seen:""};
+    const second = (r.top3 && r.top3[1] && r.top3[1][1] > 0) ? r.top3[1][0] : null;
+    const t2 = second ? TYPES[second] : null;
+    const tip  = t.tip || "";
+    const use1 = (t.do && t.do[0]) ? t.do[0] : "";
+    const dont1= (t.dont && t.dont[0]) ? t.dont[0] : "";
+    const comm1= (t.comm && t.comm[0]) ? t.comm[0] : "";
+
+    return `
+      <p class="small"><strong>この診断で見ていること：</strong>10問の<strong>空模様（場の整え方）</strong>と10問の<strong>元型（動き方の型）</strong>から、いまのあなたの<strong>仕事の進め方のクセ</strong>を読み取っています。</p>
+      <p><strong>ペルソナ（空模様）：${wName}</strong> — ${wLine} つまり、場の動きが重くなった時に、あなたは${wName==="晴れ"?"段取りや雰囲気を整えて":"流れの向きを変えたり判断を進めたり"}して、みんなが動きやすい状態を作りやすいタイプです。</p>
+      <p><strong>元型（動き方）：${t.name}</strong> — ${t.one} ${s.shine}</p>
+      <p><strong>普段の傾向（強みと弱み）：</strong>${t.good}のが大きな強みです。反面、${t.care}ところが弱みに変わりやすいです。${s.trap} ${s.seen}</p>
+      ${t2 ? `<p><strong>サブ傾向：</strong>回答からは<strong>${t2.name}</strong>の要素も見えます。主軸の「${t.name}」に、状況によって「${t2.name}」の出番が混ざることで、対応の幅が広がりやすいタイプです。</p>` : ""}
+      <p><strong>今日の対策：</strong>${tip} ${use1 ? `まずは「${use1}」から手を付けると、負担を増やさずに進められます。` : ""} ${dont1 ? `逆に「${dont1}」は今日はやらないと決めておくと安心です。` : ""} ${comm1 ? `やり取りは「${comm1}」を意識すると伝わりやすくなります。` : ""}</p>
+    `;
+  }
+
+  function showResult(r){
+    const wName = WEATHER_NAME[r.weather];
+    const tMeta = TYPES[r.type];
+    const title = `${wName}の${tMeta.name}`;
+    document.getElementById("titleText").textContent = title;
+    document.getElementById("weatherLine").textContent = WEATHER_FIXED[r.weather];
+    document.getElementById("pillWeather").textContent = `空模様：${wName}`;
+    document.getElementById("pillType").textContent = `元型：${tMeta.name}`;
+    const nn = String(tMeta.idx).padStart(2,"0");
+    const heroImg = document.getElementById("heroImg");
+    heroImg.src = `${IMG_BASE}${nn}.png`;
+    heroImg.alt = `${tMeta.name}のイラスト`;
+
+    document.getElementById("moreText").innerHTML = buildNarrative(r);
+    drawCharts(r);
+
+    document.getElementById("resEmpty").classList.add("hidden");
+    document.getElementById("resArea").classList.remove("hidden");
+
+    try{
+      const params = new URLSearchParams(); params.set("w", r.weather); params.set("t", r.type);
+      history.replaceState(null,"", location.pathname+"?"+params.toString());
+    }catch{}
+  }
+
+  // 操作
+  function compute(){
+    const {missing, weatherAns, typeAns} = readAnswers();
+    if(missing.length){
+      alert(`未回答があります（${missing.slice(0,6).map(n=>"Q"+n).join(", ")}${missing.length>6?" ほか":""}）。すべての20問に回答してください。`);
+      const first = missing[0];
+      const node = document.querySelector(`[name="Q${first}"]`)?.closest(".qrow");
+      if(node){ node.scrollIntoView({behavior:"smooth", block:"center"}); node.classList.add("hl"); setTimeout(()=>node.classList.remove("hl"),1600); }
+      return;
+    }
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({weatherAns, typeAns}));
+      localStorage.setItem('specimens:last', JSON.stringify({ id: 'persona-weather', title: 'ペルソナ天気人格診断', href: location.pathname }));
+    }catch{}
+    const r = tally(weatherAns, typeAns);
+    showResult(r);
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function restore(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const saved = JSON.parse(raw);
+      (saved.weatherAns||[]).forEach((v,i)=>{
+        const el = document.querySelector(`input[name="Q${i+1}"][value="${v}"]`); if(el) el.checked = true;
+      });
+      (saved.typeAns||[]).forEach((v,i)=>{
+        const el = document.querySelector(`input[name="Q${11+i}"][value="${v}"]`); if(el) el.checked = true;
+      });
+      updateProgress();
+    }catch{}
+  }
+
+  // 初期化
+  buildQuestions();
+  restore();
+  document.getElementById("btn-score").addEventListener("click", compute);
+  document.getElementById("btn-score2").addEventListener("click", compute);
+  document.getElementById("btn-clear").addEventListener("click", ()=>{
+    if(!confirm("すべての回答をクリアしますか？")) return;
+    document.querySelectorAll('#qContainer input[type="radio"]').forEach(el=>el.checked=false);
+    try{ localStorage.removeItem(STORAGE_KEY); }catch{}
+    updateProgress();
+    document.getElementById("resEmpty").classList.remove("hidden");
+    document.getElementById("resArea").classList.add("hidden");
+    document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.getElementById('btnBack').addEventListener('click', saveLast);
+  document.getElementById('back2').addEventListener('click', saveLast);
+  function saveLast(){
+    try{
+      const payload = { id: 'persona-weather', title: 'ペルソナ天気人格診断', href: location.pathname };
+      localStorage.setItem('specimens:last', JSON.stringify(payload));
+    }catch(_e){}
+  }
+});
+</script>
+</body>
+</html>
