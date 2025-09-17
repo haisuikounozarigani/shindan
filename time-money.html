@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>時の天秤診断 – あなたは時間派？お金派？</title>
+<meta name="description" content="時間とお金、あなたの天秤はどちらに傾きやすい？5軸×15問で“時間フォーカス指数”を可視化。">
+<meta name="theme-color" content="#f0f6ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="時の天秤診断 – あなたは時間派？お金派？">
+<meta property="og:description" content="5軸×15問で“時間フォーカス指数”を可視化。各軸の傾向バーも表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/time-money.html">
+
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/chart.js">
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+.small ul{ margin:8px 0 0 18px; padding:0; }
+.small li{ margin:4px 0; }
+:root{
+  --bg1:#f6fbff; --bg2:#eef4ff; --card:#fff; --line:#dbe8ff; --fg:#1f2a3a; --muted:#5b6a75;
+  --accent:#4aa8ff; --accent2:#a48bff;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+a{color:inherit}
+.wrap{max-width:1040px;margin:18px auto 24px;padding:0 14px}
+.header{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;margin:14px 0 6px}
+.logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#d9efff,#e7dbff);display:grid;place-items:center;font-size:34px}
+h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.95em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 6px 18px rgba(74,168,255,.10)}
+.section{margin:16px 0}
+.qrow{padding:12px;border:1px solid var(--line);border-radius:12px;margin:12px 0;background:#fff}
+.qrow .ttl{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.scale label{display:block;border:1px solid #e6ebff;border-radius:10px;background:#fff;cursor:pointer;padding:10px;text-align:center}
+.scale input{position:absolute;opacity:0}
+.scale input:checked+span{outline:2px solid var(--accent);border-radius:8px;outline-offset:2px}
+.scale .hint{grid-column:1/-1;display:flex;justify-content:space-between;color:#7a8694;font-size:.88em;margin-top:6px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.stickybar{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e8eefc;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#e8eefc;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#bfe3ff,#a48bff)}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+.small{color:var(--muted);font-size:.92em}
+.hidden{display:none!important}
+
+/* 結果 */
+.res-head{display:grid;grid-template-columns:1fr;gap:10px;align-items:center}
+.ttl-big{font-weight:800;font-size:clamp(20px,3.4vw,28px)}
+.pills{display:flex;gap:8px;flex-wrap:wrap;color:#54607a}
+.pill{padding:6px 10px;border:1px solid #e6ebff;border-radius:999px;background:#fff}
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+.chartbox{padding:10px;border:1px dashed #dfe7ff;border-radius:12px}
+.chartbox canvas{max-width:100%;height:140px!important}
+
+/* Footer note */
+.footer{color:var(--muted);font-size:.92em;margin-top:14px}
+.backline{display:flex;justify-content:center;margin-top:12px}
+.warn{background:#fff;border:1px dashed #d7d7e6;border-radius:12px;padding:12px;color:#503a46;font-size:13px}
+.hl{box-shadow:0 0 0 3px rgba(127,164,255,.25)}
+
+@media (max-width:720px){
+  .scale{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="header">
+    <div class="logo">⏳</div>
+    <div>
+      <h1>時の天秤診断 – あなたは時間派？お金派？</h1>
+      <p class="sub">5軸×15問・5件法。総合TFI（時間フォーカス指数）と各軸のバーで表示。</p>
+    </div>
+  </header>
+
+  <div class="stickybar card" aria-live="polite">
+    <span>🧭</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <span class="small" id="progText">0/15</span>
+    <button class="btn primary" id="btn-score">結果を見る</button>
+  </div>
+
+  <section class="card section">
+    <h2>説明</h2>
+    <p>直感で選んでください（全問必須・1〜5）。</p>
+    <div class="warn">
+      <strong>ご利用にあたって</strong><br>
+      ・このコンテンツは<strong>エンタメ目的</strong>の自己理解ツールです。医療・診断・治療・助言には使えません。<br>
+      ・<strong>最終判断はご自身で</strong>お願いします。重要な意思決定の唯一の根拠にはしないでください。<br>
+      ・<strong>プライバシー</strong>：回答は端末内で処理し、サーバー送信は想定していません。<br>
+      ・<strong>データ</strong>：入力は保存しません（ブラウザのローカル保存をクリアすれば消えます）。
+    </div>
+  </section>
+
+  <section id="formArea" class="card section" aria-label="設問エリア">
+    <h2>設問（全15問／各5択）</h2>
+    <div id="qContainer"></div>
+    <div class="section" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="btn-clear">回答をクリア</button>
+      <button class="btn primary" id="btn-score2">結果を見る</button>
+      <a class="btn" href="/shindan/" id="btnBack" role="button">診断一覧に戻る</a>
+    </div>
+  </section>
+
+  <section id="result" class="card section" aria-live="polite">
+    <div id="resEmpty">
+      <div class="badge">まだ結果はありません</div>
+      <p class="small">上の設問にすべて回答すると、こちらに結果が表示されます。</p>
+    </div>
+
+    <div id="resArea" class="hidden">
+      <div class="res-head">
+        <div class="ttl-big" id="titleText">—</div>
+        <div class="pills">
+          <span class="pill" id="pillTFI">TFI: —</span>
+          <span class="pill" id="pillType">タイプ: —</span>
+        </div>
+      </div>
+
+      <div class="section" id="oneLine"></div>
+
+      <div class="section grid2 chartbox">
+        <div class="small">各軸（0–100）</div>
+        <canvas id="chartAxes" width="640" height="140" aria-label="各軸スコア" role="img"></canvas>
+      </div>
+
+      <div class="footer">
+        <p class="small">※TFIは5軸（TA/DG/EX/MV/FT）の平均です。逆転項目は自動で反転採点しています。</p>
+      </div>
+
+      <div class="backline">
+        <a class="btn" id="back2" href="/shindan/" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = "time-money:v1:answers";
+
+  // 軸ラベル
+  const AXIS = {
+    TA:{name:"余白感"},
+    DG:{name:"手放し力"},
+    EX:{name:"体験志向"},
+    MV:{name:"移動効率"},
+    FT:{name:"未来時間投資"}
+  };
+
+  // 質問定義（各3問・r:逆転）
+  const Q = [
+    // TA
+    {axis:"TA", t:"やることが多い日でも、心に少しは余裕がある。", r:false},
+    {axis:"TA", t:"週に一度は『予定を入れない時間』を意識的につくっている。", r:false},
+    {axis:"TA", t:"自由に使える時間が少ないと感じる日が多い。", r:true},
+
+    // DG
+    {axis:"DG", t:"面倒な家事や事務は、必要ならお金を払って外注してもよい。", r:false},
+    {axis:"DG", t:"配送料や手数料で、時間を買えるなら払う選択をすることがある。", r:false},
+    {axis:"DG", t:"自分でできることは、お金を払ってまで他人に頼まない。", r:true},
+
+    // EX
+    {axis:"EX", t:"モノよりも、体験や学びにお金を使うことが多い。", r:false},
+    {axis:"EX", t:"思い出になることを優先して予定を組むことがある。", r:false},
+    {axis:"EX", t:"セールで安く買えるなら、時間がかかっても構わない。", r:true},
+
+    // MV
+    {axis:"MV", t:"早くて快適な移動手段に、追加料金を払うことがある。", r:false},
+    {axis:"MV", t:"待ち時間が長い店は避けるか、事前に予約しておく。", r:false},
+    {axis:"MV", t:"渋滞していても、無料の道を選びがちだ。", r:true},
+
+    // FT（※3つ目が逆転）
+    {axis:"FT", t:"今は手間でも、今後の時短になるなら取り組む。", r:false},
+    {axis:"FT", t:"時短家電や自動化ツールにお金をかける価値があると思う。", r:false},
+    {axis:"FT", t:"将来の時短のために今の時間を割くのは後回しにしがちだ。", r:true}
+  ];
+
+const TYPES = [
+  {name:"時間最優先", range:[80,100], one: `
+    <div class="small">自由時間と心の余裕を第一に置く傾向。外注や予約で「待つ」を減らし、体験に投資しやすい。</div>
+    <ul class="small">
+      <li>月1で「フルオフ日」を確保してリズムを守る</li>
+      <li>移動は最短ルート＋事前予約を基本にする</li>
+      <li>サブスク/外注の棚卸しを四半期に1回</li>
+    </ul>`},
+  {name:"やや時間", range:[65,79], one: `
+    <div class="small">基本は時間重視。必要な場面では節約も織り交ぜ、外注・自動化をバランス良く使う。</div>
+    <ul class="small">
+      <li>待ち時間30分超は「代替案」を常に用意</li>
+      <li>配送料の上限を自分ルールで決めておく</li>
+      <li>家事は「面倒トップ3」だけ外注候補に</li>
+    </ul>`},
+  {name:"バランス", range:[45,64], one: `
+    <div class="small">状況で切り替える現実派。忙しい時期は時間を買い、余裕がある時期は自分で手を動かす。</div>
+    <ul class="small">
+      <li>繁忙期/閑散期の「切替基準」を事前に決める</li>
+      <li>並ぶ店はモバイルオーダーの有無で選ぶ</li>
+      <li>モノ購入は「使用時間」で割って判断</li>
+    </ul>`},
+  {name:"やや金銭", range:[30,44], one: `
+    <div class="small">費用対効果に敏感。配送料や手数料は控えめで、モノ購買の優先がやや強い。</div>
+    <ul class="small">
+      <li>時給換算を一度だけ試して上限額を決める</li>
+      <li>無料の道でも渋滞30分超なら別ルート検討</li>
+      <li>クーポン待ちは「締切」を決めて長引かせない</li>
+    </ul>`},
+  {name:"金銭最優先", range:[0,29], one: `
+    <div class="small">貯蓄・収入を最重視。長時間の自己対応や並びも許容しやすい一方、ゆとりは後回しになりがち。</div>
+    <ul class="small">
+      <li>週1回の「余白30分」を先にカレンダー確保</li>
+      <li>時短家電は中古/レンタルで試してから判断</li>
+      <li>待ち時間は「学び/運動」に置き換えて消耗を減らす</li>
+    </ul>`}
+];
+
+  // DOM
+  const qContainer = document.getElementById("qContainer");
+  const prog = document.getElementById("prog");
+  const progText = document.getElementById("progText");
+  const resEmpty = document.getElementById("resEmpty");
+  const resArea = document.getElementById("resArea");
+  const titleText = document.getElementById("titleText");
+  const pillTFI = document.getElementById("pillTFI");
+  const pillType = document.getElementById("pillType");
+  const oneLine = document.getElementById("oneLine");
+
+  // 質問UI生成（5件法）
+  function buildQuestions(){
+    let html = "";
+    Q.forEach((q,i)=>{
+      const n = i+1;
+      html += `
+        <div class="qrow">
+          <div class="ttl">Q${n}. ${q.t}${q.r?' <span class="small" title="逆転項目（自動で採点反転）">（R）</span>':''}</div>
+          <div class="scale" role="radiogroup" aria-label="Q${n}">
+            ${[1,2,3,4,5].map(v=>`
+              <label>
+                <input type="radio" name="Q${n}" value="${v}">
+                <span>${v}</span>
+              </label>`).join("")}
+            <div class="hint" aria-hidden="true">
+              <span>1 まったく当てはまらない</span>
+              <span>5 とても当てはまる</span>
+            </div>
+          </div>
+        </div>`;
+    });
+    qContainer.innerHTML = html;
+    document.querySelectorAll('#qContainer input[type="radio"]').forEach(el=>{
+      el.addEventListener('change', updateProgress, {passive:true});
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const total = Q.length;
+    let answered = 0;
+    for(let i=1;i<=total;i++){
+      if(document.querySelector(`input[name="Q${i}"]:checked`)) answered++;
+    }
+    const pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    progText.textContent = `${answered}/${total}`;
+  }
+
+  function readAnswers(){
+    const missing = [];
+    const values = [];
+    for(let i=1;i<=Q.length;i++){
+      const el = document.querySelector(`input[name="Q${i}"]:checked`);
+      if(!el) missing.push(i);
+      else values.push(parseInt(el.value,10));
+    }
+    return {missing, values};
+  }
+
+  function toPct(arr){
+    const m = arr.reduce((a,b)=>a+b,0)/arr.length; // 1..5
+    return Math.round(((m - 1) / 4) * 100); // 0..100
+  }
+
+  function score(values){
+    const byAxis = {TA:[],DG:[],EX:[],MV:[],FT:[]};
+    values.forEach((v,i)=>{
+      const def = Q[i];
+      const vv = def.r ? (6 - v) : v;
+      byAxis[def.axis].push(vv);
+    });
+    const axisPct = Object.fromEntries(Object.keys(byAxis).map(k=>[k, toPct(byAxis[k])]));
+    const TFI = Math.round((axisPct.TA + axisPct.DG + axisPct.EX + axisPct.MV + axisPct.FT)/5);
+    return {axisPct, TFI};
+  }
+
+  function pickType(tfi){
+    return TYPES.find(t=> tfi>=t.range[0] && tfi<=t.range[1]) || TYPES[2];
+  }
+
+  // Chart
+  let chartAxes=null;
+  function drawAxes(axisPct){
+    const labels = ["余白感(TA)","手放し力(DG)","体験志向(EX)","移動効率(MV)","未来時間投資(FT)"];
+    const data = [axisPct.TA,axisPct.DG,axisPct.EX,axisPct.MV,axisPct.FT];
+    const ctx = document.getElementById('chartAxes').getContext('2d');
+    if(chartAxes) chartAxes.destroy();
+    chartAxes = new Chart(ctx, {
+      type:'bar',
+      data:{ labels, datasets:[{label:'各軸スコア(0–100)', data:data}] },
+      options:{
+        indexAxis:'y',
+        responsive:true,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{ beginAtZero:true, max:100, ticks:{ stepSize:20 } } }
+      }
+    });
+  }
+
+  function compute(){
+    const {missing, values} = readAnswers();
+    if(missing.length){
+      alert(`未回答があります（${missing.slice(0,6).map(n=>"Q"+n).join(", ")}${missing.length>6?" ほか":""}）。すべての15問に回答してください。`);
+      const first = missing[0];
+      const node = document.querySelector(`[name="Q${first}"]`)?.closest(".qrow");
+      if(node){ node.scrollIntoView({behavior:"smooth", block:"center"}); node.classList.add("hl"); setTimeout(()=>node.classList.remove("hl"),1600); }
+      return;
+    }
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+      localStorage.setItem('specimens:last', JSON.stringify({ id: 'time-money', title: '時の天秤診断', href: location.pathname }));
+    }catch{}
+
+    const r = score(values);
+    const typ = pickType(r.TFI);
+
+    // 表示
+    resEmpty.classList.add("hidden");
+    resArea.classList.remove("hidden");
+    titleText.textContent = `あなたの天秤は「${typ.name}」寄り`;
+    pillTFI.textContent = `TFI: ${r.TFI}`;
+    pillType.textContent = `タイプ: ${typ.name}`;
+    oneLine.innerHTML = typ.one;
+
+    drawAxes(r.axisPct);
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function restore(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const saved = JSON.parse(raw);
+      (saved||[]).forEach((v,i)=>{
+        const el = document.querySelector(`input[name="Q${i+1}"][value="${v}"]`); if(el) el.checked = true;
+      });
+      updateProgress();
+    }catch{}
+  }
+
+  // 初期化
+  buildQuestions();
+  restore();
+  document.getElementById("btn-score").addEventListener("click", compute);
+  document.getElementById("btn-score2").addEventListener("click", compute);
+  document.getElementById("btn-clear").addEventListener("click", ()=>{
+    if(!confirm("すべての回答をクリアしますか？")) return;
+    document.querySelectorAll('#qContainer input[type="radio"]').forEach(el=>el.checked=false);
+    try{ localStorage.removeItem(STORAGE_KEY); }catch{}
+    updateProgress();
+    resEmpty.classList.remove("hidden");
+    resArea.classList.add("hidden");
+    document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.getElementById('btnBack').addEventListener('click', saveLast);
+  document.getElementById('back2').addEventListener('click', saveLast);
+  function saveLast(){
+    try{
+      const payload = { id: 'time-money', title: '時の天秤診断', href: location.pathname };
+      localStorage.setItem('specimens:last', JSON.stringify(payload));
+    }catch(_e){}
+  }
+});
+</script>
+</body>
+</html>
