@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>マインドセット診断｜成長⇄証明の傾きを5段階で可視化</title>
+<meta name="description" content="16項目・5件法で“成長（伸びしろへの目線）⇄証明（評価への目線）”の傾きを判定。自然→都市の5タイプ画像と、今日から使える具体アクションを表示します。">
+<meta name="theme-color" content="#eaf3ff">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="マインドセット診断">
+<meta property="og:description" content="16項目・5件法で“成長⇄証明”の傾きを判定。自然→都市の5タイプ画像つき。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/dev-mindset.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/dev-mindset/03.png">
+
+<link rel="preload" as="image" href="/shindan/assets/results/dev-mindset/01.png">
+<link rel="preload" as="image" href="/shindan/assets/results/dev-mindset/05.png">
+
+<style>
+  :root{
+    /* cold（青系） */
+    --bg1:#f3f8ff; --bg2:#eaf3ff; --paper:#fff; --ink:#1e2a33; --muted:#5b6a75; --line:#dce8ff;
+    --accent:#4aa8ff; --accent2:#a48bff;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.9;letter-spacing:.02em}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.05) blur(8px);border-bottom:1px solid var(--line)}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  h1{font-size:18px;margin:0;font-weight:800}
+  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+
+  /* Layout */
+  main{max-width:980px;margin:0 auto;padding:22px 16px 120px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+  .lead{color:var(--muted);margin-top:6px}
+
+  /* Question */
+  .q{border-top:1px solid var(--line);padding:12px 0}
+  .q:first-child{border-top:0}
+  .q .ttl{font-weight:700}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .opt{flex:1 1 180px;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
+  .opt input{accent-color:var(--accent);transform:translateY(1px)}
+  .muted{color:var(--muted)}
+
+  /* Progress & actions */
+  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .bar{flex:1;height:8px;background:#eef4ff;border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f9fbff);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--ink);min-height:44px}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .btn.linklike{background:#fff}
+
+  /* Result */
+  #result{margin-top:18px;display:none}
+  .stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+  .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#fff}
+  .big{font-size:20px;font-weight:900}
+  .copy{color:#223041;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+  .card .name{font-weight:800}
+  .meter{height:6px;background:#eef4ff;border-radius:999px;overflow:hidden;margin-top:8px;border:1px solid #e2ecff}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .small{font-size:.95em;color:#3a4b5a}
+
+  figure.hero{margin:10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  figure.hero img{width:100%;height:auto;display:block}
+
+  /* Bottom tools on result */
+  .savebar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .footnote{color:#6b7b86;margin-top:14px}
+
+  /* back button area */
+  .backbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:14px}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>マインドセット診断</h1>
+  <span class="crumb">16項目×2因子・5件法 → 成長⇄証明の傾きとタイプを表示</span>
+</div></header>
+
+<main>
+  <section class="panel" id="quiz">
+    <div>
+      <div class="ttl"><strong>“成長（伸びしろ重視）”</strong>と<strong>“証明（評価を重視）”</strong>のバランスを、16項目・5件法で測ります。</div>
+     
+    </div>
+
+    <!-- 質問 -->
+    <div id="qbox"></div>
+
+    <!-- 進捗 -->
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+      <div id="ptext" class="muted">0 / 16</div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="actions">
+      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+      <button id="btnReset" class="btn">リセット</button>
+      <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel" aria-live="polite">
+      <div id="resultCard">
+        <h2 class="ttl" style="font-size:18px;margin:0 0 8px">結果</h2>
+        <div id="head" class="stage" style="margin-bottom:8px"></div>
+
+        <!-- タイプ画像（01=成長MAX … 05=証明MAX） -->
+        <figure class="hero" aria-hidden="true">
+          <img id="heroImg" src="" alt="" loading="lazy">
+        </figure>
+        <div class="copy" id="heroCopy"></div>
+
+        <h3 class="ttl" style="font-size:15px;margin:14px 0 8px">スコアプロファイル</h3>
+        <div class="grid" id="profile"></div>
+
+        <div class="card" id="aboutGM">
+          <h3 style="margin:.2em 0 .4em;font-size:15px">成長マインドセットとは？</h3>
+          <p>人の力は練習と工夫で伸びる、という考え方です。失敗は「向きを直す印」。この考えが強いほど、試す回数が増え、当たる確率が上がります。短い学びでも、特に上手くいかず困っている人に変化が出やすいと言われます。言葉のかけ方など、教える側のふるまいも、やる気や差に影響します。</p>
+          <p><strong>今日からできる3つ</strong>：① <strong>1行学びログ</strong>（やった／気づき／次の一手） ② <strong>プロセス褒め</strong>（結果ではなく<strong>工夫・粘り・回数</strong>） ③ 「<strong>まだ</strong>」を足す（できない→<strong>まだ</strong>できない）。</p>
+        </div>
+
+        <div class="card" id="typeBody"><!-- タイプ本文をJSで差し込み --></div>
+
+        <!-- 一番下：戻る/共有/やり直し -->
+        <div class="backbar">
+          <a href="/shindan/" class="btn" role="button">診断一覧に戻る</a>
+          <button id="btnAgain" class="btn">やり直す</button>
+          <button id="btnShare" class="btn">結果を共有</button>
+        </div>
+      </div>
+
+      <div class="footnote small">
+        <details>
+          <summary>スコア換算ルール</summary>
+          <div>
+            <p>GM＝{1,4,6,8,10,12,14,15} の平均（1–5）、PM＝{2,3,5,7,9,11,13,16} の平均（1–5）、<code>D=GM−PM</code>。</p>
+            <p>タイプ：D ≥ +0.80 → 01（成長MAX）／+0.30〜+0.79 → 02／−0.29〜+0.29 → 03／ −0.79〜−0.30 → 04／D ≤ −0.80 → 05。</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- ご利用にあたって -->
+      <section class="panel" style="margin-top:14px">
+        <h3 style="margin:.2em 0 .4em;font-size:15px">ご利用にあたって</h3>
+        <ul class="small" style="margin:.3em 0 0 1.2em;padding:0;line-height:1.8">
+          <li><strong>非提携・非公式：</strong>この診断は研究一般の知見にヒントを得た<strong>独自制作</strong>です。各種の公式検査の<strong>原文項目や正式な採点方法は使っていません</strong>。権利者の承認・提携・推奨を意味しません。</li>
+          <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安を目的としたセルフチェックで、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛や不調が続く場合は、医療機関や専門家へご相談ください。</li>
+          <li><strong>プライバシー：</strong>回答処理は<strong>ブラウザ内（端末内）で完結</strong>し、サーバーへの送信は行いません。進行状況や一部の表示設定のみローカルストレージに保存されることがあります。</li>
+          <li><strong>表現について：</strong>タイプ名などは<strong>たとえ表現</strong>です。結果をもって他者を断定・ラベリングしないでください。</li>
+          <li><strong>免責：</strong>法令で認められる範囲で、本サイトの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+        </ul>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ===== 設定 =====
+  var IMG_BASE = '/shindan/assets/results/dev-mindset/';
+  function imgForKey(k){ return ({'01':'01.png','02':'02.png','03':'03.png','04':'04.png','05':'05.png'})[k] || '03.png'; }
+
+  // ===== 質問（16） =====
+  var ITEMS = [
+    {f:'GM', t:'難しい課題に時間をかけるとワクワクする。'},
+    {f:'PM', t:'能力を他人に認めさせる場が好きだ。'},
+    {f:'PM', t:'失敗は自分の才能不足を示すと思う。'},
+    {f:'GM', t:'努力と練習で能力はかなり伸びると感じる。'},
+    {f:'PM', t:'新しいやり方は、うまくいかないと恥ずかしい。'},
+    {f:'GM', t:'厳しいフィードバックでも成長のかてにできる。'}, // ひらがな寄せ
+    {f:'PM', t:'完璧にできる仕事を選びがちだ。'},
+    {f:'GM', t:'未知の領域でも学べば対処できると思う。'},
+    {f:'PM', t:'一番大事なのは他人より良い結果を出すことだ。'},
+    {f:'GM', t:'失敗したら次の改善案をすぐ考える。'},
+    {f:'PM', t:'批判されるくらいなら挑戦は控えたい。'},
+    {f:'GM', t:'反復練習でスキルは鍛えられると信じている。'},
+    {f:'PM', t:'目立つ舞台は失敗が怖くて避けたい。'},
+    {f:'GM', t:'できなかった理由を分析するのが好きだ。'},
+    {f:'GM', t:'学習では自分の進歩を記録しておきたい。'},
+    {f:'PM', t:'同じ難易度なら、見栄えの良い結果を選ぶ。'}
+  ];
+  var SCALE = [
+    {v:1,label:'1 まったく当てはまらない'},
+    {v:2,label:'2 あまり当てはまらない'},
+    {v:3,label:'3 どちらとも言えない'},
+    {v:4,label:'4 やや当てはまる'},
+    {v:5,label:'5 とても当てはまる'}
+  ];
+
+  // ===== タイプ定義 =====
+  var TYPE = {
+    '01':{
+      name:'森のエコシステム（超・成長寄り）',
+      title:'あなたは「森のエコシステム」寄り',
+      sub:'失敗を栄養に変え、試すほど進むモード。',
+      alt:'朝もやの森で、芽ぶきが循環する風景',
+      body: `
+        <p><strong>特徴</strong>：失敗を「材料」と見なして、小さく試す→記録→直すを何度も回します。締切がなくても自分で締切を作り、60〜70%の背のび課題を回すのが得意。もらった指摘は感情と切り離してメモ化し、翌回の具体手順に落とし込みます。学んだことを人に説明・共有することで理解が深まり、チームの学習ペースも引き上げやすいタイプです。一方で、試作が楽しくて「仕上げ」を後ろに回しがちなので、完成の定義を先に決めておくと最強。</p>
+        <h4 style="margin:.6em 0 .2em">どう育てるか</h4>
+        <ul style="margin:.2em 0 0 1.2em">
+          <li><strong>週1×15分の小実験</strong>：小さく仮説→試す→メモ。</li>
+          <li><strong>60〜70%の背のび課題</strong>：むずかしすぎず、かんたんすぎない帯で反復。</li>
+          <li><strong>月1で可視化</strong>：画像1枚・短文3つで進歩を見える化。</li>
+        </ul>
+        <p class="small">メモ：長期追跡調査で「伸びる前提」の姿勢が強いほど、成績が右肩に向きやすい報告があります。</p>
+      `
+    },
+    '02':{
+      name:'里の集落（やや成長寄り）',
+      title:'あなたは「里の集落」寄り',
+      sub:'基礎を厚く、立て直しも速い現実派の成長。',
+      alt:'畑と小屋が並ぶ集落、収穫を分け合う様子',
+      body: `
+        <p><strong>特徴</strong>：基礎の反復と生活リズムが安定剤。毎日の「少しだけ前に進む」を積み上げ、失敗が出ても手順を戻して立て直せます。成果よりも“前回より良いか”を重視し、チェックリストや見える化（表・カレンダー）で自己管理。人の知恵を集めるのがうまく、学びの共同体を作りやすいタイプです。ただ、堅実さが強すぎると冒険が減るので、ときどき意図的に新しいやり方を混ぜると伸び幅が広がります。</p>
+        <h4 style="margin:.6em 0 .2em">どう育てるか</h4>
+        <ul style="margin:.2em 0 0 1.2em">
+          <li><strong>学習量</strong>と<strong>前回からの良くなり</strong>の<strong>二本のものさし</strong>で見る。</li>
+          <li><strong>発表→振り返り</strong>のセット運用：公開で気づきが増える。</li>
+          <li>失敗＝<strong>仮説が外れた</strong>と受け止め、感情の負担を軽く。</li>
+        </ul>
+        <p class="small">メモ：短時間のオンライン支援でも、伸び悩み層の持ち直しが複数報告。</p>
+      `
+    },
+    '03':{
+      name:'交易の町（中間）',
+      title:'あなたは「交易の町」寄り',
+      sub:'評価と成長の両取りをねらう実務派。',
+      alt:'石畳の広場に市場の屋台、人と品が行き交う',
+      body: `
+        <p><strong>特徴</strong>：評価と学びを両立させる運用型。まず粗く作って早めに出し、反応を拾って作り直す「往復運転」が得意です。試作締切と公開締切を分け、80/20で大事なところから仕上げていきます。数字（結果）と物語（学び）の両ログを取り、他者からのフィードバックを素早く反映。広く浅くなりやすい弱点は、今やる一手を1枚ボードに固定して回避します。</p>
+        <h4 style="margin:.6em 0 .2em">どう育てるか</h4>
+        <ul style="margin:.2em 0 0 1.2em">
+          <li><strong>一枚ボード</strong>（学び＋成果）で見える化。</li>
+          <li>役割回し：<strong>実験する人／記録する人／伝える人</strong>を交代制に。</li>
+          <li><strong>試作の締切＋公開の締切</strong>で、スピードと質を両立。</li>
+        </ul>
+        <p class="small">メモ：短時間の考え方トレーニング後に、進路の選択が前向きになった報告も。</p>
+      `
+    },
+    '04':{
+      name:'高層街区（やや証明寄り）',
+      title:'あなたは「高層街区」寄り',
+      sub:'結果志向を活かしつつ、上達の視点を足す。',
+      alt:'夕暮れにそびえる高層街区とまっすぐな大通り',
+      body: `
+        <p><strong>特徴</strong>：結果で語る力が高く、基準やルールの読み取りも速いタイプ。完成度を上げる微調整が得意で、本番に強い一方、失敗が目立つ場面は避けがちです。外部の評価軸を明確にし、そこに最短で合わせる設計がうまい反面、挑戦の幅が狭くなることも。スコアだけでなく「どの力が伸びたか」を同時に記録すると、長期の伸びと短期の点数を両方取りやすくなります。</p>
+        <h4 style="margin:.6em 0 .2em">どう育てるか</h4>
+        <ul style="margin:.2em 0 0 1.2em">
+          <li><strong>下書きや安全な練習場所</strong>を常設する（ためしにやってOKの場）。</li>
+          <li><strong>もし〜なら〜する</strong>：不安が来たら「<strong>10分だけ</strong>改善案」を書く。</li>
+          <li>結果を<strong>学びのことば</strong>に翻訳（再現できる形に言語化）。</li>
+        </ul>
+        <p class="small">メモ：教える側が「人は伸びる」と伝えるだけでも、やる気の底上げや差の縮小につながった報告があります。</p>
+      `
+    },
+    '05':{
+      name:'ショーケース都市（超・証明寄り）',
+      title:'あなたは「ショーケース都市」寄り',
+      sub:'見映えと評価を武器に、最初の一歩を軽くする。',
+      alt:'夜景に光るランドマークと花火の演出',
+      body: `
+        <p><strong>特徴</strong>：見せ方・タイミング・相手目線の調整が巧み。短時間で“見える成果”を作るのが得意で、発表・審査・営業などで強さを発揮します。ただ、未知の課題では手が止まりやすく、完璧主義で着手が遅れることも。まずは30〜90秒のデモやスケッチで手を動かし、OKライン（合格最低基準）を先に決めるとスムーズ。評価が低迷しても、自分の比較対象を「昨日の自分」に置くと安定して進めます。</p>
+        <h4 style="margin:.6em 0 .2em">どう育てるか</h4>
+        <ul style="margin:.2em 0 0 1.2em">
+          <li><strong>最小成功の定義</strong>（例：試作1枚・30秒テスト）で踏み出す。</li>
+          <li><strong>プロセス賞</strong>（くふう・試行回数）を自分に付与。</li>
+          <li><strong>自分だけの比較グラフ</strong>（きのうの自分）で意味を保つ。</li>
+          <li><strong>15分学習</strong>の連続日数を見える化。</li>
+        </ul>
+        <p class="small">メモ：平均効果は小さめでも、不利な状況ほど差が出やすい傾向。まずは「小さく失敗できる設計」から。</p>
+      `
+    }
+  };
+
+  // ===== DOM =====
+  function $(q,root){return (root||document).querySelector(q)}
+  function $$(q,root){return Array.prototype.slice.call((root||document).querySelectorAll(q))}
+  var qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  var btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
+  var res = $('#result'), head = $('#head'), profile = $('#profile');
+  var heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
+  var typeBody = $('#typeBody');
+  var btnAgain = $('#btnAgain'), btnShare = $('#btnShare');
+
+  // ===== 質問描画（ラジオ＋カード：送付ファイル形式） =====
+  ITEMS.forEach(function(q,i){
+    var s=document.createElement('section'); s.className='q';
+    var inner = '<div class="ttl">Q'+(i+1)+'. '+q.t+'</div><div class="scale" role="group" aria-label="質問 '+(i+1)+'">';
+    SCALE.forEach(function(sc){
+      var id='q'+(i+1)+'-'+sc.v;
+      inner += '<label class="opt" for="'+id+'"><input type="radio" name="q'+(i+1)+'" id="'+id+'" value="'+sc.v+'"><span>'+sc.label+'</span></label>';
+    });
+    inner += '</div>';
+    s.innerHTML = inner;
+    qbox.appendChild(s);
+  });
+
+  // ===== 進捗 =====
+  function answeredCount(){ var n=0; for(var i=1;i<=ITEMS.length;i++){ if(document.querySelector('input[name="q'+i+'"]:checked')) n++; } return n; }
+  function updateProgress(){
+    var n=answeredCount();
+    ptext.textContent = n+' / '+ITEMS.length;
+    pbar.style.width = Math.round(n/ITEMS.length*100)+'%';
+    btnCalc.disabled = n!==ITEMS.length;
+  }
+  document.addEventListener('change', function(e){
+    var nm = e && e.target ? e.target.name : '';
+    if(nm && nm.indexOf('q')===0) updateProgress();
+  });
+  updateProgress();
+
+  // ===== 集計 =====
+  function collect(){
+    var vals=[];
+    for(var i=1;i<=ITEMS.length;i++){
+      var el=document.querySelector('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals.push(+el.value);
+    }
+    return vals;
+  }
+  function mean(arr){ return arr.reduce(function(a,b){return a+b},0)/arr.length; }
+  function decideType(D){
+    if(D>=0.80) return '01';
+    if(D>=0.30) return '02';
+    if(D<=-0.80) return '05';
+    if(D<=-0.30) return '04';
+    return '03';
+  }
+
+  function compute(vals){
+    // GM idx: 1,4,6,8,10,12,14,15  → 0-based: 0,3,5,7,9,11,13,14
+    var gmIdx=[0,3,5,7,9,11,13,14];
+    var pmIdx=[1,2,4,6,8,10,12,15];
+    var GM = mean(gmIdx.map(function(i){return vals[i];}));
+    var PM = mean(pmIdx.map(function(i){return vals[i];}));
+    var D = GM - PM;
+    return {GM:GM, PM:PM, D:D};
+  }
+
+  // ===== 結果描画 =====
+  function render(vals){
+    var s = compute(vals);
+    var key = decideType(s.D);
+    var t = TYPE[key];
+
+    // ヘッダ
+    head.innerHTML =
+      '<span class="badge">タイプ：<b>'+t.name+'</b></span>'+
+      '<span class="badge">GM 平均 '+s.GM.toFixed(2)+'</span>'+
+      '<span class="badge">PM 平均 '+s.PM.toFixed(2)+'</span>'+
+      '<span class="badge">差 D='+(s.D>=0?'+':'')+s.D.toFixed(2)+'</span>';
+
+    // 画像＋コピー
+    var imgFile = imgForKey(key);
+    heroImg.src = IMG_BASE + imgFile;
+    heroImg.alt = t.alt;
+    heroCopy.innerHTML = '<div><b>'+t.title+'</b> – '+t.sub+'</div><div class="small">画像：'+imgFile+'</div>';
+
+    // プロファイル（横バー3本）
+    profile.innerHTML = '';
+    function bar(label,val,pct){
+      var a=document.createElement('article'); a.className='card small';
+      a.innerHTML='<div class="name" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span>'+label+'</span><span class="badge">'+pct+'%</span></div>'+
+                  '<div class="meter"><i style="width:'+pct+'%"></i></div>'+
+                  '<div style="margin-top:.4em">'+val+'</div>';
+      return a;
+    }
+    function pctFromAvg(avg){ var p=Math.round(((avg-1)/4)*100); if(p<0)p=0; if(p>100)p=100; return p; }
+    var gmPct = pctFromAvg(s.GM), pmPct = pctFromAvg(s.PM);
+    // Dは0〜100換算（中間50を0相当とみなす視覚化）
+    var dPct = Math.round( ( (s.D + 4) / 8 ) * 100 ); if(dPct<0)dPct=0; if(dPct>100)dPct=100;
+
+    profile.appendChild(bar('成長（GM）', '平均 '+s.GM.toFixed(2)+' / 5', gmPct));
+    profile.appendChild(bar('証明（PM）', '平均 '+s.PM.toFixed(2)+' / 5', pmPct));
+    profile.appendChild(bar('差（D = GM − PM）', (s.D>=0?'+':'')+s.D.toFixed(2), dPct));
+
+    // タイプ本文
+    typeBody.innerHTML = '<h3 style="margin:.2em 0 .4em;font-size:15px">'+t.name+'</h3>'+t.body;
+
+    // 表示
+    $('#result').style.display='block';
+    $('#result').scrollIntoView({behavior:'smooth',block:'start'});
+
+    // 保存（任意復元）
+    try{ localStorage.setItem('devMindsetLast', JSON.stringify({GM:s.GM,PM:s.PM,D:s.D,key:key,ts:Date.now()})); }catch(e){}
+  }
+
+  // ===== ボタン =====
+  $('#btnCalc').addEventListener('click', function(){ var vals=collect(); if(!vals) return; render(vals); });
+  $('#btnReset').addEventListener('click', function(){
+    $$('input[type="radio"]').forEach(function(i){i.checked=false;});
+    pbar.style.width='0%'; ptext.textContent='0 / 16';
+    $('#result').style.display='none'; head.innerHTML=''; profile.innerHTML=''; heroCopy.textContent=''; typeBody.innerHTML='';
+    $('#btnCalc').disabled=true; window.scrollTo({top:0,behavior:'smooth'});
+  });
+  $('#btnAgain').addEventListener('click', function(){
+    $('#result').style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  $('#btnShare').addEventListener('click', async function(){
+    var url = location.href.split('#')[0];
+    var text = 'マインドセット診断｜あなたの結果';
+    try{
+      if(navigator.share){ await navigator.share({title:document.title,text,url}); }
+      else{ await navigator.clipboard.writeText(url); this.textContent='URLをコピーしました'; setTimeout(()=>this.textContent='結果を共有',1600); }
+    }catch(e){}
+  });
+
+  // 直前の結果があればメモ表示（任意）
+  try{
+    var last = JSON.parse(localStorage.getItem('devMindsetLast')||'null');
+    if(last && last.key){
+      var msg = document.createElement('p'); msg.className='small';
+      msg.innerHTML = '前回タイプ：<b>'+TYPE[last.key].name+'</b> / GM '+last.GM.toFixed(2)+'・PM '+last.PM.toFixed(2)+'（D '+(last.D>=0?'+':'')+last.D.toFixed(2)+'）';
+      document.querySelector('#quiz .lead').after(msg);
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
