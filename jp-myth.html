@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ポジ⇄ネガ日本神話診断</title>
+<meta name="description" content="ポジティブ（陽）／ネガティブ（陰）の“いまの傾き”を、あるある16問（5件法）で可視化。陽度YO・陰度INの平均差Dで、天照〜月読の5タイプに分類します（エンタメ用）。">
+<meta name="theme-color" content="#f6fbff">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ポジ⇄ネガ日本神話診断">
+<meta property="og:description" content="ポジティブ／ネガティブの傾きを16問で測定。YO・INの差Dで5タイプ（天照〜月読）。コメントと整え方を表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/jp-myth.html">
+<meta property="og:image" content="/shindan/assets/results/jp-myth/01.png">
+
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#a48bff; /* cold palette */
+  --ink:#1f2732; --muted:#647085; --paper:#fff;
+  --bg1:#f6fbff; --bg2:#f5f3ff; --line:#e7edf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#dff2ff,#ece6ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.9em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#ecf3fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(58px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-vert{
+  display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden
+}
+.hero-vert figure{margin:0;width:min(580px,95vw);aspect-ratio:3/4;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px}
+.hero-vert .capline{font-weight:800}
+.hero-vert .capmini{font-size:.95em;color:var(--muted)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.bar{height:10px;background:#ecf3fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.hr{height:1px;background:var(--line);margin:10px 0}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">⛩️</div>
+    <div>
+      <h1>ポジ⇄ネガ日本神話診断</h1>
+      <p class="sub">ポジティブ（陽）／ネガティブ（陰）の<strong>傾き</strong>を16問で測るテストです。陽度YO・陰度INの平均から差分Dを出し、5タイプに分類します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：16</span>
+      <span class="pill">形式：5件法（1〜5）</span>
+      <span class="pill">目的：いまの傾きを知る</span>
+    </div>
+    <p class="small">YO＝Q1–8の平均（1–5）、IN＝Q9–16の平均（1–5）、D＝YO−IN。Dの値で5タイプに分けます（小数は小数点以下2桁表示）。</p>
+  </section>
+
+  <!-- 設問（固定：変更しない） -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（①いいえ／②あまり／③半々／④たぶん／⑤はい）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">上の設問に回答して「診断する」を押すと表示されます。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果タイプ</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- 縦長ヒーロー（3:4，大きく） -->
+      <div class="hero-vert section" role="region" aria-label="タイプのヒーロー画像">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/jp-myth/01.png" alt="雲間の陽が鳥居を照らす" loading="lazy" width="600" height="800">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値表示（YO/IN/D） -->
+      <div class="grid2">
+        <article class="stat" aria-label="陽度（YO）">
+          <div><strong>陽度（YO）</strong></div>
+          <div class="big"><span id="yoVal">0.00</span></div>
+          <div class="bar" aria-hidden="true"><span id="yoBar"></span></div>
+          <div class="small">上向き・楽しみ・切り替え</div>
+        </article>
+        <article class="stat" aria-label="陰度（IN）">
+          <div><strong>陰度（IN）</strong></div>
+          <div class="big"><span id="inVal">0.00</span></div>
+          <div class="bar" aria-hidden="true"><span id="inBar"></span></div>
+          <div class="small">心配・反すう・悪い予想</div>
+        </article>
+      </div>
+
+      <div class="stat section" aria-label="差分D">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <strong>D = YO − IN</strong>
+          <div class="big"><span id="dVal">+0.00</span></div>
+        </div>
+        <div class="small">閾値：01 ≥ +0.80 ／ 02：+0.30〜+0.79 ／ 03：−0.29〜+0.29 ／ 04：−0.30〜−0.79 ／ 05 ≤ −0.80</div>
+      </div>
+
+ <div class="hr"></div>
+<p class="small" id="commonLine">いくつかの研究では、ポジティブな気分は創造性や回復力、協調行動を高めやすい一方、ネガティブな気分は危険の早期検知やリスク回避、細部の見落とし防止に役立つと示唆されています。これは「どちらが良い/悪い」を決めるためではなく、いまの傾きを把握して、状況に合わせてアクセル（陽）とブレーキ（陰）を切り替える目安として使ってください。</p>
+      <div class="back-area">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  // ====== 固定情報 ======
+  const SLUG = "jp-myth";
+  const TITLE = "ポジ⇄ネガ日本神話診断";
+  const IMG_BASE = "/shindan/assets/results/jp-myth/"; // 末尾/維持
+
+  // タイプ定義（画像=3:4縦／文字なし、altは仕様どおり）
+  // ★ コメントはユーザー指定の文章をそのまま採用
+  const TYPE_DEF = {
+    "01": {
+      name:"天照（あまてらす） — 陽MAX",
+      img:"01.png",
+      alt:"雲間の陽が鳥居を照らす",
+      copy:`雲間から差す光みたいに、切り替えと楽しみ探しが早い人。予定が崩れても「じゃあこうしよう」と方向を照らせます。周りも明るくなる反面、落ち込む人を急かしすぎない配慮がカギ。“明るさを無理しない日”を用意すると、長く強く光れます。`
+    },
+    "02": {
+      name:"恵比寿（えびす） — やや陽",
+      img:"02.png",
+      alt:"夕暮れの港で鯛を掲げる恵比寿",
+      copy:`小さな良いことをすぐ拾える名人。場をほぐし、転んでも「まあいっか」で次へ進めます。人を励ます力がある一方、相手のペースを置き去りにしないよう共感→前向きの順番を守ると信頼が増えます。小さな祝いを増やすほど、陽の燃料が貯まります。`
+    },
+    "03": {
+      name:"大国主（おおくにぬし） — 中間",
+      img:"03.png",
+      alt:"大しめ縄の下で手を差し伸べる人と白兎",
+      copy:`慎重さと前向きのあいだで舵を切る調停役。困っている人に手を差し出し、合意点を見つけるのが得意です。悩みが回り始めたら二列メモ（左：心配／右：今できる一手）で停滞を断ち、まず一歩。バランス感覚が場を整えます。`
+    },
+    "04": {
+      name:"須佐之男（すさのお） — やや陰",
+      img:"04.png",
+      alt:"荒波の先に薄い晴れ間",
+      copy:`気圧や空気の変化に敏感で、嵐の気配を早めに嗅ぎ取れる人。短距離の突破に強い一方、風が強すぎると消耗もしやすい。心配は行動に変えて小さく処理すると力に変わります。ドラフトやサンドボックスを使い、「まず試す→本番」の順で舵を切ろう。`
+    },
+    "05": {
+      name:"月読（つくよみ） — 陰MAX",
+      img:"05.png",
+      alt:"静かな水面に三日月",
+      copy:`夜の静けさで深く観察し、考え抜ける人。慎重さは大きな強みですが、反すうで足が止まりやすいことも。渦を切るには3分だけ動くが効きます。最悪パターンの対策を一行書いたら閉じ、朝は小用事で起動、夜は“良かったこと”で締めると、静かな強さが宿ります。`
+    }
+  };
+
+  // 設問（固定：正採点・逆転なし）
+  const ITEMS = [
+    // YO 1–8
+    {id:1 , dim:"YO", text:"中止になっても別の楽しみをすぐ探す。"},
+    {id:2 , dim:"YO", text:"新しい課題にちょっとワクワクする。"},
+    {id:3 , dim:"YO", text:"褒められたら素直に「ありがとう」と言える。"},
+    {id:4 , dim:"YO", text:"乗り換え失敗でも次の手をさっと選べる。"},
+    {id:5 , dim:"YO", text:"良い天気の朝は新しいことを試したくなる。"},
+    {id:6 , dim:"YO", text:"おいしいものは誰かにおすすめしたくなる。"},
+    {id:7 , dim:"YO", text:"良いことをひとつ見つけるのが得意。"},
+    {id:8 , dim:"YO", text:"新しい趣味はまず体験してから考える。"},
+    // IN 9–16
+    {id:9 , dim:"IN", text:"返信が遅いと嫌われた？と不安になる。"},
+    {id:10, dim:"IN", text:"小さなミスを一日じゅう引きずりがち。"},
+    {id:11, dim:"IN", text:"初対面ではしばらく様子見。"},
+    {id:12, dim:"IN", text:"SNSの「いいね」が少ないと気になる。"},
+    {id:13, dim:"IN", text:"予定変更があるとイライラが残る。"},
+    {id:14, dim:"IN", text:"眠れない夜、失敗を何度も再生してしまう。"},
+    {id:15, dim:"IN", text:"断られると自分の価値が下がった気がする。"},
+    {id:16, dim:"IN", text:"将来を考えるとまず悪いほうを想像してしまう。"},
+  ];
+
+  // 5件法ラベル
+  const LABELS = ["①いいえ","②あまり","③半々","④たぶん","⑤はい"];
+
+  // 要素参照
+  const qWrap = document.getElementById("qWrap");
+  const prog = document.getElementById("prog");
+  const resEmpty = document.getElementById("resEmpty");
+  const resArea = document.getElementById("resArea");
+  const typeLine = document.getElementById("typeLine");
+  const heroImg = document.getElementById("heroImg");
+  const heroTitle = document.getElementById("heroTitle");
+  const heroCopy = document.getElementById("heroCopy");
+  const yoVal = document.getElementById("yoVal");
+  const inVal = document.getElementById("inVal");
+  const dVal = document.getElementById("dVal");
+  const yoBar = document.getElementById("yoBar");
+  const inBar = document.getElementById("inBar");
+  const backLink = document.getElementById("backLink");
+
+  // シャッフル
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  // 設問生成（文言は変更しない）
+  function buildQuestions(){
+    const pool = shuffle([...ITEMS]); // 全体シャッフルのみ
+    qWrap.innerHTML = pool.map(q => `
+      <fieldset class="q" data-dim="${q.dim}" id="fs-${q.id}">
+        <legend>${q.id}. ${q.text}</legend>
+        <div class="scale" role="radiogroup" aria-label="${q.text}">
+          ${[1,2,3,4,5].map(v=>`
+            <div style="position:relative">
+              <input id="q${q.id}-${v}" type="radio" name="q${q.id}" value="${v}">
+              <label for="q${q.id}-${v}" title="${LABELS[v-1]}">${LABELS[v-1]}</label>
+            </div>
+          `).join("")}
+        </div>
+      </fieldset>
+    `).join("");
+
+    // 進捗
+    qWrap.querySelectorAll('input[type="radio"]').forEach(el=>{
+      el.addEventListener('change', updateProgress, {passive:true});
+    });
+  }
+
+  function updateProgress(){
+    const total = 16;
+    const answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // 採点
+  function score(){
+    const answers = {};
+    const missing = [];
+    const dims = {YO:[], IN:[]};
+
+    ITEMS.forEach(q=>{ dims[q.dim].push(q.id); });
+
+    ITEMS.forEach(q=>{
+      const chk = qWrap.querySelector(`#fs-${q.id} input[type="radio"]:checked`);
+      const v = chk ? parseInt(chk.value,10) : null;
+      answers[q.id] = v;
+      if(v===null) missing.push(q.id);
+    });
+
+    if (missing.length){
+      alert("未回答があります。全16問に回答してください。");
+      const first = missing[0];
+      const fs = document.getElementById(`fs-${first}`);
+      fs.scrollIntoView({behavior:"smooth", block:"center"});
+      fs.classList.add("need");
+      setTimeout(()=>fs.classList.remove("need"),1600);
+      return;
+    }
+
+    const mean = ids => ids.reduce((s,id)=>s+answers[id],0)/ids.length;
+    const YO = mean(dims.YO);
+    const IN = mean(dims.IN);
+    const D  = YO - IN;
+
+    render(YO, IN, D);
+  }
+
+  // 分岐
+  function classify(D){
+    if (D >= +0.80) return "01";                  // 陽MAX
+    if (D >= +0.30 && D < +0.80) return "02";     // やや陽
+    if (D >= -0.29 && D <= +0.29) return "03";    // 中間
+    if (D >  -0.79 && D <= -0.30) return "04";    // やや陰
+    if (D <= -0.80) return "05";                  // 陰MAX
+    return "03";
+  }
+
+  function render(YO, IN, D){
+    // 数値（小数2桁）
+    const f2 = x => (Math.round(x*100)/100).toFixed(2);
+    yoVal.textContent = f2(YO);
+    inVal.textContent = f2(IN);
+    const sign = D>=0?"+":"";
+    dVal.textContent = sign + f2(D);
+
+    // バー（1–5→0–100）
+    const toPct = v => Math.max(0, Math.min(100, Math.round((v-1)/4*100)));
+    yoBar.style.width = toPct(YO) + "%";
+    inBar.style.width = toPct(IN) + "%";
+
+    // タイプ
+    const code = classify(D);
+    const def = TYPE_DEF[code];
+    typeLine.textContent = def.name;
+    heroImg.src = IMG_BASE + def.img;
+    heroImg.alt = def.alt;
+    heroTitle.textContent = def.name;
+    heroCopy.textContent = def.copy;
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  // クリア
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  // 初期化
+  buildQuestions();
+  document.getElementById("doScore").addEventListener("click", score);
+  document.getElementById("doScore2").addEventListener("click", score);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers);
+  document.getElementById("backLink")?.addEventListener("click", ()=>{
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
