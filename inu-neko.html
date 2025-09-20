@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>犬派？猫派？診断｜完全版</title>
+<meta name="description" content="本体12問（犬度×6・猫度×6）＋ボーナス2問で“犬派？猫派？”の傾きを測定。DOG/CATの差Dで5タイプに分類し、活動指数バッジや称号も表示。結果は縦長3:4イラストと長文コメント、話し方の具体例つき（エンタメ用）。">
+<meta name="theme-color" content="#f7f9ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="犬派？猫派？診断｜完全版">
+<meta property="og:description" content="12問＋ボーナス2問でDOG/CATを可視化。差分Dで5タイプ、ACTでサイズを表示。長文コメント＆会話の言い回し例つき。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/inu-neko.html">
+<meta property="og:image" content="/shindan/assets/results/inu-neko/05.png">
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#a48bff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+  --good:#40c057; --mid:#fab005; --low:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#ece6ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(600px,95vw);aspect-ratio:3/4;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px}
+.hero-vert .capline{font-weight:800}
+.hero-vert .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-vert .capmini{font-size:.95em;color:var(--muted);margin-top:4px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.klist{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.kpill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;font-size:.9em}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.84em}
+.title-emoji{font-size:22px}
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🐾</div>
+    <div>
+      <h1>犬派？猫派？診断｜完全版</h1>
+      <p class="sub">本体12問（犬度×6／猫度×6）＋ボーナス2問。DOG/CATの差分Dで5タイプに分類し、活動指数（ACT）でSmall/Mid/Largeバッジを付与。縦長3:4イメージ、長文コメント、話し方の言い回し例と一歩の提案を表示します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：12＋ボーナス2</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても当てはまる）</span>
+      <span class="pill">DOG/CAT：各0–24、D=−24〜+24</span>
+    </div>
+    <p class="small">犬的＝外向・協調・行動のスイッチ、猫的＝内向・創造・余白のスイッチ。この診断は「心地よい動き方のサイズ感」を知るためのセルフチェックです。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=どちらとも／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">本体：全12問（順不同）</span>
+      <span class="tag">🎖 ボーナス：2問（任意・称号用）</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">本体12問に回答して「診断する」を押してください。（ボーナスは任意）</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー（3:4大きく） -->
+      <div class="hero-vert section" role="region" aria-label="タイプのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/inu-neko/01.png" alt="山稜に立つ大猫の影" loading="lazy" width="600" height="800">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="活動指数サイズ">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値 -->
+      <div class="grid2">
+        <article class="stat" aria-label="スコア内訳">
+          <div><strong>スコア</strong></div>
+          <div class="small" style="line-height:1.8">
+            🐶 DOG：<strong id="dogVal">0</strong> / 24<br>
+            🐱 CAT：<strong id="catVal">0</strong> / 24<br>
+            ΔD（DOG−CAT）：<strong id="dVal">0</strong>（−24〜+24）<br>
+            ACT（活動指数）：<strong id="actVal">0</strong> / 12
+          </div>
+        </article>
+        <article class="stat" aria-label="DOG/CATバー">
+          <div><strong>バー表示</strong></div>
+          <div class="bar" style="margin-top:6px">
+            <div>🐶 DOG</div>
+            <div class="row" aria-hidden="true"><span id="dogBar" style="width:0%"></span></div>
+          </div>
+          <div class="bar" style="margin-top:10px">
+            <div>🐱 CAT</div>
+            <div class="row" aria-hidden="true"><span id="catBar" style="width:0%"></span></div>
+          </div>
+          <div class="small" id="pctLine" style="margin-top:6px">DOG：<span id="dogPct">0%</span> ／ CAT：<span id="catPct">0%</span></div>
+<div class="small" style="margin-top:8px">※ACTは複数項目の組合せから算出（静穏志向ほど低、活動志向ほど高）。</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS 長文コメント --></div>
+
+      <div class="hr"></div>
+      <!-- 研究ミニまとめ -->
+      <div class="section" id="researchSec">
+        <strong>ある研究では…（犬と猫の“科学的メリット”）</strong>
+        <ul class="small" id="researchList" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※観察研究や自己申告が中心で、平均差は小さめ。因果は断定できません。個人差があります。</p>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 称号 -->
+      <div class="section">
+        <strong>称号</strong>
+        <div class="klist" id="titleList"></div>
+        <div class="small" id="comboNote" style="margin-top:6px">—</div>
+      </div>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+
+      <div class="hr"></div>
+      <p class="small">研究メモ：ここで触れるミニ豆知識は国内外の複数調査をベースにした一般論です。相関が中心で平均差は小さめ、因果関係は明らかではありません。個人差が大きい点をご理解ください。</p>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  var SLUG = "inu-neko";
+  var TITLE = "犬派？猫派？診断｜完全版";
+  var IMG_BASE = "/shindan/assets/results/inu-neko/";
+
+  // ランク定義
+  var RANKS = [
+    {id:1, name:"大猫（ユキヒョウ／ヒョウ）", label:"猫科MAX",  range:[-24,-9], img:"01.png", alt:"山稜に立つ大猫の影",
+      poem:"夜気をまとい、静かな目で世界を測る。余白こそ、あなたの呼吸。"},
+    {id:2, name:"家猫＋山猫",               label:"猫寄り",    range:[-8,-3],  img:"02.png", alt:"月明かりの路地に猫の影",
+      poem:"路地裏の灯りに身を寄せ、好奇心はそっと爪先立ち。"},
+    {id:3, name:"犬×猫ハーフ", label:"犬×猫", range:[-2,2],   img:"03.png", alt:"肩を並べる犬と猫の相棒",
+      poem:"昼は群れ、夜は書斎。犬の陽気と猫の余白が、ひとつのチームになる。"},
+    {id:4, name:"牧羊犬／レトリバー",        label:"犬寄り",    range:[3,8],    img:"04.png", alt:"草原を走る犬の影",
+      poem:"合図ひとつで風が動く。仲間の輪に、あなたが火を入れる。"},
+    {id:5, name:"オオカミ／そり犬系",        label:"犬科MAX",  range:[9,24],   img:"05.png", alt:"オーロラの下で遠吠えする狼",
+      poem:"白い息は旗印。先頭を走り、道を作る。"}
+  ];
+
+  function sizeBadge(act){
+    if(act<=4)  return {key:"Small", text:"Small（静穏志向）"};
+    if(act<=8)  return {key:"Mid",   text:"Mid（中庸）"};
+    return {key:"Large", text:"Large（活動志向）"};
+  }
+
+  // 設問リスト（bonusがtrueのものは任意）
+  var ITEMS = [
+    // 犬度（DOG）
+    {id:1,  cat:false, text:"初対面の人ともすぐ打ち解けるほうだ。"},
+    {id:2,  cat:false, text:"みんなで動く予定があるとエネルギーが湧く。"},
+    {id:3,  cat:false, text:"締切やルールがあるほうが安心して動ける。"},
+    {id:4,  cat:false, text:"誰かのために役割を引き受けるのが好きだ。"},
+    {id:5,  cat:false, text:"外に出て体を動かすと気分が整う。"},
+    {id:6,  cat:false, text:"チームでの声かけ・励ましをよくする。"},
+    // 猫度（CAT）
+    {id:7,  cat:true,  text:"一人の没頭時間がないと調子が落ちる。"},
+    {id:8,  cat:true,  text:"予定はゆるめで余白がほしい。"},
+    {id:9,  cat:true,  text:"新しい表現やアイデアを試すのが楽しい。"},
+    {id:10, cat:true,  text:"人混みや大きな音で疲れやすい。"},
+    {id:11, cat:true,  text:"自分のペースやこだわりを大事にする。"},
+    {id:12, cat:true,  text:"大勢より少人数や1対1のほうが深く話せる。"},
+    // ボーナス（採点外・任意）
+    {id:13, cat:true,  bonus:true, badge:"cat", text:"猫は神様である。人間は下僕になるべきだ。"},
+    {id:14, cat:false, bonus:true, badge:"dog", text:"犬は最良の相棒だ。人はよろこんで散歩係になるべきだ。"}
+  ];
+  var LABELS = ["0 まったくない","1 あまりない","2 どちらとも","3 だいたい","4 とても"];
+
+  // 称号
+  var CAT_TITLES = [
+    {name:"人類代表", icon:"🧑‍⚖️", blurb:"対等に握手派。"},
+    {name:"共存派",   icon:"🤝",    blurb:"敬意は払う、が基本。"},
+    {name:"同居人",   icon:"🏠🐾",  blurb:"分担で平和。"},
+    {name:"敬猫同盟士", icon:"😼✨", blurb:"崇拝、課金は控えめ。"},
+    {name:"正式下僕", icon:"🙇‍♂️👑", blurb:"すべては陛下のため。"}
+  ];
+  var DOG_TITLES = [
+    {name:"ソロ冒険者", icon:"🧭",   blurb:"まずは自分の足で。"},
+    {name:"友好的観察者", icon:"👀🐶", blurb:"距離は保ちつつ好意的。"},
+    {name:"相棒志望",   icon:"🐾",   blurb:"たぶん相性はいい。"},
+    {name:"犬友同盟士", icon:"🤝🐕", blurb:"共に歩く前提。"},
+    {name:"名誉散歩係", icon:"🦮🏅", blurb:"散歩が正義、毎日行く。"}
+  ];
+
+  // 長文（フレーズ撤去・重複削除）
+var LONG_COPY = {
+  1: { text: "【猫科MAX｜大猫】静かな場所で力をため、ひとりの時間にアイデアが育つタイプ。人が多いところや大きな音が続くと疲れやすいけれど、窓辺のひなたのような落ち着く場所があると本領発揮。予定を詰めすぎず、深呼吸できる“間”を1コマ入れると、猫のようにしなやかに動けます。" },
+  2: { text: "【猫寄り｜家猫＋山猫】家の安心感を大切にしつつ、ときどき気ままに探検するタイプ。連絡は少し考えてから返したいし、道具は長く付き合いたい。席は出口に近いほうが安心、休憩の合図を決めておくと気持ちがやわらかくつながります。猫のように、自分のペースを抱きしめてOK。" },
+  3: { text: "【犬×猫ハーフ】外では犬のようにみんなで動き、家では猫のように静かに整える、ちょうど真ん中のタイプ。予定は“チームで作る→一人で仕上げる”の流れが合いやすい。どちらか一方に決めなくていいのが強み。場に合わせて耳としっぽを切り替えれば、長く気持ちよく走れます。" },
+  4: { text: "【犬寄り｜牧羊犬／レトリバー】誰かの役に立つと元気が出て、合図ひとつで場を前に進められるタイプ。人の面倒をよく見るぶん、自分の休憩も“役割”としてカレンダーに。犬の散歩みたいに、軽く歩きながら話すと、気分も会話もスムーズになります。" },
+  5: { text: "【犬科MAX｜オオカミ】目標が見えると一気に加速し、群れを導けるタイプ。朝夕の“散歩”のようなリズムが整うと頭も心も安定。予定が多い日は、あえて止まる時間をリードに結んでおくのがコツ。走る時は力強く、止まる時はしっかり。犬らしいまっすぐさが、周りの安心にもつながります。" }
+};
+
+  // 要素参照
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl = document.getElementById("sizeBadge");
+  var dogVal  = document.getElementById("dogVal");
+  var catVal  = document.getElementById("catVal");
+  var dVal    = document.getElementById("dVal");
+  var actVal  = document.getElementById("actVal");
+  var dogBar  = document.getElementById("dogBar");
+  var catBar  = document.getElementById("catBar");
+  var longCopy= document.getElementById("longCopy");
+  var researchList = document.getElementById("researchList");
+  var titleList = document.getElementById("titleList");
+  var comboNote = document.getElementById("comboNote");
+
+  function shuffle(a){
+    for(var i=a.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function buildQuestions(){
+    // 本体12問シャッフル＋ボーナス2問は末尾固定
+    var main = shuffle(ITEMS.filter(function(q){return !q.bonus;}));
+    var bonus= ITEMS.filter(function(q){return !!q.bonus;});
+    var pool = main.concat(bonus);
+
+    var html = "";
+    for(var i=0;i<pool.length;i++){
+      var q = pool[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'"'+(q.bonus?' data-bonus="1"':'')+'>'+
+        '<legend>'+q.text+(q.bonus?' <span class="pill" aria-label="採点外">採点外</span>':'')+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', updateProgress, false);
+    }
+    updateProgress();
+  }
+
+  function updateProgress(){
+    // ボーナスを進捗対象から除外
+    var requiredFs = qWrap.querySelectorAll('fieldset.q:not([data-bonus="1"])');
+    var total = requiredFs.length;
+    var answered = 0;
+    for(var i=0;i<requiredFs.length;i++){
+      if(requiredFs[i].querySelector('input[type="radio"]:checked')) answered++;
+    }
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  function score(){
+    var missing = [];
+    var ans = {};
+
+    // まず本体12問のみ必須チェック
+    var required = ITEMS.filter(function(q){return !q.bonus;});
+    for(var i=0;i<required.length;i++){
+      var q = required[i];
+      var chk = qWrap.querySelector('#fs-'+q.id+' input[type="radio"]:checked');
+      var raw = chk ? parseInt(chk.value,10) : null;
+      if(raw===null){ missing.push(q.id); continue; }
+      ans[q.id] = raw;
+    }
+    // ボーナスは任意（未回答は記録しない）
+    var bonus = ITEMS.filter(function(q){return !!q.bonus;});
+    for(var j=0;j<bonus.length;j++){
+      var qb = bonus[j];
+      var chkb = qWrap.querySelector('#fs-'+qb.id+' input[type="radio"]:checked');
+      if(chkb){ ans[qb.id] = parseInt(chkb.value,10); }
+    }
+
+    if(missing.length){
+      alert("未回答があります。本体12問に回答してください。（ボーナス2問は任意）");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 集計（本体のみ）
+    var dog=0, cat=0;
+    for(var k=0;k<required.length;k++){
+      var rq = required[k];
+      var v = (ans[rq.id] != null ? ans[rq.id] : 0);
+      if(rq.cat) cat += v; else dog += v;
+    }
+    var D = dog - cat;
+    var act = ((ans[2]||0) + (ans[5]||0) + (4 - (ans[10]||0))); // Q10は本体
+
+    render({dog:dog, cat:cat, D:D, act:act, ans:ans});
+  }
+
+  function rankOf(D){
+    for(var i=0;i<RANKS.length;i++){
+      var r = RANKS[i];
+      if(D>=r.range[0] && D<=r.range[1]) return r;
+    }
+    return RANKS[2];
+  }
+
+  function bonusTitles(ans){
+    var c = ans[13];
+    var d = ans[14];
+    var res = [];
+    if(typeof c==="number"){ var ct = CAT_TITLES[c]; res.push({who:"猫", name:ct.name, icon:ct.icon, blurb:ct.blurb}); }
+    if(typeof d==="number"){ var dt = DOG_TITLES[d]; res.push({who:"犬", name:dt.name, icon:dt.icon, blurb:dt.blurb}); }
+    return {list:res, c:c, d:d};
+  }
+
+  function render(o){
+    var rank = rankOf(o.D);
+    var size = sizeBadge(o.act);
+
+    typeLine.textContent = rank.label+"｜"+rank.name+"（D="+(o.D>=0?("+"+o.D):o.D)+"）";
+    heroImg.src = IMG_BASE + rank.img;
+    heroImg.alt = rank.alt;
+    heroTitle.textContent = 'あなたは「'+rank.label+'｜'+rank.name+'」';
+    sizeBadgeEl.textContent = size.text;
+    heroPoem.textContent = rank.poem;
+
+    var LC = LONG_COPY[rank.id];
+    heroCopy.textContent = LC.text.split("。")[0] + "。";
+    longCopy.textContent = LC.text;
+
+    dogVal.textContent = o.dog;
+    catVal.textContent = o.cat;
+    dVal.textContent   = (o.D>=0?("+"+o.D):o.D);
+    actVal.textContent = o.act;
+    var dogP = Math.round(o.dog/24*100);
+var catP = Math.round(o.cat/24*100);
+dogBar.style.width = dogP + "%";
+catBar.style.width = catP + "%";
+var dp = document.getElementById("dogPct"), cp = document.getElementById("catPct");
+if(dp) dp.textContent = dogP + "%";
+if(cp) cp.textContent = catP + "%";
+
+  /* 研究ミニまとめ（やさしい日本語・件数多め） */
+var DOG_BEN = [
+  "犬といっしょに暮らす人は、<b>歩く時間が長い</b>という報告がいくつかあります（理由ははっきりしません）。",
+  "犬にさわったあと<b>気分が良くなった</b>という実験もあります（人によります）。",
+  "朝夕の<b>散歩が生活リズムを整えやすい</b>と感じる人が多い、という調査があります。",
+  "犬がいると<b>会話が増えた</b>という観察もあります（場づくりの効果かもしれません）。",
+  "犬の存在が<b>運動のきっかけ</b>になる人がいる、という報告もあります（因果は不明）。"
+];
+var CAT_BEN = [
+  "猫をなでると<b>心が落ち着く</b>と答える人が多い、という調査があります。",
+  "猫と静かに過ごすことで<b>安心しやすい</b>人がいる、という報告もあります。",
+  "猫の<b>ゴロゴロ音</b>が心地よいと感じる人が多い、という仮説的な話もあります（検証途中）。",
+  "猫好きは<b>一人の集中時間を大事にする</b>傾向がある、という調査もあります（差は小さめ）。",
+  "猫と暮らす人は<b>家で過ごす時間が増えた</b>と答えることがある、という報告もあります。"
+];
+// 傾向側を多め＋反対側も少し
+var resItems = (o.D >= 0)
+  ? DOG_BEN.slice(0,3).concat(CAT_BEN.slice(0,2))
+  : CAT_BEN.slice(0,3).concat(DOG_BEN.slice(0,2));
+researchList.innerHTML = resItems.map(function(s){return "<li>"+s+"</li>";}).join("");
+
+    // 称号（回答があれば表示）
+    var bt = bonusTitles(o.ans);
+    if(bt.list.length){
+      var tHtml = "";
+      for(var k=0;k<bt.list.length;k++){
+        var t = bt.list[k];
+        tHtml += "<span class='kpill'>【"+t.who+"】"+t.name+" "+t.icon+" — "+t.blurb+"</span>";
+      }
+      titleList.innerHTML = tHtml;
+    }else{
+      titleList.innerHTML = "<span class='small'>（ボーナス未回答：称号なし）</span>";
+    }
+
+    // コンビ演出
+    var combo = "";
+    if(typeof bt.c==="number" && typeof bt.d==="number" && bt.c>=3 && bt.d>=3){
+      combo = "複称号：<b>二重忠誠</b>（外では群れ長、家では下僕）";
+    }
+    if(rank.id===3 && typeof bt.c==="number" && bt.c>=3){
+      combo += (combo? " ／ " : "") + "副称号：<b>二重臣民</b>（犬＝おやつ税／猫＝日向税）";
+    }
+    comboNote.innerHTML = combo || "—";
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block"; // 明示
+    var res = document.getElementById("result");
+    if(res){ res.scrollIntoView({behavior:"smooth", block:"start"}); }
+
+    // 一覧「つづきから」
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // 初期化
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
