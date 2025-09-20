@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>会話オープナー診断</title>
+<meta name="description" content="自己評定20項目（0〜4の5件法）で“会話の開きやすさ”を測るフル版テスト。合計0〜80点を5段階にランク（厳重保管庫→開いたアーチ）。因子別の棒グラフと、詳しい結果コメント＋メリット解説＋次に効く“鍵”スキルを提示します（エンタメ用）。">
+<meta name="theme-color" content="#f7f9ff">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="会話オープナー診断">
+<meta property="og:description" content="自己評定20項目で“会話の開きやすさ”をチェック。0〜80点を5段階に分類し、因子グラフと詳しいアドバイスを表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/opener.html">
+<meta property="og:image" content="/shindan/assets/results/opener/05.png">
+
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#a48bff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+  --good:#40c057; --mid:#fab005; --low:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#ece6ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-vert{
+  display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden
+}
+.hero-vert figure{margin:0;width:min(600px,95vw);aspect-ratio:3/4;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px}
+.hero-vert .capline{font-weight:800}
+.hero-vert .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-vert .capmini{font-size:.95em;color:var(--muted);margin-top:4px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+
+.klist{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.kpill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;font-size:.9em}
+
+.bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .hint{font-size:.9em;color:var(--muted);margin-top:6px}
+.band{display:inline-block;border-radius:6px;padding:2px 6px;margin-left:6px;font-size:.8em}
+.band.good{background:#e6fcf5;color:#0b8f5e;border:1px solid #c3fae8}
+.band.mid{background:#fff9db;color:#946200;border:1px solid #ffe066}
+.band.low{background:#fff5f5;color:#a61e4d;border:1px solid #ffa8a8}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🔑</div>
+    <div>
+      <h1>会話オープナー診断</h1>
+      <p class="sub">自己評定20項目（0〜4の5件法）。合計0〜80点を5段階で表示し、因子別グラフ・詳しい結果コメント・“次の鍵”スキルを提示します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：20</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とてもよく当てはまる）</span>
+      <span class="pill">合計：0–80点</span>
+    </div>
+    <p class="small">会話の“開きやすさ”と“安全な境界”のバランスを見るためのセルフチェックです。</p>
+  </section>
+
+  <!-- 設問（★の表示や逆転案内は出さない） -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=どちらとも／3=だいたい／4=とてもある）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全20問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー（3:4大きく） -->
+      <div class="hero-vert section" role="region" aria-label="レベルのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/opener/01.png" alt="鋼鉄の金庫扉（開放度1/5）" loading="lazy" width="600" height="800">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値 -->
+      <div class="grid2">
+        <article class="stat" aria-label="合計点">
+          <div><strong>合計点</strong></div>
+          <div class="big"><span id="sumVal">0</span> / 80</div>
+          <div class="small">スコアは“開放”と“境界”の今のバランスの目安です。</div>
+        </article>
+        <article class="stat" aria-label="オープナースコアのメリット">
+          <div><strong>オープナースコアが高いと</strong></div>
+          <ul class="small" style="margin:6px 0 0 18px;line-height:1.6">
+            <li>初対面やオンラインでも心理的安全が生まれやすい</li>
+            <li>相手の本題やニーズに早く届き、回り道が減る</li>
+            <li>ズレや誤解が起きても、対話で修正しやすい</li>
+            <li>関係の「スピード違反」（押しすぎ／聞きすぎ）を避けやすい</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- 因子グラフ -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div class="bars" id="bars"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS（レベル別の長文コメント） --></div>
+
+      <div class="hr"></div>
+      <!-- 追加：フレーズ例 -->
+      <div class="section" id="phraseSec">
+        <strong>話し方のフレーズ例（そのまま使える）</strong>
+        <ul id="phraseList" class="small" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+      </div>
+
+      <div class="hr"></div>
+      <div>
+        <strong>次の鍵（おすすめ1〜3）</strong>
+        <div class="klist" id="keyList"></div>
+        <div class="small" id="keyTips" style="margin-top:6px">—</div>
+      </div>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  // ====== ページ情報 ======
+  const SLUG = "opener";
+  const TITLE = "会話オープナー診断";
+  const IMG_BASE = "/shindan/assets/results/opener/"; // 末尾/
+
+  // ====== 画像仕様（5段階＋詩的キャッチ） ======
+  const LV_DEF = {
+    1:{min:0,  max:26, img:"01.png", label:"厳重保管庫 (Vault)", alt:"鋼鉄の金庫扉（開放度1/5）",
+       poem:"鍵はまだ胸の内、沈黙の向こうで灯りが待つ。",
+       copy:`いまのあなたは、対話を安全に保つ感覚が強く働いています。沈黙や相手の未完了が落ち着かず、つい結論や助言へ急ぎやすいときは、名詞1語で要約してから10秒だけ待ってみましょう。待つ間に「時間枠」と「ゴール」を一言で置けば、相手もあなたも安心して次へ進めます。`},
+    2:{min:27, max:42, img:"02.png", label:"重い鉄扉 (Iron)", alt:"覗き穴のある鉄扉（開放度2/5）",
+       poem:"きしむ扉の向こうから、あたたかい気配がのぞく。",
+       copy:`開き始めの段階。具体的に聞ける一方で、返信が遅いと追撃したり、沈黙を埋めすぎたりが出やすい帯です。問いはWHで1つに絞り、言いかけを飲み込む場面を1回つくるだけで、会話の呼吸が整います。`},
+    3:{min:43, max:56, img:"03.png", label:"木の扉（施錠） (Wood)", alt:"鍵穴だけの木の扉（開放度3/5）",
+       poem:"鍵穴が回り、ことことと灯りが応える。",
+       copy:`土台はできています。要約→感情の反映→もう一歩の具体質問の順で回せると、鍵穴がカチッと回る感覚に。自分の話は橋渡し1行に留め、合図（スルーOK）を先に置くと、安心して本題に入れます。`},
+    4:{min:57, max:68, img:"04.png", label:"半開き (Ajar)", alt:"半開きの扉（開放度4/5）",
+      poem:"半開きの隙間風、呼吸が合えば灯りは広がる。",
+      copy:`呼吸と間合いが合ってきています。時間枠とゴールの宣言が効いて、脱線しても戻れる強さがあります。ここからは“深さ−1”の相互開示で速度違反を防ぎつつ、未完了は保存して続きへ。関係が長持ちします。`},
+    5:{min:69, max:80, img:"05.png", label:"開いたアーチ (Arch)", alt:"開いたアーチ門（開放度5/5）",
+       poem:"開いたアーチに風が通り、言葉はやさしく往復する。",
+       copy:`開放と境界のバランスがとても良い状態。相手の言葉選びやペースを尊重しながら、必要なときはそっと灯りを足せます。三拍子（具体要約→感情反映→具体質問）で本質に届き、合意形成もスムーズです。`}
+  };
+
+  // ====== 因子マップ（6因子） ======
+  // SPEC=具体化, EMPA=反映, PACE=ペース&沈黙, BOUND=境界&追撃, FRAME=枠&ゴール, BRIDGE=橋渡し
+  const FACTORS = {
+    SPEC : {name:"具体化", items:[1,9,16,3], hint:"抽象語を具体に置き換えてズレを減らす"},
+    EMPA : {name:"反映", items:[2,11,14,15], hint:"感情を映し、主役を相手に戻す"},
+    PACE : {name:"ペース&沈黙", items:[5,8,17], hint:"速さと間を合わせ、沈黙を味方に"},
+    BOUND: {name:"境界&追撃", items:[10,6,18,19], hint:"境界と返信の間合いで安全を守る"},
+    FRAME: {name:"枠&ゴール", items:[7,12,20], hint:"時間・目的を明確にし迷子を防ぐ"},
+    BRIDGE:{name:"橋渡し", items:[4,15], hint:"自分の話は“つなぎ”に留める"}
+  };
+
+  // ====== 質問（★逆転は内部処理のみ。UIには表示しない） ======
+  // ※Q1,9,11,12 を分かりやすく、Q4/Q11は例を明示。Q18をより平易に変更。
+  const ITEMS = [
+    // 具体化
+    {id:1 , rev:false, text:"相手の話から具体的な場面を1つ選んで聞ける（例：一番大変だった場面は？）"},
+    {id:9 , rev:false, text:"「すごい」などの感想ではなく、相手の言葉を具体に言い換えて返せる（例：締切の不安ってことだね）"},
+    {id:16, rev:false, text:"区切りフレーズで要点を整理できる（「つまり…」「いちばんは…」）"},
+    {id:3 , rev:true , text:"すぐに結論や助言を口にしてしまう"},
+    // 反映
+    {id:2 , rev:false, text:"相手の感情を言語化して返せる（「緊張もあった？」）"},
+    {id:11, rev:false, text:"相手が1段深く話したとき、自分は浅い開示で返せる（例：相手＝家族の悩み→自分＝最近の小さな心配）"},
+    {id:14, rev:false, text:"声色・表情など非言語の変化に一言そえられる"},
+    {id:15, rev:true , text:"相手の話の途中で自分の体験にすり替えがち"},
+    // ペース&沈黙
+    {id:5 , rev:false, text:"相手の話速・間に合わせられる"},
+    {id:8 , rev:true , text:"沈黙が怖くて埋め続けてしまう"},
+    {id:17, rev:true , text:"沈黙が続くと話題をすぐ切り替えてしまう"},
+    // 境界&追撃
+    {id:10, rev:false, text:"話したくない話題の境界を尊重し、合図を待てる"},
+    {id:6 , rev:false, text:"返信が遅くても不安で追撃しない"},
+    {id:18, rev:false, text:"最初に“話せる範囲”を一言で確認できる（例：「話したくない話題があったら合図してね」）"},
+    {id:19, rev:false, text:"返信の目安を一言で合意できる（例：明日までに返すね）"},
+    // 枠&ゴール
+    {id:7 , rev:false, text:"相談では時間枠とゴールを先に示せる（「15分だけ…」）"},
+    {id:12, rev:true , text:"話が途中でも結論を急いでしまう"},
+    {id:20, rev:true , text:"「で、どうする？」など結末を早く求めがち"},
+    // 橋渡し
+    {id:4 , rev:false, text:"自分の話は一言の“橋渡し”に留められる（例：「自分も似た場面があったよ」とだけ添えて、すぐ相手に戻す）"},
+  ];
+
+  // 5件法ラベル（0〜4）
+  const LABELS = ["0 まったくない","1 あまりない","2 どちらとも","3 だいたい","4 とてもある"];
+
+  // “鍵”スキル辞書
+  const KEY_DICT = {
+    1:{name:"具体質問", tip:"WHで『一番』を聞く（例：どの場面が一番しんどかった？）", btn:"具体質問"},
+    2:{name:"感情反映", tip:"気持ち語を先に置く（例：緊張もあった？）", btn:"感情を映す"},
+    3:{name:"ジャッジ抑制→具体化", tip:"結論先行を控え、『どこが助かったか』へ具体化", btn:"具体化スイッチ"},
+    4:{name:"橋渡し一言", tip:"自分の話は10秒/1行だけ“橋渡し”", btn:"橋渡し1行"},
+    5:{name:"ペース合わせ", tip:"相手の速さ・間をミラーする", btn:"ミラーリング"},
+    6:{name:"追撃抑制", tip:"返信は24時間は追わない", btn:"追撃は1回まで"},
+    7:{name:"枠・ゴール宣言", tip:"『15分だけ』『今日のゴールは整理』", btn:"15分宣言"},
+    8:{name:"沈黙許容", tip:"10秒を心の中で数える", btn:"沈黙10秒"},
+    9:{name:"具体要約", tip:"最後の名詞を繰り返して返す", btn:"具体要約"},
+    10:{name:"境界尊重", tip:"『スルーOK』『ここまででOK』を先に置く", btn:"境界の合図"},
+    11:{name:"相互開示（深さ−1）", tip:"相手より一段浅い開示で安全に", btn:"深さ−1"},
+    12:{name:"未完了を急がない", tip:"『続きはまた』で保存を選ぶ", btn:"続きはまた"},
+    14:{name:"非言語の拾い", tip:"表情・声色の変化に一言そえる", btn:"非言語に一言"},
+    16:{name:"区切り要約", tip:"『つまり／一番は』で方向づけ", btn:"区切り要約"},
+    18:{name:"話せる範囲の合図", tip:"最初に話題のOK/NGを確認する", btn:"合図OK?"},
+    19:{name:"返信間隔の合意", tip:"返信の目安を一言で共有", btn:"返信スケジュール"},
+    20:{name:"結末を急がない", tip:"『今はここまででOK』を言葉に", btn:"急がない"}
+  };
+
+  // レベル長文コメント（既存）
+  const LV_LONG = {
+    1:`いまのあなたは、対話を安全に保つ感覚が強く働いています。沈黙や相手の未完了が落ち着かず、つい結論や助言へ急ぎやすいときは、名詞1語で要約してから10秒だけ待ってみましょう。待つ間に「時間枠」と「ゴール」を一言で置けば、相手もあなたも安心して次へ進めます。`,
+    2:`会話の扉は開きはじめています。具体質問はできているので、次は“埋めトーク”を1回減らすことに挑戦。返信が遅くても追撃せず、翌日のリマインドに回すだけで、信頼の貯金が増えます。区切り要約（「つまり…」）があると、話の軸がぶれません。`,
+    3:`土台はしっかり。要約→感情反映→具体質問の三拍子がハマると、相手の本題に届きやすくなります。あなたの体験は橋渡し1行に限定し、境界の合図（スルーOK）を先に置くと、安心の幅がさらに広がります。`,
+    4:`呼吸が合ってきて、半開きの扉からあたたかい光が漏れています。時間枠・ゴールの宣言と、“深さ−1”の相互開示が効いています。未完了は急がず保存し、「続きはまた」で関係を長持ちさせる運転ができています。`,
+    5:`開いたアーチ。あなたは開放と境界の両立が得意です。非言語の変化を拾い、必要なときだけ灯りを足す。三拍子（具体要約→感情反映→具体質問）で合意が生まれ、誤解が起きても対話で修正できます。スキル名を軽く共有すると、再現性がさらに上がります。`
+  };
+
+  // レベル別フレーズ例（新規追加）
+  const LV_PHRASES = {
+    1:[
+      "「つまり、今いちばん不安なのは“締切”で合ってる？」",
+      "「3分だけ状況を整理しよう。結論は急がなくてOK」",
+      "（沈黙10秒）「今はここまででOK。続きはまたにしよう」",
+      "「話したくない話題があれば合図してね。飛ばして大丈夫」",
+      "「返信は明日で大丈夫？ 無理なら言ってね」"
+    ],
+    2:[
+      "「一番大変だった場面って、どこだった？」",
+      "「それ、少し緊張もあった？」",
+      "「区切るなら今日はここまでにして、明日続きを聞かせて」",
+      "「今の話、つまり“人手不足”が核心ってことかな？」",
+      "「未読でもOK。追撃しないで待ってるね」"
+    ],
+    3:[
+      "「つまり“確認の手間”が一番の負担、で合ってる？」→「その場面、いつが多い？」",
+      "「（自分の話は1行だけ）自分も似た場面あったよ。…で、今どこまで話せそう？」",
+      "「スルーOKだから、言いづらい話題は飛ばしてね」",
+      "「最後の名詞だけ返すね。“見積り”が焦点、だよね」",
+      "「続きはまた。今日は“整理”がゴールで」"
+    ],
+    4:[
+      "「15分だけ、今日のゴールは“整理”。深掘りは次回でいい？」",
+      "「その時、少しホッとした？ それともモヤッと？」",
+      "「合図は👋で。話題変えたい時はすぐ変えよう」",
+      "「今は保存でOK。“続きはまた”にしておこう」",
+      "「ペースはあなたに合わせるね。ゆっくりで大丈夫」"
+    ],
+    5:[
+      "「要するに“担当の曖昧さ”がネックで、少し悔しい。合ってる？ → 次にどこを動かす？」",
+      "「具体→感情→具体の順でいくね。今の“不在連絡”、どの場面で一番困る？」",
+      "「速度はあなたのペースで。急がなくて大丈夫」",
+      "「このスキル名は“具体要約”。今もそれを使ってるよ」",
+      "「今日はここまででOK。続きをまた予定合わせよう」"
+    ]
+  };
+
+  // ====== 要素参照 ======
+  const qWrap   = document.getElementById("qWrap");
+  const prog    = document.getElementById("prog");
+  const resEmpty= document.getElementById("resEmpty");
+  const resArea = document.getElementById("resArea");
+  const typeLine= document.getElementById("typeLine");
+  const heroImg = document.getElementById("heroImg");
+  const heroTitle= document.getElementById("heroTitle");
+  const heroPoem = document.getElementById("heroPoem");
+  const heroCopy = document.getElementById("heroCopy");
+  const sumVal  = document.getElementById("sumVal");
+  const bars    = document.getElementById("bars");
+  const longCopy= document.getElementById("longCopy");
+  const keyList = document.getElementById("keyList");
+  const keyTips = document.getElementById("keyTips");
+  const phraseList = document.getElementById("phraseList");
+
+  // ====== ユーティリティ ======
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  // ====== 設問生成（逆転表示はしない） ======
+  function buildQuestions(){
+    const pool = shuffle([...ITEMS]);
+    qWrap.innerHTML = pool.map(q => `
+      <fieldset class="q" id="fs-${q.id}">
+        <legend>${q.id}. ${q.text}</legend>
+        <div class="scale" role="radiogroup" aria-label="${q.text}">
+          ${[0,1,2,3,4].map(v=>`
+            <div style="position:relative">
+              <input id="q${q.id}-${v}" type="radio" name="q${q.id}" value="${v}">
+              <label for="q${q.id}-${v}" title="${LABELS[v]}">${LABELS[v]}</label>
+            </div>
+          `).join("")}
+        </div>
+      </fieldset>
+    `).join("");
+
+    qWrap.querySelectorAll('input[type="radio"]').forEach(el=>{
+      el.addEventListener('change', updateProgress, {passive:true});
+    });
+  }
+
+  function updateProgress(){
+    const total = ITEMS.length;
+    const answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== 採点 ======
+  function score(){
+    const missing = [];
+    const ans = new Map(); // id -> point(0-4 after reverse)
+    for(const q of ITEMS){
+      const chk = qWrap.querySelector(`#fs-${q.id} input[type="radio"]:checked`);
+      const raw = chk ? parseInt(chk.value,10) : null;
+      if(raw===null) { missing.push(q.id); continue; }
+      const point = q.rev ? (4 - raw) : raw; // 逆転は内部で処理、UIには非表示
+      ans.set(q.id, point);
+    }
+    if (missing.length){
+      alert("未回答があります。全20問に回答してください。");
+      const fs = document.getElementById(`fs-${missing[0]}`);
+      fs.scrollIntoView({behavior:"smooth", block:"center"});
+      fs.classList.add("need");
+      setTimeout(()=>fs.classList.remove("need"),1600);
+      return;
+    }
+    // 合計
+    let sum = 0;
+    for(const v of ans.values()) sum += v;
+    render(sum, ans);
+  }
+
+  // ランク判定
+  function rankOf(sum){
+    for(const lv of [1,2,3,4,5]){
+      const d = LV_DEF[lv];
+      if(sum>=d.min && sum<=d.max) return lv;
+    }
+    return 1;
+  }
+
+  // 因子スコア（0-100%）
+  function factorScores(ans){
+    const toPct = v => Math.round((v/4)*100);
+    const out = {};
+    for(const [key, def] of Object.entries(FACTORS)){
+      const vals = def.items.map(id => ans.get(id)).filter(v=>typeof v==="number");
+      const avg = vals.reduce((s,v)=>s+v,0)/vals.length;
+      out[key] = { pct: Math.max(0, Math.min(100, toPct(avg))), count: def.items.length };
+    }
+    return out;
+  }
+
+  // 低スコア鍵 Top1-3
+  function lowestKeys(ans){
+    const arr = ITEMS.map(q=>({id:q.id, point: ans.get(q.id)}));
+    arr.sort((a,b)=> a.point - b.point || a.id - b.id);
+    return arr.slice(0,3).map(o=>o.id);
+  }
+
+  // ====== 表示 ======
+  function render(sum, ans){
+    // ランク
+    const lv = rankOf(sum);
+    const D = LV_DEF[lv];
+
+    // ヒーロー
+    heroImg.src = IMG_BASE + D.img;
+    heroImg.alt = D.alt;
+    heroTitle.textContent = `あなたのオープナー度：Lv${lv}（${D.label}）`;
+    heroPoem.textContent  = D.poem;
+    heroCopy.textContent  = D.copy;
+
+    // 合計
+    sumVal.textContent = String(sum);
+    typeLine.textContent = `Lv${lv}（${D.label}） / ${sum}点`;
+
+    // 因子バー
+    const fs = factorScores(ans);
+    const bandClass = pct => pct>=70 ? "good" : (pct>=40 ? "mid" : "low");
+    const bandLabel = pct => pct>=70 ? "高" : (pct>=40 ? "中" : "低");
+    const order = ["SPEC","EMPA","PACE","BOUND","FRAME","BRIDGE"];
+    bars.innerHTML = order.map((key)=>{
+      const def = FACTORS[key];
+      const pct = fs[key].pct;
+      return `
+        <article class="bar" aria-label="${def.name}">
+          <div><strong>${def.name}</strong><span class="band ${bandClass(pct)}">${bandLabel(pct)}</span></div>
+          <div class="row" aria-hidden="true"><span style="width:${pct}%"></span></div>
+          <div class="small" style="margin-top:4px">${pct} / 100</div>
+          <div class="hint">${def.hint}</div>
+        </article>
+      `;
+    }).join("");
+
+    // 長文コメント
+    longCopy.textContent = LV_LONG[lv];
+
+    // フレーズ例
+    const phrases = LV_PHRASES[lv] || [];
+    phraseList.innerHTML = phrases.map(t=>`<li>${t}</li>`).join("");
+
+    // 次の鍵：低スコア項目 Top1-3
+    const lowIds = lowestKeys(ans);
+    keyList.innerHTML = lowIds.map(i=>`<span class="kpill">#${i} ${KEY_DICT[i]?.name ?? "—"}</span>`).join("");
+    keyTips.textContent = lowIds.map(i=>KEY_DICT[i]?.tip).filter(Boolean).join("／");
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 保存（一覧の「つづきから再開」）
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // ====== クリア ======
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  // ====== 初期化 ======
+  buildQuestions();
+  document.getElementById("doScore").addEventListener("click", score);
+  document.getElementById("doScore2").addEventListener("click", score);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers);
+  document.getElementById("backLink")?.addEventListener("click", ()=>{
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
