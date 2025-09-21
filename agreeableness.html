@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>協調性・北欧神話診断</title>
+<meta name="description" content="協調性の6下位因子×各3問=18問を0〜4の5件法で回答。総合ランク（ロキ〜バルドル）と因子別バー、守護バッジ、やさしい解説と研究メモを表示します（エンタメ用／独自項目）。">
+<meta name="theme-color" content="#f7f9ff">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="協調性・北欧神話診断">
+<meta property="og:description" content="18問で協調性をチェック。総合ランク（神様）と因子バー、守護バッジ、研究メモを表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/agreeableness.html">
+<meta property="og:image" content="/shindan/assets/results/agreeableness/03.png">
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#a48bff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+  --good:#40c057; --mid:#fab005; --low:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#ece6ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(600px,100%);max-width:100%;aspect-ratio:3/4;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-vert .capmini{font-size:1em;line-height:1.9;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.klist{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.kpill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;font-size:.9em}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.84em}
+.title-emoji{font-size:22px}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.guard{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px}
+.guard .g-emo{font-size:18px}
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note .mini{display:inline-block;margin-left:6px;font-size:.82em;color:#6b6a77}
+.note p{margin:6px 0;line-height:1.8}
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🛡️</div>
+    <div>
+      <h1>協調性・北欧神話診断</h1>
+      <p class="sub">6下位因子×各3問＝18問（0〜4の5件法）。総合ランク（神様）と因子別バー、守護バッジ、やさしい解説・研究メモを表示します。※独自項目のエンタメ自己理解用。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：18</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても）</span>
+      <span class="pill">総合：0–4（6因子平均）</span>
+    </div>
+    <p class="small">協調＝「人と気持ちよく進む工夫」。率直さや優しさ、境界づくりも含みます。ここでは<strong>いまのバランス</strong>をそっと可視化します。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=半々／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">下位因子：信頼／率直・誠実／利他／協調・順応／謙虚／共感</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全18問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー（3:4大きく） -->
+      <div class="hero-vert section" role="region" aria-label="ランクのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/agreeableness/01.png" alt="仮面と揺れる炎" loading="lazy" width="600" height="800">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="avgBadge" aria-label="総合平均">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値 -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合協調性（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00</div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="守護バッジ">
+          <div><strong>守護（下位因子の相棒）</strong></div>
+          <div class="factor-mini" id="guardArea"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子ごとの説明（濃密・やさしい語彙） -->
+      <section class="section" id="factorNotesSec">
+        <h3 style="margin:8px 0">因子ごとの説明</h3>
+        <div id="factorNotes" class="factor-mini"><!-- JS --></div>
+      </section>
+
+      <div class="hr"></div>
+      <!-- ランク長文コメント -->
+      <div id="longCopy" class="small"><!-- JS 長文コメント --></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ（常時表示） -->
+      <section class="section">
+        <h3 style="margin:8px 0">研究メモ（一般論・相関中心）</h3>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※ここでいう協調性は平均的な傾向の話です。差は小さめで個人差が大きく、因果は断定できません。</p>
+      </section>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
+宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "agreeableness";
+  var TITLE = "協調性・北欧神話診断";
+  var IMG_BASE = "/shindan/assets/results/agreeableness/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== ランク定義（総合平均0–4） ======
+  var LV = [
+    {id:1, name:"ロキ", label:"Lv1",  min:0.00, max:0.79, img:"01.png", alt:"仮面と揺れる炎",
+     poem:"仮面は半分、舌は軽い。けれど、耳はまだ使える。",
+     copy:"今日は“策略家モード”が強めの日。鋭さは武器ですが、先に事情を聞いてから意見を置くと、衝突がぐっと減ります。共通目的を言葉にし、そこへ向かう提案に切り替えると、あなたの機知が皆の助けになります。"},
+    {id:2, name:"フレイヤ",   label:"Lv2",  min:0.80, max:1.59, img:"02.png", alt:"花冠と猫の轍",
+     poem:"花の冠はほどけやすく、でも香りは残る。",
+     copy:"関係をあたためる力が育っている帯。好意のまなざしが場をほぐします。名詞つきの感謝（何が助かったか）をその場で一言。ほどよい距離感を保ちつつ、輪に安心感を広げられます。"},
+    {id:3, name:"フリッグ",   label:"Lv3",  min:1.60, max:2.39, img:"03.png", alt:"織機と家の灯",
+     poem:"糸はより合い、家の灯は長く燃える。",
+     copy:"家と輪を結ぶ仲裁役。率直さと優しさの配分がちょうどよく、皆が動ける合意点を見つけられます。対立が生まれたら“ルール→例外→一致点”の順で整えると、話がほどけていきます。"},
+    {id:4, name:"ティール", label:"Lv4",  min:2.40, max:3.19, img:"04.png", alt:"握手の手と鞘に収まる剣",
+     poem:"右手は差し出され、剣は静かに鞘に戻る。",
+     copy:"信義の守り手。損を引き受けてでも握手を作る胆力があります。会議の冒頭に“合意できたらここまでやる”を宣言。責任の線が明確になり、皆が安心して前を向けます。"},
+    {id:5, name:"バルドル", label:"Lv5",  min:3.20, max:4.00, img:"05.png", alt:"森に差す光の輪",
+     poem:"林に光がまわり、顔が自然にほころぶ。",
+     copy:"光の善性。人の面目を守りながら一致点へ導けます。最初に小さく称賛、次に要約、最後に宿題を一つ。気持ちよく締まる流れを作り、関係も成果も育てていけます。"}
+  ];
+
+  // ====== 下位因子と守護 ======
+  // key: {name, guard, catch, icon, items:[q indices 1..18]}
+  var FACTORS = {
+    TRT: {name:"信頼",       guard:"光のエルフ",    catch:"まず信じて耳を傾ける",   icon:"✨", items:[1,2,3]},
+    STR: {name:"率直・誠実", guard:"スカルド（詩人）", catch:"誇張せず正直に語る", icon:"🪶", items:[4,5,6]},
+    ALT: {name:"利他",       guard:"癒し手（ヒーラー）", catch:"困りに手を伸ばす",   icon:"🌿", items:[7,8,9]},
+    COOP:{name:"協調・順応", guard:"盾壁の戦士",    catch:"衝突より合意を作る",   icon:"🛡️", items:[10,11,12]},
+    MOD: {name:"謙虚",       guard:"織り手",        catch:"手柄は皆で分ける",     icon:"🧶", items:[13,14,15]},
+    TND: {name:"共感",       guard:"森の鹿（エルク）", catch:"気持ちの痛みに気づく", icon:"🦌", items:[16,17,18]}
+  };
+
+  // ====== 因子説明テキスト（濃密・やさしい語彙） ======
+  var FACTOR_DESC = {
+    TRT:{title:"信頼（守護：光のエルフ）",
+      body:"うわさより本人の言葉を信じて耳を傾ける力。まず事情をたずねる姿勢が、相手の緊張を下げます。疑いから入らないので、話が早く核心に近づきます。",
+      use:"対立のときは『まず教えて』から始める／経緯を一度だけ静かに最後まで聞く。",
+      care:"易信的になりすぎたら、確認メモ（事実・意見・提案）で足場を作る。"},
+    STR:{title:"率直・誠実（守護：スカルド）",
+      body:"成果を盛らず、そのまま伝える力。間違いは早めに認めて直せます。正直さは信頼の貯金になり、長期戦で効きます。",
+      use:"“できたこと／できてないこと／次にやること”の三行で共有。",
+      care:"厳しめの指摘は“尊重→事実→提案”の順にやわらかく。"},
+    ALT:{title:"利他（守護：癒し手）",
+      body:"困っている人に先に声をかけ、小さな助けを惜しまず差し出す力。見返りを求めない行動が、現場の安心を底上げします。",
+      use:"『手伝えること、ひとつあるよ』と具体を一つだけ示す。",
+      care:"抱え込みすぎないよう“自分の限界と代替案”をあわせて伝える。"},
+    COOP:{title:"協調・順応（守護：盾壁の戦士）",
+      body:"共通目的を言葉にし、折衷案を探し、役割と合図で歩調を合わせる力。人のスピード違いを橋渡しできます。",
+      use:"冒頭に『今日のゴール』『やらないこと』を宣言／合図（手・絵文字）を決める。",
+      care:"同調しすぎたら“合意できない点”を一つだけはっきり置く。"},
+    MOD:{title:"謙虚（守護：織り手）",
+      body:"手柄を皆の功績として語り、知らないことは『知らない』と言える力。静かな継続が品質を上げます。",
+      use:"成果発表は“協力者の名前”を先に出す／学びは短く共有。",
+      care:"自己評価が低めに偏ったら、事実ベースの棚卸しで自分をねぎらう。"},
+    TND:{title:"共感（守護：森の鹿）",
+      body:"気持ちの言葉を先に返せる力。弱い立場や小さな痛みに自然に配慮できます。物語の心にも寄り添えます。",
+      use:"『それは悔しかったね』など感情を一語で鏡返し→次に具体。",
+      care:"共感疲れのときは“時間枠”を先に置き、回復の時間も予定に入れる。"}
+  };
+
+  // ====== 設問（18問・正採点／UIに番号は出さない） ======
+  var ITEMS = [
+    // 信頼
+    {id:1,  text:"初対面でも善意を前提に話を始められる。"},
+    {id:2,  text:"噂より本人の言葉を優先して聞く。"},
+    {id:3,  text:"疑うよりまず事情をたずねることが多い。"},
+    // 率直・誠実
+    {id:4,  text:"成果を盛らずにそのまま伝える。"},
+    {id:5,  text:"間違いに気づいたら早めに認めて訂正できる。"},
+    {id:6,  text:"言いにくい話も、相手を尊重して正直に伝える。"},
+    // 利他
+    {id:7,  text:"困っている人に先に声をかける。"},
+    {id:8,  text:"自分の知識やコツを惜しまず共有する。"},
+    {id:9,  text:"見返りがなくても小さな助けを差し出せる。"},
+    // 協調・順応
+    {id:10, text:"対立が起きたら共通目的を言葉にする。"},
+   {id:11, text:"みんなが動ける中間の案を探す。"},
+    {id:12, text:"役割と合図を決めて歩調を合わせるのが得意だ。"},
+    // 謙虚
+    {id:13, text:"手柄はチームの功績として語る。"},
+    {id:14, text:"知らないことは素直に『知らない』と言える。"},
+    {id:15, text:"目立つより仕事を丁寧に仕上げるほうを選ぶ。"},
+    // 共感
+    {id:16, text:"相手の気持ちの言葉を先に返せる（例：悔しかったね）。"},
+    {id:17, text:"弱い立場の人や動物に自然に配慮できる。"},
+    {id:18, text:"物語で登場人物の心の痛みに共鳴しやすい。"}
+  ];
+
+  var LABELS = ["まったくない","あまりない","半々","だいたい","とても"];
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var avgBadge = document.getElementById("avgBadge");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumNote = document.getElementById("sumNote");
+  var guardArea = document.getElementById("guardArea");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+
+  // ====== ユーティリティ／保存 ======
+  function band(pct){ return pct>=70?"good":(pct>=40?"mid":"low"); }
+  function bandLabel(pct){ return pct>=70?"高":(pct>=40?"中":"低"); }
+
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
+
+  // ====== 設問生成（番号はUIに出さない） ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers();
+        updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== スコア計算 ======
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      ans[id] = parseInt(chk.value,10);
+    }
+    if(missing.length){
+      alert("未回答があります。全18問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 因子ごとの平均(0-4)と%に換算
+    var fScore = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + (ans[id]||0); },0);
+      var avg = sum / ids.length; // 0-4
+      var pct = Math.round((avg/4)*100);
+      fScore[key] = {sum:sum, avg:avg, pct:pct};
+    });
+    // 総合平均（6因子平均）
+    var avgTotal = Object.values(fScore).reduce(function(s,o){ return s+o.avg; },0) / 6;
+    avgTotal = Math.round(avgTotal*100)/100; // 小数2桁
+
+    render({avg:avgTotal, fScore:fScore, ans:ans});
+  }
+
+  function rankOf(avg){
+    for(var i=0;i<LV.length;i++){
+      var d = LV[i];
+      if(avg>=d.min && avg<=d.max) return d;
+    }
+    return LV[2];
+  }
+
+  // ====== 表示 ======
+  function render(o){
+    var rank = rankOf(o.avg);
+
+    // ヒーロー
+    heroImg.src = IMG_BASE + rank.img;
+    heroImg.alt = rank.alt;
+    heroTitle.textContent = "あなたのランク："+rank.name+"（"+rank.label+"）";
+    heroPoem.textContent  = rank.poem;
+    heroCopy.textContent  = rank.copy;
+    avgBadge.textContent  = "総合平均 " + o.avg.toFixed(2) + " / 4.00";
+
+    // 合計
+    sumAvg.textContent = o.avg.toFixed(2);
+    var note = "";
+    if(o.avg<0.8) note="率直さを保ちつつ、まず事情を聞く順番が効く帯。";
+    else if(o.avg<1.6) note="好意で場をほぐせる帯。感謝と言葉選びがカギ。";
+    else if(o.avg<2.4) note="合意点をつくる調整力が働きやすい帯。";
+    else if(o.avg<3.2) note="信義と実行力で握手を生みやすい帯。";
+    else note="称賛→要約→宿題の流れで、気持ちよく締められる帯。";
+    sumNote.textContent = note;
+
+    // 守護バッジ
+    var gHtml = "";
+    Object.keys(FACTORS).forEach(function(key){
+      var def = FACTORS[key];
+      gHtml += '<div class="guard">'+
+        '<div class="g-emo" aria-hidden="true">'+def.icon+'</div>'+
+        '<div><div><strong>'+def.name+'</strong> <span class="small">（'+def.guard+'）</span></div>'+
+        '<div class="small" style="opacity:.9">'+def.catch+'</div></div>'+
+      '</div>';
+    });
+    guardArea.innerHTML = gHtml;
+
+    // 因子バー
+    var bHtml = "";
+    Object.keys(FACTORS).forEach(function(key){
+      var def = FACTORS[key], sc = o.fScore[key];
+      bHtml += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong>'+
+          '<span class="pill" style="margin-left:6px">'+sc.avg.toFixed(2)+' / 4</span>'+
+          '<span class="band '+band(sc.pct)+'" style="margin-left:6px">'+bandLabel(sc.pct)+'</span>'+
+        '</div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+sc.pct+'%"></span></div>'+
+        '<div class="small" style="margin-top:4px">'+sc.pct+' / 100</div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // 因子ごとの説明
+    var notes = "";
+    Object.keys(FACTORS).forEach(function(key){
+      var def = FACTORS[key], sc = o.fScore[key], d = FACTOR_DESC[key];
+      notes += '<article class="note" aria-label="'+def.name+'の説明">'+
+        '<h4>'+d.title+'<span class="mini">平均 '+sc.avg.toFixed(2)+' / 4｜'+sc.pct+'%</span></h4>'+
+        '<p>'+d.body+'</p>'+
+        '<p><strong>活かし方：</strong>'+d.use+'</p>'+
+        '<p><strong>ケア：</strong>'+d.care+'</p>'+
+      '</article>';
+    });
+    var fn = document.getElementById("factorNotes");
+    if(fn){ fn.innerHTML = notes; }
+
+    // ランク長文コメント（ヒーローと同じ文を再掲：読みやすさ目的）
+    longCopy.textContent = rank.copy;
+
+    // 研究メモ（常時表示・やさしい表現）
+    var memo = [
+      "協調性が高い人は、人間関係の満足度や信頼がやや高いという報告がいくつかあります（差は小さめ）。",
+      "助け合いやチームのまとまりと関連が見られることがあります（相関中心）。",
+      "対立の減少や建設的な解決に結びつきやすいという指摘があります。",
+      "一方で協調性が低めの人は、交渉や批判的検討で役立つ場面もあります（言うべきを言える）。",
+      "境界の明確さや自己主張が必要な仕事では、低めの傾向が強みになることもあります。",
+      "重要なのは場づくりと役割。環境次第で、同じ人でも発揮され方は大きく変わります。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧「つづきから再開」保存
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
