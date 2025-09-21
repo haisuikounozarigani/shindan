@@ -231,6 +231,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   var SLUG = "extraversion";
   var TITLE = "外向性・ギリシャ神話診断";
   var IMG_BASE = "/shindan/assets/results/extraversion/"; // 末尾/
+var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
 
   // ====== ランク定義（総合平均0–4） ======
   var LV = [
@@ -344,10 +345,39 @@ var FACTOR_DESC = {
   var longCopy= document.getElementById("longCopy");
   var resMemo = document.getElementById("resMemo");
 
-  // ユーティリティ
-  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
-  function band(pct){ return pct>=70?"good":(pct>=40?"mid":"low"); }
-  function bandLabel(pct){ return pct>=70?"高":(pct>=40?"中":"低"); }
+// ユーティリティ＋保存
+function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+function band(pct){ return pct>=70?"good":(pct>=40?"mid":"low"); }
+function bandLabel(pct){ return pct>=70?"高":(pct>=40?"中":"低"); }
+
+function saveAnswers(){
+  try{
+    var out = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(chk){ out[id] = parseInt(chk.value,10); }
+    }
+    localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+  }catch(e){}
+}
+function restoreAnswers(){
+  try{
+    var raw = localStorage.getItem(ANS_KEY);
+    if(!raw) return;
+    var data = JSON.parse(raw);
+    var ans = (data && data.ans) || {};
+    Object.keys(ans).forEach(function(id){
+      var v = ans[id];
+      var input = qWrap.querySelector('#q'+id+'-'+v);
+      if(input){ input.checked = true; }
+    });
+    if (typeof updateProgress === "function") updateProgress();
+  }catch(e){}
+}
+function wipeAnswers(){
+  try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+}
 
   // 設問生成（番号はUIに出さない）
   function buildQuestions(){
@@ -369,11 +399,14 @@ var FACTOR_DESC = {
     qWrap.innerHTML = html;
 
     var radios = qWrap.querySelectorAll('input[type="radio"]');
-    for(var r=0;r<radios.length;r++){
-      radios[r].addEventListener('change', updateProgress, false);
-    }
+for(var r=0;r<radios.length;r++){
+  radios[r].addEventListener('change', function(){
+    saveAnswers();
     updateProgress();
-  }
+  }, false);
+}
+restoreAnswers();
+}
 
   function updateProgress(){
     var total = ITEMS.length;
@@ -510,8 +543,9 @@ if(fn){ fn.innerHTML = notes; }
   }
 
   function clearAnswers(){
-    var radios = qWrap.querySelectorAll('input[type="radio"]');
-    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+  var radios = qWrap.querySelectorAll('input[type="radio"]');
+  for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+  wipeAnswers();
     prog.style.width = "0%";
     resEmpty.style.display = "";
     resArea.style.display = "none";
@@ -526,7 +560,7 @@ if(fn){ fn.innerHTML = notes; }
     buildQuestions();
   }
   document.getElementById("doScore").addEventListener("click", score, false);
-  document.getElementById("doScore2").addEventListener("click", score, false);
+document.getElementById("doScore2").addEventListener("click", score, false);
   document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
   var back = document.getElementById("backLink");
   if(back){
