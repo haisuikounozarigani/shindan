@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>流れ星の案内人</title>
+<meta name="description" content="ボタンを押すと、流れ星が一通のことばを運んできます。時間帯ブースト対応。たまにレアな流れ星が混ざってるかも？">
+<meta name="theme-color" content="#0b1026">
+<meta property="og:type" content="website">
+<meta property="og:title" content="流れ星の案内人">
+<meta property="og:description" content="ボタンを押すと、流れ星が一通のことばを運んできます。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/star-guide.html">
+<meta property="og:image" content="/shindan/assets/results/star-guide/02.png">
+<style>
+:root{
+  --ink:#121525; --paper:#fff; --muted:#8ea1c2; --line:#203055;
+  --accent:#8ec5ff; --accent2:#ffd08c; --gold:#f6c453;
+  --shadow:0 10px 30px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--paper);background:#0b1026;
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:960px;margin:0 auto;min-height:100%;display:grid;grid-template-rows:auto 1fr auto}
+header.hd{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.logo{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.02))}
+.logo span{font-size:22px}
+h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:#c8d6f2;font-size:.95em;opacity:.95}
+
+
+/* カード */
+.card{
+  margin:10px 16px 18px;border:1px solid rgba(255,255,255,.12);
+  background:rgba(13,17,38,.55);border-radius:18px;box-shadow:var(--shadow);
+  overflow:hidden;backdrop-filter:blur(6px) saturate(1.2);
+}
+.card .pad{padding:14px 16px}
+
+/* ヒーロー */
+.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;isolation:isolate;text-align:center}
+.btn{
+  cursor:pointer;user-select:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
+  color:#fff;padding:12px 16px;border-radius:14px;font-weight:700;transition:transform .08s ease, background .2s ease, border-color .2s ease;
+}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#0b1026}
+.btn:active{transform:translateY(1px)}
+
+/* シューティングスター（rareは色を変えるが文言では匂わせのみ） */
+.shoot{position:absolute;inset:0;pointer-events:none;z-index:-1}
+.shoot .star{
+  position:absolute;left:-10%;top:0;width:240px;height:2px;opacity:0;border-radius:2px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.7));transform:rotate(18deg) translate3d(0,0,0);
+}
+.shoot .star.rare{
+  /* ここでは色の違いだけ。ページ上の文言では色は明記しない */
+  background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
+  filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
+}
+.shoot.active .star{animation:tail .85s ease forwards}
+@keyframes tail{
+  0%{opacity:0;transform:rotate(18deg) translate3d(-10%,-20%,0)}
+  12%{opacity:1}
+  100%{opacity:0;transform:rotate(18deg) translate3d(120%,80%,0)}
+}
+@media (prefers-reduced-motion: reduce){.shoot .star{display:none}}
+
+/* レター */
+.letter{
+  display:grid;gap:10px;margin:0 16px 16px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.1);border-radius:16px;backdrop-filter:blur(4px) saturate(1.1);
+}
+.letter header{
+  display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;border-bottom:1px dashed rgba(255,255,255,.14)
+}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);font-weight:700}
+.badge.rare{background:linear-gradient(90deg,#5a0000,#3b0000);border-color:rgba(255,120,120,.6);color:#ffd4d4}
+.body{padding:8px 14px 0;line-height:1.6;font-size:clamp(20px, 5.2vw, 28px);color:#fff;letter-spacing:.02em}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 12px;color:#c8d6f2;font-size:.9em}
+.tag{padding:3px 8px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.06)}
+
+/* 結果イメージ：正方形表示に変更（背景は縦長のまま） */
+.figure{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:6px 12px 12px}
+.figure .thumb{
+  width:min(40vw,240px);aspect-ratio:1/1;border-radius:12px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(0,0,0,.25)
+}
+.figure .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.figure .cap{flex:1;min-width:180px;color:#c8d6f2;font-size:.92em;line-height:1.5}
+
+/* フッター */
+.footer{color:#c8d6f2;font-size:.92em}
+.warn{background:rgba(20,27,54,.7);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px;margin:12px 16px}
+.note{color:#c8d6f2;font-size:.92em;padding:0 16px 12px}
+.note a{color:#fff;text-decoration:underline}
+</style>
+</head>
+<body>
+
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo" aria-hidden="true"><span>🌠</span></div>
+    <div>
+      <h1>流れ星の案内人</h1>
+      <p class="sub">ボタンを押すと、流れ星が一通のことばを運んできます</p>
+    </div>
+  </header>
+
+  <!-- 中央はこのボタンだけ -->
+  <section class="card hero" aria-label="星に願いを">
+    <div class="pad">
+      <button class="btn primary" id="draw">流れ星に祈る</button>
+    </div>
+    <div class="shoot" aria-hidden="true"><div class="star" id="shootStar"></div></div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="letter" id="letter" role="region" aria-live="polite" aria-label="受け取った手紙" style="display:none">
+    <header>
+      <span class="badge" id="rarityBadge">✉️ 一通のことば</span>
+      <span class="badge" id="timeTag">いつでも</span>
+    </header>
+
+    <div class="body" id="text">—</div>
+
+    <!-- 正方形サムネ（背景は縦長のまま） -->
+    <div class="figure" id="figure" style="display:none">
+      <div class="thumb"><img id="figImg" src="" alt="" width="600" height="600" loading="lazy"></div>
+      <div class="cap" id="figCap">—</div>
+    </div>
+
+    <div class="tags" id="tags"></div>
+
+    <!-- 下部案内（戻るリンク／時間帯ブースト／“レア匂わせ”） -->
+    <div class="note">
+      <div style="margin:6px 0 8px"><a href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a></div>
+      <div id="boostNote" style="margin-top:4px">時間帯ブースト：<b>夜（18:00–04:59）／朝（05:00–10:59）</b>は、その時間に合う言葉が<b>少しだけ出やすく</b>なります（×<span id="boostVal">1.5</span>）。</div>
+      <div id="rareNote" style="margin-top:4px">たまに、“特別な流れ星”が混ざっているかも？</div>
+    </div>
+  </section>
+
+  <section class="footer">
+    <div class="warn">
+      <strong>注意：</strong>ここに届く言葉は<b>心の応援</b>です。医療・専門的助言ではありません。つらさが続くときは、信頼できる人や相談窓口に相談してください。<br>
+      データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  // ====== アセット ======
+  const ASSETS = "/shindan/assets/results/star-guide/";
+  const URL_CONFIG  = ASSETS + "config.json";
+  const URL_LETTERS = ASSETS + "letters.json";
+
+  // 結果イメージ（5枚：01やさしさ / 02静けさ(夜) / 03希望 / 04守る / 05特別）
+const IMGS = {
+  "01": {alt:"夕暮れの浜辺の穏やかな波",  tags:["やさしさ","自己肯定","朝","morning"]},
+  "02": {alt:"静かな夜の海と小さな星",    tags:["静けさ","不安","夜","night"]},
+  "03": {alt:"小さな流星がいくつか流れる空",tags:["希望","再起"]},
+  "04": {alt:"夜の灯台の光が海を照らす",  tags:["守る","安心"]},
+  "05": {alt:"特別な流れ星のきらめき",    tags:["rare"]}
+};
+const TAG_MAP = {
+  "やさしさ":["01"], "自己肯定":["01"], "朝向け":["01"], "morning":["01"],
+  "静けさ":["02"], "不安":["02"], "夜向け":["02"], "night":["02"],
+  "希望":["03"], "再起":["03"],
+  "守る":["04"], "安心":["04"],
+  "rare":["05"]
+};
+
+  // ====== 参照 ======
+  const sky  = null; // 背景なし
+  const shootStar = document.getElementById("shootStar");
+  const draw = document.getElementById("draw");
+
+  const letterBox = document.getElementById("letter");
+  const rarityBadge = document.getElementById("rarityBadge");
+  const timeTag = document.getElementById("timeTag");
+  const textEl = document.getElementById("text");
+  const tagsEl = document.getElementById("tags");
+  const boostVal = document.getElementById("boostVal");
+
+  const figWrap = document.getElementById("figure");
+  const figImg  = document.getElementById("figImg");
+  const figCap  = document.getElementById("figCap");
+
+  // ====== 状態 ======
+  let CONFIG = {
+    rarity_weights: { rare: 0.05, common: 0.95 },
+    time_boost: { night: 1.5, morning: 1.5 },
+    button_label: "流れ星に祈る"
+  };
+  let LETTERS = [];
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function nowHint(){
+    const h = new Date().getHours();
+    if (h >= 5 && h <= 10) return "morning";
+    if (h >= 18 || h <= 4) return "night";
+    return "neutral";
+  }
+  function setSky(){} // 背景なし
+
+  function weightedPick(obj){
+    const entries = Object.entries(obj);
+    const total = entries.reduce((s,[,w])=>s+Math.max(0,Number(w)||0),0) || 1;
+    let r = Math.random()*total;
+    for(const [k,w0] of entries){
+      const w = Math.max(0,Number(w0)||0);
+      if((r -= w) <= 0) return k;
+    }
+    return entries[0][0];
+  }
+  function weightedSample(items, weights){
+    const sum = weights.reduce((s,w)=>s+(w>0?w:0),0) || 0;
+    if(sum<=0) return items[Math.floor(Math.random()*items.length)];
+    let r = Math.random()*sum;
+    for(let i=0;i<items.length;i++){
+      const w = weights[i]>0?weights[i]:0;
+      if((r -= w) <= 0) return items[i];
+    }
+    return items[0];
+  }
+
+  function saveLast(){
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id:"star-guide", title:"流れ星の案内人", href: location.pathname }));
+    }catch(e){}
+  }
+
+  // 画像選択：タグ＋時間帯でゆるくマッチ（正方形でトリミング表示）
+  function pickImageFor(letter){
+    // rare は固定で 05.png を表示
+    if ((letter.rarity||"common")==="rare") {
+      return { id:"05", alt:(IMGS["05"]?.alt||""), cap:"特別なことば" };
+    }
+    const hint = nowHint();
+    const tags = (letter.tags||[]).map(String);
+
+    let cand = [];
+    for(const t of tags){
+      const arr = TAG_MAP[t];
+      if(arr) cand = cand.concat(arr);
+    }
+    const nightSet = new Set(["02"]);
+const morningSet = new Set(["01","03"]);
+
+    if(cand.length){
+      const weighted = cand.map(id=>{
+        const bonus = (hint==="night" && nightSet.has(id)) ? 1.2
+                    : (hint==="morning" && morningSet.has(id)) ? 1.2
+                    : 1.0;
+        return {id, w:bonus};
+      });
+      const ids = weighted.map(o=>o.id);
+      const ws  = weighted.map(o=>o.w);
+      const id  = weightedSample(ids, ws);
+      return { id, alt: IMGS[id]?.alt || "", cap: (tags[0] ? "テーマ："+tags[0] : "テーマ：—") };
+    }else{
+      const id = (hint==="night" ? "02" : "01");
+      return { id, alt: IMGS[id].alt, cap: "背景（汎用）" };
+    }
+  }
+
+  function renderImage(letter){
+    const {id, alt, cap} = pickImageFor(letter);
+    figImg.src = ASSETS + id + ".png";
+    figImg.alt = alt || "";
+    figCap.textContent = cap;
+    figWrap.style.display = "";
+  }
+
+  function pickLetter(){
+    if(!LETTERS.length) return null;
+    const rarity = weightedPick(CONFIG.rarity_weights || {rare:.05, common:.95});
+    let pool = LETTERS.filter(l => (l.rarity || "common") === rarity);
+    if(!pool.length) pool = LETTERS.slice();
+
+    const hint = nowHint();
+    const logicalHint = (hint==="night"?"night":(hint==="morning"?"morning":null));
+    const boost = (logicalHint && CONFIG.time_boost && Number(CONFIG.time_boost[logicalHint])) || 1;
+    const weights = pool.map(l => {
+      let w = 1;
+      if(logicalHint && l.timeHint && l.timeHint === logicalHint) w *= boost;
+      return w;
+    });
+    return weightedSample(pool, weights) || pool[0];
+  }
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // レター描画
+  function renderLetter(l){
+    const isRare = ((l.rarity||"common")==="rare");
+    rarityBadge.classList.toggle("rare", isRare);
+    rarityBadge.textContent = isRare ? "💌 一通のことば（特別）" : "✉️ 一通のことば";
+    timeTag.textContent = l.timeHint ? (l.timeHint==="night"?"夜向け":"朝向け") : "いつでも";
+
+    textEl.textContent = l.text;
+
+    tagsEl.innerHTML = "";
+    if(Array.isArray(l.tags)){
+      tagsEl.innerHTML = l.tags.slice(0,4).map(t=>`<span class="tag">#${escapeHtml(String(t))}</span>`).join("");
+    }
+
+    renderImage(l);
+    letterBox.style.display = "";
+    saveLast();
+  }
+
+  // ドロー（先に抽選→“特別”なら流星の色だけ静かに変える）
+  async function doDraw(){
+    const letter = pickLetter();
+    if(!letter) return;
+
+    const isRare = (letter.rarity||"common")==="rare";
+    shootStar.classList.toggle("rare", isRare);
+
+    shootStar.parentElement.classList.add("active");
+    await new Promise(r=>setTimeout(r, 850));
+    shootStar.parentElement.classList.remove("active");
+
+    renderLetter(letter);
+  }
+
+  // ====== 初期ロード ======
+  async function init(){
+    try{
+      const c = await fetch(URL_CONFIG, {cache:"no-store"}).then(r=>r.ok?r.json():null);
+      if(c && typeof c==="object") CONFIG = {...CONFIG, ...c};
+    }catch(e){}
+    document.getElementById("boostVal").textContent = String((CONFIG.time_boost?.night)||1.5);
+draw.textContent = CONFIG.button_label || "流れ星に祈る";
+
+    try{
+      const arr = await fetch(URL_LETTERS, {cache:"no-store"}).then(r=>r.ok?r.json():null);
+      if(Array.isArray(arr)) LETTERS = arr;
+    }catch(e){}
+    if(!LETTERS.length){
+      // フォールバック（最小）
+      LETTERS = [
+  /* 自己肯定 */
+ {"id":"star-self-01","text":"きみはもう、よくやってるよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-02","text":"できない日も、きみはきみだよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-03","text":"今日のきみも、ちゃんと愛しい。","tags":["自己肯定","やさしさ"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-04","text":"弱さが見えた？それで大丈夫。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-05","text":"ここまで来たね、それがすごい。","tags":["自己肯定","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-06","text":"誰にも勝たなくていいよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-07","text":"失敗あっても、価値は減らない。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-08","text":"ため息、ここに置いてっていい。","tags":["自己肯定","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 不安 */
+  {"id":"star-anx-01","text":"こわいね、わかるよ。そばにいる。","tags":["不安","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-02","text":"未来はぼんやりで普通だよ。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-03","text":"震えてても、きみは立派だよ。","tags":["不安","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-04","text":"心配ばかりの夜、いっしょにいよう。","tags":["不安","夜向け"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-05","text":"うまく言えなくていい、伝わってる。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-06","text":"それ、きみのせいじゃないよ。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+
+  /* 完璧主義 */
+  {"id":"star-perf-01","text":"完璧じゃなくていい、きみでいい。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-02","text":"未完成のままでも、尊いよ。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-03","text":"間に合わなくても、嫌いにならない。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-04","text":"進めない夜も、仲間だよ。","tags":["完璧主義","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-05","text":"ほつれた今日も、愛していい。","tags":["完璧主義","やさしさ"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-06","text":"立ち止まってていい日もある。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+
+  /* 比較 */
+  {"id":"star-comp-01","text":"他の光は、きみを測るものじゃない。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-02","text":"画面は編集、きみは生の生活。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-03","text":"きみの速さが、きみのリズム。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-04","text":"うらやましさも、ちゃんと人間だよ。","tags":["比較","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-05","text":"今日は「昨日のきみ」だけを相手に。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-06","text":"無理に笑わなくていいよ。","tags":["比較","受容"],"rarity":"common","tone":"friend"},
+
+  /* 再起 */
+  {"id":"star-retry-01","text":"こけた場所、次の目印にしよ。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-02","text":"うまくいかない日も、練習のうち。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-03","text":"仮のままのきみも好きだよ。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-04","text":"なくした分、手があくんだよ。","tags":["再起","やさしさ"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-05","text":"やり直すきみ、かっこいいよ。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-06","text":"戻らなくていい、ここからでいい。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+
+  /* 孤独 */
+  {"id":"star-solo-01","text":"ひとりに見えても、ここにいるよ。","tags":["孤独","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-02","text":"返事がなくても、想ってる人はいる。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-03","text":"さみしいって言っていいよ。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-04","text":"きみの居場所、ちゃんとあるよ。","tags":["孤独","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-05","text":"話したくなったら、いつでも聞く。","tags":["孤独","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-06","text":"今日は無言でも、大丈夫だよ。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+
+  /* 恋愛・人間関係 */
+  {"id":"star-love-01","text":"好きの形、きみが決めていい。","tags":["恋愛","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-02","text":"離れても、価値は減らないからね。","tags":["恋愛","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-03","text":"がんばりすぎないで、まず自分を。","tags":["恋愛","セルフケア"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-04","text":"合わないは悪じゃない、相性だよ。","tags":["恋愛","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-05","text":"さようならのあとも、きみはきみ。","tags":["恋愛","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-06","text":"やさしさに、きみの分を残してね。","tags":["恋愛","境界"],"rarity":"common","tone":"friend"},
+
+  /* 仕事・学業 */
+  {"id":"star-work-01","text":"今日は疲れたね、それで当然だよ。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-02","text":"できた分だけで、充分えらい。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-03","text":"机に座れた？それだけで拍手。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-04","text":"予定どおりじゃなくても、OKだよ。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-05","text":"休むきみも、チームの一部だよ。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-06","text":"ちょっと嫌いになっても大丈夫。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+
+  /* 夜向け（timeHint付与） */
+  {"id":"star-night-01","text":"眠れない夜、いっしょにいるよ。","tags":["夜向け","寄り添い"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-02","text":"考え事は朝に預けていいよ。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-03","text":"目を閉じるだけ、今日はそれでいい。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-04","text":"起きてるきみを、責めないでね。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-05","text":"しんどいって言えるきみ、強いよ。","tags":["夜向け","励まし"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-06","text":"月も残業中、きみだけじゃない。","tags":["夜向け","ユーモア"],"rarity":"common","tone":"friend","timeHint":"night"},
+
+  /* 朝向け（timeHint付与） */
+  {"id":"star-morn-01","text":"起きられたね、もうじゅうぶんえらい。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-02","text":"今日の白紙、雑でも大好きだよ。","tags":["朝向け","受容"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-03","text":"靴下は片方でも可愛いよ。","tags":["朝向け","ユーモア"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-04","text":"進まなくても、朝を迎えたきみが勝ち。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+
+  /* レア（5%） */
+  {"id":"star-rare-01","text":"ここまで来た勇気、もう揺らがないよ。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-02","text":"悲しみの分だけ、やさしさが広がってる。","tags":["rare","受容"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-03","text":"どこにも居場所がない日は、私がいる。","tags":["rare","寄り添い"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-04","text":"手放した手に、新しい風が入るよ。","tags":["rare","再起"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-05","text":"今日を越えたら、次の目印が見える。","tags":["rare","希望"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-06","text":"生き延びた日数ぶん、きみは強い。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"},
+
+  /* 罪悪感 */
+  {"id":"star-guilt-01","text":"それ、ぜんぶ自分のせいじゃないよ。","tags":["罪悪感","慰め"],"rarity":"common","tone":"friend"},
+  {"id":"star-guilt-02","text":"後悔してる時点で、もう十分やさしい。","tags":["罪悪感","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-guilt-03","text":"間違いは人間の色。きみは人間だよ。","tags":["罪悪感","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-guilt-04","text":"きびしさは少し置いていこう、ここでは。","tags":["罪悪感","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 怒り */
+  {"id":"star-anger-01","text":"怒っていいよ。それは大事なサインだよ。","tags":["怒り","境界"],"rarity":"common","tone":"friend"},
+  {"id":"star-anger-02","text":"きみの境界が傷んだんだね、わかる。","tags":["怒り","境界"],"rarity":"common","tone":"friend"},
+  {"id":"star-anger-03","text":"いまは言葉にできなくて大丈夫。","tags":["怒り","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anger-04","text":"ここでは安全。荒れた心も座っていていい。","tags":["怒り","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 選択 */
+  {"id":"star-choice-01","text":"迷うのは、どれも大事にしたいからだよ。","tags":["選択","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-choice-02","text":"正解はひとつじゃない。きみの時間でいい。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-choice-03","text":"どっちでも、きみの価値は変わらないよ。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-choice-04","text":"いま決めなくても、友だちは離れない。","tags":["選択","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 転機 */
+  {"id":"star-change-01","text":"景色が変わると、心も揺れるよね。普通だよ。","tags":["転機","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-change-02","text":"なじむ前の居心地の悪さ、いっしょに持とう。","tags":["転機","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-change-03","text":"“はじめまして”の連続、よくやってるよ。","tags":["転機","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-change-04","text":"家みたいな場所は、あとからできる。","tags":["転機","希望"],"rarity":"common","tone":"friend"},
+
+  /* 創作 */
+  {"id":"star-create-01","text":"何も出ない日も、君の一部だよ。","tags":["創作","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-create-02","text":"好きの火は消えてない。灰の下で生きてる。","tags":["創作","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-create-03","text":"進んでなく見える時間も、芽の季節。","tags":["創作","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-create-04","text":"作品より先に、きみが大切だよ。","tags":["創作","セルフケア"],"rarity":"common","tone":"friend"},
+
+  /* からだ */
+  {"id":"star-body-01","text":"今日は体が重いね。責めなくていいよ。","tags":["からだ","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-body-02","text":"波みたいな日、きみは悪くない。","tags":["からだ","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-body-03","text":"しんどい体でここまで来た、それだけで立派。","tags":["からだ","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-body-04","text":"調子が悪い日は、世界の音が大きいよね。","tags":["からだ","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* お金 */
+  {"id":"star-money-01","text":"不安になるの、当然だよ。ひとりじゃない。","tags":["お金","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-money-02","text":"余裕がなくても、きみの価値は減らない。","tags":["お金","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-money-03","text":"心細さ、ここに置いていっていい。","tags":["お金","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-money-04","text":"先のことを心配できる時点で、もうえらいよ。","tags":["お金","励まし"],"rarity":"common","tone":"friend"},
+
+  /* 家族 */
+  {"id":"star-family-01","text":"近いからこそ、痛くなることってあるよね。","tags":["家族","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-family-02","text":"わかってほしいのに伝わらない、つらいよね。","tags":["家族","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-family-03","text":"その気持ち、ここでは否定しないよ。","tags":["家族","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-family-04","text":"きみの感じたことは本物だよ。","tags":["家族","受容"],"rarity":"common","tone":"friend"},
+
+  /* ペット */
+  {"id":"star-pet-01","text":"その子は、きみのやさしさで満たされてたよ。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-pet-02","text":"会えなくても、あのぬくもりは消えない。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-pet-03","text":"さみしいよね。ここで泣いていい。","tags":["ペット","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-pet-04","text":"思い出は、ずっと家にいるよ。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 本番 */
+  {"id":"star-stage-01","text":"緊張してるの、ちゃんと大事にしてる証拠だよ。","tags":["本番","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-stage-02","text":"震えるきみも、かっこいいよ。","tags":["本番","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-stage-03","text":"うまくいかなくても、きみは嫌いにならない。","tags":["本番","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-stage-04","text":"名前を呼ばれるだけで、よく来たねって思う。","tags":["本番","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 境界 */
+  {"id":"star-border-01","text":"NOって言えるきみ、立派だよ。","tags":["境界","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-border-02","text":"嫌だった気持ち、ここでは尊重される。","tags":["境界","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-border-03","text":"断っても、やさしさはなくならない。","tags":["境界","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-border-04","text":"きみのスペースは、大切にしていい。","tags":["境界","セルフケア"],"rarity":"common","tone":"friend"},
+
+  /* 季節 */
+  {"id":"star-season-01","text":"光が少ない季節、元気も小さくて普通だよ。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-season-02","text":"雨の日の心は、濡れてて当たり前。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-season-03","text":"春待ちのあいだ、いっしょに灯を持とう。","tags":["季節","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-season-04","text":"冬のきみも、大切なきみだよ。","tags":["季節","受容"],"rarity":"common","tone":"friend"}
+];
+
+    draw.textContent = CONFIG.button_label || "流れ星に祈る";
+    saveLast();
+  }
+}
+  draw.addEventListener("click", doDraw, false);
+  document.getElementById("backLink")?.addEventListener("click", saveLast);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, {once:true});
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
