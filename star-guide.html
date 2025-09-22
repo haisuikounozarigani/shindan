@@ -42,7 +42,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .card .pad{padding:14px 16px}
 
 /* ヒーロー */
-.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;isolation:isolate;text-align:center}
+.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;isolation:isolate;text-align:center;overflow:hidden}
 .btn{
   cursor:pointer;user-select:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
   color:#fff;padding:12px 16px;border-radius:14px;font-weight:700;transition:transform .08s ease, background .2s ease, border-color .2s ease;
@@ -51,22 +51,65 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn:active{transform:translateY(1px)}
 
 /* シューティングスター（rareは色を変えるが文言では匂わせのみ） */
-.shoot{position:absolute;inset:0;pointer-events:none;z-index:-1}
+.shoot{position:absolute;inset:0;pointer-events:none;z-index:1}
 .shoot .star{
-  position:absolute;left:-10%;top:0;width:240px;height:2px;opacity:0;border-radius:2px;
+  position:absolute;
+  left:-10%;top:0;
+  width:480px;              /* すこし大きめに */
+  height:3px;
+  opacity:0;
+  border-radius:3px;
   background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
-  filter:drop-shadow(0 0 8px rgba(255,255,255,.7));transform:rotate(18deg) translate3d(0,0,0);
+  filter:drop-shadow(0 0 14px rgba(255,255,255,.9));
+  transform:rotate(18deg) translate3d(0,0,0);
+}
+/* ★頭光り：先端に小さな発光円（通常色） */
+.shoot .star::after{
+  content:"";
+  position:absolute;
+  right:-8px;               /* 進行方向の先端側に配置 */
+  top:-6px;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,.9) 30%, rgba(255,255,255,0) 70%);
+  filter:blur(1px) drop-shadow(0 0 10px rgba(255,255,255,.95));
+}
+/* レアは色味だけ変える（文言では匂わせのみ） */
+.shoot .star.rare{
+  background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
+  filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
+}
+.shoot .star.rare::after{
+  background:radial-gradient(circle, rgba(255,120,120,1) 0%, rgba(255,120,120,.9) 32%, rgba(255,120,120,0) 70%);
+  filter:blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
+}
+/* 走らせる */
+.shoot.active .star{animation:tail 1.25s ease forwards}
+@keyframes tail{
+  0%{opacity:0; transform:rotate(18deg) translate3d(-20%,-30%,0)}
+  12%{opacity:1}
+  100%{opacity:0; transform:rotate(18deg) translate3d(140%,100%,0)}
+}
+@media (prefers-reduced-motion: reduce){
+  .shoot .star{display:none}
+}
+.shoot{position:absolute;inset:0;pointer-events:none;z-index:1}
+.shoot .star{
+  position:absolute;left:-10%;top:0;width:420px;height:3px;opacity:0;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
+  filter:drop-shadow(0 0 14px rgba(255,255,255,.9));
+  transform:rotate(18deg) translate3d(0,0,0);
 }
 .shoot .star.rare{
   /* ここでは色の違いだけ。ページ上の文言では色は明記しない */
   background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
   filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
 }
-.shoot.active .star{animation:tail .85s ease forwards}
+.shoot.active .star{animation:tail 1.25s ease forwards}
 @keyframes tail{
-  0%{opacity:0;transform:rotate(18deg) translate3d(-10%,-20%,0)}
+  0%{opacity:0;transform:rotate(18deg) translate3d(-20%,-30%,0)}
   12%{opacity:1}
-  100%{opacity:0;transform:rotate(18deg) translate3d(120%,80%,0)}
+  100%{opacity:0;transform:rotate(18deg) translate3d(140%,100%,0)}
 }
 @media (prefers-reduced-motion: reduce){.shoot .star{display:none}}
 
@@ -85,15 +128,43 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .tag{padding:3px 8px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.06)}
 
 /* 結果イメージ：正方形表示に変更（背景は縦長のまま） */
-.figure{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:6px 12px 12px}
+.figure{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:6px 12px 12px}
 .figure .thumb{
+  /* ど真ん中＆正方形で安定 */
+  width: min(86vw, 320px);
+  aspect-ratio: 1 / 1;
+  margin: 12px auto 0;           /* 横中央 */
+  display: grid;                  /* 中央配置 */
+  place-items: center;
+  border-radius: 16px;
+  background: #111a2b;
+  border: 1px solid rgba(255,255,255,.12);
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
   width:min(40vw,240px);aspect-ratio:1/1;border-radius:12px;overflow:hidden;
   border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(0,0,0,.25)
 }
-.figure .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.figure .cap{flex:1;min-width:180px;color:#c8d6f2;font-size:.92em;line-height:1.5}
+.figure .thumb img{
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;              /* 正方形の中でトリミング */
+  object-position: center;        /* ど真ん中 */
+  image-rendering: auto;
+}width:100%;height:100%;object-fit:cover;display:block}
+.figure .cap{flex:1;min-width:180px;color:#c8d6f2;font-size:.92em;line-height:1.5;text-align:center}
 
+@media (max-width: 560px){
+  .figure{
+  display: flex;
+  justify-content: center;        /* 子の .thumb を中央に */
+}flex-direction:column}
+  .figure .thumb{width:min(64vw,320px);margin:0 auto}
+}
+ 
 /* フッター */
+
 .footer{color:#c8d6f2;font-size:.92em}
 .warn{background:rgba(20,27,54,.7);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px;margin:12px 16px}
 .note{color:#c8d6f2;font-size:.92em;padding:0 16px 12px}
@@ -168,10 +239,22 @@ const IMGS = {
   "05": {alt:"特別な流れ星のきらめき",    tags:["rare"]}
 };
 const TAG_MAP = {
+  // 01：やさしさ・朝側
   "やさしさ":["01"], "自己肯定":["01"], "朝向け":["01"], "morning":["01"],
+  "比較":["01"], "季節":["01"], "選択":["01"], "恋愛":["01"],
+
+  // 02：静けさ・夜側
   "静けさ":["02"], "不安":["02"], "夜向け":["02"], "night":["02"],
-  "希望":["03"], "再起":["03"],
-  "守る":["04"], "安心":["04"],
+  "罪悪感":["02"], "孤独":["02"], "お金":["02"],
+
+  // 03：希望・再起・創作
+  "希望":["03"], "再起":["03"], "創作":["03"], "転機":["03"],
+
+  // 04：守る・安心・境界・家族/ペット/本番/からだ
+  "守る":["04"], "安心":["04"], "境界":["04"], "家族":["04"],
+  "ペット":["04"], "本番":["04"], "からだ":["04"], "怒り":["04"],
+
+  // 05：レア専用
   "rare":["05"]
 };
 
@@ -240,7 +323,7 @@ const TAG_MAP = {
   function pickImageFor(letter){
     // rare は固定で 05.png を表示
     if ((letter.rarity||"common")==="rare") {
-      return { id:"05", alt:(IMGS["05"]?.alt||""), cap:"特別なことば" };
+      return { id:"05", alt:(IMGS["05"]?.alt||""), cap:"" };
     }
     const hint = nowHint();
     const tags = (letter.tags||[]).map(String);
@@ -266,7 +349,7 @@ const morningSet = new Set(["01","03"]);
       return { id, alt: IMGS[id]?.alt || "", cap: (tags[0] ? "テーマ："+tags[0] : "テーマ：—") };
     }else{
       const id = (hint==="night" ? "02" : "01");
-      return { id, alt: IMGS[id].alt, cap: "背景（汎用）" };
+      return { id, alt: IMGS[id].alt, cap: "" };
     }
   }
 
@@ -347,8 +430,178 @@ draw.textContent = CONFIG.button_label || "流れ星に祈る";
       if(Array.isArray(arr)) LETTERS = arr;
     }catch(e){}
     if(!LETTERS.length){
-      // フォールバック（最小）
+      // フォールバック（拡張）
       LETTERS = [
+  /* 自己肯定 */
+  {"id":"star-self-01","text":"きみはもう、よくやってるよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-02","text":"できない日も、きみはきみだよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-03","text":"今日のきみも、ちゃんと愛しい。","tags":["自己肯定","やさしさ"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-04","text":"弱さが見えた？それで大丈夫。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-05","text":"ここまで来たね、それがすごい。","tags":["自己肯定","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-06","text":"誰にも勝たなくていいよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-07","text":"失敗あっても、価値は減らない。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-08","text":"ため息、ここに置いてっていい。","tags":["自己肯定","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-09","text":"肩の力、すこし抜いていい。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-self-10","text":"今日は生きてるだけでOK。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+
+  /* 不安 */
+  {"id":"star-anx-01","text":"こわいね、わかるよ。そばにいる。","tags":["不安","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-02","text":"未来はぼんやりで普通だよ。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-03","text":"震えてても、きみは立派だよ。","tags":["不安","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-04","text":"心配ばかりの夜、いっしょにいよう。","tags":["不安","夜向け"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-05","text":"うまく言えなくていい、伝わってる。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-06","text":"それ、きみのせいじゃないよ。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anx-07","text":"小さく息して、小さく待とう。","tags":["不安","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 完璧主義 */
+  {"id":"star-perf-01","text":"完璧じゃなくていい、きみでいい。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-02","text":"未完成のままでも、尊いよ。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-03","text":"間に合わなくても、嫌いにならない。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-04","text":"進めない夜も、仲間だよ。","tags":["完璧主義","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-05","text":"ほつれた今日も、愛していい。","tags":["完璧主義","やさしさ"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-06","text":"立ち止まってていい日もある。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-perf-07","text":"60点で出して、次で磨こう。","tags":["完璧主義","励まし"],"rarity":"common","tone":"friend"},
+
+  /* 比較 */
+  {"id":"star-comp-01","text":"他の光は、きみを測るものじゃない。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-02","text":"画面は編集、きみは生の生活。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-03","text":"きみの速さが、きみのリズム。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-04","text":"うらやましさも、ちゃんと人間だよ。","tags":["比較","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-05","text":"今日は「昨日のきみ」だけを相手に。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-06","text":"無理に笑わなくていいよ。","tags":["比較","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-comp-07","text":"比べたくなる心も、抱いてていい。","tags":["比較","受容"],"rarity":"common","tone":"friend"},
+
+  /* 再起 */
+  {"id":"star-retry-01","text":"こけた場所、次の目印にしよ。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-02","text":"うまくいかない日も、練習のうち。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-03","text":"仮のままのきみも好きだよ。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-04","text":"なくした分、手があくんだよ。","tags":["再起","やさしさ"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-05","text":"やり直すきみ、かっこいいよ。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-06","text":"戻らなくていい、ここからでいい。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-retry-07","text":"一歩でも、今日は十分だよ。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+
+  /* 孤独 */
+  {"id":"star-solo-01","text":"ひとりに見えても、ここにいるよ。","tags":["孤独","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-02","text":"返事がなくても、想ってる人はいる。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-03","text":"さみしいって言っていいよ。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-04","text":"きみの居場所、ちゃんとあるよ。","tags":["孤独","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-05","text":"話したくなったら、いつでも聞く。","tags":["孤独","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-06","text":"今日は無言でも、大丈夫だよ。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-solo-07","text":"泣ける場所、ここにあるよ。","tags":["孤独","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 恋愛・人間関係 */
+  {"id":"star-love-01","text":"好きの形、きみが決めていい。","tags":["恋愛","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-02","text":"離れても、価値は減らないからね。","tags":["恋愛","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-03","text":"がんばりすぎないで、まず自分を。","tags":["恋愛","セルフケア"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-04","text":"合わないは悪じゃない、相性だよ。","tags":["恋愛","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-05","text":"さようならのあとも、きみはきみ。","tags":["恋愛","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-love-06","text":"やさしさに、きみの分を残してね。","tags":["恋愛","境界"],"rarity":"common","tone":"friend"},
+
+  /* 仕事・学業 */
+  {"id":"star-work-01","text":"今日は疲れたね、それで当然だよ。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-02","text":"できた分だけで、充分えらい。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-03","text":"机に座れた？それだけで拍手。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-04","text":"予定どおりじゃなくても、OKだよ。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-05","text":"休むきみも、チームの一部だよ。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-06","text":"ちょっと嫌いになっても大丈夫。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+  {"id":"star-work-07","text":"今日は“ここまで”でえらい。","tags":["仕事","学業"],"rarity":"common","tone":"friend"},
+
+  /* 夜向け（timeHint付与） */
+  {"id":"star-night-01","text":"眠れない夜、いっしょにいるよ。","tags":["夜向け","寄り添い"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-02","text":"考え事は朝に預けていいよ。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-03","text":"目を閉じるだけ、今日はそれでいい。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-04","text":"起きてるきみを、責めないでね。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-05","text":"しんどいって言えるきみ、強いよ。","tags":["夜向け","励まし"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-06","text":"月も残業中、きみだけじゃない。","tags":["夜向け","ユーモア"],"rarity":"common","tone":"friend","timeHint":"night"},
+  {"id":"star-night-07","text":"眠れぬ夜も、朝は来るよ。","tags":["夜向け","希望"],"rarity":"common","tone":"friend","timeHint":"night"},
+
+  /* 朝向け（timeHint付与） */
+  {"id":"star-morn-01","text":"起きられたね、もうじゅうぶんえらい。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-02","text":"今日の白紙、雑でも大好きだよ。","tags":["朝向け","受容"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-03","text":"靴下は片方でも可愛いよ。","tags":["朝向け","ユーモア"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-04","text":"進まなくても、朝を迎えたきみが勝ち。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+  {"id":"star-morn-05","text":"光を少し浴びよう。一緒に。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+
+  /* レア（5%） */
+  {"id":"star-rare-01","text":"ここまで来た勇気、もう揺らがないよ。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-02","text":"悲しみの分だけ、やさしさが広がってる。","tags":["rare","受容"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-03","text":"どこにも居場所がない日は、私がいる。","tags":["rare","寄り添い"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-04","text":"手放した手に、新しい風が入るよ。","tags":["rare","再起"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-05","text":"今日を越えたら、次の目印が見える。","tags":["rare","希望"],"rarity":"rare","tone":"friend"},
+  {"id":"star-rare-06","text":"生き延びた日数ぶん、きみは強い。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"},
+
+  /* 罪悪感 */
+  {"id":"star-guilt-01","text":"それ、ぜんぶ自分のせいじゃないよ。","tags":["罪悪感","慰め"],"rarity":"common","tone":"friend"},
+  {"id":"star-guilt-02","text":"後悔してる時点で、もう十分やさしい。","tags":["罪悪感","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-guilt-03","text":"間違いは人間の色。きみは人間だよ。","tags":["罪悪感","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-guilt-04","text":"きびしさは少し置いていこう、ここでは。","tags":["罪悪感","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 怒り */
+  {"id":"star-anger-01","text":"怒っていいよ。それは大事なサインだよ。","tags":["怒り","境界"],"rarity":"common","tone":"friend"},
+  {"id":"star-anger-02","text":"きみの境界が傷んだんだね、わかる。","tags":["怒り","境界"],"rarity":"common","tone":"friend"},
+  {"id":"star-anger-03","text":"いまは言葉にできなくて大丈夫。","tags":["怒り","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-anger-04","text":"ここでは安全。荒れた心も座っていていい。","tags":["怒り","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 選択 */
+  {"id":"star-choice-01","text":"迷うのは、どれも大事にしたいからだよ。","tags":["選択","自己理解"],"rarity":"common","tone":"friend"},
+  {"id":"star-choice-02","text":"正解はひとつじゃない。きみの時間でいい。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-choice-03","text":"どっちでも、きみの価値は変わらないよ。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-choice-04","text":"いま決めなくても、友だちは離れない。","tags":["選択","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 転機 */
+  {"id":"star-change-01","text":"景色が変わると、心も揺れるよね。普通だよ。","tags":["転機","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-change-02","text":"なじむ前の居心地の悪さ、いっしょに持とう。","tags":["転機","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-change-03","text":"“はじめまして”の連続、よくやってるよ。","tags":["転機","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-change-04","text":"家みたいな場所は、あとからできる。","tags":["転機","希望"],"rarity":"common","tone":"friend"},
+
+  /* 創作 */
+  {"id":"star-create-01","text":"何も出ない日も、君の一部だよ。","tags":["創作","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-create-02","text":"好きの火は消えてない。灰の下で生きてる。","tags":["創作","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-create-03","text":"進んでなく見える時間も、芽の季節。","tags":["創作","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-create-04","text":"作品より先に、きみが大切だよ。","tags":["創作","セルフケア"],"rarity":"common","tone":"friend"},
+
+  /* からだ */
+  {"id":"star-body-01","text":"今日は体が重いね。責めなくていいよ。","tags":["からだ","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-body-02","text":"波みたいな日、きみは悪くない。","tags":["からだ","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-body-03","text":"しんどい体でここまで来た、それだけで立派。","tags":["からだ","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-body-04","text":"調子が悪い日は、世界の音が大きいよね。","tags":["からだ","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* お金 */
+  {"id":"star-money-01","text":"不安になるの、当然だよ。ひとりじゃない。","tags":["お金","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-money-02","text":"余裕がなくても、きみの価値は減らない。","tags":["お金","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-money-03","text":"心細さ、ここに置いていっていい。","tags":["お金","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-money-04","text":"先のことを心配できる時点で、もうえらいよ。","tags":["お金","励まし"],"rarity":"common","tone":"friend"},
+
+  /* 家族 */
+  {"id":"star-family-01","text":"近いからこそ、痛くなることってあるよね。","tags":["家族","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-family-02","text":"わかってほしいのに伝わらない、つらいよね。","tags":["家族","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-family-03","text":"その気持ち、ここでは否定しないよ。","tags":["家族","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-family-04","text":"きみの感じたことは本物だよ。","tags":["家族","受容"],"rarity":"common","tone":"friend"},
+
+  /* ペット */
+  {"id":"star-pet-01","text":"その子は、きみのやさしさで満たされてたよ。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-pet-02","text":"会えなくても、あのぬくもりは消えない。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-pet-03","text":"さみしいよね。ここで泣いていい。","tags":["ペット","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-pet-04","text":"思い出は、ずっと家にいるよ。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 本番 */
+  {"id":"star-stage-01","text":"緊張してるの、ちゃんと大事にしてる証拠だよ。","tags":["本番","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-stage-02","text":"震えるきみも、かっこいいよ。","tags":["本番","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-stage-03","text":"うまくいかなくても、きみは嫌いにならない。","tags":["本番","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-stage-04","text":"名前を呼ばれるだけで、よく来たねって思う。","tags":["本番","寄り添い"],"rarity":"common","tone":"friend"},
+
+  /* 境界 */
+  {"id":"star-border-01","text":"NOって言えるきみ、立派だよ。","tags":["境界","励まし"],"rarity":"common","tone":"friend"},
+  {"id":"star-border-02","text":"嫌だった気持ち、ここでは尊重される。","tags":["境界","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-border-03","text":"断っても、やさしさはなくならない。","tags":["境界","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-border-04","text":"きみのスペースは、大切にしていい。","tags":["境界","セルフケア"],"rarity":"common","tone":"friend"},
+
+  /* 季節 */
+  {"id":"star-season-01","text":"光が少ない季節、元気も小さくて普通だよ。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-season-02","text":"雨の日の心は、濡れてて当たり前。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
+  {"id":"star-season-03","text":"春待ちのあいだ、いっしょに灯を持とう。","tags":["季節","寄り添い"],"rarity":"common","tone":"friend"},
+  {"id":"star-season-04","text":"冬のきみも、大切なきみだよ。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
+  
   /* 自己肯定 */
  {"id":"star-self-01","text":"きみはもう、よくやってるよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
   {"id":"star-self-02","text":"できない日も、きみはきみだよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
@@ -508,7 +761,176 @@ draw.textContent = CONFIG.button_label || "流れ星に祈る";
   {"id":"star-season-02","text":"雨の日の心は、濡れてて当たり前。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
   {"id":"star-season-03","text":"春待ちのあいだ、いっしょに灯を持とう。","tags":["季節","寄り添い"],"rarity":"common","tone":"friend"},
   {"id":"star-season-04","text":"冬のきみも、大切なきみだよ。","tags":["季節","受容"],"rarity":"common","tone":"friend"}
+  ,/* ==== 追加パック（共感・受容・励まし / 50通） ==== */
+/* 自己肯定（+2） */
+{"id":"star-extra-self-01","text":"小さな一歩、ちゃんと前だよ。","tags":["自己肯定","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-self-02","text":"今日は生き抜いた、それで十分。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+
+/* 不安（+2） */
+{"id":"star-extra-anx-01","text":"考えすぎた心、ここで休ませよう。","tags":["不安","寄り添い"],"rarity":"common","tone":"friend","timeHint":"night"},
+{"id":"star-extra-anx-02","text":"ぜんぶ決めなくていい、今は。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+
+/* 完璧主義（+2） */
+{"id":"star-extra-perf-01","text":"80点で出して、あとで磨こ。","tags":["完璧主義","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-perf-02","text":"ゆるんだ糸、今日は結ばなくていい。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+
+/* 比較（+2） */
+{"id":"star-extra-comp-01","text":"よそはよそ、きみはきみの速さで。","tags":["比較","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-comp-02","text":"光に目が慣れたら、きみの色が見える。","tags":["比較","やさしさ"],"rarity":"common","tone":"friend"},
+
+/* 再起（+2） */
+{"id":"star-extra-retry-01","text":"昨日のこけ方、もう上手になってる。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-retry-02","text":"やり直しは敗北じゃない、呼吸だよ。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+
+/* 孤独（+2） */
+{"id":"star-extra-lonely-01","text":"静かな部屋にも、味方はいるよ。","tags":["孤独","寄り添い"],"rarity":"common","tone":"friend","timeHint":"night"},
+{"id":"star-extra-lonely-02","text":"言葉にならないなら、うなずくだけでいい。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+
+/* 恋愛・人間関係（+2） */
+{"id":"star-extra-love-01","text":"優しさは、まず自分のぶんもね。","tags":["恋愛","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-love-02","text":"合わないは失敗じゃない、発見だよ。","tags":["恋愛","受容"],"rarity":"common","tone":"friend"},
+
+/* 仕事・学業（+2） */
+{"id":"star-extra-work-01","text":"一行だけ進めた？それで大進歩。","tags":["仕事","学業","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-work-02","text":"今日は『やめ時が上手』で花丸。","tags":["仕事","学業","受容"],"rarity":"common","tone":"friend"},
+
+/* 夜向け（+2） */
+{"id":"star-extra-night-01","text":"眠れない夜を、生きてるだけでえらい。","tags":["夜向け","寄り添い"],"rarity":"common","tone":"friend","timeHint":"night"},
+{"id":"star-extra-night-02","text":"考え事は、月に一晩あずけよう。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+
+/* 朝向け（+2） */
+{"id":"star-extra-morn-01","text":"顔を洗えた？十分なスタート。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+{"id":"star-extra-morn-02","text":"白紙の今日、落書きからでOK。","tags":["朝向け","受容"],"rarity":"common","tone":"friend","timeHint":"morning"},
+
+/* 罪悪感（+2） */
+{"id":"star-extra-guilt-01","text":"反省できる心、もう優しい証拠だよ。","tags":["罪悪感","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-guilt-02","text":"ぜんぶ背負わなくていい、分け合おう。","tags":["罪悪感","受容"],"rarity":"common","tone":"friend"},
+
+/* 怒り（+2） */
+{"id":"star-extra-anger-01","text":"怒りは境界のSOS、無視しないでね。","tags":["怒り","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-anger-02","text":"言葉はあとでいい、今は呼吸から。","tags":["怒り","受容"],"rarity":"common","tone":"friend"},
+
+/* 選択（+2） */
+{"id":"star-extra-choice-01","text":"どっちも大事なら、どっちも少しずつ。","tags":["選択","慰め"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-choice-02","text":"保留は逃げじゃない、整える時間。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+
+/* 転機（+2） */
+{"id":"star-extra-shift-01","text":"慣れない痛みは、芽が出る前触れ。","tags":["転機","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-shift-02","text":"仮住まいでも、ここに灯はともるよ。","tags":["転機","慰め"],"rarity":"common","tone":"friend"},
+
+/* 創作（+2） */
+{"id":"star-extra-create-01","text":"空白も材料、今日は集める日。","tags":["創作","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-create-02","text":"好きの火、灰の下でちゃんと生きてる。","tags":["創作","受容"],"rarity":"common","tone":"friend"},
+
+/* からだ（+2） */
+{"id":"star-extra-body-01","text":"重い体を運んだね、偉業だよ。","tags":["からだ","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-body-02","text":"世界がうるさい日は、耳を休ませよう。","tags":["からだ","受容"],"rarity":"common","tone":"friend"},
+
+/* お金（+2） */
+{"id":"star-extra-money-01","text":"不安は普通、ひとりで抱えなくていい。","tags":["お金","慰め"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-money-02","text":"価値は残高じゃ測れないよ。","tags":["お金","受容"],"rarity":"common","tone":"friend"},
+
+/* 家族（+2） */
+{"id":"star-extra-family-01","text":"近いほど痛む、その気持ちわかる。","tags":["家族","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-family-02","text":"わかってほしい願い、ここでは否定しない。","tags":["家族","受容"],"rarity":"common","tone":"friend"},
+
+/* ペット（+2） */
+{"id":"star-extra-pet-01","text":"ぬくもりは消えない、心に住んでる。","tags":["ペット","慰め"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-pet-02","text":"一緒の時間、あの子は幸せだったよ。","tags":["ペット","寄り添い"],"rarity":"common","tone":"friend"},
+
+/* 本番（+2） */
+{"id":"star-extra-stage-01","text":"震える手も、味方につけていこう。","tags":["本番","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-stage-02","text":"結果より、ここに来た勇気に拍手。","tags":["本番","受容"],"rarity":"common","tone":"friend"},
+
+/* 境界（+2） */
+{"id":"star-extra-bound-01","text":"NOを言えたね、よく守れた。","tags":["境界","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-bound-02","text":"断っても、やさしさは減らないよ。","tags":["境界","受容"],"rarity":"common","tone":"friend"},
+
+/* 季節（+2） */
+{"id":"star-extra-season-01","text":"曇り空の日は、心もふわっとでいい。","tags":["季節","慰め"],"rarity":"common","tone":"friend"},
+{"id":"star-extra-season-02","text":"冬の静けさ、休む練習に使おう。","tags":["季節","受容"],"rarity":"common","tone":"friend"},
+
+/* レア（+6 / 既存に追加） */
+{"id":"star-extra-rare-01","text":"何度目の夜でも、明け方は来るよ。","tags":["rare","再起"],"rarity":"rare","tone":"friend"},
+{"id":"star-extra-rare-02","text":"泣いていい夜がある、そして進める朝が来る。","tags":["rare","夜向け"],"rarity":"rare","tone":"friend","timeHint":"night"},
+{"id":"star-extra-rare-03","text":"手放したぶん、軽く跳べる。","tags":["rare","転機"],"rarity":"rare","tone":"friend"},
+{"id":"star-extra-rare-04","text":"今日の勇気は、未来の君の灯台になる。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"},
+{"id":"star-extra-rare-05","text":"ここまでの全部を連れて、次のドアへ。","tags":["rare","再起"],"rarity":"rare","tone":"friend"},
+{"id":"star-extra-rare-06","text":"生き延びた日数ぶん、君は強い。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"}
+,/* ==== 追加パック02（40通） ==== */
+/* 自己肯定（+4） */
+{"id":"star-pack2-self-01","text":"小さな前進、ちゃんと前だよ。","tags":["自己肯定","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-self-02","text":"休めたなら、それも成果。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-self-03","text":"今日の君でいてくれて、うれしい。","tags":["自己肯定","やさしさ"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-self-04","text":"がんばれない日も、仲間だよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
+
+/* 不安（+4） */
+{"id":"star-pack2-anx-01","text":"怖さの中でも、呼吸は味方。","tags":["不安","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-anx-02","text":"結論は急がなくていいよ。","tags":["不安","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-anx-03","text":"心配の波、いっしょにやり過ごそう。","tags":["不安","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-anx-04","text":"大丈夫を探すより、楽を探そう。","tags":["不安","セルフケア"],"rarity":"common","tone":"friend"},
+
+/* 完璧主義（+3） */
+{"id":"star-pack2-perf-01","text":"雑でも提出、未来の自分が助かる。","tags":["完璧主義","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-perf-02","text":"欠けたところも、作品の一部。","tags":["完璧主義","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-perf-03","text":"今日は“やめ時が上手”で花丸。","tags":["完璧主義","セルフケア"],"rarity":"common","tone":"friend"},
+
+/* 比較（+3） */
+{"id":"star-pack2-comp-01","text":"光の強さじゃなく、色でいこう。","tags":["比較","自己受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-comp-02","text":"誰かの地図は、君の地図じゃない。","tags":["比較","自己理解"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-comp-03","text":"遅く見える日は、深く育ってる日。","tags":["比較","受容"],"rarity":"common","tone":"friend"},
+
+/* 再起（+3） */
+{"id":"star-pack2-retry-01","text":"転んだ跡は、次の踏み台。","tags":["再起","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-retry-02","text":"戻らなくていい、曲がり角でOK。","tags":["再起","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-retry-03","text":"続けられない日は、続けない勇気。","tags":["再起","セルフケア"],"rarity":"common","tone":"friend"},
+
+/* 孤独（+3） */
+{"id":"star-pack2-solo-01","text":"声が出ない夜は、隣で黙ってる。","tags":["孤独","寄り添い","夜向け"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-solo-02","text":"既読も返信もなくていい時間。","tags":["孤独","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-solo-03","text":"連絡先より、つながりは深いところにある。","tags":["孤独","希望"],"rarity":"common","tone":"friend"},
+
+/* 恋愛・人間関係（+3） */
+{"id":"star-pack2-love-01","text":"優しさは配りすぎず、自分にも。","tags":["恋愛","境界"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-love-02","text":"合わないは悪じゃない、相性。","tags":["恋愛","自己理解"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-love-03","text":"離れても、君の価値は動かない。","tags":["恋愛","受容"],"rarity":"common","tone":"friend"},
+
+/* 仕事・学業（+3） */
+{"id":"star-pack2-work-01","text":"五分だけやって、やめてもいい。","tags":["仕事","学業","励まし"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-work-02","text":"できた分に丸をつけよう。","tags":["仕事","学業","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-work-03","text":"今日は“始めた人”として合格。","tags":["仕事","学業","励まし"],"rarity":"common","tone":"friend"},
+
+/* 夜向け（+3｜timeHint: night） */
+{"id":"star-pack2-night-01","text":"眠れない夜を生きてる、それだけで偉い。","tags":["夜向け","寄り添い"],"rarity":"common","tone":"friend","timeHint":"night"},
+{"id":"star-pack2-night-02","text":"考え事は月に預けて、体だけ休もう。","tags":["夜向け","受容"],"rarity":"common","tone":"friend","timeHint":"night"},
+{"id":"star-pack2-night-03","text":"明け方は来る、今日も。","tags":["夜向け","希望"],"rarity":"common","tone":"friend","timeHint":"night"},
+
+/* 朝向け（+3｜timeHint: morning） */
+{"id":"star-pack2-morn-01","text":"起きられたら合格、そこからでいい。","tags":["朝向け","励まし"],"rarity":"common","tone":"friend","timeHint":"morning"},
+{"id":"star-pack2-morn-02","text":"白紙の今日、落書きから始めよう。","tags":["朝向け","受容"],"rarity":"common","tone":"friend","timeHint":"morning"},
+{"id":"star-pack2-morn-03","text":"朝の一口の水でスタート。","tags":["朝向け","セルフケア"],"rarity":"common","tone":"friend","timeHint":"morning"},
+
+/* 罪悪感（+2） */
+{"id":"star-pack2-guilt-01","text":"責める声は小さく、息を大きく。","tags":["罪悪感","寄り添い"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-guilt-02","text":"反省できる時点で優しい人だよ。","tags":["罪悪感","受容"],"rarity":"common","tone":"friend"},
+
+/* 怒り（+2） */
+{"id":"star-pack2-anger-01","text":"怒りはSOS、無視しないでね。","tags":["怒り","境界"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-anger-02","text":"言葉はあと、まず体を落ち着かせよう。","tags":["怒り","セルフケア"],"rarity":"common","tone":"friend"},
+
+/* 選択（+2） */
+{"id":"star-pack2-choice-01","text":"保留は逃げじゃない、整える時間。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+{"id":"star-pack2-choice-02","text":"どっちでも、君の価値は変わらない。","tags":["選択","受容"],"rarity":"common","tone":"friend"},
+
+/* レア（+4） */
+{"id":"star-pack2-rare-01","text":"今日の勇気は、未来の君を照らす灯台。","tags":["rare","自己肯定"],"rarity":"rare","tone":"friend"},
+{"id":"star-pack2-rare-02","text":"泣いたぶんだけ、優しくなれる。","tags":["rare","受容"],"rarity":"rare","tone":"friend"},
+{"id":"star-pack2-rare-03","text":"何度でも、ここから始められるよ。","tags":["rare","再起"],"rarity":"rare","tone":"friend"},
+{"id":"star-pack2-rare-04","text":"全部連れて、次のドアへ。","tags":["rare","転機"],"rarity":"rare","tone":"friend"}
+/* ==== 追加パック02ここまで ==== */
+/* ==== 追加パックここまで ==== */
 ];
+
 
     draw.textContent = CONFIG.button_label || "流れ星に祈る";
     saveLast();
