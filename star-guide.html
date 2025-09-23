@@ -51,11 +51,11 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn:active{transform:translateY(1px)}
 
 /* ヒーローの外側まで描画して途中消えを防ぐ（iPhone向け） */
-.shoot{ position:absolute; inset:-12vh -12vw; pointer-events:none; z-index:1; overflow:visible; }
+.shoot{ position:fixed; inset:0; pointer-events:none; z-index:1; }
 
 .shoot .star{
   position:absolute;
-  left:-30vw; top:-16vh;                     /* 少し外から入る */
+  left:-34vw; top:10vh;                  /* 少し外から入る */
   width:120vw; height:2px;                   /* 細めの尾 */
   opacity:0; border-radius:2px;
   /* 先細りの尾（左=薄→右=明→さらに薄） */
@@ -102,30 +102,20 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
   filter:blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
 }
 
-/* 走らせる（.active 付与で発火） */
-/* 少し長めに（iPhoneでも等速に見える3.4s） */
 .shoot.active .star{ animation:tailArc 3.4s linear forwards; }
 @keyframes tailArc{
   /* 入り：左上の外からふわっと出現 */
-  0%   { opacity:0; transform:rotate(12deg) translate3d(-34vw,-18vh,0); }
+  0%   { opacity:0; transform:rotate(12deg) translate3d(-36vw,-10vh,0); }
   8%   { opacity:1; }
 
   /* ほぼ等速で浅い弧（右へ行くほど少し下がる） */
-  22%  { transform:rotate(12deg) translate3d(-2vw,-8vh,0); }
+  22%  { transform:rotate(12deg) translate3d(-6vw,-6vh,0); }
   48%  { transform:rotate(12deg) translate3d(36vw,-2vh,0); }
-  74%  { transform:rotate(12deg) translate3d(86vw,10vh,0); }
-  92%  { transform:rotate(12deg) translate3d(130vw,22vh,0); }
+  74%  { transform:rotate(12deg) translate3d(96vw,10vh,0); }
+  92%  { transform:rotate(12deg) translate3d(140vw,22vh,0); }
 
-  /* 終点：右下の外へ抜けながら消える */
-  100% { opacity:0; transform:rotate(12deg) translate3d(160vw,26vh,0); }
-}
-
-
-@keyframes tailSoft{
-  0%   { opacity:0; transform:rotate(10deg) translate3d(-28vw,-6vh,0); }
-  10%  { opacity:1; }
-  95%  { opacity:1; }
-  100% { opacity:0; transform:rotate(10deg) translate3d(110vw,8vh,0); }
+  /* 終点：右下の外へ抜けながら消える（確実に通過） */
+  100% { opacity:0; transform:rotate(12deg) translate3d(170vw,26vh,0); }
 }
 
 /* 動作を減らす配慮 */
