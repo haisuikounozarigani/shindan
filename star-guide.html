@@ -50,18 +50,46 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#0b1026}
 .btn:active{transform:translateY(1px)}
 
-/* シューティングスター（rareは色を変えるが文言では匂わせのみ） */
-.shoot{position:absolute;inset:0;pointer-events:none;z-index:1}
+/* シューティングスター（rareは色だけ差替） */
+.shoot{ position:absolute; inset:0; pointer-events:none; z-index:1; }
 .shoot .star{
   position:absolute;
-  left:-10%;top:0;
-  width:480px;              /* すこし大きめに */
-  height:3px;
-  opacity:0;
-  border-radius:3px;
+  left:-20vw; top:-10vh;                 /* 入口を画面外からにして見切れ防止 */
+  width: min(90vw, 520px);               /* 端末幅で可変（iPhoneでも見える） */
+  height:3px; opacity:0; border-radius:3px;
   background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
   filter:drop-shadow(0 0 14px rgba(255,255,255,.9));
-  transform:rotate(18deg) translate3d(0,0,0);
+  transform: rotate(18deg) translate3d(0,0,0);
+  will-change: transform, opacity;
+  -webkit-backface-visibility: hidden;   /* Safari 安定化 */
+}
+.shoot .star::after{                      /* 先端の小さな発光（頭の光） */
+  content:"";
+  position:absolute; right:-8px; top:-6px;
+  width:18px; height:18px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,.9) 30%, rgba(255,255,255,0) 70%);
+  filter: blur(1px) drop-shadow(0 0 10px rgba(255,255,255,.95));
+}
+.shoot .star.rare{
+  background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
+  filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
+}
+.shoot .star.rare::after{
+  background:radial-gradient(circle, rgba(255,120,120,1) 0%, rgba(255,120,120,.9) 32%, rgba(255,120,120,0) 70%);
+  filter: blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
+}
+/* 走らせる */
+.shoot.active .star{ animation: tail 1.25s ease forwards; }
+@keyframes tail{
+  0%   { opacity:0; transform:rotate(18deg) translate3d(-15vw,-12vh,0); }
+  12%  { opacity:1; }
+  100% { opacity:0; transform:rotate(18deg) translate3d(110vw,60vh,0); }
+}
+
+/* フォールバック：動作を減らす（iOSの設定）に配慮。簡易点滅表示へ */
+@media (prefers-reduced-motion: reduce){
+  .shoot .star{ opacity:0; animation:none; transition:opacity .6s ease; }
+  .shoot.static .star{ opacity:1; }      /* JSで一瞬表示→消す */
 }
 /* ★頭光り：先端に小さな発光円（通常色） */
 .shoot .star::after{
@@ -127,40 +155,34 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .tags{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 12px;color:#c8d6f2;font-size:.9em}
 .tag{padding:3px 8px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.06)}
 
-/* 結果イメージ：正方形表示に変更（背景は縦長のまま） */
-.figure{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:6px 12px 12px}
+/* 結果イメージ：正方形（1024x1024想定）を中央に、見切れなしで表示 */
+.figure{
+  display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
+  padding:6px 12px 12px;
+}
 .figure .thumb{
-  /* ど真ん中＆正方形で安定 */
-  width: min(86vw, 320px);
-  aspect-ratio: 1 / 1;
-  margin: 12px auto 0;           /* 横中央 */
-  display: grid;                  /* 中央配置 */
-  place-items: center;
+  width: min(86vw, 320px);          /* 端末に合わせて気持ち大きめ */
+  aspect-ratio: 1 / 1;              /* 正方形枠 */
+  margin: 12px auto 0;              /* ど真ん中 */
+  display: grid; place-items: center;
   border-radius: 16px;
   background: #111a2b;
   border: 1px solid rgba(255,255,255,.12);
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,.25);
 }
-  width:min(40vw,240px);aspect-ratio:1/1;border-radius:12px;overflow:hidden;
-  border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(0,0,0,.25)
-}
 .figure .thumb img{
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;              /* 正方形の中でトリミング */
-  object-position: center;        /* ど真ん中 */
+  width: 100%; height: 100%; display: block;
+  object-fit: contain;              /* ← 見切れなし。1024x1024は等倍で収まる */
+  object-position: center;
   image-rendering: auto;
-}width:100%;height:100%;object-fit:cover;display:block}
-.figure .cap{flex:1;min-width:180px;color:#c8d6f2;font-size:.92em;line-height:1.5;text-align:center}
-
-@media (max-width: 560px){
-  .figure{
-  display: flex;
-  justify-content: center;        /* 子の .thumb を中央に */
-}flex-direction:column}
-  .figure .thumb{width:min(64vw,320px);margin:0 auto}
+}
+.figure .cap{
+  flex:1; min-width:180px; color:#c8d6f2; font-size:.92em; line-height:1.5; text-align:center;
+}
+@media (max-width:560px){
+  .figure{ justify-content:center; }
+  .figure .thumb{ width: min(76vw, 360px); margin: 0 auto; }
 }
  
 /* フッター */
