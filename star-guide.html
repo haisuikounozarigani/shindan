@@ -50,59 +50,29 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#0b1026}
 .btn:active{transform:translateY(1px)}
 
-/* シューティングスター（rareは色だけ差替） */
+/* シューティングスター（iPhone/Safari安定版） */
 .shoot{ position:absolute; inset:0; pointer-events:none; z-index:1; }
+
 .shoot .star{
   position:absolute;
-  left:-20vw; top:-10vh;                 /* 入口を画面外からにして見切れ防止 */
-  width: min(90vw, 520px);               /* 端末幅で可変（iPhoneでも見える） */
-  height:3px; opacity:0; border-radius:3px;
+  left:-28vw; top:-6vh;               /* 入口は画面外 */
+  width:min(90vw,520px); height:3px;
+  opacity:0; border-radius:3px;
   background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
   filter:drop-shadow(0 0 14px rgba(255,255,255,.9));
-  transform: rotate(18deg) translate3d(0,0,0);
-  will-change: transform, opacity;
-  -webkit-backface-visibility: hidden;   /* Safari 安定化 */
+  transform:rotate(10deg) translate3d(0,0,0); /* ← 角度を少しだけ浅く */
+  will-change:transform,opacity;
+  -webkit-backface-visibility:hidden;
 }
-.shoot .star::after{                      /* 先端の小さな発光（頭の光） */
+.shoot .star::after{ /* 先端の小さな発光 */
   content:"";
-  position:absolute; right:-8px; top:-6px;
-  width:18px; height:18px; border-radius:50%;
-  background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,.9) 30%, rgba(255,255,255,0) 70%);
-  filter: blur(1px) drop-shadow(0 0 10px rgba(255,255,255,.95));
-}
-.shoot .star.rare{
-  background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
-  filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
-}
-.shoot .star.rare::after{
-  background:radial-gradient(circle, rgba(255,120,120,1) 0%, rgba(255,120,120,.9) 32%, rgba(255,120,120,0) 70%);
-  filter: blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
-}
-/* 走らせる */
-.shoot.active .star{ animation: tail 1.25s ease forwards; }
-@keyframes tail{
-  0%   { opacity:0; transform:rotate(18deg) translate3d(-15vw,-12vh,0); }
-  12%  { opacity:1; }
-  100% { opacity:0; transform:rotate(18deg) translate3d(110vw,60vh,0); }
-}
-
-/* フォールバック：動作を減らす（iOSの設定）に配慮。簡易点滅表示へ */
-@media (prefers-reduced-motion: reduce){
-  .shoot .star{ opacity:0; animation:none; transition:opacity .6s ease; }
-  .shoot.static .star{ opacity:1; }      /* JSで一瞬表示→消す */
-}
-/* ★頭光り：先端に小さな発光円（通常色） */
-.shoot .star::after{
-  content:"";
-  position:absolute;
-  right:-8px;               /* 進行方向の先端側に配置 */
-  top:-6px;
-  width:18px;height:18px;
-  border-radius:50%;
+  position:absolute; right:-9px; top:-7px;
+  width:20px; height:20px; border-radius:50%;
   background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,.9) 30%, rgba(255,255,255,0) 70%);
   filter:blur(1px) drop-shadow(0 0 10px rgba(255,255,255,.95));
 }
-/* レアは色味だけ変える（文言では匂わせのみ） */
+
+/* レア色（任意：そのままでOK） */
 .shoot .star.rare{
   background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
   filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
@@ -111,35 +81,37 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
   background:radial-gradient(circle, rgba(255,120,120,1) 0%, rgba(255,120,120,.9) 32%, rgba(255,120,120,0) 70%);
   filter:blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
 }
-/* 走らせる */
-.shoot.active .star{animation:tail 1.25s ease forwards}
-@keyframes tail{
-  0%{opacity:0; transform:rotate(18deg) translate3d(-20%,-30%,0)}
-  12%{opacity:1}
-  100%{opacity:0; transform:rotate(18deg) translate3d(140%,100%,0)}
+
+/* 走らせる（.active 付与で発火） */
+.shoot.active .star{
+  animation: tailSoft 2.6s cubic-bezier(0.22,1,0.36,1) forwards;
 }
+@keyframes tailArc{
+  /* 入口：やや上の左外から */
+  0%   { opacity:0; transform:rotate(10deg) translate3d(-30vw,-12vh,0); }
+  12%  { opacity:1; }
+
+  /* 中継ポイントを複数置いて、ゆるい下向き弧にする */
+  25%  { transform:rotate(10deg) translate3d(0vw,-6vh,0); }
+  50%  { transform:rotate(10deg) translate3d(38vw,0vh,0); }
+  75%  { transform:rotate(10deg) translate3d(74vw,10vh,0); }
+
+  /* 終点：右外のやや下へ抜ける */
+  100% { opacity:0; transform:rotate(10deg) translate3d(112vw,22vh,0); }
+}
+
+@keyframes tailSoft{
+  0%   { opacity:0; transform:rotate(10deg) translate3d(-28vw,-6vh,0); }
+  10%  { opacity:1; }
+  95%  { opacity:1; }
+  100% { opacity:0; transform:rotate(10deg) translate3d(110vw,8vh,0); }
+}
+
+/* 動作を減らす配慮 */
 @media (prefers-reduced-motion: reduce){
-  .shoot .star{display:none}
+  .shoot .star{ animation:none; transition:opacity .6s ease; }
+  .shoot.static .star{ opacity:1; }
 }
-.shoot{position:absolute;inset:0;pointer-events:none;z-index:1}
-.shoot .star{
-  position:absolute;left:-10%;top:0;width:420px;height:3px;opacity:0;border-radius:3px;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
-  filter:drop-shadow(0 0 14px rgba(255,255,255,.9));
-  transform:rotate(18deg) translate3d(0,0,0);
-}
-.shoot .star.rare{
-  /* ここでは色の違いだけ。ページ上の文言では色は明記しない */
-  background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
-  filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
-}
-.shoot.active .star{animation:tail 1.25s ease forwards}
-@keyframes tail{
-  0%{opacity:0;transform:rotate(18deg) translate3d(-20%,-30%,0)}
-  12%{opacity:1}
-  100%{opacity:0;transform:rotate(18deg) translate3d(140%,100%,0)}
-}
-@media (prefers-reduced-motion: reduce){.shoot .star{display:none}}
 
 /* レター */
 .letter{
@@ -425,18 +397,31 @@ const morningSet = new Set(["01","03"]);
 
   // ドロー（先に抽選→“特別”なら流星の色だけ静かに変える）
   async function doDraw(){
-    const letter = pickLetter();
-    if(!letter) return;
+  const letter = pickLetter();
+  if(!letter) return;
 
-    const isRare = (letter.rarity||"common")==="rare";
-    shootStar.classList.toggle("rare", isRare);
+  const isRare = (letter.rarity||"common")==="rare";
+  shootStar.classList.toggle("rare", isRare);
 
-    shootStar.parentElement.classList.add("active");
-    await new Promise(r=>setTimeout(r, 850));
-    shootStar.parentElement.classList.remove("active");
+  // --- iPhone/Safari向け：再発火のためのリフロー & Reduce Motion配慮 ---
+  const wrap = shootStar.parentElement;          // .shoot
+  wrap.classList.remove("active","static");
+  // 再計測でアニメを確実にリセット（Safari対策）
+  void wrap.offsetWidth;
 
-    renderLetter(letter);
+  const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(prefersReduce){
+    wrap.classList.add("static");                // やさしい点灯のみ
+    await new Promise(r=>setTimeout(r, 300));
+    wrap.classList.remove("static");
+  }else{
+    wrap.classList.add("active");                // 走らせる
+    await new Promise(r=>setTimeout(r, 900));    // アニメ時間＞CSSの12%～100%
+    wrap.classList.remove("active");
   }
+
+  renderLetter(letter);
+}
 
   // ====== 初期ロード ======
   async function init(){
