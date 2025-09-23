@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>流れ星の案内人</title>
+<title>流れ星の手紙</title>
 <meta name="description" content="ボタンを押すと、流れ星が一通のことばを運んできます。時間帯ブースト対応。たまにレアな流れ星が混ざってるかも？">
 <meta name="theme-color" content="#0b1026">
 <meta property="og:type" content="website">
-<meta property="og:title" content="流れ星の案内人">
+<meta property="og:title" content="流れ星の手紙">
 <meta property="og:description" content="ボタンを押すと、流れ星が一通のことばを運んできます。">
 <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/star-guide.html">
 <meta property="og:image" content="/shindan/assets/results/star-guide/02.png">
@@ -84,7 +84,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 
 /* 走らせる（.active 付与で発火） */
 .shoot.active .star{
-  animation: tailSoft 2.6s cubic-bezier(0.22,1,0.36,1) forwards;
+  animation: tailArc 2.8s cubic-bezier(0.22,1,0.36,1) forwards;
 }
 @keyframes tailArc{
   /* 入口：やや上の左外から */
@@ -171,7 +171,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
   <header class="hd">
     <div class="logo" aria-hidden="true"><span>🌠</span></div>
     <div>
-      <h1>流れ星の案内人</h1>
+      <h1>流れ星の手紙</h1>
       <p class="sub">ボタンを押すと、流れ星が一通のことばを運んできます</p>
     </div>
   </header>
@@ -309,7 +309,7 @@ const TAG_MAP = {
 
   function saveLast(){
     try{
-      localStorage.setItem("specimens:last", JSON.stringify({ id:"star-guide", title:"流れ星の案内人", href: location.pathname }));
+      localStorage.setItem("specimens:last", JSON.stringify({ id:"star-guide", title:"流れ星の手紙", href: location.pathname }));
     }catch(e){}
   }
 
@@ -403,24 +403,23 @@ const morningSet = new Set(["01","03"]);
   const isRare = (letter.rarity||"common")==="rare";
   shootStar.classList.toggle("rare", isRare);
 
-  // --- iPhone/Safari向け：再発火のためのリフロー & Reduce Motion配慮 ---
-  const wrap = shootStar.parentElement;          // .shoot
+  const wrap = shootStar.parentElement; // .shoot
+  // アニメを確実にリセット
   wrap.classList.remove("active","static");
-  // 再計測でアニメを確実にリセット（Safari対策）
   void wrap.offsetWidth;
 
   const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(prefersReduce){
-    wrap.classList.add("static");                // やさしい点灯のみ
-    await new Promise(r=>setTimeout(r, 300));
-    wrap.classList.remove("static");
+    wrap.classList.add("static");
+    setTimeout(()=>wrap.classList.remove("static"), 600);
   }else{
-    wrap.classList.add("active");                // 走らせる
-    await new Promise(r=>setTimeout(r, 900));    // アニメ時間＞CSSの12%～100%
-    wrap.classList.remove("active");
+    wrap.classList.add("active");
+    // CSSのアニメ時間に合わせて少し長めにクラスを外す
+    setTimeout(()=>wrap.classList.remove("active"), 2600);
   }
 
-  renderLetter(letter);
+  // ← ここを“イベント待ち”から“タイマー”に変更：必ず結果が出る
+  setTimeout(()=>{ renderLetter(letter); }, 1200);
 }
 
   // ====== 初期ロード ======
