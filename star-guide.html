@@ -42,7 +42,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .card .pad{padding:14px 16px}
 
 /* ヒーロー */
-.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;isolation:isolate;text-align:center;overflow:hidden}
+.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;isolation:isolate;text-align:center;overflow:visible}
 .btn{
   cursor:pointer;user-select:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
   color:#fff;padding:12px 16px;border-radius:14px;font-weight:700;transition:transform .08s ease, background .2s ease, border-color .2s ease;
@@ -50,26 +50,46 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#0b1026}
 .btn:active{transform:translateY(1px)}
 
-/* シューティングスター（iPhone/Safari安定版） */
-.shoot{ position:fixed; inset:0; pointer-events:none; z-index:1; }
+/* ヒーローの外側まで描画して途中消えを防ぐ（iPhone向け） */
+.shoot{ position:absolute; inset:-12vh -12vw; pointer-events:none; z-index:1; overflow:visible; }
 
-.shoot .star{
+..shoot .star{
   position:absolute;
-  left:-34vw; top:12vh;               /* 入口は画面外 */
-  width:min(90vw,520px); height:3px;
-  opacity:0; border-radius:3px;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
-  filter:drop-shadow(0 0 14px rgba(255,255,255,.9));
-  transform:rotate(10deg) translate3d(0,0,0); /* ← 角度を少しだけ浅く */
+  left:-30vw; top:-16vh;                     /* 少し外から入る */
+  width:120vw; height:2px;                   /* 細めの尾 */
+  opacity:0; border-radius:2px;
+  /* 先細りの尾（左=薄→右=明→さらに薄） */
+  background:linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.35) 20%,
+    rgba(255,255,255,.9) 55%,
+    rgba(255,255,255,.12) 85%,
+    rgba(255,255,255,0) 100%);
+  filter:blur(.2px) drop-shadow(0 0 10px rgba(255,255,255,.85));
+  transform:rotate(12deg) translate3d(0,0,0);
+  transform-origin: 0 50%;
   will-change:transform,opacity;
   -webkit-backface-visibility:hidden;
 }
-.shoot .star::after{ /* 先端の小さな発光 */
+/* ふわっと伸びる光のにじみ（尾のモーションブラー） */
+.shoot .star::before{
   content:"";
-  position:absolute; right:-9px; top:-7px;
-  width:20px; height:20px; border-radius:50%;
-  background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,.9) 30%, rgba(255,255,255,0) 70%);
-  filter:blur(1px) drop-shadow(0 0 10px rgba(255,255,255,.95));
+  position:absolute; right:12px; top:-6px;
+  width:180px; height:14px;
+  background:radial-gradient(60% 50% at 100% 50%,
+    rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 70%);
+  filter:blur(6px);
+}
+/* 先端の光る粒（頭） */
+.shoot .star::after{
+  content:"";
+  position:absolute; right:-6px; top:-7px;
+  width:18px; height:18px; border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,.9) 38%,
+    rgba(255,255,255,0) 72%);
+  filter:blur(.6px) drop-shadow(0 0 12px rgba(255,255,255,.95));
 }
 
 /* レア色（任意：そのままでOK） */
@@ -83,17 +103,21 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 }
 
 /* 走らせる（.active 付与で発火） */
-.shoot.active .star{
-  animation: tailArc 3s linear forwards;
-}
+/* 少し長めに（iPhoneでも等速に見える3.4s） */
+.shoot.active .star{ animation:tailArc 3.4s linear forwards; }
 @keyframes tailArc{
-  0%   { opacity:0; transform:rotate(10deg) translate3d(-30vw,-12vh,0); }
-  12%  { opacity:1; }
-  25%  { transform:rotate(10deg) translate3d(0vw,-6vh,0); }
-  50%  { transform:rotate(10deg) translate3d(38vw,0vh,0); }
-  75%  { transform:rotate(10deg) translate3d(74vw,10vh,0); }
-  96%  { opacity:1; transform:rotate(10deg) translate3d(100vw,20vh,0); } /* ← 画面外直前まで見せる */
-  100% { opacity:0; transform:rotate(10deg) translate3d(112vw,22vh,0); } /* ← 右外へ抜けて消える */
+  /* 入り：左上の外からふわっと出現 */
+  0%   { opacity:0; transform:rotate(12deg) translate3d(-34vw,-18vh,0); }
+  8%   { opacity:1; }
+
+  /* ほぼ等速で浅い弧（右へ行くほど少し下がる） */
+  22%  { transform:rotate(12deg) translate3d(-2vw,-8vh,0); }
+  48%  { transform:rotate(12deg) translate3d(36vw,-2vh,0); }
+  74%  { transform:rotate(12deg) translate3d(86vw,10vh,0); }
+  92%  { transform:rotate(12deg) translate3d(130vw,22vh,0); }
+
+  /* 終点：右下の外へ抜けながら消える */
+  100% { opacity:0; transform:rotate(12deg) translate3d(160vw,26vh,0); }
 }
 
 
