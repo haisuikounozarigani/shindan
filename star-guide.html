@@ -51,11 +51,11 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn:active{transform:translateY(1px)}
 
 /* シューティングスター（iPhone/Safari安定版） */
-.shoot{ position:absolute; inset:0; pointer-events:none; z-index:1; }
+.shoot{ position:fixed; inset:0; pointer-events:none; z-index:1; }
 
 .shoot .star{
   position:absolute;
-  left:-28vw; top:-6vh;               /* 入口は画面外 */
+  left:-34vw; top:12vh;               /* 入口は画面外 */
   width:min(90vw,520px); height:3px;
   opacity:0; border-radius:3px;
   background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));
