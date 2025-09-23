@@ -84,21 +84,18 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 
 /* 走らせる（.active 付与で発火） */
 .shoot.active .star{
-  animation: tailArc 2.8s cubic-bezier(0.22,1,0.36,1) forwards;
+  animation: tailArc 3s linear forwards;
 }
 @keyframes tailArc{
-  /* 入口：やや上の左外から */
   0%   { opacity:0; transform:rotate(10deg) translate3d(-30vw,-12vh,0); }
   12%  { opacity:1; }
-
-  /* 中継ポイントを複数置いて、ゆるい下向き弧にする */
   25%  { transform:rotate(10deg) translate3d(0vw,-6vh,0); }
   50%  { transform:rotate(10deg) translate3d(38vw,0vh,0); }
   75%  { transform:rotate(10deg) translate3d(74vw,10vh,0); }
-
-  /* 終点：右外のやや下へ抜ける */
-  100% { opacity:0; transform:rotate(10deg) translate3d(112vw,22vh,0); }
+  96%  { opacity:1; transform:rotate(10deg) translate3d(100vw,20vh,0); } /* ← 画面外直前まで見せる */
+  100% { opacity:0; transform:rotate(10deg) translate3d(112vw,22vh,0); } /* ← 右外へ抜けて消える */
 }
+
 
 @keyframes tailSoft{
   0%   { opacity:0; transform:rotate(10deg) translate3d(-28vw,-6vh,0); }
@@ -411,11 +408,17 @@ const morningSet = new Set(["01","03"]);
   const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(prefersReduce){
     wrap.classList.add("static");
-    setTimeout(()=>wrap.classList.remove("static"), 600);
+    setTimeout(()=>wrap.classList.remove("static"), 1600);
   }else{
     wrap.classList.add("active");
     // CSSのアニメ時間に合わせて少し長めにクラスを外す
-    setTimeout(()=>wrap.classList.remove("active"), 2600);
+    // 終了イベント + セーフティ（3.3s）で確実に完走
+const endOnce = () => { 
+  wrap.classList.remove("active"); 
+  shootStar.removeEventListener("animationend", endOnce);
+};
+shootStar.addEventListener("animationend", endOnce);
+setTimeout(endOnce, 3300);
   }
 
   // ← ここを“イベント待ち”から“タイマー”に変更：必ず結果が出る
