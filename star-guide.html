@@ -102,26 +102,22 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
   filter:blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
 }
 
+/* 走らせる */
 .shoot.active .star{ animation:tailArc 3.4s linear forwards; }
+
 @keyframes tailArc{
-  /* 入り：左上の外からふわっと出現 */
-  0%   { opacity:0; transform:rotate(12deg) translate3d(-36vw,-10vh,0); }
+  /* 入り：左上の外から（少し高めスタート） */
+  0%   { opacity:0; transform:rotate(12deg) translate3d(-36vw,-12vh,0); }
   8%   { opacity:1; }
 
-  /* ほぼ等速で浅い弧（右へ行くほど少し下がる） */
-  22%  { transform:rotate(12deg) translate3d(-6vw,-6vh,0); }
-  48%  { transform:rotate(12deg) translate3d(36vw,-2vh,0); }
-  74%  { transform:rotate(12deg) translate3d(96vw,10vh,0); }
-  92%  { transform:rotate(12deg) translate3d(140vw,22vh,0); }
+  /* 角度を徐々に付けて“弧”を深くする */
+  28%  { transform:rotate(14deg) translate3d(-4vw,-8vh,0); }
+  52%  { transform:rotate(16deg) translate3d(34vw,-2vh,0); }
+  68%  { opacity:1;  transform:rotate(17deg) translate3d(74vw,8vh,0); }
 
-  /* 終点：右下の外へ抜けながら消える（確実に通過） */
-  100% { opacity:0; transform:rotate(12deg) translate3d(170vw,26vh,0); }
-}
-
-/* 動作を減らす配慮 */
-@media (prefers-reduced-motion: reduce){
-  .shoot .star{ animation:none; transition:opacity .6s ease; }
-  .shoot.static .star{ opacity:1; }
+  /* ここからフェードアウトを早めに開始 */
+  80%  { opacity:.35; transform:rotate(18deg) translate3d(118vw,20vh,0); }
+  100% { opacity:0;  transform:rotate(18deg) translate3d(170vw,34vh,0); }
 }
 
 /* レター */
