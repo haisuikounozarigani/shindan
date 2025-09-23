@@ -37,12 +37,12 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .card{
   margin:10px 16px 18px;border:1px solid rgba(255,255,255,.12);
   background:rgba(13,17,38,.55);border-radius:18px;box-shadow:var(--shadow);
-  overflow:hidden;backdrop-filter:blur(6px) saturate(1.2);
+  overflow:hidden;backdrop-filter: blur(6px) saturate(1.2); -webkit-backdrop-filter: blur(6px) saturate(1.2);
 }
 .card .pad{padding:14px 16px}
 
 /* ヒーロー */
-.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;isolation:isolate;text-align:center;overflow:visible}
+.hero{display:grid;place-items:center;min-height:44vh;padding:24px 16px;position:relative;/* isolation:isolate; */text-align:center;overflow:visible}
 .btn{
   cursor:pointer;user-select:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
   color:#fff;padding:12px 16px;border-radius:14px;font-weight:700;transition:transform .08s ease, background .2s ease, border-color .2s ease;
@@ -51,7 +51,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn:active{transform:translateY(1px)}
 
 /* ヒーローの外側まで描画して途中消えを防ぐ（iPhone向け） */
-.shoot{ position:fixed; inset:0; pointer-events:none; z-index:1; }
+.shoot{ position:fixed; inset:0; pointer-events:none; z-index: 10; }
 
 .shoot .star{
   position:absolute;
@@ -104,6 +104,10 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 
 /* 走らせる */
 .shoot.active .star{ animation:tailArc 3.4s linear forwards; }
+.shoot.static .star{ opacity:1; transform:rotate(16deg) translate3d(34vw,-2vh,0); transition:opacity .8s ease; }
+@media (prefers-reduced-motion: reduce){
+  .shoot.active .star{ animation:none; opacity:1; }
+}
 
 @keyframes tailArc{
   /* ちょい高めに左外から */
@@ -123,7 +127,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 /* レター */
 .letter{
   display:grid;gap:10px;margin:0 16px 16px;border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.1);border-radius:16px;backdrop-filter:blur(4px) saturate(1.1);
+  background:rgba(255,255,255,.1);border-radius:16px;backdrop-filter: blur(4px) saturate(1.1); -webkit-backdrop-filter: blur(4px) saturate(1.1);
 }
 .letter header{
   display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;border-bottom:1px dashed rgba(255,255,255,.14)
@@ -324,7 +328,7 @@ const TAG_MAP = {
   function pickImageFor(letter){
     // rare は固定で 05.png を表示
     if ((letter.rarity||"common")==="rare") {
-      return { id:"05", alt:(IMGS["05"]?.alt||""), cap:"" };
+      return { id:"05", alt:(IMGS["05"] && IMGS["05"].alt||""), cap:"" };
     }
     const hint = nowHint();
     const tags = (letter.tags||[]).map(String);
@@ -347,7 +351,7 @@ const morningSet = new Set(["01","03"]);
       const ids = weighted.map(o=>o.id);
       const ws  = weighted.map(o=>o.w);
       const id  = weightedSample(ids, ws);
-      return { id, alt: IMGS[id]?.alt || "", cap: (tags[0] ? "テーマ："+tags[0] : "テーマ：—") };
+      return { id, alt: (IMGS[id] && IMGS[id].alt) || "", cap: (tags[0] ? "テーマ："+tags[0] : "テーマ：—") };
     }else{
       const id = (hint==="night" ? "02" : "01");
       return { id, alt: IMGS[id].alt, cap: "" };
@@ -423,9 +427,10 @@ const morningSet = new Set(["01","03"]);
     wrap.classList.add("active");
     // CSSのアニメ時間に合わせて少し長めにクラスを外す
     // 終了イベント + セーフティ（3.3s）で確実に完走
-const endOnce = () => { 
-  wrap.classList.remove("active"); 
+　const endOnce = () => {
+  wrap.classList.remove("active");
   shootStar.removeEventListener("animationend", endOnce);
+  shootStar.removeEventListener("webkitAnimationEnd", endOnce);
 };
 shootStar.addEventListener("animationend", endOnce);
 shootStar.addEventListener("webkitAnimationEnd", endOnce); // iOS Safari
@@ -437,22 +442,18 @@ setTimeout(endOnce, 4000); // アニメ 3.4s より十分長く
 }
 
   // ====== 初期ロード ======
-  async function init(){
-    try{
-      const c = await fetch(URL_CONFIG, {cache:"no-store"}).then(r=>r.ok?r.json():null);
+  async function init(){    
+try{      const c = await fetch(URL_CONFIG, {cache:"no-store"}).then(r=>r.ok?r.json():null);
       if(c && typeof c==="object") CONFIG = {...CONFIG, ...c};
     }catch(e){}
-    document.getElementById("boostVal").textContent = String((CONFIG.time_boost?.night)||1.5);
-draw.textContent = CONFIG.button_label || "流れ星に祈る";
-document.getElementById("boostVal").textContent = String((CONFIG.time_boost?.night)||1.5);
+    boostVal.textContent = String((CONFIG.time_boost?.night) || 1.5);
 draw.textContent = CONFIG.button_label || "流れ星に祈る";
 draw.addEventListener("click", doDraw, { passive: true });
-    try{
+try{
       const arr = await fetch(URL_LETTERS, {cache:"no-store"}).then(r=>r.ok?r.json():null);
       if(Array.isArray(arr)) LETTERS = arr;
     }catch(e){}
-    if(!LETTERS.length){
-      // フォールバック（拡張）
+    if(!LETTERS.length){      // フォールバック（拡張）
       LETTERS = [
   /* 自己肯定 */
   {"id":"star-self-01","text":"きみはもう、よくやってるよ。","tags":["自己肯定","受容"],"rarity":"common","tone":"friend"},
@@ -955,6 +956,7 @@ draw.addEventListener("click", doDraw, { passive: true });
 
 
     draw.textContent = CONFIG.button_label || "流れ星に祈る";
+draw.addEventListener("click", doDraw, { passive: true });
     saveLast();
   }
 }
@@ -966,6 +968,7 @@ draw.addEventListener("click", doDraw, { passive: true });
   } else {
     init();
   }
+document.addEventListener("DOMContentLoaded", init, { once:true });
 })();
 </script>
 </body>
