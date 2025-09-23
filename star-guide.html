@@ -106,18 +106,18 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .shoot.active .star{ animation:tailArc 3.4s linear forwards; }
 
 @keyframes tailArc{
-  /* 入り：左上の外から（少し高めスタート） */
+  /* ちょい高めに左外から */
   0%   { opacity:0; transform:rotate(12deg) translate3d(-36vw,-12vh,0); }
   8%   { opacity:1; }
 
-  /* 角度を徐々に付けて“弧”を深くする */
+  /* 角度を徐々に付けて弧を強調 */
   28%  { transform:rotate(14deg) translate3d(-4vw,-8vh,0); }
   52%  { transform:rotate(16deg) translate3d(34vw,-2vh,0); }
-  68%  { opacity:1;  transform:rotate(17deg) translate3d(74vw,8vh,0); }
+  66%  { transform:rotate(17.5deg) translate3d(72vw, 8vh,0); }
 
-  /* ここからフェードアウトを早めに開始 */
-  80%  { opacity:.35; transform:rotate(18deg) translate3d(118vw,20vh,0); }
-  100% { opacity:0;  transform:rotate(18deg) translate3d(170vw,34vh,0); }
+  /* 早めにフェードアウト開始 */
+  76%  { opacity:.45; transform:rotate(19deg)  translate3d(110vw,18vh,0); }
+  100% { opacity:0;   transform:rotate(20deg)  translate3d(168vw,32vh,0); }
 }
 
 /* レター */
@@ -444,7 +444,9 @@ setTimeout(endOnce, 4000); // アニメ 3.4s より十分長く
     }catch(e){}
     document.getElementById("boostVal").textContent = String((CONFIG.time_boost?.night)||1.5);
 draw.textContent = CONFIG.button_label || "流れ星に祈る";
-
+document.getElementById("boostVal").textContent = String((CONFIG.time_boost?.night)||1.5);
+draw.textContent = CONFIG.button_label || "流れ星に祈る";
+draw.addEventListener("click", doDraw, { passive: true });
     try{
       const arr = await fetch(URL_LETTERS, {cache:"no-store"}).then(r=>r.ok?r.json():null);
       if(Array.isArray(arr)) LETTERS = arr;
