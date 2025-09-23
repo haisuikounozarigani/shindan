@@ -51,79 +51,85 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .btn:active{transform:translateY(1px)}
 
 /* ヒーローの外側まで描画して途中消えを防ぐ（iPhone向け） */
-.shoot{ position:fixed; inset:0; pointer-events:none; z-index: 10; }
+.shoot{ position:fixed; inset:0; pointer-events:none; z-index:10; }
 
 .shoot .star{
   position:absolute;
-  left:-34vw; top:10vh;                  /* 少し外から入る */
-  width:120vw; height:2px;                   /* 細めの尾 */
+  /* さらに左の外から入れて“中央湧き”に見えないように */
+  left:-60vw; top:8vh;
+  /* 画面外スタートに余裕を持たせる */
+  width:160vw; height:2px;
   opacity:0; border-radius:2px;
+
   /* 先細りの尾（左=薄→右=明→さらに薄） */
   background:linear-gradient(90deg,
     rgba(255,255,255,0) 0%,
-    rgba(255,255,255,.35) 20%,
-    rgba(255,255,255,.9) 55%,
-    rgba(255,255,255,.12) 85%,
+    rgba(255,255,255,.35) 22%,
+    rgba(255,255,255,.9) 56%,
+    rgba(255,255,255,.12) 86%,
     rgba(255,255,255,0) 100%);
-  filter:blur(.2px) drop-shadow(0 0 10px rgba(255,255,255,.85));
+
+  /* 疑似要素のにじみを切らない（iOS対策） */
+  overflow:visible;
+
   transform:rotate(12deg) translate3d(0,0,0);
-  transform-origin: 0 50%;
+  transform-origin:0 50%;
   will-change:transform,opacity;
   -webkit-backface-visibility:hidden;
 }
+
 /* ふわっと伸びる光のにじみ（尾のモーションブラー） */
 .shoot .star::before{
   content:"";
-  position:absolute; right:12px; top:-6px;
-  width:180px; height:14px;
+  position:absolute; right:10px; top:-6px;
+  width:140px; height:12px;
   background:radial-gradient(60% 50% at 100% 50%,
     rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 70%);
   filter:blur(6px);
 }
-/* 先端の光る粒（頭） */
+
+/* 先端の光る粒（頭）— 小さめにして見やすく */
 .shoot .star::after{
   content:"";
-  position:absolute; right:-6px; top:-7px;
-  width:18px; height:18px; border-radius:50%;
+  position:absolute; right:-4px; top:-5px;
+  width:14px; height:14px; border-radius:50%;
   background:radial-gradient(circle,
     rgba(255,255,255,1) 0%,
     rgba(255,255,255,.9) 38%,
-    rgba(255,255,255,0) 72%);
-  filter:blur(.6px) drop-shadow(0 0 12px rgba(255,255,255,.95));
+    rgba(255,255,255,0) 70%);
+  filter:drop-shadow(0 0 10px rgba(255,255,255,.95));
+  pointer-events:none;
 }
 
-/* レア色（任意：そのままでOK） */
+/* レア色（任意そのままでもOK） */
 .shoot .star.rare{
   background:linear-gradient(90deg,rgba(255,0,0,0),rgba(255,80,80,.95),rgba(255,0,0,0));
   filter:drop-shadow(0 0 10px rgba(255,80,80,.9));
 }
 .shoot .star.rare::after{
   background:radial-gradient(circle, rgba(255,120,120,1) 0%, rgba(255,120,120,.9) 32%, rgba(255,120,120,0) 70%);
-  filter:blur(1px) drop-shadow(0 0 10px rgba(255,80,80,1));
+  filter:blur(.8px) drop-shadow(0 0 10px rgba(255,80,80,1));
 }
 
-/* 走らせる */
-.shoot.active .star{ animation:tailArc 3.4s linear forwards; }
+/* 走らせる：ちょいスローに（3.4s → 4.6s） */
+.shoot.active .star{ animation: tailArc 4.6s linear forwards; }
 .shoot.static .star{ opacity:1; transform:rotate(16deg) translate3d(34vw,-2vh,0); transition:opacity .8s ease; }
 @media (prefers-reduced-motion: reduce){
   .shoot.active .star{ animation:none; opacity:1; }
 }
 
+/* 弧と位置の調整：さらに左外から・早めに可視化 */
 @keyframes tailArc{
-  /* ちょい高めに左外から */
-  0%   { opacity:0; transform:rotate(12deg) translate3d(-36vw,-12vh,0); }
-  8%   { opacity:1; }
+  0%   { opacity:.001; transform:rotate(12deg) translate3d(-48vw,-12vh,0); }
+  3%   { opacity:1; }
 
-  /* 角度を徐々に付けて弧を強調 */
-  28%  { transform:rotate(14deg) translate3d(-4vw,-8vh,0); }
-  52%  { transform:rotate(16deg) translate3d(34vw,-2vh,0); }
-  66%  { transform:rotate(17.5deg) translate3d(72vw, 8vh,0); }
+  30%  { transform:rotate(14deg)  translate3d(-6vw,-8vh,0); }
+  55%  { transform:rotate(16deg)  translate3d(32vw,-2vh,0); }
+  70%  { transform:rotate(17.5deg) translate3d(70vw, 8vh,0); }
 
-  /* 早めにフェードアウト開始 */
-  76%  { opacity:.45; transform:rotate(19deg)  translate3d(110vw,18vh,0); }
-  100% { opacity:0;   transform:rotate(20deg)  translate3d(168vw,32vh,0); }
+  82%  { opacity:.45; transform:rotate(19deg)  translate3d(112vw,18vh,0); }
+  100% { opacity:0;   transform:rotate(20deg)  translate3d(172vw,32vh,0); }
 }
-
 /* レター */
 .letter{
   display:grid;gap:10px;margin:0 16px 16px;border:1px solid rgba(255,255,255,.14);
@@ -235,32 +241,37 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
   const URL_CONFIG  = ASSETS + "config.json";
   const URL_LETTERS = ASSETS + "letters.json";
 
-  // 結果イメージ（5枚：01やさしさ / 02静けさ(夜) / 03希望 / 04守る / 05特別）
 const IMGS = {
-  "01": {alt:"夕暮れの浜辺の穏やかな波",  tags:["やさしさ","自己肯定","朝","morning"]},
-  "02": {alt:"静かな夜の海と小さな星",    tags:["静けさ","不安","夜","night"]},
-  "03": {alt:"小さな流星がいくつか流れる空",tags:["希望","再起"]},
-  "04": {alt:"夜の灯台の光が海を照らす",  tags:["守る","安心"]},
-  "05": {alt:"特別な流れ星のきらめき",    tags:["rare"]}
+  // 01–10 に拡張（01–02: やさしさ / 03–04: 静けさ / 05–06: 希望 / 07–08: 守る / 09–10: レア）
+  "01": { alt:"夕暮れの浜辺の穏やかな波",         tags:["やさしさ","morning"] },
+  "02": { alt:"朝の空に薄い雲とやわらかな光",     tags:["やさしさ","morning"] },
+  "03": { alt:"静かな夜の海と小さな星",           tags:["静けさ","night"] },
+  "04": { alt:"月明かりに照らされた静かな丘",     tags:["静けさ","night"] },
+  "05": { alt:"小さな流星がいくつか流れる空",     tags:["希望","morning"] },
+  "06": { alt:"夜明け前の空にのびる光",           tags:["希望","morning"] },
+  "07": { alt:"夜の灯台の光が海を照らす",         tags:["守る","night"] },
+  "08": { alt:"手のひらの小さな灯り",             tags:["守る","night"] },
+  "09": { alt:"特別な流れ星のきらめき",           tags:["rare"] },
+  "10": { alt:"紅い尾を引く特別な流れ星",         tags:["rare"] }
 };
 const TAG_MAP = {
-  // 01：やさしさ・朝側
-  "やさしさ":["01"], "自己肯定":["01"], "朝向け":["01"], "morning":["01"],
-  "比較":["01"], "季節":["01"], "選択":["01"], "恋愛":["01"],
+  // 01–02：やさしさ・朝側
+  "やさしさ":["01","02"], "自己肯定":["01","02"], "朝向け":["01","02"], "morning":["01","02"],
+  "比較":["01","02"], "季節":["01","02"], "選択":["01","02"], "恋愛":["01","02"],
 
-  // 02：静けさ・夜側
-  "静けさ":["02"], "不安":["02"], "夜向け":["02"], "night":["02"],
-  "罪悪感":["02"], "孤独":["02"], "お金":["02"],
+  // 03–04：静けさ・夜側
+  "静けさ":["03","04"], "不安":["03","04"], "夜向け":["03","04"], "night":["03","04"],
+  "罪悪感":["03","04"], "孤独":["03","04"], "お金":["03","04"],
 
-  // 03：希望・再起・創作
-  "希望":["03"], "再起":["03"], "創作":["03"], "転機":["03"],
+  // 05–06：希望・再起・創作
+  "希望":["05","06"], "再起":["05","06"], "創作":["05","06"], "転機":["05","06"],
 
-  // 04：守る・安心・境界・家族/ペット/本番/からだ
-  "守る":["04"], "安心":["04"], "境界":["04"], "家族":["04"],
-  "ペット":["04"], "本番":["04"], "からだ":["04"], "怒り":["04"],
+  // 07–08：守る・安心・境界・家族/ペット/本番/からだ/怒り
+  "守る":["07","08"], "安心":["07","08"], "境界":["07","08"], "家族":["07","08"],
+  "ペット":["07","08"], "本番":["07","08"], "からだ":["07","08"], "怒り":["07","08"],
 
-  // 05：レア専用
-  "rare":["05"]
+  // 09–10：レア専用
+  "rare":["09","10"]
 };
 
   // ====== 参照 ======
@@ -326,10 +337,11 @@ const TAG_MAP = {
 
   // 画像選択：タグ＋時間帯でゆるくマッチ（正方形でトリミング表示）
   function pickImageFor(letter){
-    // rare は固定で 05.png を表示
-    if ((letter.rarity||"common")==="rare") {
-      return { id:"05", alt:(IMGS["05"] && IMGS["05"].alt||""), cap:"" };
-    }
+    // rare は 09/10 のどちらかをランダム表示
+if ((letter.rarity||"common")==="rare") {
+  var id = Math.random() < 0.5 ? "09" : "10";
+  return { id: id, alt: ((IMGS[id] && IMGS[id].alt) || ""), cap:"" };
+}
     const hint = nowHint();
     const tags = (letter.tags||[]).map(String);
 
@@ -338,8 +350,8 @@ const TAG_MAP = {
       const arr = TAG_MAP[t];
       if(arr) cand = cand.concat(arr);
     }
-    const nightSet = new Set(["02"]);
-const morningSet = new Set(["01","03"]);
+    const nightSet = new Set(["03","04","07","08"]);
+const morningSet = new Set(["01","02","05","06"]);
 
     if(cand.length){
       const weighted = cand.map(id=>{
