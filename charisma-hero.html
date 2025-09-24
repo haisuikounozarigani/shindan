@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>英雄カリスマ診断</title>
+<meta name="description" content="温かさ×牽引力×明瞭さの18問（0〜4の5件法）。総合ランク（Lv1〜Lv5）と因子バー、研究メモを表示します（独自項目・エンタメ用）。">
+<meta name="theme-color" content="#f7f9ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="英雄カリスマ診断">
+<meta property="og:description" content="18問でカリスマ度をチェック。総合ランク（英雄）と因子バー、研究メモを表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/charisma-hero.html">
+<meta property="og:image" content="/shindan/assets/results/charisma-hero/03.png">
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#ffd08c;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#fff2dd);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:contain;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.hero-square .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
+.hero-square .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-square .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.guard{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px}
+.guard .g-emo{font-size:18px}
+
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note .mini{display:inline-block;margin-left:6px;font-size:.82em;color:#6b6a77}
+.note p{margin:6px 0;line-height:1.75}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.84em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-square figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-square .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-square .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">👑</div>
+    <div>
+      <h1>英雄カリスマ診断</h1>
+      <p class="sub">温かさ×牽引力×明瞭さの18問（0〜4）。総合ランク（英雄）と因子バー、研究メモを表示します。※独自項目のエンタメ自己理解用。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：18</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても）</span>
+      <span class="pill">総合：0–4（重み付け平均）</span>
+    </div>
+    <p class="small">カリスマは<strong>温かさ（Warmth）</strong>×<strong>牽引力（Presence）</strong>×<strong>明瞭さ（Clarity）</strong>の組み合わせとして扱います。ここでは<strong>いまの傾向</strong>をそっと可視化します。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=半々／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">因子：温かさ（W）／牽引力（P）／明瞭さ（C）</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全18問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー（1:1 正方形） -->
+      <div class="hero-square section" role="region" aria-label="ランクのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/charisma-hero/01.png" alt="竪琴の紋章" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値など -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合カリスマ度（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00</div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="因子概要">
+          <div><strong>因子（W/P/C）</strong></div>
+          <div class="factor-mini" id="guardArea"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS 長文コメント --></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ（“ある研究では…”で濁す） -->
+      <details class="section" open>
+        <summary><strong>研究メモ（ある研究では…）</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※一般的な傾向や相関の話です。因果は断定できず、個人差が大きい点にご留意ください。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "charisma-hero";
+  var TITLE = "英雄カリスマ診断";
+  var IMG_BASE = "/shindan/assets/results/charisma-hero/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== ランク定義（総合 0–4） ======
+  var LV = [
+    {id:1, name:"オルフェウス", label:"Lv1", min:0.00, max:0.79, img:"01.png", alt:"竪琴の紋章",
+     poem:"小さな金の竪琴に、やわらかな光輪。", 
+     copy:"近さと安心の芽が光る帯。温かさが強み。牽引と明瞭さは“ひと言要点”から重ねると伸びます。"},
+    {id:2, name:"オデュッセウス", label:"Lv2", min:0.80, max:1.59, img:"02.png", alt:"帆と舵輪の紋章",
+     poem:"斜めの帆が風を受け、舵は静かに回る。", 
+     copy:"機転としなやかさで場をつなげる帯。存在感を少しだけ強めると頼もしさが増します。"},
+    {id:3, name:"ペルセウス", label:"Lv3", min:1.60, max:2.39, img:"03.png", alt:"鏡の盾と剣の紋章",
+     poem:"鏡面の盾に線が走り、道の輪郭が立つ。", 
+     copy:"決断のタイミングが良い帯。温かさを一滴足すと、支持がさらに厚くなります。"},
+    {id:4, name:"シグルズ", label:"Lv4", min:2.40, max:3.19, img:"04.png", alt:"剣と竜影の紋章",
+     poem:"剣はまっすぐ、背後に竜の影がたゆたう。", 
+     copy:"強い牽引と明瞭さで視線が集まる帯。強さの輪郭を“間と笑み”でやわらげると最強。"},
+    {id:5, name:"アーサー", label:"Lv5", min:3.20, max:4.00, img:"05.png", alt:"王冠と剣の紋章",
+     poem:"王冠の光輪が広がり、人が自然と集う。", 
+     copy:"温×牽×明が統合。旗印であり拠り所。状況に応じて光を配れる状態です。"}
+  ];
+
+  // ====== 因子（6問×3因子） ======
+  // 表示テキストに逆転印は出さない。rev:true のみ内部で反転採点。
+  var FACTORS = {
+    W: {name:"温かさ（Warmth）",  icon:"🤝", items:[1,2,3,4,5,6]},
+    P: {name:"牽引力（Presence）", icon:"🚩", items:[7,8,9,10,11,12]},
+    C: {name:"明瞭さ（Clarity）",  icon:"🧭", items:[13,14,15,16,17,18]}
+  };
+
+  // ====== 設問（18問） ======
+  var ITEMS = [
+    // 温かさ（W）
+    {id:1,  text:"初対面でも“話しやすい空気”をつくれる。"},
+    {id:2,  text:"相手の気持ちを言葉にして返せる。"},
+    {id:3,  text:"場の緊張をやわらげる一言が出てくる。"},
+    {id:4,  text:"自分の失敗を自然に開示できる。"},
+    {id:5,  text:"相手の話を名詞一語で要約して返せる。"},
+    {id:6,  text:"人の話をすぐ評価で返しがちだ。", rev:true}, // 逆転
+
+    // 牽引力（P）
+    {id:7,  text:"話し始めると注意が集まるのを感じる。"},
+    {id:8,  text:"要点を短く一言で示せる。"},
+    {id:9,  text:"迷う場面で方向を示せる。"},
+    {id:10, text:"話すとき、声の強弱や手ぶりで注意を集められる。"},
+    {id:11, text:"声・視線・姿勢が小さくなりがちだ。", rev:true}, // 逆転
+    {id:12, text:"自然と協力者が集まることが多い。"},
+
+    // 明瞭さ（C）
+    {id:13, text:"難しい話を、三つの部分に区切って説明できる。"},
+    {id:14, text:"例えや比喩で伝わりやすくできる。"},
+    {id:15, text:"話す前に“結論→理由→例”の順が浮かぶ。"},
+    {id:16, text:"話が枝分かれして結論が見えにくくなる。", rev:true}, // 逆転
+    {id:17, text:"相手や場に合わせて言葉の難しさを調整できる。"},
+    {id:18, text:"聞き手の“次の一歩”が想像できるように話せる。"}
+  ];
+
+  var LABELS = ["まったくない","あまりない","半々","だいたい","とても"];
+
+  // ====== 重み ======
+  var WEIGHT = { W:0.4, P:0.4, C:0.2 };
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumNote = document.getElementById("sumNote");
+  var guardArea = document.getElementById("guardArea");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+
+  // ====== 保存 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  // ====== 設問生成（番号はUIに出さない／逆転フラグはUI非表示） ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers();
+        updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== スコア計算 ======
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      var raw = parseInt(chk.value,10);
+      var def = ITEMS[i];
+      var val = def.rev ? (4 - raw) : raw; // ← 逆転（UIに出さず内部だけ）
+      ans[id] = val;
+    }
+    if(missing.length){
+      alert("未回答があります。全18問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 因子平均(0-4)
+    function avgOf(ids){
+      var sum = ids.reduce(function(s,id){ return s + (ans[id]||0); },0);
+      return sum / ids.length;
+    }
+    var W = avgOf(FACTORS.W.items);
+    var P = avgOf(FACTORS.P.items);
+    var C = avgOf(FACTORS.C.items);
+
+    // 総合（重み）
+    var total = WEIGHT.W*W + WEIGHT.P*P + WEIGHT.C*C;
+    total = Math.round(total*100)/100;
+
+    render({avg:total, by:{W:W,P:P,C:C}});
+  }
+
+  function rankOf(avg){
+    for(var i=0;i<LV.length;i++){
+      var d = LV[i];
+      if(avg>=d.min && avg<=d.max) return d;
+    }
+    return LV[2];
+  }
+
+  // ====== 表示 ======
+  function render(o){
+    var rank = rankOf(o.avg);
+
+    // ヒーロー
+    heroImg.src = IMG_BASE + rank.img;
+    heroImg.alt = rank.alt;
+    heroTitle.textContent = "カリスマ度："+rank.name+"（"+rank.label+"）";
+    heroPoem.textContent  = rank.poem;
+    heroCopy.textContent  = rank.copy;
+    sizeBadgeEl.textContent = "総合平均 " + o.avg.toFixed(2) + " / 4.00";
+
+    // 合計
+    sumAvg.textContent = o.avg.toFixed(2);
+    var note = "";
+    if(o.avg<0.8) note="近さと安心の芽が強み。まず“要点ひと言”から存在感を積むと良い帯。";
+    else if(o.avg<1.6) note="しなやかに場をつなげる帯。冒頭に“結論の短い題名”を置くと締まります。";
+    else if(o.avg<2.4) note="舵取りが上手い帯。提案の前に“相手の一語要約”を返すと支持が厚く。";
+    else if(o.avg<3.2) note="推進と明瞭さが高い帯。“1拍の沈黙”で強さに余白を。";
+    else note="温×牽×明が統合した帯。締めに“相手の次の一歩”をひと言添えると盤石。";
+    sumNote.textContent = note;
+
+    // 因子タグ（概要）
+    var gHtml = "";
+    [["W","温かさ（Warmth）","🤝"],["P","牽引力（Presence）","🚩"],["C","明瞭さ（Clarity）","🧭"]]
+      .forEach(function(t){
+        var key=t[0], name=t[1], emo=t[2], v=o.by[key], pct=Math.round(v/4*100);
+        gHtml += '<div class="guard"><div class="g-emo" aria-hidden="true">'+emo+
+                 '</div><div><div><strong>'+name+'</strong> <span class="small">平均 '+v.toFixed(2)+' / 4</span></div>'+
+                 '<div class="small" style="opacity:.9">帯：'+pct+'%</div></div></div>';
+      });
+    guardArea.innerHTML = gHtml;
+
+    // 因子バー＋傾向＆アドバイス
+    var TREND = {
+      W:["人見知りスイッチ入りやすい期。","親しい相手にはあたたかい、初対面は様子見。","ふつうに話しやすい人だと見られやすい。","安心感で場がゆるむタイプ。","話しかけられやすい灯台。"],
+      P:["声・姿勢が控えめで遠慮が出やすい。","頭は集まるが維持が課題になりやすい。","必要な場面では前に出られる。","スイッチ入ると視線が集まる。","自然と人が付いてくる。"],
+      C:["話が枝分かれしがちで迷子になりやすい。","例えは出るが構造が薄め。","三分割が板についてきた。","整理が早く要点が掴みやすい。","結論→理由→例が自動で並ぶ。"]
+    };
+    var ADVICE = {
+      W:["相づち＋一語要約→短い共感の一文。","質問の頭は『いまって…？』でやわらかく。","“小さな失敗の開示”を一つだけ。","深呼吸の合図で場をゆるめる。","安心を配りつつ締めの一言も準備。"],
+      P:["冒頭3秒だけ声量を少し上げ、手ぶりは胸より上に。","一文目に“結論ラベル”を置く。","『今日はAを決める』のひと言で目的共有。","“1拍の沈黙”で句読点を作る。","強さを“笑み”で緩衝する。"],
+      C:["紙に『結論・理由・例』の3見出しを書いてから話す。","段落を『なので／たとえば／つまり』でつなぐ。","要点は“3つだけ”に絞る。","難語は『小学生に説明』で言い換え。","最後に“次の一歩”を一語で示す。"]
+    };
+    function bucketIdx(v){ return (v<0.8)?0:(v<1.6)?1:(v<2.4)?2:(v<3.2)?3:4; }
+
+    var bHtml = "";
+    [["W","温かさ"],["P","牽引力"],["C","明瞭さ"]].forEach(function(t){
+      var key=t[0], label=t[1], v=o.by[key], pct=Math.round(v/4*100);
+      var idx = bucketIdx(v);
+      var trend = TREND[key][idx];
+      var tip   = ADVICE[key][idx];
+
+      bHtml += '<article class="bar" aria-label="'+label+'">'+
+        '<div><strong>'+label+'</strong>'+
+        '<span class="pill" style="margin-left:6px">'+v.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+        '<div class="small" style="margin-top:6px"><b>傾向：</b>'+trend+'　<b>アドバイス：</b>'+tip+'</div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // ランク別長文（あるある系の緩い傾向）
+    var long = {
+      1:"初対面は様子見しがち。仲良くなると急に話しやすくなるタイプ。会議では『まず要点ひと言』で一気に通りやすくなる“あるある”。",
+      2:"場をほぐすのが上手。詰めのところだけ少し押しが弱くなりがち。冒頭に“結論ラベル”を置くとスッとまとまること、多め。",
+      3:"決める場面になると強い。ふだんは相手の様子を見て譲りがち。『要約→提案→次の一歩』で周りが動きやすい、あるある構図。",
+      4:"頼れる推進役。時々“強く見えすぎ問題”が出やすいので、1拍の間と笑みでやわらげると最強バランスになりがち。",
+      5:"頼られループが起きやすい。全部抱え込みがちなので、最後に『ここは任せたい』をひと言足すと健やか、というあるある。"
+    }[rank.id] || "";
+    longCopy.textContent = long;
+
+    // 研究メモ（ある研究では…）
+    var memo = [
+      "・ある研究では、カリスマ印象は“温かさ（親しみ）”と“能力/強さ”の両輪で高まりやすい示唆。",
+      "・短い“結論ラベル”→理由→一例 の順で話すと、理解度と信頼が上がりやすいという報告。",
+      "・声量や抑揚、語速の変化、間（沈黙）などの非言語手がかりが、存在感の知覚に寄与しうる示唆。",
+      "・アイコンタクトと開いた姿勢は、親近感と説得の成功率に関連するという結果がある。",
+      "・比喩やストーリーを交えると、記憶と感情喚起が高まり、メッセージの“伝達効率”が上がる傾向報告。",
+      "・明瞭さは“3つに区切る”だけでも知覚的負荷を下げ、理解・同意を助ける可能性が示される。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧「つづきから再開」
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
