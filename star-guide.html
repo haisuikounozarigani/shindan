@@ -16,13 +16,32 @@
   --ink:#121525; --paper:#fff; --muted:#8ea1c2; --line:#203055;
   --accent:#8ec5ff; --accent2:#ffd08c; --gold:#f6c453;
   --shadow:0 10px 30px rgba(0,0,0,.25);
+  --tail-time:6.8s;
+  --body-bg:#0b1026;          /* ← 追加 */
+  color-scheme: dark;         /* ← 追加：自前でダーク面倒見る宣言 */
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;color:var(--paper);background:#0b1026;
-  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
-  -webkit-font-smoothing:antialiased;
+  /* ▼ ここを追加 */
+  --tail-time: 6.8s; /* デフォは少しゆっくり */
+}
+
+/* ▼ タッチ端末はさらにゆっくり（iPhone/Android等） */
+@media (hover:none) and (pointer:coarse){
+  :root{ --tail-time: 7.8s; }
+}
+
+/* ▼ iOS Safariをさらに微調整（より長め） */
+@supports (-webkit-touch-callout: none){
+  :root{ --tail-time: 8.2s; }
+}
+
+/* 走らせる：リテラル秒 → 変数に */
+.shoot.active .star{ animation: tailArc var(--tail-time) linear forwards; }
+
+/* 先端（玉）をもう少し小さく：14→12 */
+.shoot .star::after{
+  /* ...省略... */
+  width:12px; height:12px; border-radius:50%;
+  /* 残りはそのまま */
 }
 a{color:inherit}
 .wrap{max-width:960px;margin:0 auto;min-height:100%;display:grid;grid-template-rows:auto 1fr auto}
@@ -56,9 +75,9 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .shoot .star{
   position:absolute;
   /* さらに左の外から入れて“中央湧き”に見えないように */
-  left:-60vw; top:8vh;
+  left:-100vw; top:8vh;
   /* 画面外スタートに余裕を持たせる */
-  width:160vw; height:2px;
+  width:220vw;height:2px;
   opacity:0; border-radius:2px;
 
   /* 先細りの尾（左=薄→右=明→さらに薄） */
@@ -111,8 +130,8 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
   filter:blur(.8px) drop-shadow(0 0 10px rgba(255,80,80,1));
 }
 
-/* 走らせる：ちょいスローに（3.4s → 4.6s） */
-.shoot.active .star{ animation: tailArc 4.6s linear forwards; }
+/* 走らせる（秒は変数で一元管理） */
+.shoot.active .star{ animation: tailArc var(--tail-time) linear forwards; }
 .shoot.static .star{ opacity:1; transform:rotate(16deg) translate3d(34vw,-2vh,0); transition:opacity .8s ease; }
 @media (prefers-reduced-motion: reduce){
   .shoot.active .star{ animation:none; opacity:1; }
@@ -120,15 +139,16 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 
 /* 弧と位置の調整：さらに左外から・早めに可視化 */
 @keyframes tailArc{
-  0%   { opacity:.001; transform:rotate(12deg) translate3d(-48vw,-12vh,0); }
-  3%   { opacity:1; }
+  /* もっと左外から：中央湧きに見えないように */
+  0%   { opacity:.001; transform:rotate(12deg) translate3d(-84vw,-14vh,0); }
+  4%   { opacity:1; }
 
-  30%  { transform:rotate(14deg)  translate3d(-6vw,-8vh,0); }
-  55%  { transform:rotate(16deg)  translate3d(32vw,-2vh,0); }
-  70%  { transform:rotate(17.5deg) translate3d(70vw, 8vh,0); }
+  30%  { transform:rotate(14deg)  translate3d(-18vw,-8vh,0); }
+  55%  { transform:rotate(16deg)  translate3d(28vw,-2vh,0); }
+  72%  { transform:rotate(17.5deg) translate3d(72vw, 8vh,0); }
 
-  82%  { opacity:.45; transform:rotate(19deg)  translate3d(112vw,18vh,0); }
-  100% { opacity:0;   transform:rotate(20deg)  translate3d(172vw,32vh,0); }
+  85%  { opacity:.45; transform:rotate(19deg)  translate3d(132vw,18vh,0); }
+  100% { opacity:0;   transform:rotate(20deg)  translate3d(192vw,32vh,0); }
 }
 /* レター */
 .letter{
