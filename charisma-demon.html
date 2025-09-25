@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>悪魔カリスマ診断</title>
+<meta name="description" content="ダーク寄りの3因子×各6問（0〜4の5件法）。総合ランク（Lv1〜Lv5）と因子バー、傾向アドバイス＆研究メモを表示（独自項目・エンタメ用）。">
+<meta name="theme-color" content="#0b0f1a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="悪魔カリスマ診断">
+<meta property="og:description" content="18問で“ダーク・カリスマ”傾向をチェック。総合ランクと因子バー、研究メモを表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/charisma-demon.html">
+<meta property="og:image" content="/shindan/assets/results/charisma-demon/03.png">
+<style>
+:root{
+  --ink:#e7ebff; --muted:#a7b0c7; --paper:#0b0f1a;
+  --bg1:#0b0f1a; --bg2:#0a0d16; --line:#1a2233;
+  --accent:#a951ff; --accent2:#ff6a6a;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:radial-gradient(1200px 600px at 50% -10%, #131a2b 0%, var(--bg1) 50%), linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(169,81,255,.22),rgba(255,106,106,.18));display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);color:#c9d2ee;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(7,10,18,.78);backdrop-filter:blur(8px) saturate(1.05);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#141c2b;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);color:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:rgba(255,255,255,.02)}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:rgba(255,255,255,.04)}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(169,81,255,.45)}100%{box-shadow:0 0 0 0 rgba(169,81,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#0f1220}
+.hero-square img{width:100%;height:100%;object-fit:contain;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.hero-square .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
+.hero-square .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#d5d9f5;opacity:.9}
+.hero-square .capmini{font-size:1em;line-height:1.85;color:#b9c2df;overflow-wrap:anywhere;word-break:break-word}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.guard{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);padding:8px 10px}
+.guard .g-emo{font-size:18px}
+
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)}
+.bar .row{height:10px;background:#141c2b;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .mini{color:#b9c2df;margin-top:6px;line-height:1.6}
+
+.note{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note .mini{display:inline-block;margin-left:6px;font-size:.82em;color:#9aa6c3}
+.note p, .note li{margin:6px 0;line-height:1.75}
+
+.footer{color:#9aa6c3;font-size:.92em}
+.warn{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.84em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-square figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-square .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-square .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🜏</div>
+    <div>
+      <h1>悪魔カリスマ診断</h1>
+      <p class="sub">誘導（Allure）× 威圧（Dominance）× 無慈悲（Callous）の18問。総合ランク（抽象紋章）と因子バー、傾向アドバイスと研究メモを表示します。※独自項目のエンタメ自己理解用。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：18</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても）</span>
+      <span class="pill">総合：0–4（重み付け平均）</span>
+    </div>
+    <p class="small">英雄版（温かさ×牽引力×明瞭さ）とは別軸で、<b>“破壊的な魅了”</b>になりやすい性質を可視化します。人物や思想の賛美ではなく、<b>自覚のための指標</b>です。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=半々／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">因子：誘導（D1）／威圧（D2）／無慈悲（D3）</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全18問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- 紋章（1:1 正方形） -->
+      <div class="hero-square section" role="region" aria-label="ランクのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/charisma-demon/01.png" alt="鈍く灯る燭台の紋章" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合ダーク・カリスマ（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00</div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="因子概要">
+          <div><strong>因子（D1/D2/D3）</strong></div>
+          <div class="factor-mini" id="guardArea"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー＋傾向アドバイス -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコアと傾向</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS 長文コメント／あるある傾向 --></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ（“ある研究では…”で濁す） -->
+      <details class="section" open>
+        <summary><strong>研究メモ（ある研究では…）</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※一般的な傾向や相関の話です。因果は断定できず、個人差が大きい点にご留意ください。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。宗教的・政治的・暴力的行為の賛美や推奨は<b>一切ありません</b>。採用・医療・臨床・鑑別用途では使用しないでください。<br>
+強い衝動や攻撃性に不安がある場合は、信頼できる人や専門窓口に相談してください。データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "charisma-demon";
+  var TITLE = "悪魔カリスマ診断";
+  var IMG_BASE = "/shindan/assets/results/charisma-demon/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== ランク定義（総合 0–4） ======
+  var LV = [
+    {id:1, name:"ベルフェゴール", label:"Lv1", min:0.00, max:0.79, img:"01.png", alt:"鈍く灯る燭台の紋章",
+     poem:"逆三角の燭台に小さな鈍い炎。", 
+     copy:"影の火種はまだ小さい。ときどき甘い誘いが顔を出す。群れを集める力は穏やか。自覚メモ：事実チェックを先に置くと影が薄まる。"},
+    {id:2, name:"ベルゼブブ", label:"Lv2", min:0.80, max:1.59, img:"02.png", alt:"翅と輪の紋章",
+     poem:"蠅の翅が輪をかすめ、ざわめきが集まる。", 
+     copy:"言葉に群れが引き寄せられる帯。煽りと一体感の扱いが上手い。圧は中くらい、演出で伸びる。自覚メモ：敵味方の線を太くしすぎない。"},
+    {id:3, name:"アスモデウス", label:"Lv3", min:1.60, max:2.39, img:"03.png", alt:"仮面と糸の紋章",
+     poem:"二つの仮面を糸が結び、観客は物語に絡む。", 
+     copy:"欲や期待の操作が効く帯。場を流す技術が高い。中身と装いのバランスに注意。自覚メモ：繰り返す言葉ほど事実に寄せる。"},
+    {id:4, name:"ベリアル", label:"Lv4", min:2.40, max:3.19, img:"04.png", alt:"砕けた輪の紋章",
+     poem:"砕けた輪が散り、鋭い冠が残る。", 
+     copy:"強い圧で従わせる帯。決断の速さが魅力と恐れを生む。目的のための切り捨てが起こりやすい。自覚メモ：弱い立場への配慮を先に宣言する。"},
+    {id:5, name:"サタン（ルシファー）", label:"Lv5", min:3.20, max:4.00, img:"05.png", alt:"王冠と落ちる星の紋章",
+     poem:"黒い王冠の上、ひとつの星が落ちて線を曳く。", 
+     copy:"反逆の光で物語を反転させる帯。人と歴史を動かせる規模。快い勝利感が境界を溶かしやすい。自覚メモ：止まる仕組み（外部の線）を常に置く。"}
+  ];
+
+  // ====== 因子（6問×3因子） ======
+  var FACTORS = {
+    D1: {name:"誘導（Allure/Manipulation）",  icon:"🜚", items:[1,2,3,4,5,6]},
+    D2: {name:"威圧（Dominance/Force Aura）", icon:"🜍", items:[7,8,9,10,11,12]},
+    D3: {name:"無慈悲（Callous Ambition）",   icon:"🜞", items:[13,14,15,16,17,18]}
+  };
+
+  // ====== 設問（18問／★は rev:true だがUI非表示） ======
+  var ITEMS = [
+    // D1 誘導
+    {id:1,  text:"相手の“欲や不安に刺さる言い方”が直感で出てくる。"},
+    {id:2,  text:"大勢の前では、“敵と味方”の構図で語る方が通ると感じる。"},
+    {id:3,  text:"半分だけ本当の話で、“印象を有利に”できる。"},
+    {id:4,  text:"群衆の“掛け声やコール”で熱を上げられる。"},
+    {id:5,  text:"話が“事実に合っているか”を先に確かめるほうだ。", rev:true}, // 逆転
+    {id:6,  text:"目立つキーワードを“何度も繰り返す”と通る実感がある。"},
+
+    // D2 威圧
+    {id:7,  text:"反対意見には“押し切る強さ”で向き合う方が早いと感じる。"},
+    {id:8,  text:"話すとき、“体の使い方や間”で場を制せる。"},
+    {id:9,  text:"相手が怯むと、“優位の手応え”を覚える。"},
+    {id:10, text:"強い側に“人が並ぶ空気”を作れる。"},
+    {id:11, text:"立場の弱い人に“配慮を先に置く”。", rev:true}, // 逆転
+    {id:12, text:"相手のミスを“公の場で指摘”して効果を狙うことがある。"},
+
+    // D3 無慈悲
+    {id:13, text:"目的達成のために、“手段は問わない”と思う瞬間がある。"},
+    {id:14, text:"反対派の痛みは、“自己責任”だと感じやすい。"},
+    {id:15, text:"勝つためなら、“誰かを駒として扱う”ことにためらいが薄い。"},
+    {id:16, text:"“違う立場の人の痛みを想像”し直せる。", rev:true}, // 逆転
+    {id:17, text:"競争に負けた相手の“悔しさを見るのが快い”時がある。"},
+    {id:18, text:"うまくいかない組織は“壊して作り直す”のが早いと感じる。"}
+  ];
+
+  var LABELS = ["まったくない","あまりない","半々","だいたい","とても"];
+
+  // ====== 重み ======
+  var WEIGHT = { D1:0.34, D2:0.33, D3:0.33 };
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumNote = document.getElementById("sumNote");
+  var guardArea = document.getElementById("guardArea");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+
+  // ====== 保存 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  // ====== 設問生成（番号や逆転の表記はUIに出さない） ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers();
+        updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== スコア計算 ======
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      var raw = parseInt(chk.value,10);
+      var def = ITEMS[i];
+      var val = def.rev ? (4 - raw) : raw; // 逆転（内部のみ）
+      ans[id] = val;
+    }
+    if(missing.length){
+      alert("未回答があります。全18問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 因子平均(0-4)
+    function avgOf(ids){
+      var sum = ids.reduce(function(s,id){ return s + (ans[id]||0); },0);
+      return sum / ids.length;
+    }
+    var D1 = avgOf(FACTORS.D1.items);
+    var D2 = avgOf(FACTORS.D2.items);
+    var D3 = avgOf(FACTORS.D3.items);
+
+    // 総合（重み）
+    var total = WEIGHT.D1*D1 + WEIGHT.D2*D2 + WEIGHT.D3*D3;
+    total = Math.round(total*100)/100;
+
+    render({avg:total, by:{D1:D1,D2:D2,D3:D3}});
+  }
+
+  function rankOf(avg){
+    for(var i=0;i<LV.length;i++){
+      var d = LV[i];
+      if(avg>=d.min && avg<=d.max) return d;
+    }
+    return LV[2];
+  }
+
+  // ====== 因子アドバイス（区分） ======
+  function adviceFor(key, v){
+    var hi = v>=3.2, mid = v>=1.6, lo = v<1.6;
+    if(key==="D1"){ // 誘導
+      if(hi) return "刺さる言い回しと“物語の枠”で群衆を動かしやすい傾向。事実確認と反証受け皿を常に。";
+      if(mid) return "フレーズ設計が得意。結論の繰り返しは“具体例”とセットで中身を補強すると良い。";
+      return "煽りや誇張に寄りづらい傾向。必要な場面では“要点ひと言＋一例”の順で存在感を。";
+    }
+    if(key==="D2"){ // 威圧
+      if(hi) return "非言語の圧で場を制しやすい。冒頭に“配慮の境界線”を宣言して安全を担保すると健全。";
+      if(mid) return "姿勢・間の扱いがまずまず。衝突前の“要点確認”で押し切り事故を回避。";
+      return "押し付けを避けやすい。要所は“声量と間”を少し足すと判断が通りやすい。";
+    }
+    if(key==="D3"){ // 無慈悲
+      if(hi) return "目的優先で切り捨てが起こりやすい。反対側の“被害の想像”をプロセスに固定。";
+      if(mid) return "成果寄りの判断。要の場面で“配慮の一行”を挟むと摩耗が減る。";
+      return "共感が働きやすい。改革時は“撤退条件”を先に決めると迷いに強くなる。";
+    }
+    return "";
+  }
+
+  // ====== 表示 ======
+  function render(o){
+    var rank = rankOf(o.avg);
+
+    // 紋章
+    heroImg.src = IMG_BASE + rank.img;
+    heroImg.alt = rank.alt;
+    heroTitle.textContent = "ダーク・カリスマ："+rank.name+"（"+rank.label+"）";
+    heroPoem.textContent  = rank.poem;
+    heroCopy.textContent  = rank.copy;
+    sizeBadgeEl.textContent = "総合平均 " + o.avg.toFixed(2) + " / 4.00";
+
+    // 合計 “あるある”系ひとこと
+    var note = "";
+    if(o.avg<0.8) note="言葉は効くが、まだ静かな層。たまに刺さる言い回しが出る。";
+    else if(o.avg<1.6) note="煽りと一体感の扱いが上手い日がある。演出次第で存在感が跳ねるタイプ。";
+    else if(o.avg<2.4) note="場の流れを作るのが得意。言葉の反復が効く分、内容の重さ調整がカギ。";
+    else if(o.avg<3.2) note="圧と決断が強く出やすい。速さの裏側に“配慮の宣言”を添えると扱いやすい。";
+    else note="物語を反転させる規模。快い勝利感のときほど“止まる仕組み”を外に置くと健全。";
+    sumNote.textContent = note;
+
+    // 因子タグ（概要）
+    var gHtml = "";
+    [["D1","誘導（Allure）","🜚"],["D2","威圧（Dominance）","🜍"],["D3","無慈悲（Callous）","🜞"]]
+      .forEach(function(t){
+        var key=t[0], name=t[1], emo=t[2], v=o.by[key], pct=Math.round(v/4*100);
+        gHtml += '<div class="guard"><div class="g-emo" aria-hidden="true">'+emo+
+                 '</div><div><div><strong>'+name+'</strong> <span class="small">平均 '+v.toFixed(2)+' / 4</span></div>'+
+                 '<div class="small" style="opacity:.9">帯：'+pct+'%</div></div></div>';
+      });
+    guardArea.innerHTML = gHtml;
+
+    // 因子バー＋傾向
+    var bHtml = "";
+    [["D1","誘導"],["D2","威圧"],["D3","無慈悲"]].forEach(function(t){
+      var key=t[0], label=t[1], v=o.by[key], pct=Math.round(v/4*100);
+      bHtml += '<article class="bar" aria-label="'+label+'">'+
+        '<div><strong>'+label+'</strong><span class="pill" style="margin-left:6px">'+v.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+        '<div class="mini">'+adviceFor(key, v)+'</div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // ランク別の“あるある”長文
+    var long = {
+      1:"甘い誘いがたまに効くけれど、基本は静か。事実に寄せる習慣を先に置くと、誤解も煽りも起こりにくい帯。",
+      2:"合図やコールで一体感を作りやすい。線引きを太くしすぎず、反対側の受け皿を残すと摩耗しにくい帯。",
+      3:"仮面（見せ方）と糸（流れ）を扱える。反復フレーズほど内容を重くするほど、説得が健全に通る帯。",
+      4:"強い圧と速い決断。先に“配慮の境界線”を言語化すると、力が正しく扱われやすい帯。",
+      5:"物語を反転させ群れを動かす規模。外部の停止線と事実点検を常備すると、長く機能する帯。"
+    }[rank.id] || "";
+    longCopy.textContent = long;
+
+    // 研究メモ
+    var memo = [
+      "・ある研究では、反復する短いフレーズは記憶と真実味の知覚を高めやすい示唆。",
+      "・恐怖訴求や敵味方の枠組みは注意を集めるが、過剰だと反発と分断を招きやすいとの報告。",
+      "・非言語の優位（姿勢・間・視線）は支配的存在感の知覚に寄与する傾向。",
+      "・“3 部構成＋具体例”は理解コストを下げ、扇動的表現の濃度を下げても伝達効率を保ちやすい示唆。",
+      "・道徳的距離を広げる言い回しは、切り捨て判断を容易にする可能性があるため、対抗策として“被害の再想像”が有効との示唆。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧「つづきから再開」
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
