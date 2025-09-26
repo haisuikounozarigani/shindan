@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>サキュバス魔性度診断</title>
+<meta name="description" content="4因子×各6問（0〜4の5件法）で“魔性度”をそっと可視化。総合ランク（Lv1〜Lv5）と因子バー、サブタイプ、短評＋合図を表示（独自尺度・エンタメ用）。">
+<meta name="theme-color" content="#f7f9ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="サキュバス魔性度診断">
+<meta property="og:description" content="24問で“魔性度”をチェック。総合ランクと因子バー、サブタイプ、短評＋合図を表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/mashou-succubus.html">
+<meta property="og:image" content="/shindan/assets/results/mashou-succubus/03.png">
+<style>
+:root{
+  --accent:#b86bff; --accent2:#ff9ac1;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f9f7ff; --bg2:#fff7fb; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#f2e8ff,#ffe9f2);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(184,107,255,.45)}100%{box-shadow:0 0 0 0 rgba(184,107,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:contain;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.hero-square .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
+.hero-square .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-square .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.guard{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px}
+.guard .g-emo{font-size:18px}
+
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note .mini{display:inline-block;margin-left:6px;font-size:.82em;color:#6b6a77}
+.note p{margin:6px 0;line-height:1.75}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.84em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-square figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-square .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-square .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🌙</div>
+    <div>
+      <h1>サキュバス魔性度診断</h1>
+      <p class="sub">4因子×各6問＝24問（0〜4）。総合ランク（称号）と因子バー、サブタイプ、短評＋合図を表示します。※「サキュバス」は性別非依存の総称として使用。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：24</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても）</span>
+      <span class="pill">総合：0–4（重み付け平均）</span>
+    </div>
+    <p class="small">“依存を生みやすい魔性”を、<b>A.変動報酬</b>／<b>B.投影鏡</b>／<b>C.ペース主導</b>／<b>D.希少化</b>に分けて測ります。★印は内部で逆転採点します（UIには表示しません）。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=半々／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">因子：A=変動報酬 / B=投影鏡 / C=ペース主導 / D=希少化</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全24問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- 正方形イメージ -->
+      <div class="hero-square section" role="region" aria-label="ランクのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/mashou-succubus/01.png" alt="薄い香の輪" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値など -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合魔性度（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00</div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="因子概要">
+          <div><strong>因子（A/B/C/D）</strong></div>
+          <div class="factor-mini" id="guardArea"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS 短評（2–3行）＋合図 --></div>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。相手の自律や境界を損なう<b>意図的な操作</b>は推奨しません。結果は傾向の目安で、因果は断定できません。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "mashou-succubus";
+  var TITLE = "サキュバス魔性度診断";
+  var IMG_BASE = "/shindan/assets/results/mashou-succubus/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== ランク定義（総合 0–4） ======
+  var LV = [
+    {id:1, label:"Lv1", min:0.00, max:0.79, img:"01.png", alt:"薄い香の輪",
+     name:"朔のサキュバス",
+     poem:"影が生まれる前触れ。均一な優しさが土台。",
+     copy:"好感は芽生えている。『均一な関わり』で土台づくり。合図：沈黙10秒を味方に。"},
+    {id:2, label:"Lv2", min:0.80, max:1.59, img:"02.png", alt:"淡い光の糸",
+     name:"弦月のサキュバス",
+     poem:"半分見せて半分隠す、淡い光の糸。",
+     copy:"『短く言って長く待つ』で印象が残る。合図：終わり際に一粒の余白。"},
+    {id:3, label:"Lv3", min:1.60, max:2.39, img:"03.png", alt:"半月と香の軌跡",
+     name:"月蝕のサキュバス",
+     poem:"落差と一拍遅延で視線を奪う。",
+     copy:"『落差と一拍遅延』が効く。合図：期待が高まったら半歩引く。"},
+    {id:4, label:"Lv4", min:2.40, max:3.19, img:"04.png", alt:"重なる黒紗と光輪",
+     name:"日蝕のサキュバス",
+     poem:"主導と希少化で追わせる力が強い。",
+     copy:"主導と希少化で“追わせる”。合図：終わりの合図を先に用意。"},
+    {id:5, label:"Lv5", min:3.20, max:4.00, img:"05.png", alt:"金の香煙と鏡面の輝き",
+     name:"金環のサキュバス",
+     poem:"三要素が環になり、何もしていないのに惹きつける域。",
+     copy:"A×B×Cが噛み合い自然に惹きつける。合図：事実チェックで暴走を抑える。"}
+  ];
+
+  // ====== 因子 ======
+  var FACTORS = {
+    A: {name:"A. 変動報酬（Hook）",     icon:"🫧", items:[1,2,3,4,5,6]},
+    B: {name:"B. 投影鏡（Imprint）",    icon:"🪞", items:[7,8,9,10,11,12]},
+    C: {name:"C. ペース主導（Pace）",   icon:"⏳", items:[13,14,15,16,17,18]},
+    D: {name:"D. 希少化（Scarcity）",   icon:"🎗️", items:[19,20,21,22,23,24]}
+  };
+  var SUBTYPE = {A:"蜜型", B:"鏡型", C:"主型", D:"影型"};
+
+  // ====== 設問（24問／★は内部で反転） ======
+  var ITEMS = [
+    // A: 変動報酬
+    {id:1,  text:"温度の違う返事が出て、その落差で相手が気にすることがある。"},
+    {id:2,  text:"相手が期待しない時に、ふいにやさしくできる。"},
+    {id:3,  text:"連絡はまとめて返すことが多い（間が空く）。"},
+    {id:4,  text:"求められた時は、いつも同じ温度で応じるほうだ。", rev:true}, // ★
+    {id:5,  text:"短い言葉やスタンプだけで、余韻を残せる。"},
+    {id:6,  text:"相手の反応が強いほど、少し引くことがある。"},
+    // B: 投影鏡
+    {id:7,  text:"人によって、自分の印象が大きく変わる。"},
+    {id:8,  text:"相手の理想像を壊さない返し方を選びがちだ。"},
+    {id:9,  text:"自分の価値観や立場を、最初に詳しく伝える。", rev:true}, // ★
+    {id:10, text:"自分の話は断片や比喩が多く、余白が残る。"},
+    {id:11, text:"相手の言葉を少し言い換えて返すと強く共感される。"},
+    {id:12, text:"「こうあってほしい」という期待を無意識に汲んで寄せる。"},
+    // C: ペース主導
+    {id:13, text:"会う・話すタイミングは自分の都合で決まりやすい。"},
+    {id:14, text:"場の開始と終了の合図を自然に握っている。"},
+    {id:15, text:"相手の要望に合わせて長時間つき合ってしまう。", rev:true}, // ★
+    {id:16, text:"終わり際の一言で、次の約束や余韻を残せる。"},
+    {id:17, text:"相手の感情が高まった時、沈黙で温度を下げられる。"},
+    {id:18, text:"注目が集まる場面で、結論を一拍遅らせて引きつける。"},
+    // D: 希少化
+    {id:19, text:"SNSや連絡の露出が少なめでも平気だ。"},
+    {id:20, text:"思いついたことは、すぐ全部共有してしまう。", rev:true}, // ★
+    {id:21, text:"写真や外見の一点だけ強いアクセントを選びやすい。"},
+    {id:22, text:"初対面の深い話は半歩手前で止めることが多い。"},
+    {id:23, text:"忙しいほど、返信が短く抽象的になりやすい。"},
+    {id:24, text:"周囲に求められるほど、会う回数が減ることがある。"}
+  ];
+  var LABELS = ["まったくない","あまりない","半々","だいたい","とても"];
+
+  // ====== 重み ======
+  var WEIGHT = { A:0.34, B:0.26, C:0.25, D:0.15 };
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumNote = document.getElementById("sumNote");
+  var guardArea = document.getElementById("guardArea");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+
+  // ====== 保存 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  // ====== 設問生成（番号はUIに出さない／逆転フラグはUI非表示） ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers();
+        updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== スコア計算 ======
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      var raw = parseInt(chk.value,10);
+      var def = ITEMS[i];
+      var val = def.rev ? (4 - raw) : raw; // ← 逆転（UIに出さず内部だけ）
+      ans[id] = val;
+    }
+    if(missing.length){
+      alert("未回答があります。全24問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 因子平均(0-4)
+    function avgOf(ids){
+      var sum = ids.reduce(function(s,id){ return s + (ans[id]||0); },0);
+      return sum / ids.length;
+    }
+    var A = avgOf(FACTORS.A.items);
+    var B = avgOf(FACTORS.B.items);
+    var C = avgOf(FACTORS.C.items);
+    var D = avgOf(FACTORS.D.items);
+
+    // 総合（重み）
+    var total = WEIGHT.A*A + WEIGHT.B*B + WEIGHT.C*C + WEIGHT.D*D;
+    total = Math.round(total*100)/100;
+
+    render({avg:total, by:{A:A,B:B,C:C,D:D}});
+  }
+
+  function rankOf(avg){
+    for(var i=0;i<LV.length;i++){
+      var d = LV[i];
+      if(avg>=d.min && avg<=d.max) return d;
+    }
+    return LV[2];
+  }
+
+  function topSubtype(by){
+    var bestK = "A", bestV = -1;
+    for(var k in by){ if(by[k]>bestV){ bestV=by[k]; bestK=k; } }
+    return {key:bestK, label: SUBTYPE[bestK] || ""};
+  }
+
+  // ====== 表示 ======
+  function render(o){
+    var rank = rankOf(o.avg);
+    var sub  = topSubtype(o.by);
+
+    // 画像・見出し
+    heroImg.src = IMG_BASE + rank.img;
+    heroImg.alt = rank.alt;
+    heroTitle.textContent = "魔性度："+rank.name+"（"+rank.label+"）";
+    heroPoem.textContent  = rank.poem;
+    heroCopy.textContent  = rank.copy;
+    sizeBadgeEl.textContent = "総合平均 " + o.avg.toFixed(2) + " / 4.00";
+
+    // 合計ノート（ざっくり目安）
+    sumAvg.textContent = o.avg.toFixed(2);
+    var note = "";
+    if(o.avg<0.8) note="好感の土台期。まず“均一さ”で安心を育てると、魔性の輪郭が整う帯。";
+    else if(o.avg<1.6) note="余白と待ちの扱いが上手い帯。『短く→待つ』で印象が残りやすい。";
+    else if(o.avg<2.4) note="落差と遅延の設計が効く帯。期待が上がったら半歩引くのが吉。";
+    else if(o.avg<3.2) note="主導と希少化が噛み合い“追わせる”帯。終わりの合図で健全化。";
+    else note="三要素が輪になる帯。事実チェックを混ぜると暴走しにくい。";
+    sumNote.textContent = note;
+
+    // 因子タグ（概要）
+    var gHtml = "";
+    [["A","A. 変動報酬（Hook）","🫧"],["B","B. 投影鏡（Imprint）","🪞"],["C","C. ペース主導（Pace）","⏳"],["D","D. 希少化（Scarcity）","🎗️"]]
+      .forEach(function(t){
+        var key=t[0], name=t[1], emo=t[2], v=o.by[key], pct=Math.round(v/4*100);
+        gHtml += '<div class="guard"><div class="g-emo" aria-hidden="true">'+emo+
+                 '</div><div><div><strong>'+name+'</strong> <span class="small">平均 '+v.toFixed(2)+' / 4</span></div>'+
+                 '<div class="small" style="opacity:.9">帯：'+pct+'%</div></div></div>';
+      });
+    guardArea.innerHTML = gHtml;
+
+    // 因子バー
+    var bHtml = "";
+    [["A","変動報酬"],["B","投影鏡"],["C","ペース主導"],["D","希少化"]].forEach(function(t){
+      var key=t[0], label=t[1], v=o.by[key], pct=Math.round(v/4*100);
+      bHtml += '<article class="bar" aria-label="'+label+'">'+
+        '<div><strong>'+label+'</strong>'+
+        '<span class="pill" style="margin-left:6px">'+v.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // ランク別コメント（占い風・小悪魔ロング）
+  var long =
+    "あなたのサブタイプ：<b>"+sub.label+"</b>（トップ因子）"+
+    "<br><br>"+
+    {
+      1:
+      "【朔の気配】まだ細い月。あなたの小悪魔は、いたずら心よりも“均一なやさしさ”に宿ります。たまに見せる無邪気な間や、ふっと視線を外す沈黙が、相手の想像をそっと起こすでしょう。押し引きは控えめでも、香りのように残る余韻が効く運気。"+
+      "<br>◆小悪魔メモ：A（変動報酬）は弱～中、B（投影鏡）が芽生え中。身振りより“端的な一言＋静かな間”が吉。"+
+      "<br>◆合図：会話の終盤、<b>10秒だけ景色を見る</b>。余白があなたの味方になります。",
+
+      2:
+      "【弦月の駆け引き】半分見せて半分隠す時期。短く言って長く待つ“焦らし”に小悪魔が微笑みます。返事は端的でも、終わり際に比喩を一粒落としておくと、相手の中で物語が勝手に進む暗示。善き翻弄は礼儀と境界の上に咲くことも忘れずに。"+
+      "<br>◆小悪魔メモ：Aが中、Bが中～強。<b>一拍置いてからの笑み</b>で余韻が伸びる。"+
+      "<br>◆合図：別れ際に<b>短い比喩</b>（“また、香りが薄れる頃に”など）を置く。",
+
+      3:
+      "【月蝕の引力】温度差の“落差”と一拍遅延の使い手。高鳴った瞬間に半歩引くと、向こうから半歩寄ってくる…そんな小悪魔的な張力が最高潮に。押す前に相手の言葉を少し言い換えて返すと、B（投影鏡）が鏡面のように輝きます。やりすぎは禁物、事実と誠実をひとつまみ。"+
+      "<br>◆小悪魔メモ：A強め、B強。<b>“言い換え共感→一呼吸→核心”</b>の順で射抜く。"+
+      "<br>◆合図：決め台詞は<b>一呼吸遅らせる</b>。相手の瞳孔がわずかに開いた瞬間を待って。",
+
+      4:
+      "【日蝕の主導】開始と終了の合図を握り、出番と退場をデザインできる時期。C（ペース主導）とD（希少化）が噛み合い、追わせる力が濃くなります。小悪魔性は“幕引きの美学”に宿る。最初に範囲と終点を宣言すれば、翻弄は美しく、後味は軽やか。"+
+      "<br>◆小悪魔メモ：C強、D中～強。<b>会う前に“今日はここまで”を宣言</b>すると余裕が香る。"+
+      "<br>◆合図：ハイライトの直後に<b>静かな幕引き</b>。余白が次の招待状になります。",
+
+      5:
+      "【金環の磁場】A×B×Cが環を結び、“何もしていないのに惹きつける”域へ。あなたの小悪魔は技巧を超えて、存在そのものが変動報酬になります。だからこそ、事実チェックと境界宣言で自分と相手を守るほど、魅了は長期安定へ。希少化は減らすより“意味の密度”を上げるのが賢い運用。"+
+      "<br>◆小悪魔メモ：A/B/C高水準、Dは“頻度”より<b>質の編集</b>で効かせる。"+
+      "<br>◆合図：週に一度、発言や演出を<b>第三者目線で棚卸し</b>。魅了と誠実のバランスが磨かれます。"
+    }[rank.id];
+
+  longCopy.innerHTML = long;
+
+    // 見出し
+    typeLine.textContent = "サキュバス魔性度："+rank.label+"（"+rank.name+"）";
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧「つづきから再開」
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
