@@ -20,29 +20,36 @@
   --body-bg:#0b1026;          /* ← 追加 */
   color-scheme: dark;         /* ← 追加：自前でダーク面倒見る宣言 */
 }
-  /* ▼ ここを追加 */
-  --tail-time: 6.8s; /* デフォは少しゆっくり */
+  :root{
+  /* 既存のカラー等はそのまま残してOK */
+  --tail-time: 3.0s;   /* 基本を速く：3.0s */
 }
 
-/* ▼ タッチ端末はさらにゆっくり（iPhone/Android等） */
+/* タッチ端末はほんの少しだけ長め（見栄えを保つ） */
 @media (hover:none) and (pointer:coarse){
-  :root{ --tail-time: 7.8s; }
+  :root{ --tail-time: 3.3s; }
 }
 
-/* ▼ iOS Safariをさらに微調整（より長め） */
+/* iOS Safari（あなたのiPhone向け）：さらに軽快に */
 @supports (-webkit-touch-callout: none){
-  :root{ --tail-time: 8.2s; }
+  :root{ --tail-time: 2.7s; }
 }
 
-/* 走らせる：リテラル秒 → 変数に */
+/* アニメ適用（既存と同じでOK） */
 .shoot.active .star{ animation: tailArc var(--tail-time) linear forwards; }
-
-/* 先端（玉）をもう少し小さく：14→12 */
 .shoot .star::after{
-  /* ...省略... */
-  width:12px; height:12px; border-radius:50%;
-  /* 残りはそのまま */
+  content:"";
+  position:absolute; right:-3px; top:-3px;
+  width:8px; height:8px;                 /* ← 14→8px に小型化 */
+  border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,.9) 40%,
+    rgba(255,255,255,0) 70%);
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.9));
+  pointer-events:none;
 }
+
 a{color:inherit}
 .wrap{max-width:960px;margin:0 auto;min-height:100%;display:grid;grid-template-rows:auto 1fr auto}
 header.hd{display:flex;align-items:center;gap:12px;padding:14px 16px}
