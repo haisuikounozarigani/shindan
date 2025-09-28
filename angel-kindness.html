@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>七天使の優しさ診断</title>
+<meta name="description" content="21問で“やさしさ”の形をチェック。主天使タイプ（7種）と因子バー、ハイブリッド（二重翼）、研究メモを表示します。">
+<meta name="theme-color" content="#f7f9ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="七天使の優しさ診断">
+<meta property="og:description" content="21問で“やさしさ”の形をチェック。主天使タイプ（7種）と因子バー、研究メモを表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/angel-kindness.html">
+<meta property="og:image" content="/shindan/assets/results/angel-kindness/01.png">
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#ffd08c;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#fff2dd);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:contain;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.hero-square .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
+.hero-square .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-square .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.guard{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px}
+.guard .g-emo{font-size:18px}
+
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .mini{margin-top:6px;color:var(--muted);font-size:.9em;line-height:1.6}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note .mini{display:inline-block;margin-left:6px;font-size:.82em;color:#6b6a77}
+.note p{margin:6px 0;line-height:1.75}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.84em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-square figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:12px}
+  .hero-square .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-square .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">👼</div>
+    <div>
+      <h1>七天使の優しさ診断</h1>
+      <p class="sub">21問（0〜4の5件法）で“やさしさ”の形をそっと可視化。主天使タイプ（7種）と因子バー、必要ならハイブリッド（二重翼）も表示します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：21</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても）</span>
+      <span class="pill">主天使タイプ（7種）＋ハイブリッド判定</span>
+    </div>
+    <p class="small">“やさしさ”を<strong>守護・伝心・癒行・照明・祈聴・励賛・施与</strong>の7つに分解して扱います。UI上に逆転項目の表示は出しません（内部で採点処理）。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=半々／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">因子：守護（K1）／伝心（K2）／癒行（K3）／照明（K4）／祈聴（K5）／励賛（K6）／施与（K7）</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全21問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- 1:1 正方形 -->
+      <div class="hero-square section" role="region" aria-label="タイプのイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/angel-kindness/01.png" alt="剣と盾の紋章" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合AKI">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 概要 -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合AKI">
+          <div><strong>総合やさしさ指数（AKI / 0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00</div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="因子概要">
+          <div><strong>因子（K1–K7）</strong></div>
+          <div class="factor-mini" id="guardArea"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー＋アドバイス -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコアとアドバイス</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS：長文コメント（上位/下位の活かし方） --></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ -->
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※一般的な傾向や相関の話です。因果は断定できず、個人差が大きい点にご留意ください。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ定義 ======
+  var SLUG = "angel-kindness";
+  var TITLE = "七天使の優しさ診断";
+  var IMG_BASE = "/shindan/assets/results/angel-kindness/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers";
+
+  // ====== 因子・画像マップ ======
+  var FACTORS = {
+    K1: {name:"守護",  icon:"🛡️", items:[1,2,3]},
+    K2: {name:"伝心",  icon:"🕊️", items:[4,5,6]},
+    K3: {name:"癒行",  icon:"🧺", items:[7,8,9]},
+    K4: {name:"照明",  icon:"🔭", items:[10,11,12]},
+    K5: {name:"祈聴",  icon:"🕯️", items:[13,14,15]},
+    K6: {name:"励賛",  icon:"🎖️", items:[16,17,18]},
+    K7: {name:"施与",  icon:"🌾", items:[19,20,21]}
+  };
+  var REVERSED = new Set([3,6,9,12,15,18,21]); // UI非表示・内部で反転
+
+  // 画像と本文
+  var ANGELS = {
+    K1:{id:"01", key:"michael",   name:"ミカエル（守護）",  alt:"剣と盾の紋章",
+        poem:"剣は線を引き、盾は居場所を守る。",
+        copy:"境界を示し、場の安全を守るやさしさ。NOも含めて人を守る。強さと温度の両立が持ち味。", hint:"NOの前に理由を一言。"},
+    K2:{id:"02", key:"gabriel",   name:"ガブリエル（伝心）",alt:"巻物と百合の紋章",
+        poem:"静かな報せが、心の窓をあける。",
+        copy:"言葉でそっと支える報せの天使。短い一言で温度を渡す。評価語より“具体語”を選べる。", hint:"名詞一語で返す。"},
+    K3:{id:"03", key:"raphael",   name:"ラファエル（癒行）",alt:"杖と旅鞄の紋章",
+        poem:"手が先に動き、呼吸が整う。",
+        copy:"まず手が動く同伴型のやさしさ。小さな負担を引き取って、相手の呼吸を整える。", hint:"15分だけの枠を決める。"},
+    K4:{id:"04", key:"uriel",     name:"ウリエル（照明）", alt:"灯火と書の紋章",
+        poem:"灯火は三つの箱を照らす。",
+        copy:"道を照らす洞察。三つの箱で見取り図を作り、次の一歩を一緒に選ぶ。", hint:"三箱で整理。"},
+    K5:{id:"05", key:"selaphiel", name:"セラフィエル（祈聴）",alt:"香炉と輪の紋章",
+        poem:"香が満ち、沈黙が味方になる。",
+        copy:"静けさで包む存在。急がず、沈黙を味方に相手の言葉を迎える。", hint:"10秒沈黙。"},
+    K6:{id:"06", key:"jehudiel",  name:"ジェフディエル（励賛）",alt:"王冠とリボン章の紋章",
+        poem:"小さな芽に、光のリボンを結ぶ。",
+        copy:"努力の芽を見つけて称える。小さな進歩を光らせ、続ける力を生む。", hint:"過程を言語化。"},
+    K7:{id:"07", key:"barachiel", name:"バラキエル（施与）",alt:"薔薇と麦の紋章",
+        poem:"薔薇の香に、麦の席がひらく。",
+        copy:"分け合い、迎え入れる歓待。席を作り、時間や資源を気持ちよく分ける。", hint:"自分の余白を確保。"}
+  };
+
+  // ====== 設問（21問） ======
+  var ITEMS = [
+    // K1 守護
+    {id:1,  text:"相手にも自分にも“安全な線”を示せる。"},
+    {id:2,  text:"無理な頼みには、丁寧にNOと言える。"},
+    {id:3,  text:"限界でも引き受けてしまうことが多い。", rev:true},
+    // K2 伝心
+    {id:4,  text:"つらさに短い一言で寄り添える。"},
+    {id:5,  text:"相手の気持ちを言葉にして返せる。"},
+    {id:6,  text:"励ましが評価っぽくなってしまう。", rev:true},
+    // K3 癒行
+    {id:7,  text:"困っている人に具体の手伝いを提案できる。"},
+    {id:8,  text:"小さな用事を先回りして済ませられる。"},
+    {id:9,  text:"「頑張って」と言うだけで動けないことがある。", rev:true},
+    // K4 照明
+    {id:10, text:"複雑な話を“三つの工程”に整理して一緒に見る。"},
+    {id:11, text:"次の一歩を選択肢で示せる。"},
+    {id:12, text:"自分の考えを押しつけがちになる。", rev:true},
+    // K5 祈聴
+    {id:13, text:"遮らず最後まで聴ける。"},
+    {id:14, text:"“沈黙10秒”を怖がらず保てる。"},
+    {id:15, text:"良かれと思ってすぐ解決に走ってしまう。", rev:true},
+    // K6 励賛
+    {id:16, text:"小さな進歩を見つけて言葉にできる。"},
+    {id:17, text:"成果だけでなく努力の過程も認められる。"},
+    {id:18, text:"比べ言葉（「誰々より」）を使いがちだ。", rev:true},
+    // K7 施与
+    {id:19, text:"時間や物を気持ちよく分け合える。"},
+    {id:20, text:"初対面でも“居場所を作る”ふるまいができる。"},
+    {id:21, text:"自分の余裕がないとすぐゼロになってしまう。", rev:true}
+  ];
+  var LABELS = ["まったくない","あまりない","半々","だいたい","とても"];
+
+  // ====== 参照 ======
+  var qWrap = document.getElementById("qWrap");
+  var prog = document.getElementById("prog");
+  var resEmpty = document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine = document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle = document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl = document.getElementById("sizeBadge");
+  var sumAvg = document.getElementById("sumAvg");
+  var sumNote = document.getElementById("sumNote");
+  var guardArea = document.getElementById("guardArea");
+  var bars = document.getElementById("bars");
+  var longCopy = document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+
+  // ====== 保存系 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  // ====== UI生成 ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers(); updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== 採点 ======
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      var raw = parseInt(chk.value,10);
+      var def = ITEMS[i];
+      var val = (def.rev || REVERSED.has(id)) ? (4 - raw) : raw;
+      ans[id] = val;
+    }
+    if(missing.length){
+      alert("未回答があります。全21問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 因子平均
+    function avgOf(ids){
+      var sum = 0;
+      for(var j=0;j<ids.length;j++){ sum += (ans[ids[j]]||0); }
+      return sum / ids.length;
+    }
+    var by = {};
+    Object.keys(FACTORS).forEach(function(k){
+      by[k] = avgOf(FACTORS[k].items);
+    });
+
+    // 総合AKI＝7因子平均
+    var total = 0, n=0;
+    Object.keys(by).forEach(function(k){ total += by[k]; n++; });
+    var aki = Math.round((total/n)*100)/100;
+
+    render({avg:aki, by:by});
+  }
+
+  // ====== 表示 ======
+  function render(o){
+    // トップ/2位
+    var entries = Object.keys(o.by).map(function(k){ return {k:k, v:o.by[k]}; });
+    entries.sort(function(a,b){ return b.v - a.v; });
+    var top = entries[0], second = entries[1];
+    var delta = Math.abs(top.v - second.v);
+    var hybrid = (delta <= 0.15);
+
+    var A1 = ANGELS[top.k];
+    var titleName = A1.name;
+    var heroAlt = A1.alt;
+    var heroImgId = A1.id;
+
+    var headCopy = A1.copy;
+    var poem = A1.poem;
+
+    var subBadge = "AKI " + o.avg.toFixed(2) + " / 4.00";
+
+    if(hybrid){
+      // 二重翼
+      var A2 = ANGELS[second.k];
+      titleName = A1.name.replace(/（.*?）/,"") + " × " + A2.name.replace(/（.*?）/,"") + "（二重翼）";
+      poem = A1.poem + "｜" + A2.poem;
+      headCopy = "上位二因子が拮抗。<b>"+FACTORS[top.k].name+"</b>×<b>"+FACTORS[second.k].name+"</b>の“二重翼”タイプ。状況に応じて翼を切り替えると最適化しやすい。";
+      subBadge += " ・ 二重翼";
+      // 画像は第一優先のまま
+    }
+
+    // 画像
+    heroImg.src = IMG_BASE + heroImgId + ".png";
+    heroImg.alt = heroAlt;
+    heroTitle.innerHTML = "あなたの主天使タイプ：<b>"+titleName+"</b>";
+    heroPoem.textContent = poem;
+    heroCopy.innerHTML = headCopy;
+    sizeBadgeEl.textContent = subBadge;
+
+    // 総合
+    sumAvg.textContent = o.avg.toFixed(2);
+    var note = (o.avg<1.2) ? "芽吹きのフェーズ。ひとつの場面に“ひと工夫”を足すだけで体感が変わります。"
+             : (o.avg<2.0) ? "やさしさの基礎体力が整い始めています。得意の因子から実践頻度を上げていく段階。"
+             : (o.avg<2.8) ? "複数因子が安定。場に応じて使い分けると、負担なく続けられます。"
+             : "やさしさの設計が洗練。自分の余白（休息）を確保しつつ維持できると盤石。";
+    sumNote.textContent = note;
+
+    // 概要タグ
+    var gHtml = "";
+    Object.keys(FACTORS).forEach(function(k){
+      var name = FACTORS[k].name, emo = FACTORS[k].icon, v=o.by[k], pct=Math.round(v/4*100);
+      gHtml += '<div class="guard"><div class="g-emo" aria-hidden="true">'+emo+
+               '</div><div><div><strong>'+name+'</strong> <span class="small">平均 '+v.toFixed(2)+' / 4</span></div>'+
+               '<div class="small" style="opacity:.9">帯：'+pct+'%</div></div></div>';
+    });
+    guardArea.innerHTML = gHtml;
+
+    // 因子バー＋アドバイス
+    var ADVICE = {
+      K1:{tend:"線を引いて守るのが得意。頼られると場が落ち着く。",
+          do:"NOの前に“理由を一言”。安全の線を言語化。"},
+      K2:{tend:"短い言葉で温度を渡すのが上手。空気が柔らぐ。",
+          do:"“名詞一語の要約”→短い相槌→一言だけ。"},
+      K3:{tend:"まず手が動く同伴型。小さな負担を引き取れる。",
+          do:"“15分だけ”の枠を決めて手を出す。"},
+      K4:{tend:"整理と道筋づくりが強み。迷いに地図を渡せる。",
+          do:"話を“三箱（現状/原因/次の一歩）”に仕分け。"},
+      K5:{tend:"沈黙を味方に聴ける。相手の言葉が深まる。",
+          do:"10秒の沈黙→相手の語を一語だけ返す。"},
+      K6:{tend:"努力の芽を見つけて光らせる。続ける力を生む。",
+          do:"“過程の具体”を一つ言語化して称える。"},
+      K7:{tend:"歓待と分配が自然。場に居場所を作れる。",
+          do:"自分の余白（時間/体力）を先に確保してから与える。"}
+    };
+    var bHtml = "";
+    Object.keys(FACTORS).forEach(function(k){
+      var label=FACTORS[k].name, v=o.by[k], pct=Math.round(v/4*100);
+      var band = (pct<35)?"低":(pct<70)?"中":"高";
+      bHtml += '<article class="bar" aria-label="'+label+'">'+
+        '<div><strong>'+label+'</strong>'+
+          '<span class="pill" style="margin-left:6px">'+v.toFixed(2)+' / 4</span>'+
+          '<span class="pill" style="margin-left:6px">'+pct+'%（'+band+'）</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+        '<div class="mini"><b>傾向：</b>'+ADVICE[k].tend+' ／ <b>活かし方：</b>'+ADVICE[k].do+'</div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // 長文（上位と下位の組み合わせ提案）
+    var low = entries[entries.length-1];
+    var msgTop = "いま強い翼は「<b>"+FACTORS[top.k].name+"</b>」。日常の小さな場面で回数を増やすと、手応えがさらに安定します。";
+    var msg2nd = "次点は「<b>"+FACTORS[second.k].name+"</b>」。この翼を少しだけ先に出す/後で添える、など順番の工夫が効きやすい。";
+    var msgLow = "控えめなのは「<b>"+FACTORS[low.k].name+"</b>」。無理に伸ばすより、得意な翼の延長で“1回だけ試す”くらいがちょうど良い。";
+    longCopy.innerHTML = msgTop + "<br>"+ msg2nd + "<br>"+ msgLow;
+
+    // 研究メモ
+    var memo = [
+      "・ある研究では、共感的な傾聴（遮らない・言い換え・沈黙の活用）が支援感を高める示唆。",
+      "・短い“結論ラベル”や具体語で返すと、理解度・信頼が上がりやすいという報告。",
+      "・“三つに区切る”だけで認知負荷が下がり、合意形成を助ける傾向が示される。",
+      "・小さな進歩を言語化して称えると、内発的動機づけが維持されやすいという知見。",
+      "・境界（NOの言語化）は対人ストレスを下げ、長期的なやさしさの持続に寄与しうる示唆。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧「つづきから再開」
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // ====== クリア ======
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
