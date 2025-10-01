@@ -98,6 +98,15 @@ a.link > div{flex:1 1 auto;min-width:0}
   a.link{padding:12px}
   .badge{display:none}
 }
+
+/* 標本カウンタ（控えめ） */
+.stats-inline{justify-content:flex-end;gap:10px;margin-top:6px}
+.stats-inline .mini{
+  color:var(--muted);font-size:.9em;
+  border:1px solid var(--line);border-radius:999px;
+  padding:4px 8px;background:#fff;line-height:1.6
+}
+
 </style>
 </head>
 <body>
@@ -116,12 +125,6 @@ a.link > div{flex:1 1 auto;min-width:0}
 <main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1" inert>
   <!-- Controls -->
   <section class="controls" aria-label="検索とタグ">
-  	
-  <!-- 標本カウンタ -->
-<div class="row" id="stats" aria-label="標本カウンタ">
-  <span class="pill">📖 あなたが開いた標本 <strong id="myOpenCount">0</strong>回</span>
-  <span class="pill">🌍️ みんなが開いた標本 <strong id="allOpenCount">—</strong>回</span>
-</div>
   
     <!-- サイト切替：現在ページを強調 -->
     <div class="row switcher" aria-label="サイト切替">
@@ -136,6 +139,12 @@ a.link > div{flex:1 1 auto;min-width:0}
     </div>
     <div id="chips" class="chips" role="listbox" aria-multiselectable="false" aria-label="タグ（1つ選択で絞り込み）"></div>
   </section>
+  
+  <!-- ▼ chips のすぐ下にこれを追加 -->
+<div class="row stats-inline" aria-label="標本カウンタ">
+  <span class="mini">📖 あなたが標本を開いた回数　<strong id="myOpenCount">0</strong></span>
+  <span class="mini">🌍 みんなが標本を開いた回数　<strong id="allOpenCount">—</strong></span>
+</div>
 
   <!-- Cards -->
   <nav class="links" id="list" aria-label="診断一覧（検索結果）">
@@ -754,12 +763,11 @@ a.link > div{flex:1 1 auto;min-width:0}
     fg.appendChild(img); a.insertBefore(fg,a.firstChild);
   });
 
-  // 検索・タグ（単一選択）
+// 検索・タグ（単一選択）
   const q=$('#q'), chipsWrap=$('#chips'), btnNew=$('#btnNew'), clearBtn=$('#clearBtn');
 
-  // エイリアス正規化：「性格」→「こころ」、「短時間」→「さくっと」
+  // エイリアス正規化（カード側タグの軽い寄せ）
   const ALIAS={ '性格':'こころ', '短時間':'さくっと' };
-  const ORDER=['こころ','セルフケア','認知','仕事','占い','ゲーム風','さくっと','ふつう','しっかり','適性'];
 
   // カードのタグ正規化 + メタ整形
   $$('#list a.link').forEach(a=>{
@@ -769,24 +777,21 @@ a.link > div{flex:1 1 auto;min-width:0}
     const mins=a.dataset.mins; if(mins){ const s=document.createElement('span'); s.className='pill'; s.textContent=`⏱${mins}分`; meta.appendChild(s); }
   });
 
-  // タグ候補（存在するもののみ）
-  const counts={};
-  $$('#list a.link').forEach(a=>{
-    (a.dataset.tags||'').split(',').filter(Boolean).forEach(t=>{ counts[t]=(counts[t]||0)+1; });
-  });
-  const tagsSorted=Object.keys(counts).sort((a,b)=>{
-    const ai=ORDER.indexOf(a), bi=ORDER.indexOf(b);
-    if(ai!==-1 || bi!==-1){ return (ai===-1?999:ai) - (bi===-1?999:bi); }
-    return a.localeCompare(b,'ja');
-  });
+  // —— 固定4タグ（占い・ゲーム は統合表示／背後で「占い or ゲーム風」にマッチ）——
+  const CHIP_DEFS=[
+    { key:'さくっと',     label:'さくっと',     test:(tags)=>tags.includes('さくっと') },
+    { key:'ふつう',       label:'ふつう',       test:(tags)=>tags.includes('ふつう')   },
+    { key:'しっかり',     label:'しっかり',     test:(tags)=>tags.includes('しっかり') },
+    { key:'占い・ゲーム', label:'占い・ゲーム', test:(tags)=>tags.includes('占い') || tags.includes('ゲーム風') || tags.includes('ゲーム') },
+  ];
 
   // チップ生成（単一選択）
   let activeTag=null; const chipMap=new Map();
-  tagsSorted.forEach(tag=>{
+  CHIP_DEFS.forEach(def=>{
     const b=document.createElement('button');
-    b.type='button'; b.className='chip'; b.textContent='#'+tag; b.dataset.tag=tag;
+    b.type='button'; b.className='chip'; b.textContent='#'+def.label; b.dataset.tag=def.key;
     b.setAttribute('role','option'); b.setAttribute('aria-selected','false');
-    b.addEventListener('click',()=> setActiveTag(activeTag===tag? null : tag));
+    b.addEventListener('click',()=> setActiveTag(activeTag===def.key? null : def.key));
     b.addEventListener('keydown',e=>{
       if(e.key===' '||e.key==='Enter'){ e.preventDefault(); b.click(); }
       if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
@@ -794,23 +799,24 @@ a.link > div{flex:1 1 auto;min-width:0}
         const i=chips.indexOf(document.activeElement); if(i>-1){ chips[(i+(e.key==='ArrowRight'?1:-1)+chips.length)%chips.length].focus(); }
       }
     });
-    chipsWrap.appendChild(b); chipMap.set(tag,b);
+    chipsWrap.appendChild(b); chipMap.set(def.key,b);
   });
 
   function setActiveTag(tag){
     activeTag=tag;
-    chipMap.forEach((btn,t)=>{ const on=(t===tag); btn.classList.toggle('active',on); btn.setAttribute('aria-selected',on?'true':'false'); });
-    if(tag){ history.replaceState({},'', '#tag='+encodeURIComponent(tag)); } else { history.replaceState({},'', location.pathname + location.search); }
+    chipMap.forEach((btn,k)=>{ const on=(k===tag); btn.classList.toggle('active',on); btn.setAttribute('aria-selected',on?'true':'false'); });
+    if(tag){ history.replaceState({},'', '#tag='+encodeURIComponent(tag)); }
+    else { history.replaceState({},'', location.pathname + location.search); }
     apply();
   }
 
-  // 初期：#tag= or ?q=
+  // 初期：#tag= / ?q=
   const params=new URLSearchParams(location.search);
   q.value=params.get('q')||'';
   const initTag=location.hash.startsWith('#tag=') ? decodeURIComponent(location.hash.slice(5)) : '';
   if(initTag && chipMap.has(initTag)) setActiveTag(initTag);
 
-  // 入力：末尾 #タグ を同期
+  // 入力：末尾 #タグ を同期（4タグのみ許可）
   q.addEventListener('input', ()=>{
     const m=q.value.match(/(^|\s)#([^\s#]+)$/);
     if(m){ const t=m[2]; if(chipMap.has(t)) setActiveTag(t); }
@@ -826,17 +832,25 @@ a.link > div{flex:1 1 auto;min-width:0}
     apply();
   });
 
-  // クリア
-  clearBtn.addEventListener('click', ()=>{ q.value=''; setActiveTag(null); apply(); });
+  // クリア（検索文字・タグ・URLの #tag を完全リセット）
+  clearBtn.addEventListener('click', ()=>{
+    q.value='';
+    setActiveTag(null);
+    newOnly=false; btnNew.classList.remove('primary'); btnNew.setAttribute('aria-pressed','false'); btnNew.textContent='NEWだけ';
+    // 念のため明示的にハッシュも消す
+    if(location.hash) history.replaceState({},'', location.pathname + location.search);
+    apply();
+  });
 
   // フィルタ
   function apply(){
     const kw=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
+    const def = CHIP_DEFS.find(d=>d.key===activeTag);
     let shown=0;
     $$('#list a.link').forEach(a=>{
       const tags=(a.dataset.tags||'').split(',').filter(Boolean);
       const text=(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase();
-      const okTag = activeTag ? tags.includes(activeTag) : true;
+      const okTag = activeTag ? (def ? def.test(tags) : true) : true;
       const okKw  = kw.length ? kw.every(w=>text.includes(w)) : true;
       const isNew = (()=>{ const b=a.querySelector('[data-new]'); return b && b.style.display!=='none'; })();
       const show  = okTag && okKw && (newOnly? isNew : true);
@@ -855,17 +869,30 @@ document.addEventListener('DOMContentLoaded', function(){
   const myEl  = document.querySelector('#myOpenCount');
   const allEl = document.querySelector('#allOpenCount');
 
+  // Local counters
   const LS_TOTAL_KEY = 'specimens:open:total';
   const LS_BYID_KEY  = 'specimens:open:byid';
 
+  // CountAPI
   const COUNTAPI_NS  = 'haisuikounozarigani_shindan';
   const COUNTAPI_KEY = 'specimens_open_total';
+
+// 便利ヘルパ（全体カウントの描画）
+function setAll(val){
+  if(!allEl) return;
+  if (typeof val === 'number' && Number.isFinite(val)) {
+    allEl.textContent = val.toLocaleString('ja-JP');
+  } else {
+    allEl.textContent = '—';
+  }
+}
 
   function getLocalTotal(){
     const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || '0', 10);
     return Number.isFinite(n) ? n : 0;
   }
   function setLocalTotal(n){ localStorage.setItem(LS_TOTAL_KEY, String(n)); }
+
   function incLocalById(id){
     const t = getLocalTotal() + 1;
     setLocalTotal(t);
@@ -876,21 +903,35 @@ document.addEventListener('DOMContentLoaded', function(){
     if(myEl) myEl.textContent = t.toLocaleString('ja-JP');
   }
 
-  function fetchGlobal(){
-    fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors'})
-      .then(r => r.json())
-      .then(d => { if(allEl) allEl.textContent = ((d && d.value) || 0).toLocaleString('ja-JP'); })
-      .catch(() => { if(allEl) allEl.textContent = '—'; });
+  // グローバル値：未作成なら create→get にフォールバック
+  async function ensureGlobal(){
+    if(!allEl) return;
+    try{
+      let r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors', cache:'no-store'});
+      if(!r.ok){
+        await fetch(`https://api.countapi.xyz/create?namespace=${COUNTAPI_NS}&key=${COUNTAPI_KEY}&value=0`, {mode:'cors', cache:'no-store'});
+        r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors', cache:'no-store'});
+      }
+      const d = await r.json().catch(()=>({value:0}));
+      setAll((d && d.value) || 0);
+    }catch(e){
+      // 広告ブロッカー等で失敗時はダッシュ表示
+      setAll('—');
+    }
   }
+
+  // グローバル加算（ページ遷移直前でも送れるよう keepalive）
   function bumpGlobal(){
     fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
       method:'GET', mode:'cors', cache:'no-store', keepalive:true
     }).catch(()=>{});
   }
 
-  if(myEl)  myEl.textContent  = getLocalTotal().toLocaleString('ja-JP');
-  if(allEl) fetchGlobal();
+  // 初期表示
+  if(myEl) myEl.textContent = getLocalTotal().toLocaleString('ja-JP');
+  ensureGlobal();
 
+  // クリックで加算（遷移前に処理したいので capture:true）
   const list = document.querySelector('#list');
   if(list){
     list.addEventListener('click', function(e){
