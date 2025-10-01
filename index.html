@@ -865,84 +865,123 @@ a.link > div{flex:1 1 auto;min-width:0}
 })();
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  const myEl  = document.querySelector('#myOpenCount');
-  const allEl = document.querySelector('#allOpenCount');
+/* ====== 標本オープン数（ローカル＋全体） =========================
+   CF Workers を使う場合は CF_WORKER_URL を設定。
+   未設定なら countapi.xyz にフォールバックします。
+================================================================= */
 
-  // Local counters
-  const LS_TOTAL_KEY = 'specimens:open:total';
-  const LS_BYID_KEY  = 'specimens:open:byid';
+// UI
+const myEl  = document.querySelector('#myOpenCount');
+const allEl = document.querySelector('#allOpenCount');
 
-  // CountAPI
-  const COUNTAPI_NS  = 'haisuikounozarigani_shindan';
-  const COUNTAPI_KEY = 'specimens_open_total';
+// ---- 設定（← ここだけ必要に応じて編集） ------------------------
+const CF_WORKER_URL = ""; // 例: "https://your-subdomain.workers.dev/counter"
+const GLOBAL_KEY    = "specimens_open_total"; // 全体カウントのキー
+// ----------------------------------------------------------------
 
-// 便利ヘルパ（全体カウントの描画）
+// LocalStorage keys
+const LS_TOTAL_KEY = "specimens:open:total";
+const LS_BYID_KEY  = "specimens:open:byid";
+
+// countapi フォールバック設定
+const COUNTAPI_NS  = "haisuikounozarigani_shindan";
+const COUNTAPI_KEY = GLOBAL_KEY;
+
+// 共通：UIに安全に表示
 function setAll(val){
   if(!allEl) return;
-  if (typeof val === 'number' && Number.isFinite(val)) {
-    allEl.textContent = val.toLocaleString('ja-JP');
-  } else {
-    allEl.textContent = '—';
+  if(typeof val === "number" && Number.isFinite(val)){
+    allEl.textContent = val.toLocaleString("ja-JP");
+  }else{
+    allEl.textContent = "—";
   }
 }
 
-  function getLocalTotal(){
-    const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || '0', 10);
-    return Number.isFinite(n) ? n : 0;
-  }
-  function setLocalTotal(n){ localStorage.setItem(LS_TOTAL_KEY, String(n)); }
+// ---- ローカル加算 ----------------------------------------------
+function getLocalTotal(){
+  const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || "0", 10);
+  return Number.isFinite(n) ? n : 0;
+}
+function setLocalTotal(n){
+  localStorage.setItem(LS_TOTAL_KEY, String(n));
+}
+function incLocalById(id){
+  // 総数
+  const t = getLocalTotal() + 1;
+  setLocalTotal(t);
+  // 個別
+  let map = {};
+  try{ map = JSON.parse(localStorage.getItem(LS_BYID_KEY) || "{}"); }catch(e){}
+  map[id] = (map[id] || 0) + 1;
+  localStorage.setItem(LS_BYID_KEY, JSON.stringify(map));
+  if(myEl) myEl.textContent = t.toLocaleString("ja-JP");
+}
 
-  function incLocalById(id){
-    const t = getLocalTotal() + 1;
-    setLocalTotal(t);
-    let map = {};
-    try{ map = JSON.parse(localStorage.getItem(LS_BYID_KEY) || '{}'); }catch(e){}
-    map[id] = (map[id] || 0) + 1;
-    localStorage.setItem(LS_BYID_KEY, JSON.stringify(map));
-    if(myEl) myEl.textContent = t.toLocaleString('ja-JP');
-  }
-
-  // グローバル値：未作成なら create→get にフォールバック
-  async function ensureGlobal(){
-    if(!allEl) return;
+// ---- グローバル取得 --------------------------------------------
+async function getGlobalCount(){
+  // 優先：Cloudflare Workers
+  if(CF_WORKER_URL){
     try{
-      let r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors', cache:'no-store'});
-      if(!r.ok){
-        await fetch(`https://api.countapi.xyz/create?namespace=${COUNTAPI_NS}&key=${COUNTAPI_KEY}&value=0`, {mode:'cors', cache:'no-store'});
-        r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors', cache:'no-store'});
-      }
-      const d = await r.json().catch(()=>({value:0}));
-      setAll((d && d.value) || 0);
+      const url = new URL(CF_WORKER_URL);
+      url.searchParams.set("key", GLOBAL_KEY);
+      const r = await fetch(url.toString(), {mode:"cors", cache:"no-store"});
+      const d = await r.json();
+      return (d && typeof d.value === "number") ? d.value : 0;
     }catch(e){
-      // 広告ブロッカー等で失敗時はダッシュ表示
-      setAll('—');
+      // 続行してフォールバックへ
     }
   }
-
-  // グローバル加算（ページ遷移直前でも送れるよう keepalive）
-  function bumpGlobal(){
-    fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
-      method:'GET', mode:'cors', cache:'no-store', keepalive:true
-    }).catch(()=>{});
+  // フォールバック：countapi
+  try{
+    const r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:"cors", cache:"no-store"});
+    const d = await r.json();
+    return (d && typeof d.value === "number") ? d.value : 0;
+  }catch(e){
+    return null;
   }
+}
 
-  // 初期表示
-  if(myEl) myEl.textContent = getLocalTotal().toLocaleString('ja-JP');
-  ensureGlobal();
+// ---- グローバル加算 --------------------------------------------
+function bumpGlobal(){
+  // 優先：Cloudflare Workers
+  if(CF_WORKER_URL){
+    try{
+      const url = new URL(CF_WORKER_URL);
+      url.searchParams.set("key", GLOBAL_KEY);
+      url.searchParams.set("hit", "1");
+      // keepalive で遷移中でも送る
+      fetch(url.toString(), {mode:"cors", cache:"no-store", keepalive:true}).catch(()=>{});
+      return;
+    }catch(e){}
+  }
+  // フォールバック：countapi
+  fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
+    method:"GET", mode:"cors", cache:"no-store", keepalive:true
+  }).catch(()=>{});
+}
 
-  // クリックで加算（遷移前に処理したいので capture:true）
+// ---- 初期描画＆イベント ----------------------------------------
+(function initOpenCounter(){
+  // 自分の回数
+  if(myEl) myEl.textContent = getLocalTotal().toLocaleString("ja-JP");
+
+  // 全体の回数（取得）
+  getGlobalCount().then(val => setAll(val)).catch(()=>setAll(null));
+
+  // クリックで加算（遷移前に確実に送るため capture:true）
   const list = document.querySelector('#list');
   if(list){
     list.addEventListener('click', function(e){
-      const a = e.target.closest('a.link');
-      if(!a) return;
-      const id = a.dataset.id || 'unknown';
-      incLocalById(id);
-      bumpGlobal();
-    }, {capture:true});
+  const a = e.target.closest('a.link');
+  if(!a) return;
+  const id = a.dataset.id || "unknown";
+  incLocalById(id);
+  bumpGlobal();
+  // 楽観更新：このページでも全体数が増えたように見せる
+  if(allEl){ const cur=parseInt((allEl.textContent||'0').replace(/,/g,''),10)||0; setAll(cur+1); }
+}, {capture:true});
   }
-});
+})();
 </script>
 </body>
 </html>
