@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>惑星魅力診断</title>
+<meta name="description" content="10惑星×各3問=全30問（0〜4の5件法）。主惑星タイプと因子バー、光度ランク、やさしい研究メモを表示します（独自項目／エンタメ用）。">
+<meta name="theme-color" content="#f7f9ff">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="惑星魅力診断">
+<meta property="og:description" content="30問で“魅力の出方”を惑星モチーフで可視化。主惑星タイプと因子バー、光度ランクを表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/charm-planets.html">
+<meta property="og:image" content="/shindan/assets/results/charm-planets/01.png">
+<style>
+:root{
+  --accent:#ffb84d; --accent2:#6aa9ff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#fff2dd,#e1f2ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:contain;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.hero-square .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
+.hero-square .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-square .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.guard{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px}
+.guard .g-emo{font-size:18px}
+
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note .mini{display:inline-block;margin-left:6px;font-size:.82em;color:#6b6a77}
+.note p{margin:6px 0;line-height:1.75}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.84em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-square figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-square .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-square .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🪐</div>
+    <div>
+      <h1>惑星魅力診断</h1>
+      <p class="sub">10惑星×各3問＝全30問（0〜4）。主惑星タイプと因子バー、光度ランク（Lv1〜Lv5）を表示します。※独自項目のエンタメ自己理解用。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：30</span>
+      <span class="pill">形式：0–4（0=まったくない / 4=とても）</span>
+      <span class="pill">総合：0–4（10因子平均）</span>
+    </div>
+    <p class="small">これは<b>魅力の出方を比喩で可視化</b>するコンテンツです。天体名は象徴。光り方には人それぞれのリズムがあります。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=まったくない／1=あまりない／2=半々／3=だいたい／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div class="tags">
+      <span class="tag">因子：光度／居心地／会話／美意識／推進／余裕／信頼／意外性／香り・余韻／深度</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全30問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- メイン結果（1:1 正方形） -->
+      <div class="hero-square section" role="region" aria-label="主惑星タイプ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/charm-planets/01.png" alt="太陽の円環と光条" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合光度">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 数値など -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合光度（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00</div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="惑星プロフィール">
+          <div><strong>惑星プロフィール</strong></div>
+          <div class="factor-mini" id="guardArea"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子ごとの説明 -->
+      <section class="section" id="factorNotesSec">
+        <h3 style="margin:8px 0">因子ごとの説明</h3>
+        <div id="factorNotes" class="factor-mini"><!-- JS --></div>
+      </section>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS 長文コメント --></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ（開いた状態で表示） -->
+      <details class="section" open>
+        <summary><strong>研究メモ（傾向の一般論）</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※ここで述べるのは平均的な傾向です。相関が中心で因果は断定できません。個人差が大きい点をご理解ください。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+見た目や体の特徴を評価する意図はありません。<b>清潔感・所作・言葉</b>など行動で変えられる側面に焦点を当てています。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "charm-planets";
+  var TITLE = "惑星魅力診断";
+  var IMG_BASE = "/shindan/assets/results/charm-planets/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+  var HYBRID_DELTA = 0.12;
+
+  // ====== 光度ランク（総合平均0–4→Lv1〜Lv5） ======
+  var GLOW = [
+    {lv:1,min:0.00,max:0.79,note:"控えめでやわらかな光。香りと所作を整えるだけで印象が安定します。"},
+    {lv:2,min:0.80,max:1.59,note:"穏やかな光が常に点灯。短い“題名ひと言”で輪郭が出てきます。"},
+    {lv:3,min:1.60,max:2.39,note:"場面に応じて光が増幅。結論→理由→例の三拍子で説得力UP。"},
+    {lv:4,min:2.40,max:3.19,note:"魅力の操作が自然体で機能。露出は“薄く長く”が効果的。"},
+    {lv:5,min:3.20,max:4.00,note:"存在自体がハローになる帯。制約を課すと独自色がさらに際立ちます。"}
+  ];
+  function glowOf(avg){
+    for(var i=0;i<GLOW.length;i++){
+      var d=GLOW[i]; if(avg>=d.min && avg<=d.max) return d;
+    } return GLOW[2];
+  }
+
+  // ====== 因子：惑星→設問ID ======
+  var FACTORS = {
+    SUN:   {name:"光度（太陽）",   items:[1,2,3]},
+    MOON:  {name:"居心地（月）",   items:[4,5,6]},
+    MERC:  {name:"会話（水星）",   items:[7,8,9]},
+    VENUS: {name:"美意識（金星）", items:[10,11,12]},
+    MARS:  {name:"推進（火星）",   items:[13,14,15]},
+    JUPI:  {name:"余裕（木星）",   items:[16,17,18]},
+    SATURN:{name:"信頼（土星）",   items:[19,20,21]},
+    URAN:  {name:"意外性（天王星）",items:[22,23,24]},
+    NEPT:  {name:"香り/余韻（海王星）",items:[25,26,27]},
+    PLUTO: {name:"深度（冥王星）", items:[28,29,30]}
+  };
+
+  // ====== 画像・ラベル・短評（ヒント付き） ======
+  var PLANETS = {
+    SUN:{label:"太陽",   img:"01.png", alt:"太陽の円環と光条",
+         poem:"中心に据える明るさ。あなたがいると場が起動する。",
+         copy:"笑顔と第一声の“題名ひと言”で輪郭を作ると、光が一段クリアに。存在感は『短く→間→展開』の順で磨かれます。"},
+    MOON:{label:"月",    img:"02.png", alt:"三日月の紋",
+         poem:"柔らかい膜の安心。人はあなたのそばで深呼吸できる。",
+         copy:"10秒の沈黙を味方に、最後の名詞を一語で返すと“居心地の記憶”が残ります。露出は少なくても印象は長持ち。"},
+    MERC:{label:"水星",  img:"03.png", alt:"翼つき杖の紋",
+         poem:"声と物語の磁力。要点と余白の配分が巧み。",
+         copy:"“結論ラベル→理由→一例”の三拍子で、物語が走ります。枝分かれしそうなら名詞で締めてから次の章へ。"},
+    VENUS:{label:"金星", img:"04.png", alt:"金星の花紋",
+         poem:"美と清潔感の説得力。所作が静かに惹きつける。",
+         copy:"香りは薄く長く、動きは静かに大きく。画角・光・一点アクセントの三点で『見え方の品質』を整えましょう。"},
+    MARS:{label:"火星",  img:"05.png", alt:"火星の槍紋",
+         poem:"進める勇気が伝染する。決断が周りの背中を押す。",
+         copy:"“今→次の一手→締切”の順で掲げると推進が伝播。先延ばしの罠には30分の着手タイマーが効きます。"},
+    JUPI:{label:"木星",  img:"06.png", alt:"王冠と楯の木星紋",
+         poem:"余裕と祝福。大きな懐で人が伸びる。",
+         copy:"過程の称賛を言語化し、場の空気を『祝う側』に調律。比べ言葉よりも“昨日比の1歩”が効きます。"},
+    SATURN:{label:"土星",img:"07.png", alt:"環の土星紋",
+         poem:"信頼の基盤。預けられる安心が漂う。",
+         copy:"締切・約束・既読返答基準の“三基準”を先に宣言。連絡が切れやすい日はテンプレ文を用意すると安心。"},
+    URAN:{label:"天王星",img:"08.png", alt:"稲妻の天王星紋",
+         poem:"新しさの火花。意外性で視線をさらう。",
+         copy:"普段は整然、ここぞで“一点アクセント”。ユーモアで雰囲気を反転し、余韻の謎を一粒だけ残して。"},
+    NEPT:{label:"海王星",img:"09.png", alt:"波と霧の海王星紋",
+         poem:"香りと余韻の魔法。少ない露出でも記憶に残る。",
+         copy:"終わり際に解像度を落として『続きは次回』。露出は控えめでも、気配の設計で長く香ります。"},
+    PLUTO:{label:"冥王星",img:"10.png", alt:"深い環の冥王星紋",
+         poem:"深さの引力。静かに相手の核心に触れる。",
+         copy:"一対一の静かな場所で真価。視線・間・低い声量が磁力を増やします。締めは“次の一歩”を1行だけ。"}
+  };
+
+  // ====== 因子の説明（活かし方/ケア） ======
+  var FACTOR_DESC = {
+    SUN:{title:"光度（太陽）", use:"最初の一言を“題名”に置く。", care:"注目が強い日は『質問→相手の一語要約』で間を作る。"},
+    MOON:{title:"居心地（月）", use:"10秒沈黙＋名詞一語で返す。", care:"埋めてしまう癖には深呼吸→相手の感情語を一言。"},
+    MERC:{title:"会話（水星）", use:"結論→理由→例の三拍子。", care:"枝分かれしたら名詞で締める。"},
+    VENUS:{title:"美意識（金星）", use:"香りは薄く長く／所作をゆっくり。", care:"“雑”な日用の最小ルーチン（髪・手・靴）を決める。"},
+    MARS:{title:"推進（火星）", use:"今→次の一手→締切を掲示。", care:"先延ばしには“30分だけ着手”を予約。"},
+    JUPI:{title:"余裕（木星）", use:"過程の称賛を言語化。", care:"比べ言葉は封印し“昨日比の1歩”に置換。"},
+    SATURN:{title:"信頼（土星）", use:"三基準（締切/約束/既読返答）を宣言。", care:"忙しい日は定型の一次返信で切らさない。"},
+    URAN:{title:"意外性（天王星）", use:"一点アクセントの法則。", care:"常用は整然、閃きは“ここぞ”に限定。"},
+    NEPT:{title:"香り/余韻（海王星）", use:"終わり際に謎を一粒。", care:"さらけ出し過ぎは控え、抽象度を上げる。"},
+    PLUTO:{title:"深度（冥王星）", use:"静かな場所＋低ボリューム。", care:"深掘り前に合意と境界線を言葉に。"}
+  };
+
+  // ====== 設問（30問・★はrev:trueで内部反転） ======
+  var ITEMS = [
+    // 太陽（光度）
+    {id:1,  text:"笑顔や声だけで、場の空気が明るくなる。"},
+    {id:2,  text:"初対面でも、視線が集まるのを感じる。"},
+    {id:3,  text:"注目を浴びるとすぐ萎縮してしまう。", rev:true},
+
+    // 月（居心地）
+    {id:4,  text:"相手が安心して話し続ける雰囲気が出る。"},
+    {id:5,  text:"つらさに短い一言で寄り添える。"},
+    {id:6,  text:"沈黙が怖くてすぐ埋めてしまう。", rev:true},
+
+    // 水星（会話）
+    {id:7,  text:"相手の“最後の名詞”を拾って返せる。"},
+    {id:8,  text:"声の抑揚やテンポで注意を引き寄せられる。"},
+    {id:9,  text:"話が枝分かれして結論が見えにくくなる。", rev:true},
+
+    // 金星（美意識）
+    {id:10, text:"服・髪・肌が清潔に整っていると言われる。"},
+    {id:11, text:"所作や立ち居振る舞いが美しい。"},
+    {id:12, text:"香りや装いが雑になる日が多い。", rev:true},
+
+    // 火星（推進）
+    {id:13, text:"迷いがちな場面で方向を示せる。"},
+    {id:14, text:"決めたことをすぐ動きに変えられる。"},
+    {id:15, text:"人前での決断を先延ばしにしがちだ。", rev:true},
+
+    // 木星（余裕）
+    {id:16, text:"小さな進歩を見つけて称えられる。"},
+    {id:17, text:"初対面でも居場所を作るふるまいができる。"},
+    {id:18, text:"比べ言葉（「誰より」）を使いがちだ。", rev:true},
+
+    // 土星（信頼）
+    {id:19, text:"約束や時間をきっちり守れる。"},
+    {id:20, text:"一度決めた方針をぶらさず続けられる。"},
+    {id:21, text:"忙しいと連絡が途切れやすい。", rev:true},
+
+    // 天王星（意外性）
+    {id:22, text:"ふだんと違う“一点のアクセント”で印象を残せる。"},
+    {id:23, text:"ユーモアや比喩で雰囲気を反転できる。"},
+    {id:24, text:"いつも同じパターンになってしまう。", rev:true},
+
+    // 海王星（香り/余韻）
+    {id:25, text:"ふと近づいた時の香りや気配で印象が残る。"},
+    {id:26, text:"写真や投稿が少なくても記憶に残る。"},
+    {id:27, text:"思いつくまま全部さらすことが多い。", rev:true},
+
+    // 冥王星（深度）
+    {id:28, text:"目線や間で引き込む力があると言われる。"},
+    {id:29, text:"一対一では話が深くなることが多い。"},
+    {id:30, text:"核心に触れる前に浅く終わりがちだ。", rev:true}
+  ];
+  var LABELS = ["まったくない","あまりない","半々","だいたい","とても"];
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumNote = document.getElementById("sumNote");
+  var guardArea = document.getElementById("guardArea");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+
+  // ====== 保存 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  // ====== 設問生成（番号はUIに出さない／逆転フラグはUI非表示） ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers();
+        updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== スコア計算 ======
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var def = ITEMS[i];
+      var id = def.id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      var raw = parseInt(chk.value,10);
+      var val = def.rev ? (4 - raw) : raw; // 内部で反転
+      ans[id] = val;
+    }
+    if(missing.length){
+      alert("未回答があります。全30問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 因子ごとの平均(0-4)と%に換算
+    var fScore = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + (ans[id]||0); },0);
+      var avg = sum / ids.length; // 0-4
+      var pct = Math.round((avg/4)*100);
+      fScore[key] = {avg:avg, pct:pct};
+    });
+
+    // 総合平均（10因子平均）
+    var avgTotal = Object.values(fScore).reduce(function(s,o){ return s+o.avg; },0) / 10;
+    avgTotal = Math.round(avgTotal*100)/100;
+
+    render({avg:avgTotal, fScore:fScore});
+  }
+
+  // ====== 表示 ======
+  function render(o){
+    // 主惑星＆ハイブリッド
+    var sorted = Object.keys(FACTORS).map(function(k){
+      return {key:k, name:FACTORS[k].name, avg:o.fScore[k].avg};
+    }).sort(function(a,b){ return b.avg - a.avg; });
+
+    var top1 = sorted[0], top2 = sorted[1];
+    var isHybrid = Math.abs(top1.avg - top2.avg) <= HYBRID_DELTA;
+
+    var p1 = PLANETS[top1.key], p2 = PLANETS[top2.key];
+
+    // 画像・タイトル
+    heroImg.src = IMG_BASE + p1.img;
+    heroImg.alt = p1.alt;
+    heroTitle.textContent = isHybrid
+      ? "主惑星タイプ："+p1.label+" × "+p2.label+"（二重惑星）"
+      : "主惑星タイプ："+p1.label;
+
+    // 詩・短評
+    if(isHybrid){
+      heroPoem.textContent = p1.poem.replace(/。$/,"") + "／" + p2.poem;
+      heroCopy.textContent = p1.copy + " また、" + p2.copy;
+    }else{
+      heroPoem.textContent = p1.poem;
+      heroCopy.textContent = p1.copy;
+    }
+
+    // 総合光度＆ランク
+    var glow = glowOf(o.avg);
+    sizeBadgeEl.textContent = "総合光度 " + o.avg.toFixed(2) + " / 4.00（Lv"+glow.lv+"）";
+    sumAvg.textContent = o.avg.toFixed(2);
+    sumNote.textContent = glow.note;
+
+    // 惑星プロフィール（一覧）
+    var gHtml = "";
+    Object.keys(PLANETS).forEach(function(k){
+      var lab = PLANETS[k].label;
+      var nm  = FACTORS[k].name;
+      gHtml += '<div class="guard"><div class="g-emo" aria-hidden="true">🪐</div>'+
+               '<div><div><strong>'+lab+'</strong> <span class="small">（'+nm+'）</span></div>'+
+               '<div class="small" style="opacity:.9">'+PLANETS[k].poem+'</div></div></div>';
+    });
+    guardArea.innerHTML = gHtml;
+
+    // 因子バー
+    var bHtml = "";
+    Object.keys(FACTORS).forEach(function(k){
+      var nm = FACTORS[k].name, sc = o.fScore[k];
+      bHtml += '<article class="bar" aria-label="'+nm+'">'+
+        '<div><strong>'+nm+'</strong>'+
+        '<span class="pill" style="margin-left:6px">'+sc.avg.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+sc.pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+sc.pct+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // 因子説明
+    var notes = "";
+    Object.keys(FACTORS).forEach(function(k){
+      var nm = FACTORS[k].name, sc = o.fScore[k], d = FACTOR_DESC[k];
+      notes += '<article class="note" aria-label="'+nm+'の説明">'+
+        '<h4>'+d.title+'<span class="mini">平均 '+sc.avg.toFixed(2)+' / 4｜'+sc.pct+'%</span></h4>'+
+        '<p>'+PLANETS[k].poem+'</p>'+
+        '<p><strong>活かし方：</strong>'+d.use+'</p>'+
+        '<p><strong>ケア：</strong>'+d.care+'</p>'+
+      '</article>';
+    });
+    document.getElementById("factorNotes").innerHTML = notes;
+
+    // 長文（主惑星中心）
+    var long = (isHybrid
+      ? "【二重惑星】"+p1.label+"×"+p2.label+"。二つの光り方が重なる帯です。場面に応じて“どちらを先に立てるか”を選ぶと、魅力が過不足なく伝わります。"
+      : "【主惑星："+p1.label+"】そのままでも魅力は出ています。意識して『始まりの合図→主役の要素→終わり際の余韻』の三段で設計すると、光が安定して届きます。"
+    ) + " なお総合光度は“平均”のため、弱点補強よりも『主武器の磨き込み＋安全策の用意』がコスパ良。";
+
+    longCopy.textContent = long;
+
+    // 研究メモ
+    var memo = [
+      "・“魅力”は多面的な知覚（清潔感・所作・言葉・間・香り・視線・場の設計など）の重ね合わせとして扱えます。",
+      "・露出量より“質”が印象の持続に寄与する場面があり、少ない発信でも余韻や物語設計で記憶に残りやすいことがあります。",
+      "・非言語（姿勢・声の抑揚・沈黙）と短いラベル言語の併用が、存在感や理解度の向上に関連する示唆が複数あります。",
+      "・整えやすい順で言えば『髪・手・靴→画角と光→香りは薄く長く→話の三拍子（結論→理由→例）』。",
+      "・強み増幅と同時に“止まる仕組み”（返信テンプレ、公開前チェック）を置くと、暴走や過剰露出を抑制できます。",
+      "・ここでの分類は比喩モデルです。性別・年齢・容姿といった先天的要因より、“行動で変えられる側面”を重視しています。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧「つづきから再開」
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
