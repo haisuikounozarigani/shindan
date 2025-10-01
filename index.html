@@ -116,6 +116,13 @@ a.link > div{flex:1 1 auto;min-width:0}
 <main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1" inert>
   <!-- Controls -->
   <section class="controls" aria-label="検索とタグ">
+  	
+  <!-- 標本カウンタ -->
+<div class="row" id="stats" aria-label="標本カウンタ">
+  <span class="pill">📖 あなたが開いた標本 <strong id="myOpenCount">0</strong>回</span>
+  <span class="pill">🌍️ みんなが開いた標本 <strong id="allOpenCount">—</strong>回</span>
+</div>
+  
     <!-- サイト切替：現在ページを強調 -->
     <div class="row switcher" aria-label="サイト切替">
       <a class="segbtn active" href="/shindan/" aria-current="page">🌟 心の標本</a>
@@ -842,6 +849,59 @@ a.link > div{flex:1 1 auto;min-width:0}
   // Escで検索クリア
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ q.value=''; setActiveTag(null); apply(); } });
 })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const myEl  = document.querySelector('#myOpenCount');
+  const allEl = document.querySelector('#allOpenCount');
+
+  const LS_TOTAL_KEY = 'specimens:open:total';
+  const LS_BYID_KEY  = 'specimens:open:byid';
+
+  const COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  const COUNTAPI_KEY = 'specimens_open_total';
+
+  function getLocalTotal(){
+    const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || '0', 10);
+    return Number.isFinite(n) ? n : 0;
+  }
+  function setLocalTotal(n){ localStorage.setItem(LS_TOTAL_KEY, String(n)); }
+  function incLocalById(id){
+    const t = getLocalTotal() + 1;
+    setLocalTotal(t);
+    let map = {};
+    try{ map = JSON.parse(localStorage.getItem(LS_BYID_KEY) || '{}'); }catch(e){}
+    map[id] = (map[id] || 0) + 1;
+    localStorage.setItem(LS_BYID_KEY, JSON.stringify(map));
+    if(myEl) myEl.textContent = t.toLocaleString('ja-JP');
+  }
+
+  function fetchGlobal(){
+    fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors'})
+      .then(r => r.json())
+      .then(d => { if(allEl) allEl.textContent = ((d && d.value) || 0).toLocaleString('ja-JP'); })
+      .catch(() => { if(allEl) allEl.textContent = '—'; });
+  }
+  function bumpGlobal(){
+    fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
+      method:'GET', mode:'cors', cache:'no-store', keepalive:true
+    }).catch(()=>{});
+  }
+
+  if(myEl)  myEl.textContent  = getLocalTotal().toLocaleString('ja-JP');
+  if(allEl) fetchGlobal();
+
+  const list = document.querySelector('#list');
+  if(list){
+    list.addEventListener('click', function(e){
+      const a = e.target.closest('a.link');
+      if(!a) return;
+      const id = a.dataset.id || 'unknown';
+      incLocalById(id);
+      bumpGlobal();
+    }, {capture:true});
+  }
+});
 </script>
 </body>
 </html>
