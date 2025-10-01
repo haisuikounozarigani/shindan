@@ -865,39 +865,42 @@ a.link > div{flex:1 1 auto;min-width:0}
 })();
 </script>
 <script>
-/* ====== 標本オープン数（ローカル＋全体） =========================
-   CF Workers を使う場合は CF_WORKER_URL を設定。
-   未設定なら countapi.xyz にフォールバックします。
-================================================================= */
+/* ====== 標本オープン数（ローカル保持＋全体） ======================
+   まずはローカルに最後の全体値をキャッシュして表示のリセットを防ぐ。
+   可能なら下の②の「独自カウンタ（CF/GAS）」も設定してCF_WORKER_URLへ切替。
+=================================================================== */
 
-// UI
 const myEl  = document.querySelector('#myOpenCount');
 const allEl = document.querySelector('#allOpenCount');
 
-// ---- 設定（← ここだけ必要に応じて編集） ------------------------
-const CF_WORKER_URL = ""; // 例: "https://your-subdomain.workers.dev/counter"
-const GLOBAL_KEY    = "specimens_open_total"; // 全体カウントのキー
-// ----------------------------------------------------------------
+// ---- 設定（必要なら②でURLを入れる） ------------------------------
+const CF_WORKER_URL = "https://counter.asagikarin.workers.dev";
+const GLOBAL_KEY    = "specimens_open_total";
+// ------------------------------------------------------------------
 
 // LocalStorage keys
-const LS_TOTAL_KEY = "specimens:open:total";
-const LS_BYID_KEY  = "specimens:open:byid";
+const LS_TOTAL_KEY      = "specimens:open:total";
+const LS_BYID_KEY       = "specimens:open:byid";
+const LS_GLOBAL_LAST    = "specimens:open:global:last"; // ← 追加：前回の全体値
 
-// countapi フォールバック設定
+// CountAPI フォールバック
 const COUNTAPI_NS  = "haisuikounozarigani_shindan";
 const COUNTAPI_KEY = GLOBAL_KEY;
 
-// 共通：UIに安全に表示
+// UI：全体数の安全セット + キャッシュ保存
 function setAll(val){
   if(!allEl) return;
-  if(typeof val === "number" && Number.isFinite(val)){
+  if (typeof val === "number" && Number.isFinite(val)) {
     allEl.textContent = val.toLocaleString("ja-JP");
-  }else{
-    allEl.textContent = "—";
+    try{ localStorage.setItem(LS_GLOBAL_LAST, String(val)); }catch(e){}
+  } else {
+    // 失敗時は前回値を維持（落ち着いた表示）
+    const last = parseInt(localStorage.getItem(LS_GLOBAL_LAST) || "0", 10);
+    allEl.textContent = last ? last.toLocaleString("ja-JP") : "—";
   }
 }
 
-// ---- ローカル加算 ----------------------------------------------
+// ---- ローカル加算 ------------------------------------------------
 function getLocalTotal(){
   const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || "0", 10);
   return Number.isFinite(n) ? n : 0;
@@ -906,7 +909,6 @@ function setLocalTotal(n){
   localStorage.setItem(LS_TOTAL_KEY, String(n));
 }
 function incLocalById(id){
-  // 総数
   const t = getLocalTotal() + 1;
   setLocalTotal(t);
   // 個別
@@ -917,69 +919,77 @@ function incLocalById(id){
   if(myEl) myEl.textContent = t.toLocaleString("ja-JP");
 }
 
-// ---- グローバル取得 --------------------------------------------
+// ---- 全体：取得 --------------------------------------------------
 async function getGlobalCount(){
-  // 優先：Cloudflare Workers
+  // 優先：独自エンドポイント（②で設定）
   if(CF_WORKER_URL){
     try{
       const url = new URL(CF_WORKER_URL);
       url.searchParams.set("key", GLOBAL_KEY);
       const r = await fetch(url.toString(), {mode:"cors", cache:"no-store"});
       const d = await r.json();
-      return (d && typeof d.value === "number") ? d.value : 0;
-    }catch(e){
-      // 続行してフォールバックへ
-    }
+      return (d && typeof d.value === "number") ? d.value : null;
+    }catch(e){ /* fallthrough */ }
   }
-  // フォールバック：countapi
+  // フォールバック：CountAPI
   try{
     const r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:"cors", cache:"no-store"});
     const d = await r.json();
-    return (d && typeof d.value === "number") ? d.value : 0;
+    return (d && typeof d.value === "number") ? d.value : null;
   }catch(e){
     return null;
   }
 }
 
-// ---- グローバル加算 --------------------------------------------
+// ---- 全体：加算 --------------------------------------------------
 function bumpGlobal(){
-  // 優先：Cloudflare Workers
+  // 優先：独自エンドポイント（sendBeacon→fetch）
   if(CF_WORKER_URL){
     try{
       const url = new URL(CF_WORKER_URL);
       url.searchParams.set("key", GLOBAL_KEY);
       url.searchParams.set("hit", "1");
-      // keepalive で遷移中でも送る
-      fetch(url.toString(), {mode:"cors", cache:"no-store", keepalive:true}).catch(()=>{});
+      const u = url.toString();
+      if (navigator.sendBeacon) {
+        // sendBeacon は POST 送信になるが、Worker 側で method 無視 or POST 対応にしておく
+        const ok = navigator.sendBeacon(u, "");
+        if (ok) return;
+      }
+      fetch(u, {mode:"cors", cache:"no-store", keepalive:true}).catch(()=>{});
       return;
-    }catch(e){}
+    }catch(e){ /* fallthrough */ }
   }
-  // フォールバック：countapi
+  // フォールバック：CountAPI
   fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
     method:"GET", mode:"cors", cache:"no-store", keepalive:true
   }).catch(()=>{});
 }
 
-// ---- 初期描画＆イベント ----------------------------------------
+// ---- 初期化 ------------------------------------------------------
 (function initOpenCounter(){
-  // 自分の回数
+  // 自分の回数（ローカル）
   if(myEl) myEl.textContent = getLocalTotal().toLocaleString("ja-JP");
 
-  // 全体の回数（取得）
+  // 全体：まず前回値を表示（リセット感をなくす）
+  const last = parseInt(localStorage.getItem(LS_GLOBAL_LAST) || "0", 10);
+  if(allEl) allEl.textContent = last ? last.toLocaleString("ja-JP") : "—";
+
+  // その後に最新を取得して置き換え
   getGlobalCount().then(val => setAll(val)).catch(()=>setAll(null));
 
-  // クリックで加算（遷移前に確実に送るため capture:true）
+  // クリックで加算（遷移前に送る／UIは楽観更新）
   const list = document.querySelector('#list');
   if(list){
     list.addEventListener('click', function(e){
-  const a = e.target.closest('a.link');
-  if(!a) return;
-  const id = a.dataset.id || "unknown";
-  incLocalById(id);
-  bumpGlobal();
-  // 楽観更新：このページでも全体数が増えたように見せる
-  if(allEl){ const cur=parseInt((allEl.textContent||'0').replace(/,/g,''),10)||0; setAll(cur+1); }
-}, {capture:true});
+      const a = e.target.closest('a.link');
+      if(!a) return;
+      const id = a.dataset.id || "unknown";
+      incLocalById(id);
+      bumpGlobal();
+      // 楽観更新で +1（ネットワーク失敗でも数字が戻らない）
+      const cur = parseInt((localStorage.getItem(LS_GLOBAL_LAST) || "0"), 10) || 0;
+      setAll(cur + 1);
+    }, {capture:true});
   }
 })();
 </script>
