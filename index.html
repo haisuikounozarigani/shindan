@@ -106,7 +106,16 @@ a.link > div{flex:1 1 auto;min-width:0}
   border:1px solid var(--line);border-radius:999px;
   padding:4px 8px;background:#fff;line-height:1.6
 }
-
+/* ── iPhoneでカウンタがはみ出る対策 ───────────────── */
+.stats-inline{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.stats-inline .mini{ white-space:normal; font-size:.85em; padding:4px 8px; line-height:1.6; }
+/* 説明文は1行占有にして折り返し可 */
+.stats-inline .mini:last-child{ flex:1 1 100%; }
+/* さらに極小幅で少しだけ縮める */
+@media (max-width: 390px){
+  .stats-inline{ gap:6px; }
+  .stats-inline .mini{ font-size:.82em; padding:3px 6px; }
+}
 </style>
 </head>
 <body>
