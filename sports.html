@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>スポーツ適性診断</title>
+<meta name="description" content="12問（4択）で6因子スコアを算出。上位2因子の組み合わせから推し競技を提案。強み・弱み・なぜ向いてるか、因子バー、研究メモ（運動のメリット）を表示します（独自項目・エンタメ用）。">
+<meta name="theme-color" content="#f7f9ff">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="スポーツ適性診断">
+<meta property="og:description" content="上位2因子から“あなたに向くスポーツ”を提案。強み・弱み・理由も表示。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/sports.html">
+<meta property="og:image" content="/shindan/assets/results/sports/09.png">
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#8dd3ff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#e6fbff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.choice{display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:8px;margin-top:8px}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:10px;cursor:pointer;user-select:none;background:#fff;line-height:1.4;text-align:center}
+.choice input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:contain;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note p{margin:6px 0;line-height:1.75}
+
+.s-mini{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px}
+.s-mini img{width:64px;height:64px;object-fit:contain;border-radius:10px;border:1px solid #eef2fb;background:#f7f9ff}
+
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:12px}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🏅</div>
+    <div>
+      <h1>スポーツ適性診断</h1>
+      <p class="sub">12問の4択で6因子スコアを算出。上位2因子の組み合わせから<b>推し競技</b>を提案します。強み・弱み・向いている理由、因子バー、研究メモ（運動のメリット）を表示。※独自項目のエンタメ自己理解用。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：12（各4択）</span>
+      <span class="pill">因子：P（瞬発）/ E（持久）/ A（敏捷）/ T（戦術・精密）/ C（協調）/ F（集中・ソロ）</span>
+      <span class="pill">提案：上位2因子の組み合わせ</span>
+    </div>
+    <p class="small">回答は<b>直感でOK</b>。好き嫌いではなく「勝ち筋が出やすい環境」を見つける設計です。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（当てはまる選択肢を1つ）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">12問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- メイン競技（1:1正方形） -->
+      <div class="hero-square section" role="region" aria-label="提案競技のイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/sports/09.png" alt="スパイクとスタブロの紋章" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="上位因子">—</span>
+          </div>
+          <div class="capmini" id="heroWhy">—</div>
+        </figcaption>
+      </div>
+
+      <div class="grid2">
+        <article class="stat" aria-label="強みと弱み">
+          <div><strong>強み / 弱み</strong></div>
+          <div class="small" id="strWeak">—</div>
+        </article>
+        <article class="stat" aria-label="第2候補">
+          <div><strong>第2候補</strong></div>
+          <div id="altSport" class="s-mini"><!-- JS --></div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子スコア（規格化 0–4）</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ -->
+      <details class="section" open>
+        <summary><strong>研究メモ（運動・スポーツの主なメリット）</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※一般的な傾向の話です。体調や既往歴により個人差があります。安全配慮と準備運動を忘れずに。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・選抜等の目的ではありません。結果は傾向の目安であり、因果や適性を断定しません。競技参加やトレーニング時は<b>健康状態と安全規定</b>を必ずご確認ください。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "sports";
+  var TITLE = "スポーツ適性診断";
+  var IMG_BASE = "/shindan/assets/results/sports/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== 競技アセット（弓道に統一） ======
+  // id:1..16 → ファイル名 & 表示名 & alt
+  var SPORTS = {
+    1:{img:"01.png", label:"野球",        alt:"バットとボールの紋章"},
+    2:{img:"02.png", label:"サッカー",    alt:"サッカーボールの紋章"},
+    3:{img:"03.png", label:"バスケットボール", alt:"バスケットボールの紋章"},
+    4:{img:"04.png", label:"バレーボール", alt:"バレーボールの紋章"},
+    5:{img:"05.png", label:"ラグビー",    alt:"ラグビーボールの紋章"},
+    6:{img:"06.png", label:"テニス",      alt:"ラケットとボールの紋章"},
+    7:{img:"07.png", label:"バドミントン", alt:"シャトルとラケットの紋章"},
+    8:{img:"08.png", label:"卓球",        alt:"ピンポン球とラケットの紋章"},
+    9:{img:"09.png", label:"短距離走",    alt:"スパイクとスタブロの紋章"},
+    10:{img:"10.png",label:"マラソン",    alt:"シューズとロードの紋章"},
+    11:{img:"11.png",label:"サイクリング", alt:"自転車ホイールの紋章"},
+    12:{img:"12.png",label:"競泳",        alt:"レーンロープと波紋の紋章"},
+    13:{img:"13.png",label:"弓道",        alt:"的と矢の紋章"},
+    14:{img:"14.png",label:"ゴルフ",      alt:"クラブと旗の紋章"},
+    15:{img:"15.png",label:"ボルダリング",alt:"カラビナとホールドの紋章"},
+    16:{img:"16.png",label:"柔道",        alt:"帯と畳の紋章"}
+  };
+
+  // ====== 因子（順序はタイブレークに使用） ======
+  var FACTORS = ["P","E","A","T","C","F"];
+  var FACTOR_NAME = {P:"瞬発/パワー", E:"持久/スタミナ", A:"敏捷/フットワーク", T:"戦術/精密", C:"協調/チーム", F:"集中/没入（ソロ）"};
+  var FACTOR_ICON = {P:"⚡",E:"🫁",A:"🌀",T:"🎯",C:"🤝",F:"🎧"};
+
+  // ====== 提案ルール（上位2因子 → 競技ID） ======
+  var STRONG_GAP = 5; // Top1-Top2 >= 5 →単独
+  var SOLO_FALLBACK = { P:[9,16], E:[10,11], A:[7,6], T:[13,1], C:[2,3], F:[15,13] };
+  var PAIR_TO_SPORT = {
+    "P+A":[9,3], "P+E":[9,11], "P+T":[1,6], "P+C":[5,3], "P+F":[16,9],
+    "E+A":[6,7], "E+T":[12,11], "E+C":[2,4], "E+F":[10,11],
+    "A+T":[8,7], "A+C":[2,4], "A+F":[15,6],
+    "T+C":[1,4], "T+F":[13,14], "C+F":[6,4]
+  };
+
+var SPORT_INFO = {
+  1:{ // 野球
+    why:`<p>状況を読み、適切な一手を選ぶのが得意なあなたは、野球と相性◎。配球や守備位置の「小さな選択」を積み重ねて、試合を自分のペースに引き寄せられます。</p>`,
+    strong:`<p><b>読みと配置</b>が強み。打者の傾向やカウントから次を予測して、守備でも打席でも“確率の高い選択”ができます。チームの中で<b>役割理解と連携</b>も生きます。</p>`,
+    weak:`<p>瞬発力や走塁の基礎をサボると、せっかくの読みが活かせません。短いダッシュや体幹をコツコツ積むと、武器がさらに“点と点でつながる”ようになります。</p>`,
+    benefit:`<ul class="small"><li>よく投げる腕は、<b>骨が丈夫になりやすい傾向</b>があるという研究があります。</li></ul>`
+  },
+  2:{ // サッカー
+    why:`<p>よく走れて、味方を活かすのが上手い人はサッカーで輝きます。運動量でピッチに“幅と厚み”を作り、連携で崩す快感が味わえます。</p>`,
+    strong:`<p><b>カバーリング</b>と<b>連動</b>が強み。ボールのない時の動きが上手く、チームがラクになる位置取りが自然にできます。</p>`,
+    weak:`<p>決定力や対人強度が足りないと勝ち切れません。フィニッシュの反復と、当たり負けしない身体づくりを少しずつ足しましょう。</p>`,
+    benefit:`<ul class="small"><li>週2回・半年続けると、<b>上の血圧が少し下がる（約8％）</b>、<b>体力テストが上がる（約9％）</b>という報告があります。</li></ul>`
+  },
+  3:{ // バスケットボール
+    why:`<p>素早い切り返しと瞬発のスパートで流れを変えたい人向け。短い時間で得点を重ねる“連続の快感”がハマります。</p>`,
+    strong:`<p><b>初動の速さ</b>、トランジション、連続得点の<b>スパート</b>が武器。小さなスペースを使うのが上手いタイプです。</p>`,
+    weak:`<p>持久とセットの理解が弱いと失点が増えがち。ハーフコートの戦術理解と、一定ペースの走力も少し足しておくと安定します。</p>`,
+    benefit:`<ul class="small"><li>学生の頃にバスケをしていた人は、<b>年を重ねても骨が丈夫な傾向</b>があるという観察結果があります。</li></ul>`
+  },
+  4:{ // バレーボール
+    why:`<p>役割分担が好きで、声でチームをまとめられる人にぴったり。配置と連携で“戦える形”を作る競技です。</p>`,
+    strong:`<p><b>ローテ理解</b>や<b>配球の共有</b>など、情報をチームで回す力が強み。声かけでミスの後も立て直せます。</p>`,
+    weak:`<p>接触が少なく瞬発の刺激が不足しがち。ジャンプ力と下半身の基礎をコツコツ補うと、空中戦が一段と楽になります。</p>`,
+    benefit:`<ul class="small"><li>12週間の実践で<b>心肺機能が上がり</b>、<b>悪玉コレステロールが下がる</b>という結果があります。</li><li>若い女性では、<b>骨が丈夫な傾向</b>が見られた研究もあります。</li></ul>`
+  },
+  5:{ // ラグビー
+    why:`<p>当たりの強さとチームでの役割遂行が光る人に。接触と陣取りの総合戦で、“一歩ずつ前へ”がカタチになります。</p>`,
+    strong:`<p><b>タックル</b>や<b>ブレイクダウン</b>で仕事ができる、頼られるタイプ。声での合図もうまく、局地戦を有利に運べます。</p>`,
+    weak:`<p>敏捷や持久が足りないと継続が途切れます。シャトル走や方向転換のドリルを少しずつ増やすと、試合の最後まで戦えます。</p>`,
+    benefit:`<ul class="small"><li>高強度運動の要素が多く、<b>心肺機能や筋・骨の強化が期待</b>できます。</li><li>接触がある競技なので、<b>安全対策は必須</b>です。</li></ul>`
+  },
+  6:{ // テニス
+    why:`<p>配球を考えるのが好きで、脚で取りに行ける人はテニス向き。機動力×コース設計で“自分の形”を作れます。</p>`,
+    strong:`<p><b>セカンドの安定</b>、コース選択、前後の<b>フットワーク</b>。点の積み上げ方を知っているタイプです。</p>`,
+    weak:`<p>メンタルの波で崩れやすい面も。ポイント間のルーティンを決めると、安定感が段違いになります。</p>`,
+    benefit:`<ul class="small"><li>テニス経験者は<b>腰や足の骨が丈夫</b>という報告があります（対照比で約10〜15％高い）。</li><li>ラケット競技全体で、<b>病気や死亡の割合が低い傾向</b>が見られます。</li></ul>`
+  },
+  7:{ // バドミントン
+    why:`<p>反射とコントロールで勝ちたい人に。小さなコートで高度な読み合いが楽しめます。</p>`,
+    strong:`<p><b>リカバリーステップ</b>と<b>コース精度</b>が武器。球足の速さの中で落ち着いて選べます。</p>`,
+    weak:`<p>持久が弱いとラリー終盤で精度が落ちがち。心拍管理（上げる／下げる）の練習を少し入れると粘りが効きます。</p>`,
+    benefit:`<ul class="small"><li>ラケット競技（テニスやバドミントンなど）は、<b>病気や死亡の割合が低い傾向</b>が報告されています。</li></ul>`
+  },
+  8:{ // 卓球
+    why:`<p>速い展開の読み合いが好きな人へ。台上の処理と3球目の設計で主導権を握れます。</p>`,
+    strong:`<p><b>台上の素早さ</b>、回転の<b>読み</b>、コースの“先回り”。小技で流れを変えるのが得意です。</p>`,
+    weak:`<p>パワー不足だと打ち抜けない場面も。体幹と前腕に少し厚みを出すと、選択肢が一気に増えます。</p>`,
+    benefit:`<ul class="small"><li>高齢者の研究で、<b>体の動きのコントロール</b>や<b>脳のつながり</b>が良くなる傾向が報告されています。</li></ul>`
+  },
+  9:{ // 短距離
+    why:`<p>“一発で決める”瞬発型の人に。スタートから30mの出来で勝負の色が変わる、シンプルで奥深い世界です。</p>`,
+    strong:`<p><b>スタート</b>、<b>加速局面</b>の再現性、接地の質。短い時間に全力を乗せられます。</p>`,
+    weak:`<p>柔軟性や補強を怠るとケガに直結。可動域づくりとリカバリーをセットで習慣化すると長く楽しめます。</p>`,
+    benefit:`<ul class="small"><li>短時間のきつい運動（HIIT）は、<b>心肺機能がよくなる</b>という結果が多く、増え方は<b>約+6〜+9％</b>の報告もあります。</li></ul>`
+  },
+  10:{ // マラソン
+    why:`<p>一定ペースで黙々と積むのが得意ならマラソンへ。自己対話と呼吸の整えで、静かに強くなれます。</p>`,
+    strong:`<p><b>ペース管理</b>、補給、フォームの“小さな直し”。長時間の<b>集中</b>が続く人に向きます。</p>`,
+    weak:`<p>可動域不足で後半フォームが崩れがち。モビリティと補強を少量ずつ、でも毎日がコツです。</p>`,
+    benefit:`<ul class="small"><li>初めてのフルに向けた数か月の練習で、<b>血管が若返ったような状態</b>になった（<b>約−4年分</b>）という報告があります。</li></ul>`
+  },
+  11:{ // サイクリング
+    why:`<p>長く動けて、数値や戦略を楽しめる人に。空力やコース読みで“賢く速く”が実現します。</p>`,
+    strong:`<p><b>パワー管理</b>（出力/心拍）と<b>位置取り</b>。コツコツ型が強みになります。</p>`,
+    weak:`<p>無酸素の刺激が不足するとゴール勝負で不利。短い高強度を計画的にまぜるだけで景色が変わります。</p>`,
+    benefit:`<ul class="small"><li>自転車通勤の人は、<b>病気や死亡の割合が低い傾向</b>が大規模データで報告されています（全死亡 −41％など）。</li></ul>`
+  },
+  12:{ // 競泳
+    why:`<p>水が好きで、細かいフォームを詰めるのが楽しい人へ。呼吸・ストローク・ターンの精密さが成績に直結します。</p>`,
+    strong:`<p><b>ストローク長</b>と<b>ピッチ</b>、<b>ターン</b>の正確さ。反復練習が苦にならないタイプです。</p>`,
+    weak:`<p>ソロ練習が多く孤独になりがち。練習仲間を作るだけで継続が楽になります。</p>`,
+    benefit:`<ul class="small"><li>水泳を12週間行った研究では、<b>上の血圧が下がり（約7％）</b>、<b>血管のしなやかさが良くなる</b>傾向が見られました。</li></ul>`
+  },
+  13:{ // 弓道
+    why:`<p>静かな集中と几帳面さがある人に。呼吸と姿勢を整え、同じ動作を丁寧に重ねるほど“矢所”が寄ってきます。</p>`,
+    strong:`<p><b>呼吸と姿勢</b>のコントロール、狙いの<b>安定</b>、手順の再現性。小さなズレを直す作業が苦になりません。</p>`,
+    weak:`<p>体幹や肩周りが弱いと姿勢保持がつらくなります。肩甲帯と背中の補強を少し足すと、集中が長く続くようになります。</p>`,
+    benefit:`<ul class="small"><li>心拍のゆらぎが大きい（落ち着いている）人ほど、<b>成績が良い傾向</b>が報告されています。<span class="small">※因果は断定できません。</span></li></ul>`
+  },
+  14:{ // ゴルフ
+    why:`<p>コツコツ同じ動作を再現でき、状況判断が好きな人に。コース戦略と丁寧なスイングでスコアが安定します。</p>`,
+    strong:`<p><b>再現性</b>と<b>距離感</b>、風やライの<b>読み</b>。小さな修正を積めるタイプです。</p>`,
+    weak:`<p>可動域と下半身が弱いと安定せず“当てるだけ”になりがち。ヒップヒンジと腿裏の柔軟を少しずつ。</p>`,
+    benefit:`<ul class="small"><li>ゴルフを楽しむ人は、<b>長生きの傾向</b>があるという大規模な報告があります（全体の死亡は約40％低い、平均寿命は約+5年）。</li></ul>`
+  },
+  15:{ // ボルダリング
+    why:`<p>課題を“解く”のが好きで、黙々と集中できる人向け。静と動の切替で一手ずつ前に進む爽快感があります。</p>`,
+    strong:`<p><b>ムーブ設計</b>、保持力、落ち着いた<b>集中線</b>。試行錯誤を楽しめるタイプです。</p>`,
+    weak:`<p>持久が足りないとトライが続きません。レスト管理と軽い有酸素を混ぜると、回数が伸びて上達が早まります。</p>`,
+    benefit:`<ul class="small"><li>専門プログラムでは、<b>気分が楽になる</b>、<b>自信が高まる</b>といった効果が報告されています。</li></ul>`
+  },
+  16:{ // 柔道
+    why:`<p>組んだ瞬間にスイッチが入るタイプ。静→動の切替と当たりの強さで勝ち筋を作れます。</p>`,
+    strong:`<p><b>体幹の強さ</b>、崩し→投げの<b>一連動作</b>、間合いの把握。近距離の駆け引きが得意です。</p>`,
+    weak:`<p>持久と組手の工夫が弱いと終盤で失速。短い走と組手戦術を足すだけでも粘りが変わります。</p>`,
+    benefit:`<ul class="small"><li>成長期の実施者では、<b>腰や脚の骨が丈夫</b>という報告があります。</li></ul>`
+  }
+};
+
+  // ====== 設問定義（12問・各4択／加点マップ） ======
+  // score:{因子:点} 例 {P:2,A:1}
+  var Q = [
+    {id:1,  text:"いちばん“しびれる”勝ち方は？",
+      choice:[
+        {label:"一瞬で決め切る",         score:{P:2,A:1}},
+        {label:"じわじわ粘って逆転",     score:{E:2,F:1}},
+        {label:"罠を張って崩す",         score:{T:2,C:1}},
+        {label:"静かに完遂する",         score:{F:2,T:1}}
+      ]},
+    {id:2,  text:"練習で楽しいのは？",
+      choice:[
+        {label:"短時間の全力インターバル", score:{P:2,A:1}},
+        {label:"ロング走/周回で積む",     score:{E:2,F:1}},
+        {label:"連携ドリル・フォーメーション", score:{C:2,T:1}},
+        {label:"フォームの反復微調整",   score:{F:2,T:1}}
+      ]},
+    {id:3,  text:"好きな試合の雰囲気は？",
+      choice:[
+        {label:"大歓声のコート",         score:{C:2,P:1}},
+        {label:"風や景色の中で戦う",     score:{E:2,A:1}},
+        {label:"静かな集中線",           score:{F:2,T:1}},
+        {label:"速く変化する展開",       score:{A:2,P:1}}
+      ]},
+    {id:4,  text:"攻め方がハマるのは？",
+      choice:[
+        {label:"体で突破",               score:{P:2,A:1}},
+        {label:"走って押す",             score:{E:2,C:1}},
+        {label:"組み立てて抜く",         score:{T:2,A:1}},
+        {label:"相手の“間”をずらす",     score:{F:2,T:1}}
+      ]},
+    {id:5,  text:"守りで意識するのは？",
+      choice:[
+        {label:"当たり勝ち",             score:{P:2,C:1}},
+        {label:"走り切る",               score:{E:2,A:1}},
+        {label:"コース管理",             score:{T:2,F:1}},
+        {label:"予測と初動",             score:{A:2,T:1}}
+      ]},
+    {id:6,  text:"役割を選ぶなら？",
+      choice:[
+        {label:"エースアタッカー",       score:{P:2,C:1}},
+        {label:"走って回収/カバー",       score:{E:2,C:1}},
+        {label:"司令塔/セットアップ",     score:{T:2,C:1}},
+        {label:"静かに点を重ねる職人",   score:{F:2,T:1}}
+      ]},
+    {id:7,  text:"接触プレーについて",
+      choice:[
+        {label:"好き・得意",             score:{P:2,C:1}},
+        {label:"いなして避ける",         score:{A:2,T:1}},
+        {label:"少なめが良い",           score:{F:2,T:1}},
+        {label:"状況次第",               score:{C:1,T:1}}
+      ]},
+    {id:8,  text:"道具の好み",
+      choice:[
+        {label:"重さと衝撃のあるもの",   score:{P:2,C:1}},
+        {label:"シューズ/時計など身体拡張", score:{E:2,F:1}},
+        {label:"ラケット/クラブ/バット", score:{T:2,A:1}},
+        {label:"自重/マット系",         score:{F:2,A:1}}
+      ]},
+    {id:9,  text:"勝ちパターンが多いのは？",
+      choice:[
+        {label:"速攻で押し切る",         score:{P:2,A:1}},
+        {label:"粘ってミスを誘う",       score:{E:2,F:1}},
+        {label:"相手の癖読みで刺す",     score:{T:2,F:1}},
+        {label:"連携で崩す",             score:{C:2,A:1}}
+      ]},
+    {id:10, text:"休日の理想",
+      choice:[
+        {label:"短時間で汗＆達成",       score:{P:2,E:1}},
+        {label:"長いトレイル/ロング",   score:{E:2,F:1}},
+        {label:"研究してスキル磨き",     score:{T:2,F:1}},
+        {label:"少人数でじっくり",       score:{F:2,T:1}}
+      ]},
+    {id:11, text:"空間の得意さ",
+      choice:[
+        {label:"跳ぶ・切り返す",         score:{A:2,P:1}},
+        {label:"コースを読む",           score:{T:2,A:1}},
+        {label:"一定テンポを刻む",       score:{E:2,F:1}},
+        {label:"手元の精密",             score:{F:2,T:1}}
+      ]},
+    {id:12, text:"チームかソロか",
+      choice:[
+        {label:"チーム大好き",           score:{C:2,P:1}},
+        {label:"ややチーム寄り",         score:{C:1,T:1}},
+        {label:"ややソロ寄り",           score:{F:1,T:1}},
+        {label:"ソロ集中型",             score:{F:2,E:1}}
+      ]}
+  ];
+
+  // ====== DOM参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroWhy  = document.getElementById("heroWhy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var strWeak = document.getElementById("strWeak");
+  var altSport= document.getElementById("altSport");
+  var bars    = document.getElementById("bars");
+  var resMemo = document.getElementById("resMemo");
+
+  // ====== 保存 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<Q.length;i++){
+        var id = Q[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  // ====== 設問生成 ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<Q.length;i++){
+      var qu = Q[i];
+      html += '<fieldset class="q" id="fs-'+qu.id+'">'+
+        '<legend>'+qu.text+'</legend>'+
+        '<div class="choice" role="radiogroup" aria-label="'+qu.text+'">';
+      for(var j=0;j<4;j++){
+        var cid = 'q'+qu.id+'-'+j;
+        html += '<div style="position:relative">'+
+          '<input id="'+cid+'" type="radio" name="q'+qu.id+'" value="'+j+'">'+
+          '<label for="'+cid+'">'+qu.choice[j].label+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers(); updateProgress();
+      }, false);
+    }
+    restoreAnswers();
+  }
+
+  function updateProgress(){
+    var total = Q.length;
+    var answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+    prog.style.width = Math.round(100*answered/total) + "%";
+  }
+
+  // ====== スコア計算 ======
+  function score(){
+    var missing = [];
+    var ansIdx = {};
+    for(var i=0;i<Q.length;i++){
+      var id = Q[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      ansIdx[id] = parseInt(chk.value,10);
+    }
+    if(missing.length){
+      alert("未回答があります。全12問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    // 合算
+    var sum = {P:0,E:0,A:0,T:0,C:0,F:0};
+    // 規格化用：因子ごとの理論最大値を自動算出（各問で当該因子に入る最大点を積算）
+    var max = {P:0,E:0,A:0,T:0,C:0,F:0};
+    for(var i=0;i<Q.length;i++){
+      var ch = Q[i].choice;
+      var pick = ch[ ansIdx[Q[i].id] ].score;
+      Object.keys(pick).forEach(function(k){ sum[k]+=pick[k]; });
+      // max
+      var localMax = {P:0,E:0,A:0,T:0,C:0,F:0};
+      for(var j=0;j<ch.length;j++){
+        var sc = ch[j].score;
+        Object.keys(sc).forEach(function(k){ if(sc[k]>localMax[k]) localMax[k]=sc[k]; });
+      }
+      Object.keys(max).forEach(function(k){ max[k]+=localMax[k]; });
+    }
+
+    // 上位2因子
+    var arr = FACTORS.map(function(k){ return {k:k, v:sum[k], max:max[k]||1}; });
+    arr.sort(function(a,b){ return (b.v - a.v) || (FACTOR_ORDER(a.k) - FACTOR_ORDER(b.k)); });
+
+    var top1 = arr[0], top2 = arr[1];
+    var keyPair = top1.k + "+" + top2.k;
+    var sportIds;
+    if ( (top1.v - top2.v) >= STRONG_GAP ){
+      sportIds = SOLO_FALLBACK[top1.k];
+    }else{
+      sportIds = PAIR_TO_SPORT[keyPair] || SOLO_FALLBACK[top1.k];
+    }
+    var mainId = sportIds[0], altId = sportIds[1];
+
+    // 因子バー（0–4規格化）
+    var bHtml = "";
+    arr.concat(arr.splice(0,0)).forEach; // no-op just to silence lints
+    var orderForBar = ["P","E","A","T","C","F"];
+    for(var i2=0;i2<orderForBar.length;i2++){
+      var k = orderForBar[i2];
+      var v = sum[k], m = max[k]||1;
+      var scaled = (v/m)*4;
+      if(!isFinite(scaled)) scaled=0;
+      var pct = Math.round((scaled/4)*100);
+      bHtml += '<article class="bar" aria-label="'+FACTOR_NAME[k]+'">'+
+        '<div><strong>'+FACTOR_ICON[k]+' '+FACTOR_NAME[k]+'</strong>'+
+        '<span class="pill" style="margin-left:6px">'+scaled.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+      '</article>';
+    }
+    bars.innerHTML = bHtml;
+
+    renderResult({top1:top1, top2:top2, mainId:mainId, altId:altId, raw:sum, max:max});
+  }
+  function FACTOR_ORDER(k){ return FACTORS.indexOf(k); }
+
+  // ====== 表示 ======
+  function renderResult(o){
+    var sport = SPORTS[o.mainId], sub = SPORTS[o.altId];
+    var labelTop = FACTOR_ICON[o.top1.k]+FACTOR_NAME[o.top1.k] + " × " + FACTOR_ICON[o.top2.k]+FACTOR_NAME[o.top2.k];
+
+    // ヒーロー
+    heroImg.src = IMG_BASE + sport.img;
+    heroImg.alt = sport.alt;
+    heroTitle.textContent = "あなたへの提案： "+sport.label;
+    sizeBadgeEl.textContent = "上位因子｜"+labelTop;
+    heroWhy.innerHTML = SPORT_INFO[o.mainId].why + SPORT_INFO[o.mainId].benefit;
+
+    // 強み・弱み
+    var sw = SPORT_INFO[o.mainId];
+    strWeak.innerHTML = "<b>強み：</b>"+sw.strong+"<br><b>弱み：</b>"+sw.weak;
+
+    // 第2候補ミニ
+    altSport.innerHTML =
+      '<img src="'+(IMG_BASE+sub.img)+'" alt="'+sub.alt+'" width="64" height="64">'+
+      '<div><div><strong>'+sub.label+'</strong></div>'+
+      '<div class="small" style="opacity:.9">'+SPORT_INFO[o.altId].why+'</div></div>';
+
+    // タイトル行
+    typeLine.textContent = "上位因子から導くスポーツ適性";
+
+    // 研究メモ
+    var memo = [
+      "・有酸素/レジスタンストレーニングは心血管リスクの低減や代謝改善に寄与しやすい。",
+      "・適度な運動は気分（抑うつ・不安）を和らげ、ストレス対処や自己効力感の向上につながる傾向。",
+      "・睡眠の質（入眠・中途覚醒）や日中の覚醒度が改善することがある。",
+      "・骨密度・筋量の維持、転倒リスク低減など、加齢関連の課題に予防的に働く可能性。",
+      "・実行機能/集中の改善が報告される研究もあり、学習や仕事のパフォーマンスに良い影響が出る場合がある。",
+      "・チームスポーツは社会的つながり（所属感・友人関係）を強め、孤立感の軽減に寄与しやすい。",
+      "・適切なウォームアップと漸進的負荷はケガ予防の基本。痛みや違和感は無理せず専門家へ。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 表示切替 & 履歴
+    resEmpty.style.display = "none";
+    resArea.style.display = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
