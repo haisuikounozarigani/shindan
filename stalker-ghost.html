@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ストーカー背後霊診断</title>
+<meta name="description" content="つい“見守りが近すぎる”ことはない？ 15問で「観察ぐせ／境界線／待機耐性／解釈ブレーキ／衝動ストップ」を数値化。やさしい距離感のコツをそっと可視化します。">
+<meta name="theme-color" content="#f7f9ff">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ストーカー背後霊診断">
+<meta property="og:description" content="15問で“見守りが近すぎるクセ”を可視化。距離感スキルをバーと％で表示します。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/stalker-ghost.html">
+<meta property="og:image" content="/shindan/assets/results/stalker-ghost/01.png">
+<style>
+:root{
+  --accent:#4aa8ff; --accent2:#a48bff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#ece6ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .25s ease;
+}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+/* ヒーロー（openness形式を踏襲） */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note p{margin:6px 0;line-height:1.75}
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* 共有ボタン */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"🐦";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">👻</div>
+    <div>
+      <h1>ストーカー背後霊診断</h1>
+      <p class="sub">15問（0〜4の5件法）。総合スコアと因子バー、研究メモを表示します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="15">
+  <span id="prog"></span>
+</div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：15</span>
+      <span class="pill">形式：0–4（0=いいえ / 4=とてもある）</span>
+      <span class="pill">総合：0–4（5因子平均）</span>
+    </div>
+    <p class="small">“背後霊”は比喩です。ここでは<strong>距離感のスキル</strong>を5因子（観察ぐせ／境界線／返信待ち／解釈ブレーキ／衝動ストップ）でそっと可視化します。※エンタメ自己理解用。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=いいえ／1=あまりない／2=ときどき／3=よくある／4=とてもある）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全15問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー（1:1・タイトル→画像→コメントの順をキャプションで表現） -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/stalker-ghost/01.png" alt="結果イメージ" loading="lazy" width="1200" height="1200">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+          <div class="share-row" id="shareRow" hidden>
+            <a id="shareTw" class="btn tw" href="#" target="_blank" rel="noopener">Twitterで共有</a>
+            <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
+            <a id="shareIg" class="btn ig" href="#" aria-label="Instagramでシェア">Instagramでシェア</a>
+          </div>
+        </figcaption>
+      </div>
+
+      <!-- 数値など -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+      <div id="longCopy" class="small"><!-- JS 長文コメント --></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ（行頭「ある研究では、」で羅列） -->
+      <details class="section" open>
+        <summary><strong>ある研究では…</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差が大きい性質があります。医療・採用などの用途には使えません。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用の自己理解</b>です。現実の被害・加害の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "stalker-ghost";
+  var TITLE = "ストーカー背後霊診断";
+  var IMG_BASE = "/shindan/assets/results/stalker-ghost/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== 因子・設問 ======
+  var FACTORS = {
+    OBS:{ name:"観察ぐせ（見に行きがち）", items:["I01","I02","I03"] },
+    BDY:{ name:"境界線のやわらかさ",       items:["I04","I05","I06"] },
+    WAI:{ name:"返信待ち耐性",             items:["I07","I08","I09"] },
+    BRK:{ name:"拡大解釈ブレーキ",         items:["I10","I11","I12"] },
+    STP:{ name:"衝動ストッパー",           items:["I13","I14","I15"] }
+  };
+  var ITEMS = [
+    {id:"I01",text:"SNSやメッセの足あと・既読を一日に何度も確認してしまう。"},
+    {id:"I02",text:"新着がないとき、他の手がかり（別SNSや共通の場）まで探しにいく。"},
+    {id:"I03",text:"通知が鳴るたびに手が止まり、つい確認してしまう。"},
+    {id:"I04",text:"親しくなると、場所や時間の線引きがつい曖昧になりがちだ。"},
+    {id:"I05",text:"相手の予定や居場所を、許可前でも聞きたくなることがある。"},
+    {id:"I06",text:"相手がOKと言うまで踏み込まない自信がある。", rev:true},
+    {id:"I07",text:"返信が遅いときも「事情があるかも」と思って待てる。"},
+    {id:"I08",text:"未読・既読スルーでも、その日の自分の予定に集中できる。"},
+    {id:"I09",text:"返信を急かすメッセージを送ってしまうことがある。", rev:true},
+    {id:"I10",text:"曖昧なメッセージは、すぐ決めつけず「まだ分からない」と保留できる。"},
+    {id:"I11",text:"いい方・悪い方の両方を想定して、落ち着いてから考え直せる。"},
+    {id:"I12",text:"「たぶん嫌われた」と早めに結論づけてしまう。", rev:true},
+    {id:"I13",text:"感情が強いほど、一拍おいて深呼吸してから送信・行動する。"},
+    {id:"I14",text:"追いかけたくなったら、散歩や作業など別行動に切り替えられる。"},
+    {id:"I15",text:"深夜の連絡や連投をやってしまう。", rev:true}
+  ];
+  var LABELS = ["いいえ","あまりない","ときどき","よくある","とてもある"];
+  var REVERSED = new Set(["I06","I09","I12","I15"]);
+  var HYBRID_DELTA = 8;
+
+  // ====== タイプ定義（タイトル・コピー・1行ケア・研究メモ） ======
+  var TYPES = {
+    OBS:{ key:"OBS", title:"まなざしピタ霊", img:"01.png", alt:"足あととレーダーの紋章",
+      poem:"小さな変化を見逃さない、鋭いまなざし。",
+      copy:"観察のアンテナが鋭いタイプ。小さな変化に気づける分、確認の回数が増えやすい傾向も。使いどころを選べば頼れる“見守り力”です。ヒント：通知を“まとめて見る時間”を決めるだけで、心の余白が戻ります。",
+      long:"あなたの強みは「気づきの速さ」。相手の調子や状況を察しやすく、気配りに化ける資質です。一方で確認が続くと、注意が分散して疲れやすい面も。まずは“鳴ったら見る”を“時間を決めて見る”に置き換え、連続タップをブロック。曖昧なサインは一旦メモに停め、翌日もう一度だけ見返す——この二段階だけで、行動のキレと安心感が両立します。",
+      memo:[
+        "通知や断片情報は不安と反すうを増やす示唆。",
+        "バッチ処理（まとめ確認）が主観的ストレスを下げる関連。",
+        "外的手がかりの制限が衝動行動の頻度を下げる可能性。",
+        "メモ化→再評価が解釈の飛躍を抑える示唆。"
+      ]
+    },
+    BDY:{ key:"BDY", title:"境界ふわり霊", img:"02.png", alt:"点線サークルと小さな鍵の紋章",
+      poem:"近さを大切にする、やわらかな輪郭。",
+      copy:"近さを大切にするハートの持ち主。温かさの裏で、合図の確認が後回しになりやすいから、合意の一言を先に添えるだけで安心度UP。ヒント：「今この話しても大丈夫？」の定型文をお気に入り登録。",
+      long:"あなたの“距離の近さ”は、安心感を育む素敵な資質。ただ、踏み込みの早さが相手の都合とズレると誤解や疲れにつながることも。効果的なのは合図の先出し——「今ちょっといい？」を最初に置くだけで許可・不許可が見え、関係の軽さが変わります。時間帯・頻度の目安を共通言語にするのも◎。小さな合意が積み重なると、近さは“やさしさ”として受け取られます。",
+      memo:[
+        "期待値合わせ（合意）が摩擦を減らす示唆。",
+        "時間帯ルールの共有が満足度に関連。",
+        "Iメッセージ（私は）が反発を下げ協力を促す可能性。",
+        "社会的合図の明確化が安心感の土台に関連。"
+      ]
+    },
+    WAI:{ key:"WAI", title:"待機仙人霊", img:"03.png", alt:"砂時計と雲の紋章",
+      poem:"待てる静けさ、戻れる切替。",
+      copy:"“待つ力”が落ち着きを生むタイプ。未読でも自分の予定に戻れる切替上手。たまに“忘れすぎ”だけ注意して、要件は短く明るく。ヒント：返信が来たら「助かった！」の一言で好循環。",
+      long:"あなたの待機耐性は大きな強み。相手の事情を想像でき、関係の圧を下げます。課題は、必要なときに“待ちっぱなし”にならないこと。要件は結論→期限→一言の順で短く送ると、相手も応答しやすく、あなたの落ち着きがさらに活きます。未読時は“自分の予定へ復帰”を合図に、タスクを一区切り進めると満足感が増します。",
+      memo:[
+        "曖昧な遅延は不安を高めうるがスケジュール化で緩和の示唆。",
+        "実行意図（if-then）が切替成功率を上げる関連。",
+        "短文・具体の依頼が返信率を高める可能性。",
+        "自律的注意転換が反すう減少に関連。"
+      ]
+    },
+    BRK:{ key:"BRK", title:"保留ナビ霊", img:"04.png", alt:"バブルと旗の紋章",
+      poem:"拙速を避ける、やさしい保留。",
+      copy:"“まだ分からない”を大事にできる理性的タイプ。決めつけない姿勢が安心を生みます。たまに優柔不断になったら、期限を切って再判断。ヒント：保留メモに日付を付けて“いつ再確認するか”を明確に。",
+      long:"あなたは不確実さに耐える力が高く、早合点から距離を取れます。人間関係では誤解の火種を小さくできる希少な資質。ただ、判断を延ばしすぎると相手が迷うことも。保留→再判断の期日を先に決めるだけで、理性とスピードの両立が可能に。相手の“良い解釈”も一度置いておくバランス感覚が、長期的な信頼をつくります。",
+      memo:[
+        "曖昧さ耐性が反応の過剰化を抑える示唆。",
+        "再評価（reappraisal）が情動調整に関連。",
+        "期日の設定が意思決定の質を安定させる可能性。",
+        "メタ認知メモが解釈の偏りを減らす示唆。"
+      ]
+    },
+    STP:{ key:"STP", title:"一拍賢者霊", img:"05.png", alt:"ポーズ（II）とランタンの紋章",
+      poem:"感情の波に、灯をともす間合い。",
+      copy:"感情が強い時ほど一拍おける“効くブレーキ”の持ち主。送信前の深呼吸や下書き保存が、あなたの魅力をもっと伝わりやすくします。ヒント：深夜は“下書きまで”のルールで翌朝に見直し。",
+      long:"あなたは行動の“間”を作れる人。これは衝動から関係を守る最高のスキルです。とくに夜間や連投の場面では、下書き→翌朝チェック→送信の三段階が効果的。怒り・不安のピークは時間で必ず下がるので、感情の波と賢く付き合えます。小さな成功体験が積み重なると、自己効力感が上がり、相手にも安心が伝わります。",
+      memo:[
+        "反応抑制の練習が衝動行動を減らす示唆。",
+        "睡眠前の興奮刺激が思考の過熱を招きやすい関連。",
+        "時間距離（翌朝）が怒りの強度を自然低下させる可能性。",
+        "下書き文化が誤送信・後悔の低減に有効。"
+      ]
+    }
+  };
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumPct  = document.getElementById("sumPct");
+  var sumNote = document.getElementById("sumNote");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+  var shareRow= document.getElementById("shareRow");
+  var shareTw = document.getElementById("shareTw");
+  var shareLn = document.getElementById("shareLn");
+  var shareIg = document.getElementById("shareIg");
+
+  // ====== 設問生成 ======
+  function buildQuestions(){
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var q = ITEMS[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers(); updateProgress();
+      }, false);
+    }
+    restoreAnswers(); updateProgress();
+  }
+
+  // ====== 保存/復元 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+
+  function updateProgress(){
+  var total = ITEMS.length;
+  var answered = 0;
+  for(var i=0;i<ITEMS.length;i++){
+    if(qWrap.querySelector('input[name="q'+ITEMS[i].id+'"]:checked')) answered++;
+  }
+  var pct = Math.round(100*answered/total);
+  prog.style.width = pct + "%";
+  // アクセシビリティ用（数値も更新）
+  var bar = prog.parentElement;
+  if(bar){
+    bar.setAttribute("aria-valuenow", answered);
+    bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+  }
+}
+
+  // ====== スコア計算 ======
+  function valOf(id, raw){ var v=Number(raw); return REVERSED.has(id)?(4-v):v; }
+  function score(){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      ans[id] = parseInt(chk.value,10);
+    }
+    if(missing.length){
+      alert("未回答があります。全15問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    var fScore = {}, fPct = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);
+      var avg = sum / ids.length; // 0-4
+      fScore[key] = avg;
+      fPct[key] = Math.round((avg/4)*100);
+    });
+
+    var keys = Object.keys(FACTORS);
+    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;
+    var totalPct = Math.round((totalAvg/4)*100);
+
+    var order = keys.slice().sort(function(a,b){ return fPct[b]-fPct[a]; });
+    var top = order[0], second = order[1];
+    var diff = fPct[top]-fPct[second];
+    var hybrid = (diff<=HYBRID_DELTA);
+
+    render({ fScore, fPct, totalAvg, totalPct, top, second, diff, hybrid });
+  }
+
+  function render(o){
+    var primary = TYPES[o.top], secondary = TYPES[o.second];
+
+    // タイトル行
+    var typeText = 'タイプ：'+primary.title+'（'+FACTORS[o.top].name+'）';
+    if(o.hybrid){ typeText += ' ／ 第2位：'+secondary.title+'（'+FACTORS[o.second].name+'）'; }
+    typeLine.textContent = typeText;
+
+    // ヒーロー
+    heroImg.src = IMG_BASE + primary.img;
+    heroImg.alt = primary.alt;
+    heroTitle.textContent = primary.title + (o.hybrid ? ' × '+secondary.title : '');
+    heroPoem.textContent  = '“見守りが近すぎるクセ”の点検視点で表示しています。';
+    heroCopy.textContent  = primary.copy;
+    sizeBadgeEl.textContent = "総合 " + o.totalAvg.toFixed(2) + " / 4.00";
+
+    // 総合
+    sumAvg.textContent = o.totalAvg.toFixed(2);
+    sumPct.textContent = "= " + o.totalPct + "%";
+    sumNote.textContent = "上位因子："+FACTORS[o.top].name + (o.hybrid ? "（第2位："+FACTORS[o.second].name+"・差"+o.diff+"%）" : "");
+
+    // 因子バー
+    var bHtml = "";
+    Object.keys(FACTORS).forEach(function(key){
+      var def = FACTORS[key];
+      var avg = o.fScore[key], pct = o.fPct[key];
+      bHtml += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+avg.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // 長文 & 研究メモ
+    longCopy.textContent = primary.long;
+    resMemo.innerHTML = (primary.memo||[]).map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 共有リンク生成
+    var shareText = '『ストーカー背後霊診断』結果：' + primary.title + (o.hybrid ? ' × ' + secondary.title : '') +
+                    '｜総合 ' + o.totalAvg.toFixed(2) + ' / 4（' + o.totalPct + '%）';
+    var url = location.href.split('#')[0];
+
+    var tw = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+    shareTw.href = tw;
+
+    var ln = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url);
+    shareLn.href = ln;
+
+    shareIg.onclick = function(e){
+      e.preventDefault();
+      var caption = shareText + ' ' + url;
+      copyToClipboard(caption).then(function(){
+        var opened = false;
+        try{ var w = window.open('instagram://app','_blank'); opened = !!w; }catch(_){}
+        if(!opened){ window.open('https://www.instagram.com/','_blank'); }
+        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+      });
+    };
+    shareRow.hidden = false;
+
+    // 表示
+    resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // 共有ヘルパー
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';
+    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },1500);
+  }
+
+  // クリア
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // 初期化
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
