@@ -188,7 +188,7 @@ details p.small{line-height:1.8}
 /* === mobile tidy: 強制 <br> をスマホでは抑制して自然改行に === */
 @media (max-width:560px){
   .hl .txt{ line-height:1.95; white-space:normal; }
-  .hl .txt br{ display:none; }       /* ← ここが効く */
+  .hl .txt br{ display:initial; } /* ← 改行を有効化 */ 
 }
 /* セクション見出し周りの上下バランスを微調整 */
 @media (max-width:560px){
@@ -204,6 +204,53 @@ details p.small{line-height:1.8}
 @media (max-width:560px){
   .stamp{ top:-10px; right:8px; transform:rotate(-4deg) scale(.92); }
 }
+/* === back to list button === */
+.btn-back{
+  display:inline-block; margin:6px 0 10px;
+  padding:6px 12px; border:2px solid var(--frame);
+  border-radius:999px; background:#f3e1c4; font-weight:800;
+  color:var(--ink); text-decoration:none;
+}
+.btn-back:active{ transform:translateY(1px); }
+@media (max-width:560px){ .btn-back{ position:sticky; top:8px; z-index:50; } }
+
+/* === header badges: さらに縮小＆重なり回避（SP） === */
+@media (max-width:560px){
+  .stamp{ top:-8px; right:8px; transform:rotate(-4deg) scale(.90); }
+}
+/* 特徴パネルを少し詰めて読みやすく（性格/恋愛だけ） */
+#sec-big5 .hl .txt.small,
+#sec-love .hl .txt.small{ line-height:1.85; font-size:.95rem; }
+/* details内のラベルをそろえる（傾向／うれしい／苦手／コツ） */
+details p.small b{ display:inline-block; min-width:4.9em; }
+details p.small{ line-height:1.9; }
+/* 特徴/禁忌のブロックをスキーマ寄りの密度に */
+#sec-big5 .hl, #sec-love .hl{ align-items:flex-start; }
+#sec-big5 .hl .tag, #sec-love .hl .tag{ white-space:nowrap; }
+#sec-big5 .hl .txt.small br,
+#sec-love .hl .txt.small br{ display:initial; } /* 改行を活かす */
+/* === back to list button: bottom === */
+.btn-back{
+  display:block;
+  width:max-content;
+  margin:20px auto 28px;
+  padding:6px 12px;
+  border:2px solid var(--frame);
+  border-radius:999px;
+  background:#f3e1c4;
+  font-weight:800;
+  color:var(--ink);
+  text-decoration:none;
+}
+.btn-back:active{ transform:translateY(1px); }
+
+/* 以前のsticky指定を無効化（SPでも固定しない） */
+@media (max-width:560px){
+  .btn-back{ position:static; top:auto; z-index:auto; }
+}
+
+/* 余白を少し増やしたバリエーション（最下部用） */
+.btn-back--bottom{ margin-top:28px; margin-bottom:36px; }
 </style>
 </head>
 <body>
@@ -587,7 +634,7 @@ details p.small{line-height:1.8}
 
 <script>
 /* ===== 画像（正方形1枚） ===== */
-const HERO_IMAGE_URL = '/assets/results/01.png'; // 任意の正方形画像に差し替え
+const HERO_IMAGE_URL = '01.png';
 
 /* ===== データ（％） ===== */
 /* Big Five: raw(1〜5) → ((raw-1)/4)*100 */
@@ -1151,5 +1198,6 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 })();
 </script>
+<a href="index.html" class="btn-back btn-back--bottom" aria-label="診断一覧に戻る">← 診断一覧に戻る</a>
 </body>
 </html>
