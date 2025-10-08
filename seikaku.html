@@ -185,6 +185,25 @@ details p.small{line-height:1.8}
 .gacha .btn[disabled]{opacity:.6;cursor:default}
 .gacha.shake{animation:slotshake .3s}
 @keyframes slotshake{20%{transform:translateX(-2px)}40%{transform:translateX(2px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+/* === mobile tidy: 強制 <br> をスマホでは抑制して自然改行に === */
+@media (max-width:560px){
+  .hl .txt{ line-height:1.95; white-space:normal; }
+  .hl .txt br{ display:none; }       /* ← ここが効く */
+}
+/* セクション見出し周りの上下バランスを微調整 */
+@media (max-width:560px){
+  .card h2{ padding-top:6px; }
+}
+/* === header badges: スマホでの重なり回避 === */
+@media (max-width:560px){
+  .poster{ padding-top:56px; padding-bottom:20px; margin:12px 0 32px; }
+  .stamp-big{ top:6px; right:8px; transform:rotate(-6deg) scale(.9); z-index:1; }
+  .bounty{ top:6px; left:8px;  transform:rotate(4deg)  scale(.9); z-index:1; }
+}
+/* 各カードの赤い小スタンプも少し控えめにして被りを減らす */
+@media (max-width:560px){
+  .stamp{ top:-10px; right:8px; transform:rotate(-4deg) scale(.92); }
+}
 </style>
 </head>
 <body>
@@ -207,7 +226,7 @@ details p.small{line-height:1.8}
 
     <div class="hl">
       <span class="tag">特徴</span>
-      <p class="txt small"></b><br>
+      <p class="txt small">
 　開放性は満点。新しい知識や比喩の遊びはごちそう、未知へまっすぐ。<br>
 　誠実性は高く、段取り・責任・やり切りが得意。「決めたらやる」を静かに継続。<br>
 　外向性は控えめでも社交性は高め。呼ばれた場では自然に馴染み、<br>
@@ -568,7 +587,7 @@ details p.small{line-height:1.8}
 
 <script>
 /* ===== 画像（正方形1枚） ===== */
-const HERO_IMAGE_URL = '/assets/profile-hero.png'; // 任意の正方形画像に差し替え
+const HERO_IMAGE_URL = '/assets/results/01.png'; // 任意の正方形画像に差し替え
 
 /* ===== データ（％） ===== */
 /* Big Five: raw(1〜5) → ((raw-1)/4)*100 */
