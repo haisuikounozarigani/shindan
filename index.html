@@ -106,6 +106,17 @@ a.link > div{flex:1 1 auto;min-width:0}
   border:1px solid var(--line);border-radius:999px;
   padding:4px 8px;background:#fff;line-height:1.6
 }
+/* --- done marker（既に受けた診断表示） --- */
+a.link[data-done]{position:relative;opacity:.9}
+a.link[data-done]::after{
+  content:"済"; position:absolute; top:8px; right:8px;
+  font-weight:800; font-size:.8rem; line-height:1;
+  padding:4px 8px; border-radius:999px;
+  background:linear-gradient(90deg,#c3ffd6,#d8eaff);
+  color:#233; border:1px solid #dce9f0; box-shadow:0 3px 10px rgba(0,0,0,.06)
+}
+/* 済カードではNEWバッジは隠す（視覚のノイズを減らす） */
+a.link[data-done] .mini[data-new]{display:none}
 </style>
 </head>
 <body>
@@ -133,7 +144,7 @@ a.link > div{flex:1 1 auto;min-width:0}
 
     <div class="row">
       <input id="q" type="search" placeholder="キーワード or #タグ（例：#さくっと / #こころ）" aria-label="検索">
-      <button id="btnNew" class="btn" type="button" aria-pressed="false" aria-label="NEWだけ表示">NEWだけ</button>
+     
       <button id="clearBtn" class="btn" type="button" aria-label="検索とタグをクリア">クリア</button>
     </div>
     <div id="chips" class="chips" role="listbox" aria-multiselectable="false" aria-label="タグ（1つ選択で絞り込み）"></div>
@@ -803,9 +814,49 @@ a.link > div{flex:1 1 auto;min-width:0}
   });
 
 // 検索・タグ（単一選択）
-  const q=$('#q'), chipsWrap=$('#chips'), btnNew=$('#btnNew'), clearBtn=$('#clearBtn');
+  const q=$('#q'), chipsWrap=$('#chips'), clearBtn=$('#clearBtn');
+  
+// 「未挑戦だけ」ボタンを動的に追加 & “済”マーキング
+let btnTodo = document.getElementById('btnTodo');
+if(!btnTodo){
+  btnTodo = document.createElement('button');
+  btnTodo.id = 'btnTodo';
+  btnTodo.type = 'button';
+  btnTodo.className = 'btn';
+  btnTodo.setAttribute('aria-pressed','false');
+  btnTodo.textContent = '未挑戦だけ';
+// 検索行に追加（クリアの左）
+const row = q.closest('.row');
+if (clearBtn && row) row.insertBefore(btnTodo, clearBtn);
+else document.querySelector('.controls .row')?.appendChild(btnTodo);
+}
 
-  // エイリアス正規化（カード側タグの軽い寄せ）
+// 既読（=やった診断）をローカルから復元してカードに data-done を付与
+const LS_BYID_KEY = "specimens:open:byid";
+function getDoneMap(){
+  try{ return JSON.parse(localStorage.getItem(LS_BYID_KEY)||"{}"); }catch(e){ return {}; }
+}
+function markDoneCards(){
+  const done = getDoneMap();
+  document.querySelectorAll('#list a.link').forEach(a=>{
+    const id=a.dataset.id; if(!id) return;
+    if(done[id]>0) a.setAttribute('data-done','1'); else a.removeAttribute('data-done');
+  });
+}
+markDoneCards();
+// 他タブ更新にも同期
+window.addEventListener('storage', (e)=>{ if(e.key===LS_BYID_KEY) markDoneCards(); });
+
+// 「未挑戦だけ」トグル（apply()は既存のを利用）
+let todoOnly=false;
+btnTodo.addEventListener('click', ()=>{
+  todoOnly=!todoOnly;
+  btnTodo.classList.toggle('primary',todoOnly);
+  btnTodo.setAttribute('aria-pressed', String(todoOnly));
+  btnTodo.textContent = todoOnly ? '未挑戦だけ（解除）' : '未挑戦だけ';
+  apply();
+});
+// エイリアス正規化（カード側タグの軽い寄せ）
   const ALIAS={ '性格':'こころ', '短時間':'さくっと' };
 
   // カードのタグ正規化 + メタ整形
@@ -862,41 +913,37 @@ a.link > div{flex:1 1 auto;min-width:0}
     apply();
   });
 
-  // NEWだけ
-  let newOnly=false;
-  btnNew.addEventListener('click', ()=>{
-    newOnly=!newOnly; btnNew.classList.toggle('primary',newOnly);
-    btnNew.setAttribute('aria-pressed', newOnly?'true':'false');
-    btnNew.textContent=newOnly?'NEWだけ（解除）':'NEWだけ';
-    apply();
-  });
+  
 
   // クリア（検索文字・タグ・URLの #tag を完全リセット）
   clearBtn.addEventListener('click', ()=>{
-    q.value='';
-    setActiveTag(null);
-    newOnly=false; btnNew.classList.remove('primary'); btnNew.setAttribute('aria-pressed','false'); btnNew.textContent='NEWだけ';
-    // 念のため明示的にハッシュも消す
-    if(location.hash) history.replaceState({},'', location.pathname + location.search);
-    apply();
-  });
+  q.value='';
+  setActiveTag(null);
+  // 念のため明示的にハッシュも消す
+  if(location.hash) history.replaceState({},'', location.pathname + location.search);
+  apply();
+});
 
   // フィルタ
   function apply(){
-    const kw=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
-    const def = CHIP_DEFS.find(d=>d.key===activeTag);
-    let shown=0;
-    $$('#list a.link').forEach(a=>{
-      const tags=(a.dataset.tags||'').split(',').filter(Boolean);
-      const text=(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase();
-      const okTag = activeTag ? (def ? def.test(tags) : true) : true;
-      const okKw  = kw.length ? kw.every(w=>text.includes(w)) : true;
-      const isNew = (()=>{ const b=a.querySelector('[data-new]'); return b && b.style.display!=='none'; })();
-      const show  = okTag && okKw && (newOnly? isNew : true);
-      a.style.display=show?'':'none'; if(show) shown++;
-    });
-    $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
-  }
+  function apply(){
+  const kw=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
+  const def = CHIP_DEFS.find(d=>d.key===activeTag);
+  let shown=0;
+  $$('#list a.link').forEach(a=>{
+    const tags=(a.dataset.tags||'').split(',').filter(Boolean);
+    const text=(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase();
+    const okTag  = activeTag ? (def ? def.test(tags) : true) : true;
+    const okKw   = kw.length ? kw.every(w=>text.includes(w)) : true;
+    const okTodo = todoOnly ? !a.hasAttribute('data-done') : true;  // 未挑戦だけ
+    const show   = okTag && okKw && okTodo;
+    a.style.display = show ? '' : 'none';
+    if(show) shown++;
+  });
+  $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+}
+  $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+}
   apply();
 
   // Escで検索クリア
@@ -1024,6 +1071,7 @@ function bumpGlobal(){
       if(!a) return;
       const id = a.dataset.id || "unknown";
       incLocalById(id);
+      try{ a.setAttribute('data-done','1'); }catch(_){}
       bumpGlobal();
       // 楽観更新で +1（ネットワーク失敗でも数字が戻らない）
       const cur = parseInt((localStorage.getItem(LS_GLOBAL_LAST) || "0"), 10) || 0;
