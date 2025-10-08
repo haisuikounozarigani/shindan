@@ -222,8 +222,8 @@ details p.small{line-height:1.8}
 #sec-big5 .hl .txt.small,
 #sec-love .hl .txt.small{ line-height:1.85; font-size:.95rem; }
 /* details内のラベルをそろえる（傾向／うれしい／苦手／コツ） */
-details p.small b{ display:inline-block; min-width:5.2em; }
-details p.small{ line-height:1.95; }
+details p.small b{ display:inline-block; min-width:5.4em; }
+details p.small{ line-height:2.0; }
 /* 特徴/禁忌のブロックをスキーマ寄りの密度に */
 #sec-big5 .hl, #sec-love .hl{ align-items:flex-start; }
 #sec-big5 .hl .tag, #sec-love .hl .tag{ white-space:nowrap; }
@@ -251,6 +251,44 @@ details p.small{ line-height:1.95; }
 
 /* 余白を少し増やしたバリエーション（最下部用） */
 .btn-back--bottom{ margin-top:28px; margin-bottom:36px; }
+/* 性格ヘッダ画像の見た目 */
+#sec-big5 .poster img.hero{
+  display:block; width:100%; height:auto; border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08); margin:6px 0 10px;
+}
+/* 戻るボタンを下部寄せ（少し上で止まる） */
+.btn-back{
+  position:static; z-index:auto; left:auto; transform:none;
+  display:block;
+  width:max-content;
+  margin:28px auto 52px; /* ← 下に寄せるけど、端っこにくっつけない */
+  padding:8px 14px;
+  border:2px solid var(--frame);
+  border-radius:999px;
+  background:#f3e1c4;
+  font-weight:800;
+  text-decoration:none;
+  color:var(--ink);
+}
+/* 性格（特徴）の改行最適化：ぶつ切りの <br> を無効化し、自然折返しへ */
+#sec-big5 .hl .txt.small{
+  line-height: 1.95;
+  text-align: justify;
+  text-justify: inter-ideograph;    /* 和文の均等割付 */
+  letter-spacing: .01em;
+  text-wrap: pretty;
+}
+@supports (text-wrap: balance){
+  #sec-big5 .hl .txt.small{ text-wrap: balance; }
+}
+/* 性格の特徴内だけ <br> を隠す（他セクションは従来通り） */
+#sec-big5 .hl .txt.small br{ display:none; }
+/* 性格セクションのバッジ干渉を最小化（さらに縮小＆間隔） */
+@media (max-width:560px){
+  #sec-big5 .poster{ padding-top:78px; }
+  #sec-big5 .stamp-big{ top:6px; right:6px; transform:rotate(-6deg) scale(.72); }
+  #sec-big5 .bounty{    top:6px; left: 6px; transform:rotate( 4deg) scale(.72); }
+}
 </style>
 </head>
 <body>
@@ -634,7 +672,7 @@ details p.small{ line-height:1.95; }
 
 <script>
 /* ===== 画像（正方形1枚） ===== */
-const HERO_IMAGE_URL = '01.png';
+const HERO_IMAGE_URL = '/shindan/assets/results/seikaku/01.png';
 
 /* ===== データ（％） ===== */
 /* Big Five: raw(1〜5) → ((raw-1)/4)*100 */
@@ -1199,5 +1237,25 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 <a href="index.html" class="btn-back btn-back--bottom" aria-label="診断一覧に戻る">← 診断一覧に戻る</a>
+<script>
+// 性格のヘッダ画像：読み込めたら .poster に <img.hero> を自動挿入
+(function(){
+  if (!window.HERO_IMAGE_URL) return;
+  var url = window.HERO_IMAGE_URL;
+  var img = new Image();
+  img.onload = function(){
+    var holder = document.querySelector('#sec-big5 .poster') || document.querySelector('.poster');
+    if (!holder) return;
+    if (!holder.querySelector('img.hero')) {
+      var tag = document.createElement('img');
+      tag.className = 'hero';
+      tag.alt = '';
+      tag.src = url;
+      holder.insertAdjacentElement('afterbegin', tag);
+    }
+  };
+  img.src = url;
+})();
+</script>
 </body>
 </html>
