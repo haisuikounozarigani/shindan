@@ -98,11 +98,11 @@ body{
   margin:18px 0; position:relative; z-index:1;
 }
 .stamp{
-  position:absolute; right:-6px; top:-14px;          /* ほんの少しだけ外へ */
-  transform:rotate(-6deg) translateX(10px);          /* 被りを避けて右へ */ transform:rotate(-6deg);
+  position:absolute; right:-16px; top:-16px;
+  transform: rotate(-6deg) translateX(26px);
   padding:6px 10px; border:2px solid #b5342b; color:#b5342b; font-weight:900;
   background:#f6e6cb; border-radius:6px; letter-spacing:.08em;
-  box-shadow:0 8px 18px rgba(0,0,0,.16)
+  box-shadow:0 8px 18px rgba(0,0,0,.16);
 }
 h2{margin:2px 0 10px; font-size:1.22rem}
 h3{margin:14px 0 8px; font-size:1.05rem}
@@ -119,10 +119,20 @@ p{margin:0 0 10px; line-height:1.95}
 .hl .txt{flex:1;min-width:220px}
 
 /* レーダー */
-.radar{max-width:560px;margin:10px auto 6px}
+.radar{
+  max-width:560px;
+  margin:14px auto 10px;
+  clear:both;               /* 回り込み禁止 */
+  display:flex;             /* 中央寄せを強制 */
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
 .radar canvas{
-  width:100%;height:auto;display:block;border:3px solid var(--frame);border-radius:8px;background:#fbf4dd;
-  box-shadow:0 12px 30px rgba(0,0,0,.18)
+  width:100%; height:auto; display:block;
+  margin:0 auto; float:none !important;  /* ←念のため浮動解除 */
+  border:3px solid var(--frame); border-radius:8px; background:#fbf4dd;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
 }
 .radar .cap{color:#6a5741;font-size:.9rem;text-align:center;margin-top:6px}
 
@@ -139,12 +149,8 @@ summary{cursor:pointer; color:#5a422e; font-weight:800}
 .footer-note{margin-top:18px;color:#5c4b35;font-size:.9rem;text-align:center}
 
 /* スタンプ風タイトル（WANTEDは非表示） */
-.h-wanted{position:relative; display:inline-block}
-.h-wanted:after{ content:none !important; } position:absolute; right:-8px; top:-22px;
-  color:#b5342b; border:2px solid #b5342b; border-radius:4px; padding:2px 6px;
-  transform:rotate(-8deg); font-weight:900; letter-spacing:.12em; font-size:.8rem;
-  background:#f8ead1; box-shadow:0 4px 10px rgba(0,0,0,.15);
-}
+.h-wanted{ position:relative; display:inline-block; }
+.h-wanted:after{ content:none !important; }
 
 /* === 猫の足跡（小さく＆多数） === */
 .paw{
@@ -227,8 +233,10 @@ details p.small{line-height:1.8}
 /* === header badges: さらに縮小＆重なり回避（SP） === */
 @media (max-width:560px){
   #sec-big5 .poster{ padding-top:78px; }
-  #sec-big5 .stamp-big{ top:6px; right:-8px; transform:rotate(-6deg) translateX(16px) scale(.72); }
-  #sec-big5 .bounty{    top:6px; left:-8px;  transform:rotate( 4deg) translateX(-16px) scale(.72); }
+  /* 重要参考人はもう少し右へ／サイズもわずかに小さく */
+  #sec-big5 .stamp-big{ top:6px; right:-14px; transform:rotate(-6deg) translateX(32px) scale(.68); }
+  /* 懸賞金はもう少し左へ／サイズもわずかに小さく */
+  #sec-big5 .bounty{    top:6px; left:-14px;  transform:rotate( 4deg) translateX(-32px) scale(.68); }
 }
 /* 特徴パネルを少し詰めて読みやすく（性格/恋愛だけ） */
 #sec-big5 .hl .txt.small,
@@ -262,7 +270,7 @@ details p.small{ line-height:2.0; }
 }
 
 /* 余白を少し増やしたバリエーション（最下部用） */
-.btn-back--bottom{ margin-top:28px; margin-bottom:36px; }
+.btn-back--bottom{ margin-top:20px; margin-bottom:40px; }
 /* 性格ヘッダ画像の見た目 */
 #sec-big5 .poster img.hero{
   display:block; width:100%; height:auto; border-radius:10px;
@@ -273,14 +281,14 @@ details p.small{ line-height:2.0; }
   position:static; z-index:auto; left:auto; transform:none;
   display:block;
   width:max-content;
-  margin:24px auto 120px;  /* ← “少し上”に見える余白量 */ /* ← 下に寄せるけど、端っこにくっつけない */
-  padding:8px 14px;
+  margin:12px auto 40px;   /* ←下ベタ付き回避＆少し上に */
+  padding:6px 12px;
   border:2px solid var(--frame);
   border-radius:999px;
   background:#f3e1c4;
   font-weight:800;
-  text-decoration:none;
   color:var(--ink);
+  text-decoration:none;
 }
 /* 性格（特徴）の改行最適化：ぶつ切りの <br> を無効化し、自然折返しへ */
 #sec-big5 .hl .txt.small{
@@ -329,7 +337,15 @@ details p.small{ line-height:2.0; }
   text-align:center; color:var(--muted); font-size:.95rem; margin:6px 0 0;
 }
 /* 🎰 箱の直後に来る要素が横並びに回り込まないように */
-#sec-big5 .gacha + *{ clear:both; }
+.gacha{ clear:both; }
+.gacha + *{ clear:both; }
+#sec-big5 h3, #sec-love h3, #sec-schema h3, #sec-nonverbal h3{ display:block; clear:both; }
+#sec-big5 .sum-title{
+  display:block;
+  margin:8px 0 10px;
+  clear:both;     /* ←横並びを阻止して必ず独立行に */
+  width:100%;
+}
 </style>
 </head>
 <body>
@@ -365,8 +381,6 @@ details p.small{ line-height:2.0; }
 <div class="hl">
   <span class="tag">禁忌</span>
   <div class="txt small preline">
-【禁忌】
-
 根拠のない断定や見下し／強い圧や強要／理由のない拒絶や突然のルール変更／勝ち負けだけの議論。
 
 話す時は <b>「わたしはこう思う」＋理由</b> で、すり合わせていきたい。
@@ -1111,139 +1125,128 @@ document.addEventListener('DOMContentLoaded', function(){
    性格=🐱 / 恋愛=🦥 / スキーマ=🐧 / 誤解=🐶
    各セクションは「各傾向」と「総評」の2か所をスロット解放 */
 (function(){
-  var EMOJIS = ['🐱','🦥','🐧','🐶','🍒','⭐️'];
-  var WIN_RATE = 0.25; // ← 当たり確率 25%
+  var WIN_RATE = 0.25;
+  function rollEmojiPool(icon){
+  // 当たりアイコンも回るように最初に入れる
+  return [icon,'🍒','⭐️','🔔','7️⃣','🍉','🍇','🍋'];
+}
 
-  function q(selOrEl){
-    return (typeof selOrEl === 'string') ? document.querySelector(selOrEl) : selOrEl;
+  function q(sel){ return document.querySelector(sel); }
+
+  // 共通スピン関数（当たり判定もここで）
+  function spin(reelsEl, icon, winRate, onDone){
+    var t = 0, timer = setInterval(function(){
+      reelsEl.forEach(function(el){
+        var pool = rollEmojiPool(icon);
+el.textContent = pool[Math.floor(Math.random()*pool.length)];
+      });
+      if(++t > 12){
+        clearInterval(timer);
+        var win = Math.random() < winRate;
+        if(win){ reelsEl.forEach(function(el){ el.textContent = icon; }); }
+        onDone && onDone(win);
+      }
+    }, 90);
   }
 
+  // スロットを作って anchor の直後に設置。target は当たるまで非表示
   function makeGacha(opts){
-    var anchor = q(opts.anchor);          // 文字列 or 要素OK
-    var target = q(opts.target);          // 隠す対象（要素 or セレクタ）
+    var anchor  = (typeof opts.anchor === 'string') ? q(opts.anchor) : opts.anchor;
+    var target  = (typeof opts.target === 'string') ? q(opts.target) : opts.target;
+    var icon    = opts.icon || '🍒';
+    var winRate = (typeof opts.winRate === 'number') ? opts.winRate : WIN_RATE;
     if(!anchor || !target) return;
 
-    var prevDisplay = target.style.display;
+    // 当たるまで絶対に見せない
     target.style.display = 'none';
 
     var box = document.createElement('div');
     box.className = 'gacha';
     box.innerHTML =
-      '<div class="hint">🎰 ' + opts.key + '×3 が揃ったら開放</div>' +
+      '<div class="hint">🎰 '+ icon +'×3 が揃ったら開放</div>' +
       '<div class="reels"><div class="reel">🍒</div><div class="reel">⭐️</div><div class="reel">🍒</div></div>' +
-      '<button type="button" class="btn">回す</button>';
+      '<button type="button" class="btn spin">回す</button>';
     anchor.insertAdjacentElement('afterend', box);
 
-    var btn = box.querySelector('.btn');
+    var btn = box.querySelector('.spin');
+    var reels = Array.from(box.querySelectorAll('.reel'));
+
     btn.addEventListener('click', function(){
-      spin(box.querySelectorAll('.reel'), opts.key, WIN_RATE, function(win){
+      btn.disabled = true;
+      spin(reels, icon, winRate, function(win){
         if(win){
-          target.style.display = prevDisplay || '';
-          box.querySelector('.hint').textContent = '開放！詳しい内容が表示されました。';
-          btn.disabled = true; btn.textContent = 'OPEN';
+          target.style.display = '';
+          box.querySelector('.hint').textContent = '開放！ 詳しい内容が表示されました。';
+          btn.textContent = 'OPEN';
         }else{
+          btn.disabled = false;
           box.classList.add('shake'); setTimeout(function(){ box.classList.remove('shake'); }, 300);
         }
       });
     });
   }
 
-  // 回転→停止（勝ちの場合は全てkeyで止まる／負けはkey以外で止まる）
-  function spin(reels, key, rate, done){
-    var isWin = Math.random() < rate;
-    var stops = [];
-    if(isWin){
-      stops = [key,key,key];
-    }else{
-      for(var i=0;i<reels.length;i++){
-        var pool = EMOJIS.filter(function(e){ return e !== key; });
-        stops[i] = pool[(Math.random()*pool.length)|0];
-      }
-    }
-    var remain = reels.length;
-    reels.forEach(function(r, idx){
-      var t=0, dur=900 + idx*250;
-      var timer = setInterval(function(){
-        r.textContent = EMOJIS[(Math.random()*EMOJIS.length)|0];
-        t += 80;
-        if(t >= dur){
-          clearInterval(timer);
-          r.textContent = stops[idx];
-          if(--remain===0) done(isWin);
-        }
-      }, 80);
-    });
-  }
-
-  // まとめて設置（「各傾向」と「総評」の2か所ずつ）
   window.addEventListener('load', function(){
-
     /* ===== 性格（Big Five） ===== */
-    // 各性格の傾向
-    var big5H3 = document.querySelector('#sec-big5 h3');           // 「各性格の傾向」
-    makeGacha({anchor: big5H3, target: '#big5-details', key:'🐱'});
+    // 各性格の傾向 → スロット
+    var big5H3      = q('#sec-big5 h3');
+    var big5Details = q('#big5-details');
+    if(big5H3 && big5Details) makeGacha({ anchor: big5H3, target: big5Details, icon:'🐱' });
 
-    // 性格｜総評（見出しの次にある .body をロック）
-    var big5SumH3 = document.querySelector('#sec-big5 .sec-ttl');  // 「性格｜総評」
-    if(big5SumH3){
-      var big5SumBody = big5SumH3.nextElementSibling;              // 直後の .body
-      if(big5SumBody) makeGacha({anchor: big5SumH3, target: big5SumBody, key:'🐱'});
-    }
+    // 性格｜総評 → スロット（本文 .body をロック）
+    var big5SumH3   = q('#sec-big5 .sec-ttl');
+    var big5SumBody = q('#sec-big5 .body');
+    if(big5SumH3 && big5SumBody) makeGacha({ anchor: big5SumH3, target: big5SumBody, icon:'🐱' });
 
     /* ===== 恋愛 ===== */
-    // 各恋愛の傾向
-    var loveH3 = document.querySelector('#sec-love h3');           // 「各恋愛の傾向」
-    makeGacha({anchor: loveH3, target: '#love-details', key:'🦥'});
+    var loveH3      = q('#sec-love h3');
+    var loveDetails = q('#love-details');
+    if(loveH3 && loveDetails) makeGacha({ anchor: loveH3, target: loveDetails, icon:'🦥' });
 
-    // 恋愛｜総評（#sum-love .body をロック）
-    var loveSumH3 = document.querySelector('#sum-love .sec-ttl');
-    if(loveSumH3){
-      var loveSumBody = q('#sum-love .body') || loveSumH3.nextElementSibling;
-      if(loveSumBody) makeGacha({anchor: loveSumH3, target: loveSumBody, key:'🦥'});
-    }
+    var loveSumH3   = q('#sum-love .sec-ttl');
+    var loveSumBody = q('#sum-love .body');
+    if(loveSumH3 && loveSumBody) makeGacha({ anchor: loveSumH3, target: loveSumBody, icon:'🦥' });
 
     /* ===== スキーマ ===== */
-    // 各スキーマの傾向
-    var schemaH3 = document.querySelector('#sec-schema h3');       // 「各スキーマの傾向」
-    makeGacha({anchor: schemaH3, target: '#schema-details', key:'🐧'});
+    var schemaH3      = q('#sec-schema h3');
+    var schemaDetails = q('#schema-details');
+    if(schemaH3 && schemaDetails) makeGacha({ anchor: schemaH3, target: schemaDetails, icon:'🐧' });
 
-    // スキーマ｜総評（#sum-schema .body をロック）
-    var schemaSumH3 = document.querySelector('#sum-schema .sec-ttl');
-    if(schemaSumH3){
-      var schemaSumBody = q('#sum-schema .body') || schemaSumH3.nextElementSibling;
-      if(schemaSumBody) makeGacha({anchor: schemaSumH3, target: schemaSumBody, key:'🐧'});
-    }
+    var schemaSumH3   = q('#sum-schema .sec-ttl');
+    var schemaSumBody = q('#sum-schema .body');
+    if(schemaSumH3 && schemaSumBody) makeGacha({ anchor: schemaSumH3, target: schemaSumBody, icon:'🐧' });
 
-    /* ===== よくある誤解（代表例だけロック） ===== */
-    var mythSec = document.getElementById('sec-misunderstand');
-    if(mythSec){
-      var reps = Array.prototype.slice.call(mythSec.querySelectorAll('h3'))
-        .filter(function(h){ return h.textContent.trim().indexOf('代表例')===0; });
-      if(reps[0]){
-        var head = reps[0], nodes=[], cur=head.nextElementSibling;
+    /* ===== よくある誤解：代表例だけロック ===== */
+    var myth = q('#sec-misunderstand');
+    if(myth){
+      var h = Array.from(myth.querySelectorAll('h3')).find(function(x){
+        return (x.textContent || '').trim().indexOf('代表例') === 0;
+      });
+      if(h){
+        // 代表例ブロックを次の .hr 手前までまとめて隠す
+        var nodes=[], cur=h.nextElementSibling;
         while(cur && !cur.classList.contains('hr')){ nodes.push(cur); cur = cur.nextElementSibling; }
         if(nodes.length){
-          var holder = document.createElement('div');
-          holder.className='gacha';
-          holder.innerHTML =
+          nodes.forEach(function(n){ n.style.display='none'; });
+          var box = document.createElement('div');
+          box.className = 'gacha';
+          box.innerHTML =
             '<div class="hint">🎰 🐶×3 が揃ったら開放</div>' +
             '<div class="reels"><div class="reel">🍒</div><div class="reel">⭐️</div><div class="reel">🍒</div></div>' +
             '<button type="button" class="btn">回す</button>';
-          head.insertAdjacentElement('afterend', holder);
-
-          // 代表例ブロックをまとめて隠す
-          var prev = nodes.map(function(n){ return n.style.display; });
-          nodes.forEach(function(n){ n.style.display='none'; });
-
-          var btn = holder.querySelector('.btn');
+          h.insertAdjacentElement('afterend', box);
+          var btn = box.querySelector('.btn');
+          var reels = Array.from(box.querySelectorAll('.reel'));
           btn.addEventListener('click', function(){
-            spin(holder.querySelectorAll('.reel'), '🐶', WIN_RATE, function(win){
+            btn.disabled = true;
+            spin(reels, '🐶', WIN_RATE, function(win){
               if(win){
-                nodes.forEach(function(n,i){ n.style.display = prev[i] || ''; });
-                holder.querySelector('.hint').textContent = '開放！代表例が表示されました。';
-                btn.disabled = true; btn.textContent = 'OPEN';
+                nodes.forEach(function(n){ n.style.display=''; });
+                box.querySelector('.hint').textContent = '開放！代表例が表示されました。';
+                btn.textContent = 'OPEN';
               }else{
-                holder.classList.add('shake'); setTimeout(function(){ holder.classList.remove('shake'); }, 300);
+                btn.disabled = false;
+                box.classList.add('shake'); setTimeout(function(){ box.classList.remove('shake'); }, 300);
               }
             });
           });
@@ -1275,7 +1278,8 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 <script>
-// 性格｜総評の見出しを「各性格の傾向（#big5-details）」の直前へ常に移動
+/* no-op: 総評見出しの自動移動は停止 */
+</script>
 (function(){
   function placeBig5SumTitle(){
     var sec = document.getElementById('sec-big5');
@@ -1305,91 +1309,6 @@ document.addEventListener('DOMContentLoaded', function(){
     new MutationObserver(function(){ placeBig5SumTitle(); })
       .observe(sec, {subtree:true, childList:true});
   }
-})();
-</script>
-<script>
-// === Big5: スロット解放ガード（総評 / 各傾向） ==========================
-(function(){
-  var sec = document.getElementById('sec-big5');
-  if(!sec) return;
-
-  // sec 内の gacha を取得（1個目=総評, 2個目=各傾向）
-  var gachas = sec.querySelectorAll('.gacha');
-  if(gachas.length === 0) return;
-
-  // 「1個目と2個目の間 = 総評」「2個目以降〜セクション終わり = 各傾向」
-  var g1 = gachas[0];
-  var g2 = gachas[1] || null;
-
-  // 収集ヘルパー：a と b の間（b が無ければ a 以降〜セクション末）
-  function between(a, b){
-    var out = [];
-    var node = a.nextElementSibling;
-    while(node && node !== b){
-      out.push(node);
-      node = node.nextElementSibling;
-    }
-    return out;
-  }
-  var groupSUM  = between(g1, g2);
-  var groupLIST = g2 ? between(g2, null) : [];
-
-  // キー
-  var K_SUM  = 'slot_b5_sum';
-  var K_LIST = 'slot_b5_list';
-
-  // ロック/解除
-  function setLock(nodes, locked){
-    nodes.forEach(function(el){
-      if(!el) return;
-      el.classList.toggle('locked', !!locked);
-      // ロック中だけ案内文を最初の箱の直後に出す（重複防止）
-      if(locked && !sec.querySelector('.lock-note')){
-        var p = document.createElement('p');
-        p.className = 'lock-note';
-        p.textContent = '🎰 スロットで開放されます。';
-        (g1 || sec).insertAdjacentElement('afterend', p);
-      }
-    });
-  }
-
-  // 初期表示
-  var sumOpened  = localStorage.getItem(K_SUM)  === '1';
-  var listOpened = localStorage.getItem(K_LIST) === '1';
-  setLock(groupSUM,  !sumOpened);
-  setLock(groupLIST, !listOpened);
-
-  // スロットの抽選（25% 当たり）
-  function bindGacha(btn, key, group){
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-      var box = btn.closest('.gacha');
-      if(!box) return;
-      box.classList.add('shake');
-      setTimeout(function(){ box.classList.remove('shake'); }, 320);
-
-      // 25%当選
-      var win = Math.random() < 0.25;
-      // 絵柄を演出（ここはシンプルに）
-      var reels = box.querySelectorAll('.reel');
-      var faces = win ? ['🐱','🐱','🐱'] : ['🍒','⭐','🍒'];
-      reels.forEach(function(r,i){ r.textContent = faces[i] || '🍒'; });
-
-      if(win){
-        localStorage.setItem(key, '1');
-        setLock(group, false);
-        // 開放メッセージ
-        var ok = document.createElement('p');
-        ok.className = 'lock-note';
-        ok.textContent = '✅ 開放されました。スクロールしてお楽しみください。';
-        box.insertAdjacentElement('afterend', ok);
-      }
-    });
-  }
-
-  // ボタン取得（各 .gacha 内の .btn を期待）
-  bindGacha(g1 && g1.querySelector('.btn'), K_SUM,  groupSUM);
-  bindGacha(g2 && g2.querySelector('.btn'), K_LIST, groupLIST);
 })();
 </script>
 </body>
