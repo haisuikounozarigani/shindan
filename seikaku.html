@@ -7,6 +7,9 @@
 <meta name="theme-color" content="#e7d8b1">
 <meta name="format-detection" content="telephone=no">
 <style>
+	/* 好きになる入口：もう一段下げて見やすく */
+#sec-love .love-entry{ margin:14px 0 6px; }
+#sec-love .love-entry .tit{ font-weight:900; display:block; margin:6px 0 4px; }
 :root{
   /* 手配書トーン */
   --ink:#2a2115;         /* 本文インク（濃茶） */
@@ -95,7 +98,7 @@ body{
   margin:18px 0; position:relative; z-index:1;
 }
 .stamp{
-  position:absolute; right:10px; top:-14px; transform:rotate(-6deg);
+  position:absolute; right:4px; top:-14px; transform:rotate(-6deg);
   padding:6px 10px; border:2px solid #b5342b; color:#b5342b; font-weight:900;
   background:#f6e6cb; border-radius:6px; letter-spacing:.08em;
   box-shadow:0 8px 18px rgba(0,0,0,.16)
@@ -134,10 +137,9 @@ summary{cursor:pointer; color:#5a422e; font-weight:800}
 /* フッタ注記 */
 .footer-note{margin-top:18px;color:#5c4b35;font-size:.9rem;text-align:center}
 
-/* スタンプ風タイトル */
+/* スタンプ風タイトル（WANTEDは非表示） */
 .h-wanted{position:relative; display:inline-block}
-.h-wanted:after{
-  content:"WANTED"; position:absolute; right:-8px; top:-22px;
+.h-wanted:after{ content:none !important; } position:absolute; right:-8px; top:-22px;
   color:#b5342b; border:2px solid #b5342b; border-radius:4px; padding:2px 6px;
   transform:rotate(-8deg); font-weight:900; letter-spacing:.12em; font-size:.8rem;
   background:#f8ead1; box-shadow:0 4px 10px rgba(0,0,0,.15);
@@ -270,7 +272,7 @@ details p.small{ line-height:2.0; }
   position:static; z-index:auto; left:auto; transform:none;
   display:block;
   width:max-content;
-  margin:28px auto 52px; /* ← 下に寄せるけど、端っこにくっつけない */
+  margin:24px auto 120px;  /* ← “少し上”に見える余白量 */ /* ← 下に寄せるけど、端っこにくっつけない */
   padding:8px 14px;
   border:2px solid var(--frame);
   border-radius:999px;
@@ -299,6 +301,12 @@ details p.small{ line-height:2.0; }
   #sec-big5 .bounty{    top:6px; left: 6px; transform:rotate( 4deg) scale(.72); }
 }
 
+/* 総評見出しをブロック化して上に見せる（回り込み防止） */
+#sec-big5 .sum-title{
+  display:block;
+  margin:8px 0 10px;
+  clear:both;               /* 横並びレイアウトの回り込みを防ぐ */
+}
 </style>
 </head>
 <body>
@@ -322,7 +330,7 @@ details p.small{ line-height:2.0; }
     <div class="hl">
   <span class="tag">特徴</span>
   <div class="txt small preline">
-<b>開放性は満点。</b> 新しい知識や比喩の遊びはごちそう、未知へまっすぐ。
+<b>開放性は満点｡</b> 新しい知識や比喩の遊びはごちそう、未知へまっすぐ。
 
 <b>誠実性は高く</b>、段取り・責任・やり切りが得意。「決めたらやる」を静かに継続。
 
@@ -402,8 +410,10 @@ details p.small{ line-height:2.0; }
   <p class="txt small">曖昧な好意／連絡の急な断絶／理由なしのドタキャン（遅刻は平気）／試すための駆け引き。<br>
 予定変更は一言の理由と<b>再接続の約束</b>（例：明日○時）を。</p>
 </div>
-<b>好きになる入口</b>
-<p>匂い/献身的な優しさ/柔軟さ/好奇心/責任感/世界観/努力している/ベタ惚れ/美意識が高い</p>
+<div class="love-entry">
+  <div class="tit">好きになる入口</div>
+  <p class="small">匂い／献身的な優しさ／柔軟さ／好奇心／責任感／世界観／努力している／ベタ惚れ／美意識が高い</p>
+</div>
 
   
     <div class="radar">
@@ -561,14 +571,14 @@ details p.small{ line-height:2.0; }
   <div class="hl">
     <span class="tag">禁忌</span>
     <p class="txt small"><br>
-　見下し／根拠なき断定／「グレーの放置」。<br>
+　見下し／根拠なき断定／「グレーの放置。<br>
 　評価だけでなく<b>経緯</b>を一緒にたどるのがコツ。</p>
   </div>
 
   <div class="hr"></div>
   <h3>代表例</h3>
   <details>
-    <summary><b>「人に興味ないでしょ？」→ ×</b></summary>
+    <summary><b>「人に興味ないでしょ？」 </b></summary>
     <p class="small" style="margin-top:6px">興味はある。<b>意見を聴き、根拠を一緒に探す人</b>に強く惹かれる。</p>
   </details>
   <details>
@@ -1239,6 +1249,39 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   };
   img.src = url;
+})();
+</script>
+<script>
+// 性格｜総評の見出しを「各性格の傾向（#big5-details）」の直前へ常に移動
+(function(){
+  function placeBig5SumTitle(){
+    var sec = document.getElementById('sec-big5');
+    var list = document.getElementById('big5-details');
+    if(!sec || !list) return;
+
+    // 既存見出しの候補をテキストで特定
+    var cand = Array.from(sec.querySelectorAll('h2,h3,.cap,.title,.ttl,.heading'))
+      .find(function(el){
+        var t = (el.textContent || '').replace(/\s/g,'');
+        return t.includes('性格') && t.includes('総評');
+      });
+
+    if(cand && cand.nextElementSibling !== list){
+      // 一度だけクラス付与してスタイルも揃える
+      cand.classList.add('sum-title');
+      list.parentNode.insertBefore(cand, list);
+    }
+  }
+
+  // 初回配置
+  document.addEventListener('DOMContentLoaded', placeBig5SumTitle);
+
+  // スロット解放などでDOMが変わっても上に置き直す
+  var sec = document.getElementById('sec-big5');
+  if(sec){
+    new MutationObserver(function(){ placeBig5SumTitle(); })
+      .observe(sec, {subtree:true, childList:true});
+  }
 })();
 </script>
 </body>
