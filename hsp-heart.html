@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HSPハート診断 ─ こころの繊細さをやさしく可視化</title>
+<meta name="description" content="18問で「深い処理・刺激オーバー・共鳴・五感・美感・回復」の6因子を数値化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤモンドの5ハートで表示（エンタメ自己理解）。">
+<meta name="theme-color" content="#fff6fb">
+
+<!-- OGP -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="HSPハート診断 ─ こころの繊細さをやさしく可視化">
+<meta property="og:description" content="18問で「深い処理・刺激オーバー・共鳴・五感・美感・回復」の6因子を数値化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤモンドの5ハートで表示（エンタメ自己理解）。">
+<meta property="og:url" content="/shindan/hsp-heart.html">
+<meta property="og:image" content="/shindan/assets/results/hsp-heart/rank-01.png">
+
+<style>
+:root{
+  /* gentle heart-pink */
+  --accent:#ff79ac; --accent2:#a48bff;
+  --ink:#2b2330; --muted:#7b6a79; --paper:#fff;
+  --bg1:#fff6fb; --bg2:#f3f4ff; --line:#eee3ef;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#ffe8f3,#ece8ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #efe5f1;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#f7eaf2;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #eadfea;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(255,121,172,.45)}100%{box-shadow:0 0 0 0 rgba(255,121,172,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:26px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+/* hero (1:1) */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#fff6fb}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#554a58;opacity:.9}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.rank-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:4px 8px}
+.rank-chip img{width:24px;height:24px;border-radius:6px;display:block}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#f7eaf2;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+.note p{margin:6px 0;line-height:1.75}
+.footer{color:var(--muted);font-size:.92em}
+.warn{background:#fbf8ff;border:1px solid #efe8ff;border-radius:12px;padding:10px;margin:12px 0}
+.back-area{display:flex;justify-content:center;margin-top:10px}
+a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* --- share buttons --- */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"𝕏";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px);padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .badge-size{font-size:.8em}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">💗</div>
+    <div>
+      <h1>HSPハート診断 ─ こころの繊細さをやさしく可視化</h1>
+      <p class="sub">18問（0〜4の5件法）。総合ランクと因子バー、研究メモを表示します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <span>📊</span>
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="18"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：18</span>
+      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>
+      <span class="pill">総合：0–4（6因子平均）</span>
+    </div>
+    <p class="small">6因子（<b>深い処理／刺激オーバー／情動共鳴／五感の細やかさ／美的感受／回復と境界</b>）をやさしく可視化します。※エンタメ自己理解用。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=ぜんぜん／1=あまり／2=ときどき／3=よく／4=とても）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全18問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー：トップ因子画像＋ランクバッジ -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/hsp-heart/01.png" alt="結果イメージ" loading="lazy" width="1200" height="1200">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div class="capline" id="heroTitle">—</div>
+            <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
+            <span class="rank-chip" id="rankChip" title="総合ランク" aria-label="総合ランク" hidden>
+              <img id="rankImg" src="/shindan/assets/results/hsp-heart/rank-01.png" alt="ランク画像" loading="lazy" width="24" height="24">
+              <span id="rankLabel" class="small">—</span>
+            </span>
+          </div>
+          <div class="poem" id="heroPoem">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+
+          <!-- 共有 -->
+          <div class="share-row" id="shareRow" hidden>
+            <a id="shareTw" class="btn tw" href="#" target="_blank" rel="noopener">Xで共有</a>
+            <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
+            <a id="shareIg" class="btn ig" href="#" aria-label="Instagramでシェア">Instagramでシェア</a>
+          </div>
+        </figcaption>
+      </div>
+
+      <!-- 数値 -->
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>総合（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">因子別スコア</h3>
+        <div id="bars" class="factor-mini"><!-- JS --></div>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- 長文（拡張コメント＋ミニTips） -->
+      <div id="longCopy" class="small"><!-- JS --></div>
+
+      <div class="hr"></div>
+
+      <!-- 下位因子のポイント -->
+      <div class="section" id="lowSec" hidden>
+        <h3 style="margin:8px 0">下位因子のポイント（軽め）</h3>
+        <ul class="small" id="lowHints" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- 研究メモ（行頭「ある研究では、」） -->
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"><!-- JS --></ul>
+        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差が大きい性質があります。医療・採用などの用途には使えません。</p>
+      </details>
+
+      <div class="back-area" style="margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断（医療・採用など）には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
+    データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+/* ★ indexカード（貼り付け用）
+<!-- ★ HSPハート診断（5ランク） -->
+<a class="link" href="/shindan/hsp-heart.html?src=specimens"
+   data-id="hsp-heart" data-tags="こころ,ふつう,しっかり" data-mins="6" data-updated="2025-10-03"
+   data-keywords="HSP 繊細 感受性 刺激 共感 五感 美的 回復 境界 可視化 診断">
+  <span class="emo">💗</span>
+  <div class="body">
+    <div class="ttl">HSPハート診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で6因子を％化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤの5ハート。</div>
+    <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#ふつう</span><span class="pill">#しっかり</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+*/
+
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "hsp-heart";
+  var TITLE = "HSPハート診断 ─ こころの繊細さをやさしく可視化";
+  var IMG_BASE = "/shindan/assets/results/hsp-heart/"; // 末尾/
+  var ANS_KEY = "specimens:"+SLUG+":answers"; // 回答保存キー
+
+  // ====== ランク定義（総合%しきい値） ======
+  var THRESH = { R1:80, R2:65, R3:50, R4:35, R5:0 };
+  var RANKS = {
+    R1:{name:"ガラスハート",  label:"繊細さが光る",      img:"rank-01.png",
+        one:"細やかな感受性があなたの持ち味。深い処理や美的感受で、日常のニュアンスをていねいに受け取れます。",
+        long:"あなたは小さな変化にもすぐ気づけて、言葉や音、景色にふかく心が動くタイプ。だからこそ人に寄りそえ、選択もていねい。ただ、刺激が多い日は電池が切れやすい。予定の前後に“静かな10分”を入れ、明るさ・音・香りを少し整え、用事のあいだに余白を作っておこう。繊細さは守れば光る、大切な強みだよ。",
+        care:"今日は予定の前後に“静かな10分”＋水分をひと口。",
+        more:[
+          "おすすめ環境：静かで光量と香りを自分で調整できる場所。",
+          "相性の良い工夫：通知を一時ミュート、音・光・匂いを1つずつ整える。",
+          "人間関係：深呼吸＋「今は聞き手でいるね」で境界を保つ。"
+        ]},
+    R2:{name:"ベルベットハート",label:"やわらかな共感",  img:"rank-02.png",
+        one:"感受性としなやかさのバランスが心地よいタイプ。場面に合わせて感度をやさしく調整できます。",
+        long:"共感や美しさへの感度を保ちながら、切り替えもできる落ち着いた状態。さらに心地よくするなら、休み方や切り替え（REC）を少しだけ整えてみましょう。集中前にノイズを1つ減らす、誘いは“別日提案”にしてみるなど、小さな選択の積み重ねがそっと助けになります。",
+        care:"今日は“音”だけ整えてみる、のように焦点を1つだけ。",
+        more:[
+          "おすすめ環境：適度な刺激があり、音量を自分で調整できる場所。",
+          "相性の良い工夫：集中前にノイズ源を1つだけ減らす（席替え/扇風機OFFなど）。",
+          "人間関係：共感の時間の後は白湯や2分散歩でゆるくクールダウン。"
+        ]},
+    R3:{name:"クォーツハート", label:"ほどよい感度",      img:"rank-03.png",
+        one:"場面によって繊細さが顔を出すタイプ。少しの設計でより扱いやすくなります。",
+        long:"刺激には比較的強い一方、続くと疲れやすいときも。必要な場面でだけ DOP/SNS を意識して使うと相性が良さそう。大きな判断前の5分メモや、席・光の選び直しなど、どれか一つだけ整えるだけでも手応えが変わるかもしれません。",
+        care:"大事な予定の前後だけ“低刺激モード”を意識。",
+        more:[
+          "おすすめ環境：場面に合わせて感度を切り替えやすい場所。",
+          "相性の良い工夫：大事な前に5分メモ＋席・光・通知の『一つだけ』を整える。",
+          "人間関係：波を受けたら「事実→感想→希望」で短く言葉にしてみる。"
+        ]},
+    R4:{name:"ステンレスハート",label:"しなやかに丈夫",  img:"rank-04.png",
+        one:"環境の変化にも落ち着いていられるタイプ。観察をひと呼吸足すと、選択がさらに滑らかになります。",
+        long:"騒がしさや予定の変化にも落ち着いていられる穏やかな基盤。会話の前にひと呼吸おいて、表情や声色をそっと眺めると、伝わり方がやさしく整うかもしれません。",
+        care:"返答の前に小さく“1拍置く”を合図に。",
+        more:[
+          "おすすめ環境：変化の多い場でも過ごしやすい傾向。観察をひと呼吸加えると安心。",
+          "相性の良い工夫：返答前に1拍おき、表情と声色をそっと確認すると行き違いが減りやすい。",
+          "人間関係：要件→感情→要望の順で聞くと合意にたどり着きやすい。"
+        ]},
+    R5:{name:"ダイヤモンドハート",label:"とても丈夫",     img:"rank-05.png",
+        one:"刺激や変化にとても強いタイプ。必要な場面だけ繊細さをそっと呼び出す使い方が合いそうです。",
+        long:"決断の速さや行動力が持ち味。ふだんは繊細さを強めに意識しなくても大丈夫。大切な場面だけ DOP/SNS をそっと意識して“呼び出す”と、精度やコミュニケーションがほどよく整います。チェックリストや確認のひと言を手元に置いておくと安心です。",
+        care:"始める前に“5分メモ＋確認のひと言”を。",
+        more:[
+          "おすすめ環境：テンポの速い場。繊細さは必要な時だけ意識してON。",
+          "相性の良い工夫：チェックリスト化＋確認のひと言を手元に置いておくと安心。",
+          "人間関係：会議の最初に目的を確認し、要点を短く箇条書きに。"
+        ]}
+  };
+
+  // ====== 因子・設問 ======
+  var FACTORS = {
+    DOP:{ name:"深い処理",           items:["Q01","Q02","Q03"], img:"01.png", alt:"物事を深く味わう心" },
+    OVS:{ name:"刺激オーバー",       items:["Q04","Q05","Q06"], img:"02.png", alt:"刺激に圧倒されやすい心" },
+    EMO:{ name:"情動共鳴",           items:["Q07","Q08","Q09"], img:"03.png", alt:"共鳴する心" },
+    SNS:{ name:"五感の細やかさ",     items:["Q10","Q11","Q12"], img:"04.png", alt:"細部に気づく心" },
+    AES:{ name:"美的感受",           items:["Q13","Q14","Q15"], img:"05.png", alt:"美に動く心" },
+    REC:{ name:"回復と境界",         items:["Q16","Q17","Q18"], img:"06.png", alt:"回復と境界の心" }
+  };
+
+  var ITEMS = [
+    {id:"Q01",text:"出来事の意味を考え、後から新しい気づきが出てくる。"},
+    {id:"Q02",text:"結論を急がず、いったん「保留」で置ける。"},
+    {id:"Q03",text:"考えが浅いまま勢いで決めて後悔しがちだ。",rev:true},
+    {id:"Q04",text:"人混みや大音量の場所でヘトヘトになりやすい。"},
+    {id:"Q05",text:"騒がしい環境でもほとんど気にならない。",rev:true},
+    {id:"Q06",text:"予定が詰まると、刺激に圧倒されやすい。"},
+    {id:"Q07",text:"相手の表情のわずかな変化に気づいて気にかける。"},
+    {id:"Q08",text:"つらい話を聞いた後、自分の気分が引きずられる。"},
+    {id:"Q09",text:"他人の感情にほとんど影響されない。",rev:true},
+    {id:"Q10",text:"照明・香り・衣類のタグなど細部の不快に敏感。"},
+    {id:"Q11",text:"空気の温度や質感の小さな差にも気づくことがある。"},
+    {id:"Q12",text:"部屋の雑然さやノイズに気づきにくい。",rev:true},
+    {id:"Q13",text:"音楽や言葉、景色に胸がじんとすることが多い。"},
+    {id:"Q14",text:"小さな工芸や所作の美しさに強く惹かれる。"},
+    {id:"Q15",text:"芸術や自然にあまり心が動かない。",rev:true},
+    {id:"Q16",text:"疲れたら静かな時間を確保する工夫ができる。"},
+    {id:"Q17",text:"無理な誘いに「今日はやめておくね」と言える。"},
+    {id:"Q18",text:"疲れてもつい無理を続けてしまう。",rev:true}
+  ];
+
+  var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
+  var REVERSED = new Set(["Q03","Q05","Q09","Q12","Q15","Q18"]);
+  var HYBRID_DELTA = 8; // 1位と2位が近い時の表記用
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroPoem = document.getElementById("heroPoem");
+  var heroCopy = document.getElementById("heroCopy");
+  var sizeBadgeEl= document.getElementById("sizeBadge");
+  var rankChip = document.getElementById("rankChip");
+  var rankImg  = document.getElementById("rankImg");
+  var rankLabel= document.getElementById("rankLabel");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumPct  = document.getElementById("sumPct");
+  var sumNote = document.getElementById("sumNote");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+  var shareRow= document.getElementById("shareRow");
+  var shareTw = document.getElementById("shareTw");
+  var shareLn = document.getElementById("shareLn");
+  var shareIg = document.getElementById("shareIg");
+  var lowSec  = document.getElementById("lowSec");
+  var lowHints= document.getElementById("lowHints");
+
+  // ====== 設問生成（保存・復元対応） ======
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  function buildQuestions(){
+    // ランダム順（固定にしたい場合は ITEMS.slice() に）
+    var order = shuffle(ITEMS.slice());
+    var html = "";
+    for(var i=0;i<order.length;i++){
+      var q = order[i];
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    qWrap.innerHTML = html;
+
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var r=0;r<radios.length;r++){
+      radios[r].addEventListener('change', function(){
+        saveAnswers(); updateProgress();
+      }, false);
+    }
+    restoreAnswers(); updateProgress();
+
+    // すべて埋まっていれば自動集計（再訪即表示）
+    if(countAnswered()===ITEMS.length){ score(true); }
+  }
+
+  // ====== 保存/復元 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=0;i<ITEMS.length;i++){
+        var id = ITEMS[i].id;
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+    }catch(e){}
+  }
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
+  function countAnswered(){
+    var n=0;
+    for(var i=0;i<ITEMS.length;i++){
+      if(qWrap.querySelector('input[name="q'+ITEMS[i].id+'"]:checked')) n++;
+    }
+    return n;
+  }
+
+  function updateProgress(){
+    var total = ITEMS.length;
+    var answered = countAnswered();
+    var pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    var bar = prog.parentElement;
+    if(bar){
+      bar.setAttribute("aria-valuenow", answered);
+      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+    }
+  }
+
+  // ====== スコア計算 ======
+  function valOf(id, raw){ var v=Number(raw); return REVERSED.has(id)?(4-v):v; }
+
+  function score(silent){
+    var missing = [];
+    var ans = {};
+    for(var i=0;i<ITEMS.length;i++){
+      var id = ITEMS[i].id;
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); continue; }
+      ans[id] = parseInt(chk.value,10);
+    }
+    if(missing.length){
+      if(!silent){
+        alert("未回答があります。全18問にお答えください。");
+        var fs = document.getElementById('fs-'+missing[0]);
+        if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      }
+      return;
+    }
+
+    var fScore = {}, fPct = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);
+      var avg = sum / ids.length; // 0-4
+      fScore[key] = avg;
+      fPct[key] = Math.round((avg/4)*100);
+    });
+
+    var keys = Object.keys(FACTORS);
+    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;
+    var totalPct = Math.round((totalAvg/4)*100);
+
+    var order = keys.slice().sort(function(a,b){ return fPct[b]-fPct[a]; });
+    var top = order[0], second = order[1];
+    var diff = fPct[top]-fPct[second];
+    var hybrid = (diff<=HYBRID_DELTA);
+
+    var rankKey = (totalPct>=THRESH.R1)?"R1":(totalPct>=THRESH.R2)?"R2":(totalPct>=THRESH.R3)?"R3":(totalPct>=THRESH.R4)?"R4":"R5";
+
+    render({ fScore, fPct, totalAvg, totalPct, top, second, diff, hybrid, rankKey, order });
+  }
+
+  function render(o){
+    var topDef = FACTORS[o.top];
+    var rank = RANKS[o.rankKey];
+
+    // タイトル行
+    var typeText = 'トップ因子：'+topDef.name + (o.hybrid ? ' ／ 第2位：'+FACTORS[o.second].name+'（差 '+o.diff+'%）' : '');
+    typeLine.textContent = typeText;
+
+    // ヒーロー（トップ因子画像）＋ランク
+    heroImg.src = IMG_BASE + topDef.img;
+    heroImg.alt = topDef.alt;
+    heroTitle.textContent = topDef.name + (o.hybrid ? ' × '+FACTORS[o.second].name : '');
+    heroPoem.textContent  = '繊細さの扱い方を、6因子でやさしく可視化。';
+    heroCopy.textContent  = rank.one;
+    sizeBadgeEl.textContent = "総合 " + o.totalAvg.toFixed(2) + " / 4.00";
+    rankImg.src = IMG_BASE + rank.img;
+    rankLabel.textContent = rank.name + "（" + rank.label + "）";
+    rankChip.hidden = false;
+
+    // 総合
+    sumAvg.textContent = o.totalAvg.toFixed(2);
+    sumPct.textContent = "= " + o.totalPct + "%";
+    sumNote.textContent = "ランク："+rank.name+"（"+rank.label+"）";
+
+    // 因子バー
+    var bHtml = "";
+    Object.keys(FACTORS).forEach(function(key){
+      var def = FACTORS[key];
+      var avg = o.fScore[key], pct = o.fPct[key];
+      bHtml += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+avg.toFixed(2)+' / 4</span>'+
+        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = bHtml;
+
+    // 長文（拡張）
+    var list = (rank.more||[]).map(function(s){ return '<li>'+s+'</li>'; }).join('');
+    longCopy.innerHTML = '<p>'+rank.long+'</p><ul style="margin:6px 0 0 18px;line-height:1.8">'+list+'</ul><p style="margin-top:6px"><b>1行ケア：</b>'+rank.care+'</p>';
+
+    // 下位因子のポイント（2つ）
+    var orderAsc = o.order.slice().reverse(); // 低い→高い
+    var lows = orderAsc.slice(0,2);
+    var LOW_HINT = {
+      DOP:"意思決定の速さは強み。大事な場面だけ“5分メモ”で根拠を足すと精度がやさしく上がります。",
+      OVS:"刺激に比較的強め。『疲れの前触れサイン』を1つ決めて、休憩の合図に。",
+      EMO:"引きずられにくいのは長所。『事実→感想→希望』の言い換えを用意しておくと安心。",
+      SNS:"小さな不快にとらわれにくく集中しやすい。大事な場だけ席や光を選び直すとよさそう。",
+      AES:"美に左右されにくい堅実さ。BGMや香りを1つ足すと、気分のやさしいスイッチになります。",
+      REC:"踏ん張りが利くタイプ。『今日はここまで』の合図で、持ち越しの疲れをやわらげましょう。"
+    };
+    var lowList = lows.map(function(k){
+      return '<li><b>'+FACTORS[k].name+'</b>：'+LOW_HINT[k]+'</li>';
+    }).join('');
+    if(lowList){
+      lowHints.innerHTML = lowList;
+      lowSec.hidden = false;
+    }
+
+    // 研究メモ（「ある研究では、」で始める）
+    var memo = [
+      "ある研究では、感覚処理の敏感さは深い情報処理や創造性と結びつく示唆。",
+      "ある研究では、過剰な刺激（音・光・人混み）が疲労や集中低下と関連し、環境調整が助けになる可能性。",
+      "ある研究では、情動の共鳴は援助行動や対人満足に関わる一方、引きずりが課題になることがある示唆。",
+      "ある研究では、計画的な休息・切替（回復と境界）がパフォーマンス維持に役立つ可能性。",
+      "ある研究では、曖昧さ耐性や再評価（reappraisal）が情動調整と関連する報告。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // ==== 共有リンク生成 ====
+    var shareText = '『HSPハート診断』ランク：' + rank.name + '（' + rank.label + '）｜総合 ' + o.totalAvg.toFixed(2) + ' / 4';
+    var url = location.href.split('#')[0];
+
+    // X（Twitter Intentを利用）
+    var tw = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+    if (shareTw) shareTw.href = tw;
+
+    // LINE
+    var ln = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url);
+    if (shareLn) shareLn.href = ln;
+
+    // Instagram（キャプションコピー→アプリ/WEB）
+    if (shareIg) {
+      shareIg.onclick = function(e){
+        e.preventDefault();
+        var caption = shareText + ' ' + url;
+        copyToClipboard(caption).then(function(){
+          var opened = false;
+          try{ var w = window.open('instagram://app','_blank'); opened = !!w; }catch(_){}
+          if(!opened){ window.open('https://www.instagram.com/','_blank'); }
+          toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+        });
+      };
+    }
+    if (shareRow) shareRow.hidden = false;
+
+    // 表示
+    resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // 共有ヘルパー
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)';
+    t.style.background='rgba(43,35,48,.92)'; t.style.color='#fff';
+    t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },1500);
+  }
+
+  // クリア
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+    wipeAnswers();
+    prog.style.width = "0%";
+    resEmpty.style.display = "";
+    resArea.style.display = "none";
+    var app = document.getElementById("app");
+    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // 初期化
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ buildQuestions(); });
+  }else{
+    buildQuestions();
+  }
+  document.getElementById("doScore").addEventListener("click", function(){ score(false); }, false);
+  document.getElementById("doScore2").addEventListener("click", function(){ score(false); }, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{
+        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      }catch(e){}
+    }, false);
+  }
+})();
+</script>
+</body>
+</html>
