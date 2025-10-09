@@ -175,34 +175,37 @@ dl.likes dd{margin:0;color:var(--muted)}
 details p.small{line-height:1.8}
 
 /***** 🎰 gacha slots *****/
-.gacha{margin:8px 0 12px;padding:10px 12px;background:#fbf4dd;border:2px dashed var(--ring);border-radius:8px;text-align:center}
+.gacha{
+  display:block; width:100%; max-width:520px;
+  margin:10px auto 14px; padding:12px 14px;
+  background:#fbf4dd; border:2px dashed var(--ring); border-radius:10px;
+  text-align:center; box-sizing:border-box;
+}
 .gacha .hint{color:var(--muted);font-size:.92rem;margin:0 0 6px}
-.reels{display:flex;justify-content:center;gap:8px;margin:6px 0 8px}
-.reel{width:58px;height:58px;border:2px solid var(--frame);background:#f6ecd1;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;font-size:30px;
-  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
-.gacha .btn{padding:6px 14px;border:2px solid var(--frame);background:#f3e1c4;border-radius:999px;font-weight:800;letter-spacing:.02em;cursor:pointer}
+.reels{
+  display:flex; justify-content:center; align-items:center;
+  gap:10px; margin:8px 0;
+}
+.reel{
+  width:60px; height:60px;
+  border:2px solid var(--frame); background:#f6ecd1; border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-size:30px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)
+}
+.gacha .btn{
+  padding:6px 14px; border:2px solid var(--frame); background:#f3e1c4;
+  border-radius:999px; font-weight:800; letter-spacing:.02em; cursor:pointer
+}
 .gacha .btn[disabled]{opacity:.6;cursor:default}
 .gacha.shake{animation:slotshake .3s}
-@keyframes slotshake{20%{transform:translateX(-2px)}40%{transform:translateX(2px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
-/* === mobile tidy: 強制 <br> をスマホでは抑制して自然改行に === */
-@media (max-width:560px){
-  .hl .txt{ line-height:1.95; white-space:normal; }
-  .hl .txt br{ display:initial; } /* ← 改行を有効化 */ 
+@keyframes slotshake{
+  20%{transform:translateX(-2px)}40%{transform:translateX(2px)}
+  60%{transform:translateX(-2px)}80%{transform:translateX(2px)}
 }
-/* セクション見出し周りの上下バランスを微調整 */
+/* SPは端まで広げる */
 @media (max-width:560px){
-  .card h2{ padding-top:6px; }
-}
-/* === header badges: スマホでの重なり回避（さらに小さく・離す） === */
-@media (max-width:560px){
-  .poster{ padding-top:72px; padding-bottom:20px; margin:12px 0 32px; }
-  .stamp-big{ top:6px; right:6px; transform:rotate(-6deg) scale(.78); z-index:1; }
-  .bounty{ top:6px; left:6px;  transform:rotate(4deg)  scale(.78);  z-index:1; }
-}
-/* 各カードの赤い小スタンプも少し控えめにして被りを減らす */
-@media (max-width:560px){
-  .stamp{ top:-10px; right:8px; transform:rotate(-4deg) scale(.92); }
+  .gacha{max-width:100%; margin-left:auto; margin-right:auto}
+  .reel{width:54px; height:54px; font-size:28px}
 }
 /* === back to list button === */
 .btn-back{
@@ -212,11 +215,17 @@ details p.small{line-height:1.8}
   color:var(--ink); text-decoration:none;
 }
 .btn-back:active{ transform:translateY(1px); }
-@media (max-width:560px){ .btn-back{ position:sticky; top:8px; z-index:50; } }
+@media (max-width:560px){
+  .poster{ padding-top:78px; padding-bottom:20px; margin:12px 0 32px; }
+  .stamp-big{ top:6px; right:-10px; transform:rotate(-6deg) translateX(16px) scale(.78); z-index:1; }
+  .bounty   { top:6px; left:-10px;  transform:rotate( 4deg) translateX(-16px) scale(.78); z-index:1; }
+}
 
 /* === header badges: さらに縮小＆重なり回避（SP） === */
 @media (max-width:560px){
-  .stamp{ top:-8px; right:8px; transform:rotate(-4deg) scale(.90); }
+  #sec-big5 .poster{ padding-top:78px; }
+  #sec-big5 .stamp-big{ top:6px; right:-8px; transform:rotate(-6deg) translateX(16px) scale(.72); }
+  #sec-big5 .bounty{    top:6px; left:-8px;  transform:rotate( 4deg) translateX(-16px) scale(.72); }
 }
 /* 特徴パネルを少し詰めて読みやすく（性格/恋愛だけ） */
 #sec-big5 .hl .txt.small,
@@ -289,6 +298,7 @@ details p.small{ line-height:2.0; }
   #sec-big5 .stamp-big{ top:6px; right:6px; transform:rotate(-6deg) scale(.72); }
   #sec-big5 .bounty{    top:6px; left: 6px; transform:rotate( 4deg) scale(.72); }
 }
+
 </style>
 </head>
 <body>
@@ -310,22 +320,26 @@ details p.small{ line-height:2.0; }
     <h2 id="h-big5">📘 性格（Big Five）</h2>
 
     <div class="hl">
-      <span class="tag">特徴</span>
-      <p class="txt small">
-　<b>開放性は満点。</b>新しい知識や比喩の遊びはごちそう、未知へまっすぐ。<br>
-　<b>誠実性は高く</b>、段取り・責任・やり切りが得意。「決めたらやる」を静かに継続。<br>
-　<b>外向性は控えめ</b>でも社交性は高め。呼ばれた場では自然に馴染み、<br>
-　自己主張は弱めだからこそ合意形成が上手。テンポは穏やか。<br>
-　人混みより“少人数でじっくり”がしっくり。<br>
-　<b>神経症傾向は“瞬間の衝動”</b>だけ強めに出やすいが、怒り・不安は低めで長引かない<br>
-　ダメージは深くても短く、翌朝には理由で整えるタイプ。</p>
-    </div>
+  <span class="tag">特徴</span>
+  <div class="txt small preline">
+<b>開放性は満点。</b> 新しい知識や比喩の遊びはごちそう、未知へまっすぐ。
+
+<b>誠実性は高く</b>、段取り・責任・やり切りが得意。「決めたらやる」を静かに継続。
+
+<b>外向性は控えめ</b>でも社交性は高め。呼ばれた場では自然に馴染み、自己主張は弱めだからこそ合意形成が上手。テンポは穏やか。人混みより“少人数でじっくり”。
+
+<b>神経症傾向は「瞬間の衝動」</b>だけ強めに出やすいが、怒り・不安は低めで長引かない。ダメージは深くても短く、翌朝には理由で整えるタイプ。
+  </div>
+  
 <div class="hl">
   <span class="tag">禁忌</span>
-  <p class="txt small"><br>
-　根拠のない断定・見下し／強い圧・強要／理由のない拒絶や突然のルール変更／勝ち負けだけの議論。<br>
-　話す時は<b>「わたしはこう思う」＋理由</b>で感性をすり合わせたい<br>
-  </p>
+  <div class="txt small preline">
+【禁忌】
+
+根拠のない断定や見下し／強い圧や強要／理由のない拒絶や突然のルール変更／勝ち負けだけの議論。
+
+話す時は <b>「わたしはこう思う」＋理由</b> で、すり合わせていきたい。
+  </div>
 </div>
     <div class="radar">
       <canvas id="radar-big5" width="560" height="560" aria-label="Big Five レーダーチャート"></canvas>
@@ -864,51 +878,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderRadarAll();
 });
 </script>
-<!-- ▼ Big Five 下位因子：読者向けテキストを適用（追記） ▼ -->
+<!-- ▼ Big Five 下位因子：読者向けテキスト（段落スタイル） ▼ -->
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   var map = {
-  // 01（＝スコア順で最上位に表示される項目：たぶん開放性）
-  '[[BIG5_TEND_01]]':
-    '<b>傾向：</b> 好奇心のスイッチが入りやすいタイプ。知らないものを見つけると「ちょっと触ってみたい」が自然に出ます。'
-    + '<br><b>うれしい：</b> 新しい視点・比喩で遊ぶ会話、アートや自然の共有。'
-    + '<br><b>苦手：</b> 正解を急ぐ／型にはめる進め方。'
-    + '<br><b>コツ：</b> アイデアは「小さく試す → 一言ふりかえり」で現実に落とす。',
-
-  // 02（＝次点：たぶん誠実性）
-  '[[BIG5_TEND_02]]':
-    '<b>傾向：</b> 計画・責任・やり切る力が強い。丁寧に仕上げるのが得意。'
-    + '<br><b>うれしい：</b> 目的と基準が先に決まっている／「ここまででOK」の合図。'
-    + '<br><b>苦手：</b> ゴール不明・締切なしの依頼。'
-    + '<br><b>コツ：</b> Done基準を先に共有し、小さな区切りと休む合図を決めてから始める。',
-
-  // 03（＝3番手：たぶん協調性）
-  '[[BIG5_TEND_03]]':
-    '<b>傾向：</b> 親切で率直。取り繕うより、公平に本音で話すのが好き。'
-    + '<br><b>うれしい：</b> 結論だけでなく「なぜそう思うか」を一緒にたどる対話。'
-    + '<br><b>苦手：</b> 見下し／根拠のない断定／気持ちの置き去り。'
-    + '<br><b>コツ：</b> まず相手の要点を一度要約→提案は短く、選択肢で渡す。',
-
-  // 04（＝4番手：たぶん外向性は低め）
-  '[[BIG5_TEND_04]]':
-    '<b>傾向：</b> にぎやかな場より、少人数で深く話すと力が出る。自己主張は控えめ。'
-    + '<br><b>うれしい：</b> 静かな環境／事前にテーマがわかる時間／「ただ隣にいる」時間。'
-    + '<br><b>苦手：</b> 大人数の雑談の連続／即興で強い自己主張を求められる場。'
-    + '<br><b>コツ：</b> 役割は“裏方の設計者”。進行は順番制・発言のパス権を用意。',
-
-  // 05（＝5番手：たぶん神経面は中くらい＋拒絶に敏感）
-  '[[BIG5_TEND_05]]':
-    '<b>傾向：</b> ふだんは落ち着きめ。不誠実や理由のない変化には敏感。'
-    + '<br><b>うれしい：</b> 予定変更や温度差に「理由ひと言」＋再接続の約束。'
-    + '<br><b>苦手：</b> 未読スルー／曖昧な関係の長期化。'
-    + '<br><b>コツ：</b> 「いったん保留」「10秒呼吸」などの合図を共通言語にしておく。'
-};
+    '[[BIG5_TEND_01]]': '【傾向】\n好奇心のスイッチが入りやすいタイプ。知らないものを見つけると「ちょっと触ってみたい」が自然に出ます。\n\n【うれしい】\n新しい視点・比喩で遊ぶ会話、アートや自然の共有。\n\n【苦手】\n正解を急ぐ／型にはめる進め方。\n\n【コツ】\nアイデアは「小さく試す → 一言ふりかえり」で現実に落とす。',
+    '[[BIG5_TEND_02]]': '【傾向】\n計画・責任感・達成志向が高いタイプ。やると決めたら丁寧に仕上げます。\n\n【うれしい】\n最初に目的・基準・締切の共有。「ここまででOK」の合図。\n\n【苦手】\n基準が曖昧なまま走ること。\n\n【コツ】\n段取り→進捗の見える化→完了宣言、の三拍子。',
+    '[[BIG5_TEND_03]]': '【傾向】\n親切で率直。合わせて取り繕うより、公平に本音で話すのが好き。\n\n【うれしい】\n結論だけでなく「なぜそう思うか」の共有。\n\n【苦手】\n感情の置き去りや、言いっぱなしの正論。\n\n【コツ】\nまず気持ちを受け止めてから意見交換。',
+    '[[BIG5_TEND_04]]': '【傾向】\nにぎやかな場より、少人数で深く話すと力が出ます。自己主張は控えめでも親しい人とはよく話す。\n\n【うれしい】\n設計・準備・改善など“裏方”役。\n\n【苦手】\n突然の指名や大声の争い。\n\n【コツ】\n合図を決めて順番に話す／書いて整える。',
+    '[[BIG5_TEND_05]]': '【傾向】\n見た目は落ち着いていますが、拒絶や理由のない変化には敏感。静かになるのはクールダウンの合図。\n\n【うれしい】\n「少し休んでから話そう」「理由はこうだよ」と添える一言。\n\n【苦手】\n急かす・無言の圧。\n\n【コツ】\nタイムアウト→再開時間を決めて対話再開。'
+  };
 
   var box = document.getElementById('big5-details');
   if (!box) return;
-  // 生成済みの details 内テキストをマップで置換
   box.innerHTML = box.innerHTML.replace(/\[\[BIG5_TEND_\d{2}\]\]/g, function(k){
-    return (k in map) ? map[k] : '';
+    return (k in map) ? map[k].replace(/\n/g,'<br>') : '';
   });
 });
 </script>
