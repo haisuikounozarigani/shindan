@@ -98,7 +98,8 @@ body{
   margin:18px 0; position:relative; z-index:1;
 }
 .stamp{
-  position:absolute; right:4px; top:-14px; transform:rotate(-6deg);
+  position:absolute; right:-6px; top:-14px;          /* ほんの少しだけ外へ */
+  transform:rotate(-6deg) translateX(10px);          /* 被りを避けて右へ */ transform:rotate(-6deg);
   padding:6px 10px; border:2px solid #b5342b; color:#b5342b; font-weight:900;
   background:#f6e6cb; border-radius:6px; letter-spacing:.08em;
   box-shadow:0 8px 18px rgba(0,0,0,.16)
@@ -307,6 +308,28 @@ details p.small{ line-height:2.0; }
   margin:8px 0 10px;
   clear:both;               /* 横並びレイアウトの回り込みを防ぐ */
 }
+/* 見出しの右にスタンプ用のスペースを確保 */
+#sec-big5 .cap,
+#sec-love .cap,
+#sec-schema .cap,
+#sec-nonverbal .cap{
+  padding-right: 92px;
+}
+@media (max-width:560px){
+  #sec-big5 .cap,
+  #sec-love .cap,
+  #sec-schema .cap,
+  #sec-nonverbal .cap{
+    padding-right: 106px; /* SPは少し多めに確保 */
+  }
+}
+/* 🎰 ロック表示 */
+.locked{ display:none !important; }
+.lock-note{
+  text-align:center; color:var(--muted); font-size:.95rem; margin:6px 0 0;
+}
+/* 🎰 箱の直後に来る要素が横並びに回り込まないように */
+#sec-big5 .gacha + *{ clear:both; }
 </style>
 </head>
 <body>
@@ -1282,6 +1305,91 @@ document.addEventListener('DOMContentLoaded', function(){
     new MutationObserver(function(){ placeBig5SumTitle(); })
       .observe(sec, {subtree:true, childList:true});
   }
+})();
+</script>
+<script>
+// === Big5: スロット解放ガード（総評 / 各傾向） ==========================
+(function(){
+  var sec = document.getElementById('sec-big5');
+  if(!sec) return;
+
+  // sec 内の gacha を取得（1個目=総評, 2個目=各傾向）
+  var gachas = sec.querySelectorAll('.gacha');
+  if(gachas.length === 0) return;
+
+  // 「1個目と2個目の間 = 総評」「2個目以降〜セクション終わり = 各傾向」
+  var g1 = gachas[0];
+  var g2 = gachas[1] || null;
+
+  // 収集ヘルパー：a と b の間（b が無ければ a 以降〜セクション末）
+  function between(a, b){
+    var out = [];
+    var node = a.nextElementSibling;
+    while(node && node !== b){
+      out.push(node);
+      node = node.nextElementSibling;
+    }
+    return out;
+  }
+  var groupSUM  = between(g1, g2);
+  var groupLIST = g2 ? between(g2, null) : [];
+
+  // キー
+  var K_SUM  = 'slot_b5_sum';
+  var K_LIST = 'slot_b5_list';
+
+  // ロック/解除
+  function setLock(nodes, locked){
+    nodes.forEach(function(el){
+      if(!el) return;
+      el.classList.toggle('locked', !!locked);
+      // ロック中だけ案内文を最初の箱の直後に出す（重複防止）
+      if(locked && !sec.querySelector('.lock-note')){
+        var p = document.createElement('p');
+        p.className = 'lock-note';
+        p.textContent = '🎰 スロットで開放されます。';
+        (g1 || sec).insertAdjacentElement('afterend', p);
+      }
+    });
+  }
+
+  // 初期表示
+  var sumOpened  = localStorage.getItem(K_SUM)  === '1';
+  var listOpened = localStorage.getItem(K_LIST) === '1';
+  setLock(groupSUM,  !sumOpened);
+  setLock(groupLIST, !listOpened);
+
+  // スロットの抽選（25% 当たり）
+  function bindGacha(btn, key, group){
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+      var box = btn.closest('.gacha');
+      if(!box) return;
+      box.classList.add('shake');
+      setTimeout(function(){ box.classList.remove('shake'); }, 320);
+
+      // 25%当選
+      var win = Math.random() < 0.25;
+      // 絵柄を演出（ここはシンプルに）
+      var reels = box.querySelectorAll('.reel');
+      var faces = win ? ['🐱','🐱','🐱'] : ['🍒','⭐','🍒'];
+      reels.forEach(function(r,i){ r.textContent = faces[i] || '🍒'; });
+
+      if(win){
+        localStorage.setItem(key, '1');
+        setLock(group, false);
+        // 開放メッセージ
+        var ok = document.createElement('p');
+        ok.className = 'lock-note';
+        ok.textContent = '✅ 開放されました。スクロールしてお楽しみください。';
+        box.insertAdjacentElement('afterend', ok);
+      }
+    });
+  }
+
+  // ボタン取得（各 .gacha 内の .btn を期待）
+  bindGacha(g1 && g1.querySelector('.btn'), K_SUM,  groupSUM);
+  bindGacha(g2 && g2.querySelector('.btn'), K_LIST, groupLIST);
 })();
 </script>
 </body>
