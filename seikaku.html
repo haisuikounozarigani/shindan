@@ -375,6 +375,14 @@ html,body{overflow-x:hidden;}
 /* 既存の <p class="preline"> ラッパの段落ズレを抑える（見た目のみフラット化） */
 #sec-big5 .body > p.preline{display:contents;}
 /***** --- end mobile fix --- *****/
+/***** --- stamp 左寄せ 微調整（PERSONALITY／LOVE／SCHEMA／NONVERBAL） --- *****/
+/* 以前の right: clamp(-18px, -3vw, -8px); を上書きして少しだけ左へ寄せる */
+.stamp-big{ right: clamp(8px, 2.2vw, 16px) !important; }
+/* セクションごとの別名スタンプも一括で微調整 */
+[class*="stamp-"], .stamp, .stamp-love, .stamp-schema, .stamp-personality, .stamp-nonverbal{
+  right: clamp(8px, 2.2vw, 16px) !important;
+}
+/***** --- /stamp 左寄せ 微調整 --- *****/
 </style>
 </head>
 <body>
@@ -714,22 +722,22 @@ html,body{overflow-x:hidden;}
   <div class="hr"></div>
   <dl class="likes">
     <dt>食べもの</dt>
-    <dd>ラーメン／からあげ／カレー／ピザ／寿司／焼き肉／ハンバーグなど<b>子どもが好きな食べ物</b>全般。</dd>
+    <dd>ラーメン<br>からあげ<br>カレー<br>ピザ<br>寿司<br>焼き肉<br>ハンバーグなど<b>子どもが好きな食べ物全般。</dd>
 
     <dt>スイーツ</dt>
-    <dd>マドレーヌ／チョコ／パフェ／ストロベリー系／アイスワッフル／大学芋。</dd>
+    <dd>マドレーヌ<br>チョコ<br>パフェ<br>ストロベリー系<br>アイスワッフル<br>大学芋。</dd>
 
     <dt>場所</dt>
-    <dd>自然・きれいな場所・落ち着くカフェ・動物がいるところ。</dd>
+    <dd>自然<br>きれいな場所<br>落ち着くカフェ<br>動物がいるところ。</dd>
 
     <dt>趣味</dt>
-    <dd>喫茶店めぐり／猫の下僕／料理／自然散策／芸術鑑賞／筋トレ／勉強。</dd>
+    <dd>喫茶店めぐり<br>猫の下僕<br>料理<br>自然散策<br>芸術鑑賞<br>筋トレ<br>勉強。</dd>
 
     <dt>音楽</dt>
-    <dd>クリープハイプ／石崎ひゅーい／クラシック／自然の音／ちょっと変な音楽。</dd>
+    <dd>クリープハイプ<br>石崎ひゅーい<br>クラシック<br>自然の音<br>ちょっと変な音楽。</dd>
 
     <dt>動物</dt>
-    <dd>猫😻／ナマケモノ／ペンギン／犬。<br>基本的に、動物はなんでも好き。</dd>
+    <dd>猫😻<br>ナマケモノ<br>ペンギン<br>犬。<br>基本的に、動物はなんでも好き。</dd>
   </dl>
 </section>
 <!-- END:好きなもの -->
@@ -1135,7 +1143,7 @@ el.textContent = pool[Math.floor(Math.random()*pool.length)];
     /* ===== 恋愛 ===== */
     var loveH3      = q('#sec-love h3');
     var loveDetails = q('#love-details');
-    if(loveH3 && loveDetails) makeGacha({ anchor: loveH3, target: loveDetails, icon:'🦥' });
+    if(loveH3 && loveDetails) makeGacha({ anchor: loveH3, target: loveDetails, icon:'??' });
 
     var loveSumH3   = q('#sum-love .sec-ttl');
     var loveSumBody = q('#sum-love .body');
@@ -1243,6 +1251,106 @@ el.textContent = pool[Math.floor(Math.random()*pool.length)];
   if(sec){
     new MutationObserver(function(){ placeBig5SumTitle(); })
       .observe(sec, {subtree:true, childList:true});
+  }
+})();
+</script>
+<style>
+/* === 好きなもの：縦並び＆きれいに折り返し === */
+#sec-likes .likes-grid{
+  display:grid; gap:14px 20px; grid-template-columns: 1fr 2.4fr;
+}
+#sec-likes .likes-term{
+  font-weight:700; letter-spacing:.06em; color:#3a2a1a;
+}
+#sec-likes .likes-desc{
+  line-height:2; color:#4a3a2a;
+  /* 日本語の自然な改行＋どこでも折り返せる保険 */
+  line-break: strict; word-break: keep-all; overflow-wrap:anywhere;
+}
+/* スラッシュの直後で折り返せるようにする */
+#sec-likes .likes-desc .wrap wbr{ display:inline; }
+
+/* モバイルは dt↑ / 内容↓ の縦並び */
+@media (max-width: 768px){
+  #sec-likes .likes-grid{ grid-template-columns: 1fr; }
+  #sec-likes .likes-term{ margin-top:10px; }
+  #sec-likes .likes-desc{ text-indent:0; }
+}
+</style>
+<script>
+/* === 「好きなもの」を縦並びに整形（table でも dl でもOK） === */
+(function(){
+  // 見出しテキストからセクションを特定（"好きなもの" を含む h2/h3 など）
+  const head = Array.from(document.querySelectorAll('h1,h2,h3,h4,.cap,.ttl,.heading'))
+    .find(el => /好きなもの/.test(el.textContent));
+  if(!head) return;
+
+  // セクション要素（見出しの一番近い section/article/div）を推定
+  const sec = head.closest('section,article,div') || head.parentElement;
+  if(!sec) return;
+  sec.id = sec.id || 'sec-likes';
+
+  // 既存の中身候補（table または dl）を探す
+  const tbl = sec.querySelector('table');
+  const dlist = sec.querySelector('dl');
+
+  // 新しいグリッドを用意
+  const grid = document.createElement('div');
+  grid.className = 'likes-grid';
+
+  // “／”や“/”の直後で折り返せるよう <wbr> を挿入
+  const addBreak = (txt) =>
+    txt.replace(/\/|／/g, '／<wbr>') // 半角/も全角に揃えつつ折り返し点を追加
+       .replace(/\s+/g,' ')          // 余分な空白整理
+       .trim();
+
+  const pushRow = (term, descHTML) => {
+    const dt = document.createElement('div');
+    dt.className = 'likes-term';
+    dt.textContent = term.trim();
+
+    const dd = document.createElement('div');
+    dd.className = 'likes-desc';
+    const span = document.createElement('span');
+    span.className = 'wrap';
+    span.innerHTML = addBreak(descHTML);
+    dd.appendChild(span);
+
+    grid.appendChild(dt);
+    grid.appendChild(dd);
+  };
+
+  if(tbl){
+    // table → 縦並び
+    Array.from(tbl.querySelectorAll('tr')).forEach(tr=>{
+      const tds = tr.querySelectorAll('th,td');
+      if(tds.length >= 2){
+        const term = tds[0].textContent || '';
+        const desc = tds[1].innerHTML || '';
+        pushRow(term, desc);
+      }
+    });
+    tbl.replaceWith(grid);
+  }else if(dlist){
+    // dl → 縦並び
+    const dts = dlist.querySelectorAll('dt');
+    dts.forEach(dt=>{
+      const dd = dt.nextElementSibling && dt.nextElementSibling.tagName.toLowerCase()==='dd'
+        ? dt.nextElementSibling : null;
+      if(dd){ pushRow(dt.textContent, dd.innerHTML); }
+    });
+    dlist.replaceWith(grid);
+  }else{
+    // フォールバック：見出し直下に並んだ .row などを探す
+    const rows = sec.querySelectorAll('.row, .likes-row');
+    if(rows.length){
+      rows.forEach(r=>{
+        const term = r.querySelector('.term, .left, .label')?.textContent || '';
+        const desc = r.querySelector('.desc, .right, .value')?.innerHTML || '';
+        if(term && desc) pushRow(term, desc);
+      });
+      rows[0].parentElement.replaceWith(grid);
+    }
   }
 })();
 </script>
