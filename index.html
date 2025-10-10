@@ -1,1356 +1,1095 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>指名手配書｜わたしの取扱説明（手配書版）</title>
-<meta name="theme-color" content="#e7d8b1">
-<meta name="format-detection" content="telephone=no">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>心の標本｜ゆめかわセレクター</title>
+<meta name="description" content="心の標本。検索とタグでサッと探せる、ゆめかわ診断の入口。">
+<meta name="theme-color" content="#ffeef7">
+<meta property="og:title" content="心の標本">
+<meta property="og:description" content="検索とタグでサッと探せる、ゆめかわ診断の入口。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/hero/specimens-hero-1080.png">
+<link rel="preload" as="image" href="/shindan/assets/hero/specimens-hero-1080.png">
 <style>
-	/* 好きになる入口：もう一段下げて見やすく */
-#sec-love .love-entry{ margin:14px 0 6px; }
-#sec-love .love-entry .tit{ font-weight:900; display:block; margin:6px 0 4px; }
 :root{
-  /* 手配書トーン */
-  --ink:#2a2115;         /* 本文インク（濃茶） */
-  --muted:#5c4b35;       /* 補助文字 */
-  --frame:#6e4a2f;       /* 枠（革/木枠の茶） */
-  --paper:#f3e7c9;       /* 古紙 */
-  --paper2:#e9dcba;      /* 外周の紙トーン */
-  --ring:#c9b486;        /* 細線 */
+  --bg1:#fff5fb;--bg2:#f3f4ff;--card:#fff;--line:#f1d9e8;--fg:#533e4a;--muted:#8b6c78;
+  --accent:#ff9ecf;--accent2:#b69cff;--chip:#f6eef8;--chipb:#eadffc
+}
+*{box-sizing:border-box} html,body{height:100%} html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;color:var(--fg);font-family:"Noto Sans JP",system-ui,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2))}
+.hidden{display:none!important}
 
-  /* レーダー指定色 */
-  --blue:#4D6DFF;  --blue-fill:rgba(77,109,255,.14);
-  --red:#FF6A7A;   --red-fill:rgba(255,106,122,.14);
-  --green:#22A08A; --green-fill:rgba(34,160,138,.14);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; color:var(--ink);
-  font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
-  background:
-    radial-gradient(1400px 800px at 50% -20%, #fff 0%, var(--paper) 45%, var(--paper2) 85%),
-    repeating-linear-gradient(90deg, rgba(0,0,0,.02) 0 2px, transparent 2px 6px);
-  -webkit-font-smoothing:antialiased;
-}
-.wrap{max-width:960px;margin:0 auto;padding:26px 14px 120px; position:relative}
+/* Splash */
+.splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;cursor:pointer}
+.splash::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.8))}
+.splash .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
+.splash .fallback{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff)}
+.splash .hero{position:relative;z-index:1;text-align:center;padding:22px}
+h1{margin:0 0 6px;font-size:clamp(22px,6vw,34px);letter-spacing:.02em;text-wrap:balance}
+.sub{margin:0;color:var(--muted)}
+.tap{margin-top:14px;font-size:.95em;color:#7a6a77}
+.splash.closing{opacity:0;transition:opacity .28s ease;pointer-events:auto}
 
-/* === 手配書ヘッダ === */
-.poster{
-  position:relative; text-align:center; padding:26px 16px 24px; margin:12px 0 18px;
-  background:
-    radial-gradient(300px 180px at 10% -10%, rgba(0,0,0,.045) 0, transparent 70%),
-    radial-gradient(260px 160px at 95% 0%, rgba(0,0,0,.045) 0, transparent 70%),
-    linear-gradient(180deg,#f8eed2,#efe2be);
-  border:3px solid var(--frame); border-radius:12px;
-  box-shadow: 0 20px 80px rgba(0,0,0,.18), inset 0 0 0 1px rgba(0,0,0,.08);
-  overflow:visible;
-}
-/* （焼け縁は無効化） */
-.poster:before{ content:none; }
+/* Main */
+.wrap{max-width:980px;margin:20px auto 28px;padding:0 14px max(28px,env(safe-area-inset-bottom));opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s ease}
+.wrap.show{opacity:1;transform:none}
 
-.ribbon{
-  font-weight:900; letter-spacing:.18em;
-  font-size:clamp(28px,7vw,48px); margin:0; color:#7d2a1b;
-  text-shadow:0 1px 0 rgba(255,255,255,.6), 0 2px 0 rgba(0,0,0,.08);
-}
-.sub{
-  margin:6px 0 0; font-size:clamp(14px,3.6vw,18px); color:var(--muted); line-height:1.9
-}
-.hero{margin:12px auto 4px; width:100%; max-width:560px}
-.hero .sq{
-  width:100%; aspect-ratio:1/1; border-radius:8px; border:4px solid var(--frame);
-  background:#f6ecd1 center/cover no-repeat; box-shadow:0 14px 40px rgba(0,0,0,.22);
-  position:relative;
-}
-/* 画鋲 */
-.hero .sq:after{
-  content:""; position:absolute; width:14px;height:14px; border-radius:50%;
-  background:#b53a2d; top:-8px; left:18px; box-shadow:0 2px 0 rgba(0,0,0,.35);
-  border:2px solid #6f1e16;
-}
+/* Controls (検索＋タグ) */
+.controls{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin:6px 0 10px;box-shadow:0 8px 22px rgba(255,158,207,.10)}
+.controls .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input[type="search"]{flex:1;padding:12px 14px;border:1px solid #ead6f0;border-radius:12px;font-size:16px}
+.btn{appearance:none;border:1px solid #ead6f0;background:#fff;border-radius:12px;padding:10px 12px;font-size:14px;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
+.btn:focus-visible, .chip:focus-visible{outline:3px solid #c7b6ff;outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{padding:8px 12px;border:1px solid #ead6f0;border-radius:999px;background:var(--chip);cursor:pointer;user-select:none;color:#5c4a55;line-height:1.2}
+.chip.active{background:var(--chipb);box-shadow:inset 0 0 0 2px #b69cff;border-color:transparent}
 
-/* 検印（大） */
-.stamp-big{
-  position:absolute; right:12px; top:8px; transform:rotate(-8deg);
-  padding:8px 14px; border:3px solid #b5342b; color:#b5342b; font-weight:900;
-  background:#f9efe0; border-radius:6px; letter-spacing:.12em;
-  box-shadow:0 10px 24px rgba(0,0,0,.18);
-  z-index:10;
+/* Switcher (サイト切替) */
+.switcher{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.segbtn{
+  appearance:none;border:1px solid #ead6f0;background:#fff;border-radius:999px;
+  padding:10px 14px;font-size:14px;line-height:1;text-decoration:none;color:inherit;
+  display:inline-flex;align-items:center;gap:8px;min-height:44px
 }
+.segbtn.active{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(182,156,255,.18)}
 
-/* 懸賞金バッジ */
-.bounty{
-  position:absolute; left:12px; top:8px;
-  background:#f9efe0; border:3px solid #7a2c20; color:#7a2c20;
-  font-weight:900; letter-spacing:.08em; border-radius:6px;
-  padding:6px 10px; transform:rotate(3deg);
-  box-shadow:0 8px 18px rgba(0,0,0,.16);
+/* Cards */
+.links{display:grid;gap:12px;margin-top:10px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+a.link{
+  display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--fg);
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;
+  box-shadow:0 6px 18px rgba(255,158,207,.12);transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease
 }
-.bounty .yen{font-size:1.2rem}
+a.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(182,156,255,.18);border-color:#efd7ff}
+a.link .emo{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;font-size:22px;line-height:1;flex:0 0 auto}
+a.link > div{flex:1 1 auto;min-width:0}
+.ttl{
+  font-weight:800;margin:0;display:block;line-height:1.35;letter-spacing:.01em;text-wrap:balance;
+  font-size:clamp(15px,3.8vw,17px);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.mini{font-size:.72em;padding:2px 6px;border-radius:8px;border:1px solid #f0d8ea;background:#fff;display:inline-flex;align-items:center;line-height:1;vertical-align:middle;white-space:nowrap}
+.mini.new{background:linear-gradient(90deg,#ffd6ea,#e7dbff);color:#624c4c;border-color:transparent}
+.sub2{
+  color:var(--muted);font-size:.92em;margin:4px 0 0;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{padding:4px 8px;border-radius:999px;font-size:.8em;border:1px solid #efdeea;background:#fff;color:#7b6571;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+.badge{margin-left:auto;padding:8px 12px;border-radius:999px;font-weight:700;font-size:.9em;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
 
-/* === セクションカード === */
-.card{
-  background:linear-gradient(180deg,#faf0d4,#efe3c0);
-  border:3px solid var(--frame); border-radius:10px;
-  padding:16px 12px 14px; box-shadow:0 18px 60px rgba(0,0,0,.18), inset 0 0 0 1px rgba(0,0,0,.06);
-  margin:18px 0; position:relative; z-index:1;
-}
-.stamp{
-  position:absolute; right:-16px; top:-16px;
-  transform: rotate(-6deg) translateX(26px);
-  padding:6px 10px; border:2px solid #b5342b; color:#b5342b; font-weight:900;
-  background:#f6e6cb; border-radius:6px; letter-spacing:.08em;
-  box-shadow:0 8px 18px rgba(0,0,0,.16);
-}
-h2{margin:2px 0 10px; font-size:1.22rem}
-h3{margin:14px 0 8px; font-size:1.05rem}
-p{margin:0 0 10px; line-height:1.95}
-.small{font-size:.96rem;color:var(--muted)}
-.hr{height:1px;background:linear-gradient(90deg,var(--frame),transparent);border:none;margin:14px 0;border-radius:999px;opacity:.35}
+/* Thumbnail mode */
+.link.with-thumb{display:grid;grid-template-rows:auto 1fr auto;padding:0}
+.link.with-thumb .thumb{margin:0;position:relative;aspect-ratio:1200/630;background:#faf7ff;border-bottom:1px solid var(--line);overflow:hidden;border-top-left-radius:16px;border-top-right-radius:16px}
+.link.with-thumb .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.link.with-thumb .emo{display:none}
+.link.with-thumb .body{padding:12px 14px}
+.link.with-thumb .badge{margin:0 12px 12px auto}
 
-/* 見出し：特徴/注意（短め） */
-.hl{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px}
-.hl .tag{
-  padding:4px 10px;border-radius:4px;border:2px solid #b5342b;background:#f3e1c4;
-  font-weight:900;color:#7a2c20; letter-spacing:.04em
-}
-.hl .txt{flex:1;min-width:220px}
+/* Footer */
+.note{color:var(--muted);text-align:center;margin:18px 0}
+.footerbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;padding:10px;background:rgba(255,255,255,.82);
+  backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid #f3e3f0}
+.footerbar a{padding:12px 14px;border:1px solid #f1d9e8;border-radius:999px;text-decoration:none;color:#1f1a1d;background:#fff;cursor:pointer;flex:0 0 auto;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;min-height:44px}
 
-/* レーダー */
-.radar{
-  max-width:560px;
-  margin:14px auto 10px;
-  clear:both;               /* 回り込み禁止 */
-  display:flex;             /* 中央寄せを強制 */
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-}
-.radar canvas{
-  width:100%; height:auto; display:block;
-  margin:0 auto; float:none !important;  /* ←念のため浮動解除 */
-  border:3px solid var(--frame); border-radius:8px; background:#fbf4dd;
-  box-shadow:0 12px 30px rgba(0,0,0,.18);
-}
-.radar .cap{color:#6a5741;font-size:.9rem;text-align:center;margin-top:6px}
-
-/* details（各因子） */
-details{border:2px dashed var(--ring);border-radius:8px;padding:10px 12px;background:#fcf5de}
-summary{cursor:pointer; color:#5a422e; font-weight:800}
-
-/* スキーマ凡例 */
-.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 12px;margin:8px 0}
-.legend .item{display:flex;align-items:center;gap:8px;font-size:.92rem;color:#4b3a2a}
-.legend .dot{width:10px;height:10px;border-radius:50%;background:var(--green)}
-
-/* フッタ注記 */
-.footer-note{margin-top:18px;color:#5c4b35;font-size:.9rem;text-align:center}
-
-/* スタンプ風タイトル（WANTEDは非表示） */
-.h-wanted{ position:relative; display:inline-block; }
-.h-wanted:after{ content:none !important; }
-
-/* === 猫の足跡（小さく＆多数） === */
-.paw{
-  position:absolute; width:42px; height:42px; opacity:.48; pointer-events:none; z-index:0;
-  background:
-    url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'>\
-<g fill='%235c4b35' fill-opacity='.30'>\
-<circle cx='22' cy='20' r='8'/>\
-<circle cx='40' cy='14' r='7'/>\
-<circle cx='58' cy='20' r='8'/>\
-<path d='M26 44c0 10 10 16 14 16s14-6 14-16c0-8-8-14-14-14s-14 6-14 14z'/>\
-</g></svg>") center/contain no-repeat;
-  filter: blur(.15px) drop-shadow(0 1px 0 rgba(0,0,0,.12));
-}
-@media (max-width:560px){
-  .paw{ transform: scale(.9); opacity:.42; }
-}
-/* ---- 段落レイアウト調整 ---- */
-.summary p{ margin:0 0 .9em; line-height:1.9; }
-.preline{ white-space:pre-line; }
-@media (max-width:480px){
-  .summary p{ font-size:.98rem; }
-}
-/* ---- 段落レイアウト調整ここまで ---- */
-/* --- 追加ブロック用の軽量スタイル（既存トーンに合わせる） --- */
-dl.likes{display:grid;grid-template-columns:8em 1fr;gap:.5rem 1rem;margin:8px 0}
-dl.likes dt{font-weight:700;color:var(--ink)}
-dl.likes dd{margin:0;color:var(--muted)}
-/* details本文の行間を少し詰める（小見出し下） */
-details p.small{line-height:1.8}
-
-/***** 🎰 gacha slots *****/
-.gacha{
-  display:block; width:100%; max-width:520px;
-  margin:10px auto 14px; padding:12px 14px;
-  background:#fbf4dd; border:2px dashed var(--ring); border-radius:10px;
-  text-align:center; box-sizing:border-box;
-}
-.gacha .hint{color:var(--muted);font-size:.92rem;margin:0 0 6px}
-.reels{
-  display:flex; justify-content:center; align-items:center;
-  gap:10px; margin:8px 0;
-}
-.reel{
-  width:60px; height:60px;
-  border:2px solid var(--frame); background:#f6ecd1; border-radius:12px;
-  display:flex; align-items:center; justify-content:center; font-size:30px;
-  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)
-}
-.gacha .btn{
-  padding:6px 14px; border:2px solid var(--frame); background:#f3e1c4;
-  border-radius:999px; font-weight:800; letter-spacing:.02em; cursor:pointer
-}
-.gacha .btn[disabled]{opacity:.6;cursor:default}
-.gacha.shake{animation:slotshake .3s}
-@keyframes slotshake{
-  20%{transform:translateX(-2px)}40%{transform:translateX(2px)}
-  60%{transform:translateX(-2px)}80%{transform:translateX(2px)}
-}
-/* SPは端まで広げる */
-@media (max-width:560px){
-  .gacha{max-width:100%; margin-left:auto; margin-right:auto}
-  .reel{width:54px; height:54px; font-size:28px}
-}
-/* === back to list button === */
-.btn-back{
-  display:inline-block; margin:6px 0 10px;
-  padding:6px 12px; border:2px solid var(--frame);
-  border-radius:999px; background:#f3e1c4; font-weight:800;
-  color:var(--ink); text-decoration:none;
-}
-.btn-back:active{ transform:translateY(1px); }
-@media (max-width:560px){
-  .poster{ padding-top:78px; padding-bottom:20px; margin:12px 0 32px; }
-  .stamp-big{ top:6px; right:-10px; transform:rotate(-6deg) translateX(16px) scale(.78); z-index:1; }
-  .bounty   { top:6px; left:-10px;  transform:rotate( 4deg) translateX(-16px) scale(.78); z-index:1; }
+@media (max-width:400px){
+  .links{grid-template-columns:1fr}
+  a.link{padding:12px}
+  .badge{display:none}
 }
 
-/* === header badges: さらに縮小＆重なり回避（SP） === */
-@media (max-width:560px){
-  #sec-big5 .poster{ padding-top:78px; }
-  /* 重要参考人はもう少し右へ／サイズもわずかに小さく */
-  #sec-big5 .stamp-big{ top:6px; right:-14px; transform:rotate(-6deg) translateX(32px) scale(.68); }
-  /* 懸賞金はもう少し左へ／サイズもわずかに小さく */
-  #sec-big5 .bounty{    top:6px; left:-14px;  transform:rotate( 4deg) translateX(-32px) scale(.68); }
+/* 標本カウンタ（控えめ） */
+.stats-inline{justify-content:flex-end;gap:10px;margin-top:6px}
+.stats-inline .mini{
+  color:var(--muted);font-size:.9em;
+  border:1px solid var(--line);border-radius:999px;
+  padding:4px 8px;background:#fff;line-height:1.6
 }
-/* 特徴パネルを少し詰めて読みやすく（性格/恋愛だけ） */
-#sec-big5 .hl .txt.small,
-#sec-love .hl .txt.small{ line-height:1.85; font-size:.95rem; }
-/* details内のラベルをそろえる（傾向／うれしい／苦手／コツ） */
-details p.small b{ display:inline-block; min-width:5.4em; }
-details p.small{ line-height:2.0; }
-/* 特徴/禁忌のブロックをスキーマ寄りの密度に */
-#sec-big5 .hl, #sec-love .hl{ align-items:flex-start; }
-#sec-big5 .hl .tag, #sec-love .hl .tag{ white-space:nowrap; }
-#sec-big5 .hl .txt.small br,
-#sec-love .hl .txt.small br{ display:initial; } /* 改行を活かす */
-/* === back to list button: bottom === */
-.btn-back{
-  display:block;
-  width:max-content;
-  margin:20px auto 28px;
-  padding:6px 12px;
-  border:2px solid var(--frame);
-  border-radius:999px;
-  background:#f3e1c4;
-  font-weight:800;
-  color:var(--ink);
-  text-decoration:none;
+/* --- done marker（既に受けた診断表示） --- */
+a.link[data-done]{position:relative;opacity:.9}
+a.link[data-done]::after{
+  content:"済"; position:absolute; top:8px; right:8px;
+  font-weight:800; font-size:.8rem; line-height:1;
+  padding:4px 8px; border-radius:999px;
+  background:linear-gradient(90deg,#c3ffd6,#d8eaff);
+  color:#233; border:1px solid #dce9f0; box-shadow:0 3px 10px rgba(0,0,0,.06)
 }
-.btn-back:active{ transform:translateY(1px); }
-
-/* 以前のsticky指定を無効化（SPでも固定しない） */
-@media (max-width:560px){
-  .btn-back{ position:static; top:auto; z-index:auto; }
-}
-
-/* 余白を少し増やしたバリエーション（最下部用） */
-.btn-back--bottom{ margin-top:20px; margin-bottom:40px; }
-/* 性格ヘッダ画像の見た目 */
-#sec-big5 .poster img.hero{
-  display:block; width:100%; height:auto; border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08); margin:6px 0 10px;
-}
-/* 戻るボタンを下部寄せ（少し上で止まる） */
-.btn-back{
-  position:static; z-index:auto; left:auto; transform:none;
-  display:block;
-  width:max-content;
-  margin:12px auto 40px;   /* ←下ベタ付き回避＆少し上に */
-  padding:6px 12px;
-  border:2px solid var(--frame);
-  border-radius:999px;
-  background:#f3e1c4;
-  font-weight:800;
-  color:var(--ink);
-  text-decoration:none;
-}
-/* 性格（特徴）の改行最適化：ぶつ切りの <br> を無効化し、自然折返しへ */
-#sec-big5 .hl .txt.small{
-  line-height: 1.95;
-  text-align: justify;
-  text-justify: inter-ideograph;    /* 和文の均等割付 */
-  letter-spacing: .01em;
-  text-wrap: pretty;
-}
-@supports (text-wrap: balance){
-  #sec-big5 .hl .txt.small{ text-wrap: balance; }
-}
-/* 性格の特徴内だけ <br> を隠す（他セクションは従来通り） */
-#sec-big5 .hl .txt.small br{ display:none; }
-
-/* 総評本文の入れ子 <p class="preline"> をフラット表示（HTMLは触らず見た目だけ安定） */
-#sec-big5 .body > p.preline{ display:contents; }
-/* 性格セクションのバッジ干渉を最小化（さらに縮小＆間隔） */
-@media (max-width:560px){
-  #sec-big5 .poster{ padding-top:78px; }
-  #sec-big5 .stamp-big{ top:6px; right:6px; transform:rotate(-6deg) scale(.72); }
-  #sec-big5 .bounty{    top:6px; left: 6px; transform:rotate( 4deg) scale(.72); }
-}
-
-/* 総評見出しをブロック化して上に見せる（回り込み防止） */
-#sec-big5 .sum-title{
-  display:block;
-  margin:8px 0 10px;
-  clear:both;               /* 横並びレイアウトの回り込みを防ぐ */
-}
-/* 見出しの右にスタンプ用のスペースを確保 */
-#sec-big5 .cap,
-#sec-love .cap,
-#sec-schema .cap,
-#sec-nonverbal .cap{
-  padding-right: 92px;
-}
-@media (max-width:560px){
-  #sec-big5 .cap,
-  #sec-love .cap,
-  #sec-schema .cap,
-  #sec-nonverbal .cap{
-    padding-right: 106px; /* SPは少し多めに確保 */
-  }
-}
-/* 🎰 ロック表示 */
-.locked{ display:none !important; }
-.lock-note{
-  text-align:center; color:var(--muted); font-size:.95rem; margin:6px 0 0;
-}
-/* 🎰 箱の直後に来る要素が横並びに回り込まないように */
-.gacha{ clear:both; }
-.gacha + *{ clear:both; }
-#sec-big5 h3, #sec-love h3, #sec-schema h3, #sec-nonverbal h3{ display:block; clear:both; }
-#sec-big5 .sum-title{
-  display:block;
-  margin:8px 0 10px;
-  clear:both;     /* ←横並びを阻止して必ず独立行に */
-  width:100%;
-}
-/***** --- mobile fix: 横はみ出し＆カード中央寄せ --- *****/
-html,body{overflow-x:hidden;}
-/* 上部の指名手配カード類を常に中央寄せ＆横幅は端末幅に追従 */
-.wanted, .poster, .top-card, .hero, .wanted-card{
-  max-width: 720px;
-  width: min(720px, 100% - 24px);
-  margin-left: auto;
-  margin-right: auto;
-}
-/* 画像は親幅にフィット */
-.wanted img, .poster img, .hero img{display:block;max-width:100%;height:auto;}
-/* スタンプが原因で右に当たり判定が伸びないよう余白再調整（被り軽減） */
-.bounty{ left: clamp(-18px, -3vw, -8px); }
-.stamp-big{ right: clamp(-18px, -3vw, -8px); }
-
-/* ── ラベル行（傾向／うれしい／苦手／コツなど）を性格と同じレイアウトで統一 ── */
-.kvrow{display:flex;gap:.75em;align-items:flex-start;line-height:1.9;margin:.35em 0 1.05em;}
-.kvrow .lab{min-width:5.5em;font-weight:700;letter-spacing:.02em;}
-/* スキーマは「サイン」ラベルも使うので幅を少しだけ広げる */
-#sec-schema .kvrow .lab{min-width:6em;}
-/* “好きなもの”の2カラム内も同じ行間で読みやすく */
-#sec-like .kvrow{line-height:1.95}
-
-/* 既存の <p class="preline"> ラッパの段落ズレを抑える（見た目のみフラット化） */
-#sec-big5 .body > p.preline{display:contents;}
-/***** --- end mobile fix --- *****/
-/***** --- stamp 左寄せ 微調整（PERSONALITY／LOVE／SCHEMA／NONVERBAL） --- *****/
-/* 以前の right: clamp(-18px, -3vw, -8px); を上書きして少しだけ左へ寄せる */
-.stamp-big{ right: clamp(8px, 2.2vw, 16px) !important; }
-/* セクションごとの別名スタンプも一括で微調整 */
-[class*="stamp-"], .stamp, .stamp-love, .stamp-schema, .stamp-personality, .stamp-nonverbal{
-  right: clamp(8px, 2.2vw, 16px) !important;
-}
-/***** --- /stamp 左寄せ 微調整 --- *****/
+/* 済カードではNEWバッジは隠す（視覚のノイズを減らす） */
+a.link[data-done] .mini[data-new]{display:none}
 </style>
 </head>
 <body>
-<main class="wrap">
-  <!-- 手配書ヘッダ -->
-  <header class="poster" role="banner" aria-label="手配書ヘッダ">
-    <div class="stamp-big">重要参考人</div>
-    <h1 class="ribbon h-wanted" aria-live="polite">指名手配書</h1>
-    <p class="sub">これを読めば、<b>わたしにメロメロ。</b><br>こころの怪盗🖤</p>
-<div class="bounty" aria-label="懸賞金">懸賞金 <span class="yen">¥3,141,592,653</span></div>
-    <figure class="hero" aria-label="正方形プロフィール画像">
-      <div class="sq" id="heroImg" role="img" aria-label="プロフィール画像"></div>
-    </figure>
-  </header>
-
-  <!-- 性格 -->
-  <section class="card" id="sec-big5" aria-labelledby="h-big5">
-    <div class="stamp">PERSONALITY</div>
-    <h2 id="h-big5">📘 性格（Big Five）</h2>
-
-    <div class="hl">
-  <span class="tag">特徴</span>
-  <div class="txt small preline">
-<b>開放性は満点｡</b> 新しい知識や比喩の遊びはごちそう、未知へまっすぐ。
-
-<b>誠実性は高く</b>、段取り・責任・やり切りが得意。「決めたらやる」を静かに継続。
-
-<b>外向性は控えめ</b>でも社交性は高め。呼ばれた場では自然に馴染み、自己主張は弱めだからこそ合意形成が上手。テンポは穏やか。人混みより“少人数でじっくり”。
-
-<b>神経症傾向は「瞬間の衝動」</b>だけ強めに出やすいが、怒り・不安は低めで長引かない。ダメージは深くても短く、翌朝には理由で整えるタイプ。
+<!-- Splash -->
+<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0" role="button">
+  <div class="fallback" aria-hidden="true"></div>
+  <img class="bg" alt="心の標本のキービジュアル"
+       src="/shindan/assets/hero/specimens-hero-1080.png"
+       onerror="this.src='/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png'">
+  <div class="hero">
+    <h1>心の標本</h1>
+    <p class="sub">タップ（またはEnter/Space）で入口が開きます。</p>
   </div>
+</section>
+
+<main id="content" class="wrap" aria-live="polite" aria-label="診断の入口" tabindex="-1" inert>
+  <!-- Controls -->
+  <section class="controls" aria-label="検索とタグ">
   
-<div class="hl">
-  <span class="tag">禁忌</span>
-  <div class="txt small preline">
-根拠のない断定や見下し／強い圧や強要／理由のない拒絶や突然のルール変更／勝ち負けだけの議論。
-
-話す時は <b>「わたしはこう思う」＋理由</b> で、すり合わせていきたい。
-  </div>
-</div>
-    <div class="radar">
-      <canvas id="radar-big5" width="560" height="560" aria-label="Big Five レーダーチャート"></canvas>
-      <div class="cap">開放・誠実・協調・外向・神経症傾向（0〜100%）</div>
+    <!-- サイト切替：現在ページを強調 -->
+    <div class="row switcher" aria-label="サイト切替">
+      <a class="segbtn active" href="/shindan/" aria-current="page">🌟 心の標本</a>
+      <a class="segbtn" href="/quiz/" rel="noopener">🔎 知識の水槽</a>
     </div>
 
-    <div class="hr"></div>
-    <h3>各性格の傾向</h3>
+    <div class="row">
+      <input id="q" type="search" placeholder="キーワード or #タグ（例：#さくっと / #こころ）" aria-label="検索">
+     
+      <button id="clearBtn" class="btn" type="button" aria-label="検索とタグをクリア">クリア</button>
+    </div>
+    <div id="chips" class="chips" role="listbox" aria-multiselectable="false" aria-label="タグ（1つ選択で絞り込み）"></div>
+  </section>
+  
+  <!-- ▼ chips のすぐ下にこれを追加 -->
+<div class="row stats-inline" aria-label="標本カウンタ">
+  <span class="mini">🗡️ あなたのこころLv <strong id="myOpenCount">0</strong></span>
+  <span class="mini">⚔️ みんなのこころLv <strong id="allOpenCount">—</strong></span>
+    <span class="mini">※Lv＝開いた回数です。Lvを上げて心の冒険を進めよう！</span>
+</div>
+
+  <!-- Cards -->
+  <nav class="links" id="list" aria-label="診断一覧（検索結果）">
+    <!-- 以降のカードはそのまま（data-tags内の「性格」はJSで「こころ」に正規化されます） -->
+    	
+    <!-- ★ HSPハート診断（5ランク） -->
+<a class="link" href="/shindan/hsp-heart.html?src=specimens"
+   data-id="hsp-heart" data-tags="こころ,ふつう,しっかり" data-mins="6" data-updated="2025-10-03"
+   data-keywords="HSP 繊細 感受性 刺激 共感 五感 美的 回復 境界 可視化 診断">
+  <span class="emo">💗</span>
+  <div class="body">
+    <div class="ttl">HSPハート診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で6因子を％化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤの5ハート。</div>
+    <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#ふつう</span><span class="pill">#しっかり</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ ベストフレンド力診断（わたし／あの人） -->
+<a class="link" href="/shindan/best-friend.html?src=specimens"
+   data-id="best-friend" data-tags="こころ,ふつう,しっかり" data-mins="6" data-updated="2025-10-03"
+   data-keywords="友情 親友 ベストフレンド 21問 7因子 喜び 安心 自律 挑戦 一貫性 修復 ユーモア モード切替 因子バー 研究メモ">
+  <span class="emo">🤝</span>
+  <div class="body">
+    <div class="ttl">ベストフレンド力診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">「わたし／あの人」切替で、21問から友情の強みを％で可視化。因子バーと研究メモつき。</div>
+    <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ ストーカー背後霊診断 -->
+<a class="link" href="/shindan/stalker-ghost.html?src=specimens"
+   data-id="stalker-ghost" data-tags="こころ,ふつう" data-mins="5" data-updated="2025-10-02"
+   data-keywords="ストーカー 背後霊 距離感 既読 返信 境界線 注意 メタ認知 15問 5因子 観察ぐせ 返信待ち 解釈ブレーキ 衝動ストップ">
+  <span class="emo">👻</span>
+  <div class="body">
+    <div class="ttl">ストーカー背後霊診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">15問で“見守りが近すぎるクセ”を可視化。距離感スキルをバーと％で表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ スポーツ適性診断 -->
+<a class="link" href="/shindan/sports.html?src=specimens"
+   data-id="sports" data-tags="適性,ふつう" data-mins="5" data-updated="2025-10-02"
+   data-keywords="スポーツ 適性 12問 6因子 瞬発 持久 敏捷 戦術 協調 集中 上位2因子 推し競技 強み 弱み 理由 因子バー 研究メモ">
+  <span class="emo">🏅</span>
+  <div class="body">
+    <div class="ttl">スポーツ適性診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">12問で6因子スコア。上位2因子の組み合わせから推し競技を提案。強み・弱み・向いている理由・因子バー・研究メモも表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 惑星魅力診断 -->
+<a class="link" href="/shindan/charm-planets.html?src=specimens"
+   data-id="charm-planets" data-tags="こころ,しっかり" data-mins="6" data-updated="2025-10-01"
+   data-keywords="惑星 魅力 光度 居心地 会話 美意識 推進 余裕 信頼 意外性 香り 余韻 深度 二重惑星 ハイブリッド 30問 因子 バー ランク 研究メモ 正方形 画像">
+  <span class="emo">🪐</span>
+  <div class="body">
+    <div class="ttl">惑星魅力診断 33問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">33問で“魅力の出方”を惑星モチーフで可視化。主惑星タイプと因子バー、光度ランク、研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 開放性・インド神話診断 -->
+<a class="link" href="/shindan/openness.html?src=specimens"
+   data-id="openness" data-tags="こころ,ふつう,神話" data-mins="5" data-updated="2025-09-29"
+   data-keywords="開放性 神話 インド 18問 6因子 想像力 芸術関心 情緒受容 冒険心 知的好奇 価値柔軟 バー 守護 バッジ 研究メモ">
+  <span class="emo">🕉️</span>
+  <div class="body">
+    <div class="ttl">開放性・インド神話診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で開放性をチェック。総合ランク（神様）と因子バー、守護バッジ、研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 神経症的傾向・クトゥルフ神話診断 -->
+<a class="link" href="/shindan/neurotic.html?src=specimens"
+   data-id="neurotic" data-tags="こころ,ふつう,神話" data-mins="5" data-updated="2025-09-27"
+   data-keywords="神経症 不安 易怒 ふさぎ込み 自意識 衝動 脆さ 18問 因子 バー 守護 バッジ 研究メモ">
+  <span class="emo">🌊</span>
+  <div class="body">
+    <div class="ttl">神経症的傾向・クトゥルフ神話診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で“日常のゆれやすさ”をチェック。総合ランク（神名）と因子バー、守護バッジ、やさしい研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 誠実性・エジプト神話診断 -->
+<a class="link" href="/shindan/conscientious.html?src=specimens"
+   data-id="conscientious" data-tags="こころ,ふつう,神話" data-mins="5" data-updated="2025-09-26"
+   data-keywords="誠実性 神話 エジプト 18問 6因子 有能感 整然性 責任感 達成志向 自制 持続 慎重 守護 バッジ 研究メモ">
+  <span class="emo">🪶</span>
+  <div class="body">
+    <div class="ttl">誠実性・エジプト神話診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で誠実性をチェック。総合ランク（神様）と因子バー、守護バッジ、研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 協調性・北欧神話診断 -->
+<a class="link" href="/shindan/agreeableness.html?src=specimens"
+   data-id="agreeableness" data-tags="こころ,ふつう,神話" data-mins="5" data-updated="2025-09-24"
+   data-keywords="協調性 神話 18問 6因子 信頼 率直 誠実 利他 協調 謙虚 共感 守護 バッジ 研究メモ">
+  <span class="emo">🛡️</span>
+  <div class="body">
+    <div class="ttl">協調性・北欧神話診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で協調性をチェック。総合ランク（神様）と因子バー、守護バッジ、研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 外向性・ギリシャ神話診断 -->
+<a class="link" href="/shindan/extraversion.html?src=specimens"
+   data-id="extraversion" data-tags="こころ,ふつう,神話" data-mins="5" data-updated="2025-09-22"
+   data-keywords="外向性 神話 18問 6因子 友好性 社交性 主導性 活動性 刺激希求 快活さ バー 守護 バッジ 研究メモ">
+  <span class="emo">🏛️</span>
+  <div class="body">
+    <div class="ttl">外向性・ギリシャ神話診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">18問で外向性をチェック。総合ランク（神様）と因子バー、守護バッジ、研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+
+<!-- ★ 七天使の優しさ診断 -->
+<a class="link" href="/shindan/angel-kindness.html?src=specimens"
+   data-id="angel-kindness" data-tags="こころ,ふつう,神話" data-mins="5" data-updated="2025-09-28"
+   data-keywords="優しさ 天使 21問 7因子 守護 伝心 癒行 照明 祈聴 励賛 施与 ハイブリッド 二重翼 研究メモ 正方形 画像">
+  <span class="emo">👼</span>
+  <div class="body">
+    <div class="ttl">七天使の優しさ診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">21問で“やさしさ”をチェック。主天使タイプ（7種）と因子バー、ハイブリッド（二重翼）、研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+
+<!-- ★ サキュバス魔性度診断 -->
+<a class="link" href="/shindan/mashou-succubus.html?src=specimens"
+   data-id="mashou-succubus" data-tags="こころ,ダーク" data-mins="6" data-updated="2025-09-27"
+   data-keywords="サキュバス 魔性 変動報酬 投影鏡 ペース主導 希少化 24問 因子 バー サブタイプ 占い風 合図 正方形 画像">
+  <span class="emo">🌙</span>
+  <div class="body">
+    <div class="ttl">サキュバス魔性度診断 24問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">24問で“魔性度”をチェック。総合ランクと因子バー、サブタイプ、占い風ロングコメント＋合図を表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+
+<!-- ★ 悪魔カリスマ診断 -->
+<a class="link" href="/shindan/charisma-demon.html?src=specimens"
+   data-id="charisma-demon" data-tags="こころ,神話,ダーク" data-mins="5" data-updated="2025-09-25"
+   data-keywords="悪魔 カリスマ 誘導 威圧 無慈悲 ベルフェゴール ベルゼブブ アスモデウス ベリアル ルシファー 18問 因子 正方形">
+  <span class="emo">🕯️</span>
+  <div class="body">
+    <div class="ttl">悪魔カリスマ診断 18問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">“誘導/威圧/無慈悲”の18問。ダーク・カリスマのランクと因子バー、研究メモを表示。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+
+<!-- ★ 英雄カリスマ診断 -->
+<a class="link" href="/shindan/charisma-hero.html?src=specimens"
+   data-id="charisma-hero" data-tags="こころ,神話,ふつう" data-mins="5" data-updated="2025-09-24"
+   data-keywords="カリスマ 温かさ 牽引力 明瞭さ 英雄 オルフェウス オデュッセウス ペルセウス シグルズ アーサー 18問 因子 バー 研究メモ 正方形 画像">
+  <span class="emo">👑</span>
+  <div class="body">
+    <div class="ttl">英雄カリスマ診断 18問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">温かさ×牽引力×明瞭さの18問。ランク（英雄）と因子バー、やさしい研究メモを表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 流れ星の手紙 -->
+<a class="link" href="/shindan/star-guide.html?src=specimens"
+   data-id="star-guide" data-tags="占い,セルフケア,さくっと" data-mins="1" data-updated="2025-09-22"
+   data-keywords="流れ星 親友ボイス メッセージ ランダム 慰め 受容 友達 朝 夜 レア 画像 正方形">
+  <span class="emo">🌠</span>
+  <div class="body">
+    <div class="ttl">流れ星の手紙（全330通）<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">辛い時に押して。ボタン一つで夜空から優しい手紙が降りてくる。</div>
+    <div class="meta"><span class="pill" data-min>⏱1分</span></div>
+  </div>
+  <span class="badge">診断へ</span>
+</a>
     
-    <div id="big5-details"></div>
-
-    <div class="hr"></div>
-  <h3 class="sec-ttl">性格｜総評</h3>
+    <!-- ★ 犬派？猫派？診断 -->
+<a class="link" href="/shindan/inu-neko.html?src=specimens"
+   data-id="inu-neko" data-tags="こころ,セルフケア,さくっと" data-mins="4" data-updated="2025-09-21"
+   data-keywords="犬派 猫派 DOG CAT 差分 D ACT 活動指数 称号 Small Mid Large 12問 ボーナス 診断">
+  <span class="emo">🐾</span>
   <div class="body">
-    <p class="preline">
-<p><b>外向性は控えめ（2.83）</b></p>
-<p>にぎやかな輪を回すより、安心できる少人数でじっくり語るほうが本領発揮。</p>
-<p>安心できる空気では社交性をちゃんと発揮。無理に盛り上げ役を求めないのがコツ</p>
-    <p class="preline">
-<p><b>神経症傾向は中程度（2.83)</b></p>
-<p>日常の不安や怒りは低い一方で傷つきやすさと衝動性が高め。</p>
-<p>普段は落ち着いて見えても、拒絶や不誠実に触れると心が一気に揺れる</p>
-<p>だからこそ「理由のわかる説明」や「すり合わせ」が安心の鍵になります。</p>
-    <p class="preline">
-<p><b>協調性はやや高め（3.50)</b><p/>
-<p>利他性と率直さが強く、困っている人を放っておけないし、思ったことは誠実に言葉にする。</p>
-<p>ただ、共感の配合はややドライ。優しさは“現実に役立つ”形で出やすいです。</p>
-<p><b>研究の話は「否定」ではなく、ただの共有</b>。―「こんな面白い・良いものがあるよ」を分かち合いたいだけです。
-  </p>
-    <p class="preline">
-<p><b>誠実性はかなり高い（4.33)</b></p>
-<p>秩序・責任・達成志向がMAXで、やると決めたらやり切るタイプ。</p>
-<p>その一方で有能感が低めゆえに自分に厳しくなりやすい。</p>
-<p>予定と休息の境界線を明確にすると、完璧主義の負荷が下がります。</p>
-    <p class="preline">
-<p><b>開放性は満点（5.00)</b></p>
-<p>知的好奇心・審美眼・空想・感受性・価値観の柔軟性、すべて高水準</p>
-<p>比喩で遊ぶ会話や「もしも〜だったら？」の思考実験がご褒美タイム。</p>
-<p>新しい視点に触れると一気にエネルギーが湧きます。</p>
-    <p class="preline">
-<p><b>要するに</b></p>
-<p>静かな場で、誠実に、深く面白がる。これがあなたの“理想の環境”</p>
-<p>明快な理由づけと丁寧な対話があれば、想像力と努力が同時に走り出します。</p>
+    <div class="ttl">犬派？猫派？診断<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">12問＋ボーナス2問で犬度と猫度を可視化。差分Dで5タイプ、活動指数でSmall/Mid/Largeも表示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱4分</span></div>
   </div>
-</section>
-
-  <!-- 恋愛 -->
-  <section class="card" id="sec-love" aria-labelledby="h-love">
-    <div class="stamp">LOVE</div>
-    <h2 id="h-love">💗 恋愛（スタイル）</h2>
-
-    <div class="hl">
-      <span class="tag">特徴</span>
-      <p class="txt small">
-<b>過剰なベタ惚れが安心を加速。</b>言葉も行動も回数多めでOK<br>
-舞台は喫茶店、心が動く「きれい・おもしろい・たのしい」を一緒に集めたい。</p>
-    </div>
-<div class="hl">
-  <span class="tag">禁忌</span>
-  <p class="txt small">曖昧な好意／連絡の急な断絶／理由なしのドタキャン（遅刻は平気）／試すための駆け引き。<br>
-予定変更は一言の理由と<b>再接続の約束</b>（例：明日○時）を。</p>
-</div>
-<div class="love-entry">
-  <div class="tit">好きになる入口</div>
-  <p class="small">匂い／献身的な優しさ／柔軟さ／好奇心／責任感／世界観／努力している／ベタ惚れ／美意識が高い</p>
-</div>
-
-  
-    <div class="radar">
-      <canvas id="radar-love" width="560" height="560" aria-label="恋愛 レーダーチャート"></canvas>
-      <div class="cap">情熱・遊戯・友愛・実利・熱狂・無償（0〜100%）</div>
-    </div>
-
-    <div class="hr"></div>
-    <h3>各恋愛の傾向</h3>
-    <div id="love-details"></div>
-
-    <div class="hr"></div>
-<section id="sum-love" class="summary">
-  <h3 class="sec-ttl">恋愛｜総評</h3>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ 会話オープナー診断 -->
+<a class="link" href="/shindan/opener.html?src=specimens"
+   data-id="opener" data-tags="コミュニケーション,会話術,セルフケア" data-mins="7" data-updated="2025-09-20"
+   data-keywords="会話 オープナー 開きやすさ 心理的安全 具体要約 感情反映 沈黙 ミラーリング 境界 ゴール 20問 因子 グラフ 診断">
+  <span class="emo">🔑</span>
   <div class="body">
-    <p class="preline"><b>情熱と遊戯が高い</b>―理屈より“感じる”を信じる派。
-理想を語り合い、比喩で世界観を広げ、くだらない話にも本気で笑える関係が好き。
-一方で熱狂も高いため、好意は“はっきり・くり返し・具体的”だと安心しやすいです。
-
-<b>実利がとても低い</b>―損得より心。条件よりも“いま二人で何を感じられるか”を重視
-会う頻度は毎回じゃなくても、合意したペースと誠実な説明があればOK
-距離が空いても、心の温度が見えていれば大丈夫。
-
-<b>愛着は重度の恐れ・回避</b>
-「近づきたい」気持ちと「拒絶が怖い」気持ちが同居
-だから曖昧な好意や理由のない変化は強い不安トリガーに。
-反対に、明確な好意・理由の共有・再接続の合図（たとえば“今日は疲れてるから明日話そうね”）があると、一気に安心が回復します。
-
-ベタ惚れは“歓迎”。遠慮がちな曖昧さより、照れずに直球の「好き」と具体的な行動が刺さります
-知的な発見の共有、自然や喫茶の小さな冒険...
-そして二人だけの比喩で世界を増やしていく—その積み重ねが、もっとも強い愛情確認になります。</p>
+    <div class="ttl">会話オープナー診断 20問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">“会話の開きやすさ”を20問で測定。0〜80点を5段階で表示し、因子グラフと具体フレーズ例、“次の鍵”スキルを提示します。</div>
+    <div class="meta"><span class="pill" data-min>⏱7分</span></div>
   </div>
-</section>
-
-  <!-- スキーマ -->
-  <section class="card" id="sec-schema" aria-labelledby="h-schema">
-    <div class="stamp">SCHEMA</div>
-    <h2 id="h-schema">🧩 スキーマ（反応のクセ）</h2>
-
-    <div class="hl">
-  <span class="tag">特徴</span>
-  <p class="txt small">
-スキーマは「見捨て・不信・剥奪・孤立・抑制・厳格」が強め。<br>
-理由は先に短く共有→変化は合図 →衝突したら短く謝って再接続 →評価より経緯を語る。<br>
-これだけで安心度が上がり、会話が深まります。</p>
-</div>
-      <div class="hl">
-  <span class="tag">禁忌</span>
-  <p class="txt small">感情表現を笑う／情報を握って揺さぶる（既読スルー等）／<br>
-理由のない拒絶や予定変更／“決めつけ”だけの評価。<br>
-不安を煽る駆け引きはNG。明確さと<b>再接続</b>がルール。</p>
-</div>
-
-   
-    <div class="radar">
-      <canvas id="radar-schema" width="600" height="600" aria-label="スキーマ レーダーチャート"></canvas>
-      <div class="cap">上位8スキーマを短縮名で表示（0〜100%）</div>
-    </div>
-    <div id="schema-legend" class="legend" aria-label="スキーマ上位8の凡例"></div>
-
-    <div class="hr"></div>
-    <h3>各スキーマの傾向</h3>
-    <div id="schema-details"></div>
-
-    <div class="hr"></div>
-<section id="sum-schema" class="summary">
-  <h3 class="sec-ttl">スキーマ｜総評</h3>
+  <span class="badge">診断へ</span>
+</a>
+    
+    <!-- ★ ポジ⇄ネガ日本神話診断 -->
+<a class="link" href="/shindan/jp-myth.html?src=specimens"
+   data-id="jp-myth" data-tags="こころ,セルフケア,神話" data-mins="5" data-updated="2025-09-19"
+   data-keywords="神話 ポジ ネガ 陽度 陰度 天照 恵比寿 大国主 須佐之男 月読 YO IN D 16問 診断">
+  <span class="emo">⛩️</span>
   <div class="body">
-    <p class="preline">強く出ているのは「見捨てられ／不安定・不信／虐待・情緒的剥奪・社会的孤立・情動抑制・厳格さ」
-要するに、心は深い関係を望むのに、過去の痛みが「どうせ離れる」「本音は武器になる」と囁く構図。
-それでも、理由の共有と対話で橋を架けたい人です。
-
-効くのは“明確さ”と“再接続”。①評価より経緯を語る、②変化は事前に合図する、③ぶつかったら短く謝り合い、次の合意を作る。
-これだけで見捨てられ不安は大幅に鎮まります。また、感情は“少量を安全に出す”練習から。良かったこと・嬉しかったことを具体的に1行。そこからで十分。
-
-厳格さは推進力でもあります。ただし“常に満点”は息が切れる。
-予定と休息の境界線を塗り直し、できたことを事実として受け取る習慣を。
-あなたの誠実さと開放性は、適切な安全基地に出会うほど強く、やさしく働きます。</p>
+    <div class="ttl">ポジ⇄ネガ日本神話診断 16問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">ポジティブ（陽）／ネガティブ（陰）の傾きを16問で測定。YO・INの差Dで、天照〜月読の5タイプに分類します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
   </div>
-</section>
-
-<!-- START:非言語サイン -->
-<section class="card" id="sec-nonverbal" aria-labelledby="h-nonverbal">
-  <div class="stamp">NONVERBAL</div>
-  <h2 id="h-nonverbal">🗨️ 非言語サイン</h2>
-
-  <div class="hl">
-    <span class="tag">特徴</span>
-    <p class="txt small"><br>
-　「無言＝不機嫌」ではなく、<b>集中や考え事</b>のサイン。<br>
-　視線を外すのは<b>認知負荷を下げるため</b>のセルフケア。<br>
-　強い刺激に触れたときは<b>いったん沈黙→落ち着いてから再接続</b>が得意。</p>
-  </div>
-
-  <div class="hl">
-    <span class="tag">禁忌</span>
-    <p class="txt small"><br>
-　沈黙の揶揄／「今すぐ結論」圧／理由なき否定。<br>
-　観察を<b>決めつけ</b>で言わない（例：×「怒ってる？」→○「考え中？」）。</p>
-  </div>
-
-  <div class="hr"></div>
-  <h3>各サイン</h3>
-
-  <details>
-    <summary><b>考え中</b>：指で口・頬・喉・耳・額を触る</summary>
-    <p class="small" style="margin-top:6px">頭を回しているサイン。急かさず、問いは一つずつ。</p>
-  </details>
-
-  <details>
-    <summary><b>イライラ</b>：眉を押す／肩や後ろ首を揉む／髪をかき上げる</summary>
-    <p class="small" style="margin-top:6px">刺激過多の合図。いったん休憩→落ち着いたら再開が最適。</p>
-  </details>
-
-  <details>
-    <summary><b>うれしい</b>：手や足が動く</summary>
-    <p class="small" style="margin-top:6px">体が先に反応。共有やリアクションがあると更に高まる。</p>
-  </details>
-
-  <details>
-    <summary><b>てれ</b>：左目頭を指で隠す／唇を軽くかむ／左耳の上をかく</summary>
-    <p class="small" style="margin-top:6px">好意・承認に弱い。恥ずかしいと逃げがち</p>
-  </details>
-
-  <details>
-    <summary><b>無言</b>：疲れ or 考え事（機嫌が悪いわけではない）</summary>
-    <p class="small" style="margin-top:6px">認知負荷を下げる時間。終わりの合図（「5分後に再開しよ」）が安心。</p>
-  </details>
-
-  <div class="hr"></div>
-  <h3 class="sec-ttl">非言語｜総評</h3>
+  <span class="badge">診断へ</span>
+</a>
+    	
+    <!-- ★ マインドセット診断 -->
+<a class="link" href="/shindan/dev-mindset.html?src=specimens"
+   data-id="dev-mindset" data-tags="こころ,セルフケア,ふつう" data-mins="5" data-updated="2025-09-15"
+   data-keywords="マインドセット 成長 評価 成長派 評価派 自己理解 学習 思考 16問 診断">
+  <span class="emo">🧠</span>
   <div class="body">
-    <p class="preline">
-<b>観察＝配慮の入り口。</b> 推測で断定せず、「いま休憩いる？」など短い確認でOK。<br>
-「理由の共有」と「再接続の合図」をセットにすると、安心度がぐっと上がります。
-    </p>
+    <div class="ttl">マインドセット診断 16問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">「努力で伸びる派」か「今の実力を見せる派」かをチェック。16問の回答から、あなたの傾向とバランスをわかりやすく可視化します。</div>
+    <div class="meta"><span class="pill" data-min>⏱5分</span></div>
   </div>
-</section>
-<!-- END:非言語サイン -->
-
-<!-- START:よくある誤解 -->
-<section class="card" id="sec-misunderstand" aria-labelledby="h-misunderstand">
-  <div class="stamp">MYTHS</div>
-  <h2 id="h-misunderstand">🪪 よくある誤解</h2>
-
-  <div class="hl">
-    <span class="tag">特徴</span>
-    <p class="txt small"><br>
-　好きなのは<b>誠実な対話</b>と<b>理由の共有</b>。知識量より姿勢。<br>
-　静かでも心は動いているタイプ。沈黙＝敵意ではない。</p>
+  <span class="badge">診断へ</span>
+</a>
+    
+    <!-- ★ 時の天秤診断 -->
+<a class="link" href="/shindan/time-money.html?src=specimens"
+   data-id="time-money" data-tags="こころ,セルフケア,さくっと" data-mins="4" data-updated="2025-09-15"
+   data-keywords="時間 お金 時間派 金銭派 余白 外注 手数料 体験 移動 効率 未来 投資 TFI 可視化 診断 15問">
+  <span class="emo">⏳</span>
+  <div class="body">
+    <div class="ttl">時の天秤診断 15問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">時間かお金、どちらを優先しやすいかを診断。5軸バーと総合指数で見える化。</div>
+    <div class="meta"><span class="pill" data-min>⏱4分</span></div>
   </div>
+  <span class="badge">診断へ</span>
+</a>
 
-  <div class="hl">
-    <span class="tag">禁忌</span>
-    <p class="txt small"><br>
-　見下し／根拠なき断定／「グレーの放置。<br>
-　評価だけでなく<b>経緯</b>を一緒にたどるのがコツ。</p>
+<!-- ★ 眠りの羊診断 -->
+    	
+    <!-- ★ ペルソナ天気人格診断 -->
+<a class="link" href="/shindan/persona-weather.html?src=specimens"
+   data-id="persona-weather"
+   data-tags="仕事,適性,ふつう"
+   data-mins="4"
+   data-updated="2025-09-15"
+   data-keywords="ペルソナ 天気 空模様 晴れ 雷 雪 風 12元型 英雄 賢者 創造者 守護者 統率者 探求者 恋人 道化 純真 隣人 反逆者 魔術師 働き方 クセ 横向き グラフ 可視化 診断 20問">
+  <span class="emo">🌦️</span>
+  <div class="body">
+    <div class="ttl">ペルソナ天気人格診断 20問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">空模様で働き方のクセを判定。横向きバーグラフと刺さる総評つき。</div>
+    <div class="meta"><span class="pill" data-min>⏱4分</span></div>
   </div>
+  <span class="badge">診断へ</span>
+</a>
 
-  <div class="hr"></div>
-  <h3>代表例</h3>
-  <details>
-    <summary><b>「人に興味ないでしょ？」 </b></summary>
-    <p class="small" style="margin-top:6px">興味はある。<b>意見を聴き、根拠を一緒に探す人</b>に強く惹かれる。</p>
-  </details>
-  <details>
-    <summary><b>「楽しくない？」</b></summary>
-    <p class="small" style="margin-top:6px">楽しい。<b>感情表現が控えめ</b>＆照れが強くて伝わりにくいだけ。</p>
-  </details>
-  <details>
-    <summary><b>「無言＝不機嫌」</b></summary>
-    <p class="small" style="margin-top:6px">集中・考え事・疲れ。終わりの合図があれば安心。</p>
-  </details>
-  <details>
-    <summary><b>「距離を置く＝冷たい」</b></summary>
-    <p class="small" style="margin-top:6px">クールダウンの癖。再接続の約束があればOK。</p>
-  </details>
-  <details>
-    <summary><b>「研究の共有＝否定したい」</b></summary>
-    <p class="small" style="margin-top:6px">ただの<b>良いもの紹介</b>。面白かった発見を分かち合いたいだけ。</p>
-  </details>
 
-  <div class="hr"></div>
-  <h3>ぶつかりやすいところ</h3>
-  <ul class="list">
-    <li><b>沈黙の誤解：</b>考え中やクールダウンを「不機嫌」と受け取られやすい。</li>
-    <li><b>理由なき変化に弱い：</b>説明のないキャンセル／温度差が不安の引き金。</li>
-    <li><b>正しさが先に出る：</b>率直さが強いと、相手は冷たく感じることがある。</li>
-    <li><b>主張が控えめ：</b>求められないと希望や境界線を言い出しにくい。</li>
-    <li><b>がんばり過ぎ：</b>高い基準のまま走り続けて休みが後回しになりがち。</li>
-  </ul>
+    <!-- ★ 眠りの羊診断 -->
+    <a class="link" href="/shindan/sleep-sheep.html?src=specimens"
+       data-id="sleep-sheep" data-tags="セルフケア,しっかり" data-mins="7" data-updated="2025-09-13"
+       data-keywords="睡眠 眠気 クロノタイプ 朝型 夜型 中間型 体内時計 寝つき 中途覚醒 仮眠 光 睡眠衛生 整える 可視化">
+      <span class="emo">🐑</span>
+      <div class="body">
+        <div class="ttl">眠りの羊診断 40問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">眠りの癖・日中の冴え・生活リズムの噛み合いを総点検。今日から整えるヒントも。</div>
+        <div class="meta"><span class="pill" data-min>⏱7分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-  <div class="hr"></div>
-  <h3>仲良くなる方法</h3>
-  <ul class="list">
-    <li><b>用件＋背景＋気持ち：</b>結論だけでなく<b>理由</b>をひとこと添える。<br>例）「今日は短めにしたい（用件）。体力が落ちてる（背景）。来週ゆっくり話したい（気持ち）。」</li>
-    <li><b>再接続の合図：</b>クールダウンが必要な時は<b>時間を決める</b>。「10分休んで、また話そう。」</li>
-    <li><b>3択で合意：</b><b>OK／NG／保留</b>を用意して意思表示を楽に。</li>
-    <li><b>場づくり：</b>少人数・静かな場所を選ぶと理解が早い。</li>
-    <li><b>一緒に集める：</b>面白い記事・自然・動物・アートなど、<b>良いものの共有</b>を日常に。</li>
-    <li><b>意見が違う時：</b><b>正解探し</b>より<b>根拠探しを一緒に</b>。結論は急がない。</li>
-    <li><b>Done基準を先に：</b>「今日はここまででOK」を合意して完璧主義の負荷を下げる。</li>
-  </ul>
+    <!-- ★ ラーメン健康診断 -->
+    <a class="link" href="/shindan/ramen-health.html?src=specimens"
+       data-id="ramen-health" data-tags="セルフケア,ふつう" data-mins="4" data-updated="2025-09-11"
+       data-keywords="ラーメン 健康 習慣 睡眠 食事 活動 回復 栄養 整える">
+      <span class="emo">🍜</span>
+      <div class="body">
+        <div class="ttl">ラーメン健康診断 20問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">食事・睡眠・活動の整い度をラーメン比喩で可視化。ムリなく整えるコツを提案。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-  <div class="hr"></div>
-  <h3>喜ぶ声のかけ方</h3>
-  <ul class="list">
-    <li>「さっきの話、<b>理由まで</b>教えてくれて嬉しい。」</li>
-    <li>「いまは<b>考え中？</b>待てるよ。落ち着いたら続き話そ。」</li>
-    <li>「その比喩おもしろい！もうちょい聞かせて。」</li>
-    <li>「今日は<b>ここまででOK</b>だね。続きは明日やろ。」</li>
-    <li>「予定ちょっと変える、<b>理由は〜</b>。明日の◯時でどう？」</li>
-    <li>「これ面白い記事みつけた、<b>共有してもいい？</b>」</li>
-    <li>「〇〇に困ってるんだけど<b>なにか良い研究とか</b>知ってる？」</li>
-  </ul>
-</section>
-<!-- END:よくある誤解 -->
-	
-<!-- START:好きなもの -->
-<section class="card" id="sec-likes" aria-labelledby="h-likes">
-  <div class="stamp">LIKES</div>
-  <h2 id="h-likes">🌿 好きなもの</h2>
+    <!-- ★ メンタル樹齢診断 -->
+    <a class="link" href="/shindan/tree-age-mental.html?src=specimens"
+       data-id="tree-age-mental" data-tags="こころ,セルフケア,さくっと" data-mins="3" data-updated="2025-09-10"
+       data-keywords="メンタル 樹齢 折れにくさ 回復 前向き 行動ヒント">
+      <span class="emo">🌳</span>
+      <div class="body">
+        <div class="ttl">メンタル樹齢診断 15問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">折れにくさ・回復の早さ・前向きさの“年輪感”を見える化。すぐ試せる行動ヒント付き。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-  <div class="hl">
-    <span class="tag">特徴</span>
-    <p class="txt small"><br>
-　<b>自然・きれいな景色・静かなカフェ</b>がご褒美。<br>
-　食は<b>子どもが好きなメニュー</b>がツボ（ラーメン／からあげ／カレー…）。<br>
-　学びの共有や比喩で遊ぶ会話、小さな冒険を一緒に楽しみたい。</p>
+    <!-- ★ 仕事DNA×偉人タイプ診断 -->
+    <a class="link" href="/shindan/great-minds.html?src=specimens"
+       data-id="great-minds" data-tags="仕事,適性,しっかり" data-mins="5" data-updated="2025-09-08"
+       data-keywords="偉人タイプ 仕事 適職 キャリア 得意 苦手">
+      <span class="emo">🧭</span>
+      <div class="body">
+        <div class="ttl">仕事DNA×偉人タイプ診断 36問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">働き方の軸や得意シーンを偉人モチーフで可視化。相性の良いタスク傾向も。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 現代ストレス八寒地獄 -->
+    <a class="link" href="/shindan/eight-cold-hells.html?src=specimens"
+       data-id="eight-cold-hells" data-tags="性格,ふつう" data-mins="5" data-updated="2025-09-08"
+       data-keywords="八寒 悲しみ 落ち込み 空白 感情 可視化">
+      <span class="emo">❄️</span>
+      <div class="body">
+        <div class="ttl">現代ストレス八寒地獄 24問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">落ち込みやすさ・孤立感・空白感など“冷え”の方向性を見える化。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 現代ストレス八熱地獄 -->
+    <a class="link" href="/shindan/eight-hot-hells.html?src=specimens"
+       data-id="eight-hot-hells" data-tags="性格,ふつう" data-mins="5" data-updated="2025-09-06"
+       data-keywords="八熱 怒り イライラ 蒸し返し 焦り 可視化">
+      <span class="emo">🔥</span>
+      <div class="body">
+        <div class="ttl">現代ストレス八熱地獄 24問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">イラッとしやすさ・蒸し返し・時間の焦りなど“熱さ”の向きを把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 七つの大罪診断 -->
+    <a class="link" href="/shindan/seven-sins.html?src=specimens"
+       data-id="seven-sins" data-tags="性格,しっかり" data-mins="5" data-updated="2025-09-05"
+       data-keywords="七つの大罪 衝動 執着 羨望 プロファイル">
+      <span class="emo">🧩</span>
+      <div class="body">
+        <div class="ttl">七つの大罪診断 28問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">衝動・執着・羨望などのクセを七つの罪になぞらえてライトに把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ スキーマ妖怪 診断 -->
+    <a class="link" href="/shindan/schema-yokai.html?src=specimens"
+       data-id="schema-yokai" data-tags="こころ,ふつう" data-mins="4" data-updated="2025-09-03"
+       data-keywords="スキーマ 思考パターン つまずき 対処">
+      <span class="emo">👻</span>
+      <div class="body">
+        <div class="ttl">スキーマ妖怪診断 20問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">つまずきやすい思考パターン（“妖怪”）を可視化。手なずけるコツも。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ CBTおみくじ -->
+    <a class="link" href="/shindan/cbt-omikuji.html?src=specimens"
+       data-id="cbt-omikuji" data-tags="占い,セルフケア,さくっと" data-mins="2" data-updated="2025-09-05"
+       data-keywords="CBT コーピング 行動実験 再評価 マインドフル">
+      <span class="emo">🎴</span>
+      <div class="body">
+        <div class="ttl">CBTおみくじ 1問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">今の気分に効きやすいCBTワザを1枚引きで提案。</div>
+        <div class="meta"><span class="pill" data-min>⏱2分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ しあわせ星空診断 -->
+    <a class="link" href="/shindan/perma-stars.html?src=specimens"
+       data-id="perma-stars" data-tags="セルフケア,しっかり" data-mins="6" data-updated="2025-09-04"
+       data-keywords="しあわせ 充足 つながり 没頭 ウェルビーイング">
+      <span class="emo">🌌</span>
+      <div class="body">
+        <div class="ttl">しあわせ星空診断 24問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">充足感・つながり・没頭など“しあわせ空模様”を俯瞰。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 関係の切れやすさ診断 -->
+    <a class="link" href="/shindan/kizuna-rope.html?src=specimens"
+       data-id="kizuna-rope" data-tags="こころ,さくっと" data-mins="4" data-updated="2025-08-27"
+       data-keywords="関係 ほどけやすさ 距離感 結び直し">
+      <span class="emo">🪢</span>
+      <div class="body">
+        <div class="ttl">関係の切れやすさ診断 20問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">人間関係がほどけやすい場面の傾向をチェック。結び直すヒントも。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 気球エスケープ診断 -->
+    <a class="link" href="/shindan/balloon-escape.html?src=specimens"
+       data-id="balloon-escape" data-tags="こころ,しっかり" data-mins="6" data-updated="2025-09-01"
+       data-keywords="逃避 切り替え 気晴らし ルーティン">
+      <span class="emo">🎈</span>
+      <div class="body">
+        <div class="ttl">気球エスケープ診断 25問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">現実逃避しがち？それとも切り替え上手？そのバランスを％で表示。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 抑制・加速・刺激の鉄道診断 -->
+    <a class="link" href="/shindan/rail-traits.html?src=specimens"
+       data-id="rail-traits" data-tags="性格,さくっと" data-mins="3" data-updated="2025-08-26">
+      <span class="emo">🚆</span>
+      <div class="body">
+        <div class="ttl">抑制・加速・刺激の鉄道診断 12問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">慎重さ・スピード感・刺激欲の“走り方”を路線で表現。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 能面ヘラ度診断 -->
+    <a class="link" href="/shindan/noh-menhera.html?src=specimens"
+       data-id="noh-menhera" data-tags="こころ,さくっと" data-mins="3" data-updated="2025-08-27"
+       data-keywords="無表情 感情ギャップ 表情 調子">
+      <span class="emo">🎭</span>
+      <div class="body">
+        <div class="ttl">能面ヘラ度診断 12問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">感情は揺れるのに顔は静か——そのギャップの出やすさをライトに。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 姫と城下の恋（別世界線） -->
+    <a class="link" href="/shindan/forbidden-love-another.html?src=specimens"
+       data-id="forbidden-love-another" data-tags="性格,しっかり,ゲーム風" data-mins="10" data-updated="2025-08-31">
+      <span class="emo">🏰</span>
+      <div class="body">
+        <div class="ttl">姫と城下の恋・Another<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">選択で分岐する読み物系。性格の傾向が物語に反映されます。</div>
+        <div class="meta"><span class="pill" data-min>⏱10分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 姫と城下の恋（本編） -->
+    <a class="link" href="/shindan/forbidden-love.html?src=specimens"
+       data-id="forbidden-love" data-tags="性格,しっかり,ゲーム風" data-mins="9" data-updated="2025-08-25">
+      <span class="emo">🏰</span>
+      <div class="body">
+        <div class="ttl">姫と城下の恋診断<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">4場面の選択で物語が深まる“読み物寄り”。長編ルートもあり。</div>
+        <div class="meta"><span class="pill" data-min>⏱9分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 冒険者逆境力診断 -->
+    <a class="link" href="/shindan/adventure-shin.html?src=specimens"
+       data-id="adventure" data-tags="性格,しっかり,ゲーム風" data-mins="5" data-updated="2025-08-21">
+      <span class="emo">🗺️</span>
+      <div class="body">
+        <div class="ttl">冒険者逆境力診断 28問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">逆境への踏ん張り・切り替え・助けの使い方をクエスト風に測ります。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+    <!-- ★ 認知プロファイル・チャレンジ -->
+    <a class="link" href="/shindan/chc-cci-shin.html?src=specimens"
+       data-id="chc-cci" data-tags="認知,しっかり" data-mins="6" data-updated="2025-08-15">
+      <span class="emo">🧠</span>
+      <div class="body">
+        <div class="ttl">認知プロファイル・チャレンジ</div>
+        <div class="sub2">ひらめき・知識・視野・スピード・作業記憶のバランス感をざっくり把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+
+<!-- ★ 宝石タイプ恋愛診断（48問） -->
+<a class="link" href="/shindan/housekishin.html?src=specimens"
+   data-id="houseki-48" data-tags="こころ,しっかり" data-mins="6" data-updated="2025-09-13"
+   data-keywords="恋愛 宝石 スタイル 愛着 安定 回避 不安 恐れ回避 6因子 下位因子 棒グラフ 可視化 48問 相性 イラスト">
+  <span class="emo">💎</span>
+  <div class="body">
+    <div class="ttl">宝石タイプ恋愛診断 48問<span class="mini new" data-new>NEW</span></div>
+    <div class="sub2">恋愛傾向をイラスト＋棒グラフ＋テキスト解説で可視化。</div>
+    <div class="meta"><span class="pill" data-min>⏱6分</span></div>
   </div>
+  <span class="badge">診断へ</span>
+</a>
 
-  <div class="hr"></div>
-  <dl class="likes">
-    <dt>食べもの</dt>
-    <dd>ラーメン／からあげ／カレー／ピザ／寿司／焼き肉／ハンバーグなど<b>子どもが好きな食べ物全般。</dd>
+    <!-- ★ 飲み物サイコパス -->
+    <a class="link" href="/shindan/drinkshin.html?src=specimens"
+       data-id="drink" data-tags="性格,さくっと" data-mins="3" data-updated="2025-05-01">
+      <span class="emo">☕</span>
+      <div class="body">
+        <div class="ttl">飲み物サイコパス診断 10問</div>
+        <div class="sub2">ちょい毒の駆け引き気質を、飲み物ジョークでゆるくチェック。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <dt>スイーツ</dt>
-    <dd>マドレーヌ／チョコ／パフェ／ストロベリー系／アイスワッフル／大学芋。</dd>
+    <!-- ★ 冷酷アイスクリーム -->
+    <a class="link" href="/shindan/iceshin.html?src=specimens"
+       data-id="ice" data-tags="性格,さくっと" data-mins="3" data-updated="2025-05-20">
+      <span class="emo">🍦</span>
+      <div class="body">
+        <div class="ttl">冷酷アイスクリーム診断 20問</div>
+        <div class="sub2">距離の取り方や計算高さの出やすさを、甘く冷たく表現。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <dt>場所</dt>
-    <dd>自然・きれいな場所・落ち着くカフェ・動物がいるところ。</dd>
+    <!-- ★ 鏡ナルシスト -->
+    <a class="link" href="/shindan/mirorshin.html?src=specimens"
+      data-id="mirror" data-tags="性格,さくっと" data-mins="5" data-updated="2025-04-18">
+      <span class="emo">🪞</span>
+      <div class="body">
+        <div class="ttl">鏡ナルシスト診断 14問</div>
+        <div class="sub2">自己像の扱い方や自己演出の傾向をチェック。</div>
+        <div class="meta"><span class="pill" data-min>⏱5分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <dt>趣味</dt>
-    <dd>喫茶店めぐり／猫の下僕／料理／自然散策／芸術鑑賞／筋トレ／勉強。</dd>
+    <!-- ★ 7つの休息 × スイーツ診断 -->
+    <a class="link" href="/shindan/sweetshin.html?src=specimens"
+       data-id="sweet" data-tags="セルフケア,さくっと" data-mins="3" data-updated="2025-02-12">
+      <span class="emo">🍰</span>
+      <div class="body">
+        <div class="ttl">7つの休息 × スイーツ診断 14問</div>
+        <div class="sub2">疲れ方のタイプを見極め、合う休み方をスイーツに例えて提案。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <dt>音楽</dt>
-    <dd>クリープハイプ／石崎ひゅーい／クラシック／自然の音／ちょっと変な音楽。</dd>
+    <!-- ★ 性格動物診断 -->
+    <a class="link" href="/shindan/animalshin.html?src=specimens"
+       data-id="animal" data-tags="性格,さくっと" data-mins="3" data-updated="2025-03-05">
+      <span class="emo">🐾</span>
+      <div class="body">
+        <div class="ttl">性格動物診断 10問</div>
+        <div class="sub2">性格のざっくり輪郭を動物メタファで楽しく把握。</div>
+        <div class="meta"><span class="pill" data-min>⏱4分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
 
-    <dt>動物</dt>
-    <dd>猫😻／ナマケモノ／ペンギン／犬。<br>基本的に、動物はなんでも好き。</dd>
-  </dl>
-</section>
-<!-- END:好きなもの -->
+    <!-- ★ 魂の花診断 -->
+    <a class="link" href="/shindan/hanashin.html?src=specimens"
+       data-id="hanashin" data-tags="こころ,占い,さくっと" data-mins="3" data-updated="2025-09-12"
+       data-keywords="魂の花 白い薔薇 向日葵 百合 杏 フリージア 占い メッセージ">
+      <span class="emo">🌸</span>
+      <div class="body">
+        <div class="ttl">魂の花診断 10問<span class="mini new" data-new>NEW</span></div>
+        <div class="sub2">内面の雰囲気と伸び方を花にたとえてメッセージ。</div>
+        <div class="meta"><span class="pill" data-min>⏱3分</span></div>
+      </div>
+      <span class="badge">診断へ</span>
+    </a>
+  </nav>
 
-  <p class="footer-note">※ 自己紹介のための手配書です。内容の一部に<b>AIによる分析メモ</b>を含みます。</p>
-
-  <!-- 猫の足跡（小さく＆たくさん） -->
-  <div class="paw" style="left:10px;  top:360px; transform:rotate(-10deg);"></div>
-  <div class="paw" style="left:42px;  top:408px; transform:rotate(-6deg);"></div>
-  <div class="paw" style="left:74px;  top:456px; transform:rotate(-2deg);"></div>
-  <div class="paw" style="left:106px; top:504px; transform:rotate(4deg);"></div>
-  <div class="paw" style="left:138px; top:552px; transform:rotate(8deg);"></div>
-
-  <div class="paw" style="right:14px; top:640px; transform:rotate(6deg);"></div>
-  <div class="paw" style="right:46px; top:688px; transform:rotate(2deg);"></div>
-  <div class="paw" style="right:78px; top:736px; transform:rotate(-4deg);"></div>
-  <div class="paw" style="right:110px; top:784px; transform:rotate(-8deg);"></div>
-
-  <div class="paw" style="left:18px;  top:860px; transform:rotate(-8deg);"></div>
-  <div class="paw" style="left:50px;  top:900px; transform:rotate(-2deg);"></div>
-  <div class="paw" style="left:82px;  top:940px; transform:rotate(3deg);"></div>
-  <div class="paw" style="left:114px; top:980px; transform:rotate(8deg);"></div>
-
-  <div class="paw" style="right:22px; top:1080px; transform:rotate(10deg);"></div>
-  <div class="paw" style="right:54px; top:1120px; transform:rotate(6deg);"></div>
-  <div class="paw" style="right:86px; top:1160px; transform:rotate(0deg);"></div>
+  <section id="legal-note" role="note" aria-label="ご利用にあたって" class="note">
+    <h2 style="font-size:1.05em;margin:18px 0 10px">ご利用にあたって</h2>
+    <ul style="margin:0 0 10px 18px;padding:0;line-height:1.7">
+      <li><strong>非提携・非公式：</strong>本サイトの各コンテンツは研究一般の知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。各種の公式心理検査・尺度の<strong>原文項目や正式な採点方法は使用しておらず</strong>、権利者の承認・提携・推奨を意味しません。</li>
+      <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安を目的としたセルフチェックで、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛や不調が続く場合は、医療機関や専門家へご相談ください。</li>
+      <li><strong>プライバシー：</strong>各診断ページの回答処理は<strong>ブラウザ内（端末内）で完結</strong>し、サーバーへの送信は行いません。進行状況や一部の表示設定のみローカルストレージに保存されることがあります。</li>
+      <li><strong>表現について：</strong>「職業」「タイプ」「サイコパス」等の呼称は<strong>比喩・俗称・ゲーミフィケーション表現</strong>であり、特定の個人・集団への価値判断や差別を意図しません。結果をもって他者を断定・ラベリングしないでください。</li>
+      <li><strong>免責：</strong>法令で認められる範囲で、本サイトの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+    </ul>
+  </section>
 </main>
 
-<script>
-/* ===== 画像（正方形1枚） ===== */
-const HERO_IMAGE_URL = '/shindan/assets/results/seikaku/01.png';
+<!-- Footer -->
+<nav class="footerbar" aria-label="サービスリンク" style="margin:18px 0 26px">
+  <a href="https://x.com/oki2a?s=21" target="_blank" rel="noopener">X</a>
+  <a href="https://www.instagram.com/haisuiko_no_zarigani/" target="_blank" rel="noopener">Instagram</a>
+  <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">LINE</a>
+  <a href="/shindan/seikaku.html">自己紹介</a>
+</nav>
 
-/* ===== データ（％） ===== */
-/* Big Five: raw(1〜5) → ((raw-1)/4)*100 */
-const BIG5 = [
-  {name:'開放性',     raw:5.00},
-  {name:'誠実性',     raw:4.33},
-  {name:'協調性',     raw:3.50},
-  {name:'外向性',     raw:2.83},
-  {name:'神経症傾向', raw:2.83}
-].map(d=>({name:d.name, pct: Math.round((d.raw-1)/4*100)}));
+<noscript>
+  <div style="max-width:980px;margin:16px auto;padding:0 14px max(28px,env(safe-area-inset-bottom));color:#7a6a77">
+    JavaScriptが無効です。<a href="/shindan/">診断一覧はこちら</a>。
+  </div>
+</noscript>
 
-/* 恋愛（％そのまま） */
-const LOVE = [
-  {name:'情熱', pct:71},
-  {name:'遊戯', pct:79},
-  {name:'友愛', pct:46},
-  {name:'実利', pct:17},
-  {name:'熱狂', pct:75},
-  {name:'無償', pct:50}
-];
-
-/* スキーマ（強度ざっくり。上位8表示） */
-const SCHEMA = [
-  {name:'見捨てられ／不安定', pct:100, abbr:'見捨て'},
-  {name:'情緒的剥奪',       pct:100, abbr:'剥奪'},
-  {name:'社会的孤立／疎外', pct:100, abbr:'孤立'},
-  {name:'情動抑制',         pct:100, abbr:'抑制'},
-  {name:'過度の道徳観／厳格さ', pct:100, abbr:'厳格'},
-  {name:'不信／虐待',       pct:95,  abbr:'不信'},
-  {name:'過度の警戒／罰',   pct:45,  abbr:'罰'},
-  {name:'権利意識／尊大',   pct:30,  abbr:'尊大'},
-  {name:'欠陥／羞恥',       pct:25,  abbr:'欠陥'},
-  {name:'からみ合い／自己未分化', pct:25, abbr:'からみ'},
-  {name:'他者承認過多',     pct:20,  abbr:'承認'},
-  {name:'自己犠牲',         pct:15,  abbr:'犠牲'},
-  {name:'依存／無能',       pct:10,  abbr:'依存'},
-  {name:'否定性／悲観',     pct:10,  abbr:'否定'},
-  {name:'服従',             pct:5,   abbr:'服従'},
-  {name:'脆弱性（破局への恐れ）', pct:0,  abbr:'脆弱'},
-  {name:'失敗',             pct:0,   abbr:'失敗'},
-  {name:'自制／自己規律の不足', pct:0,   abbr:'自制不'}
-];
-
-/* ===== レーダー描画 ===== */
-function drawRadar(canvas, labels, values, opts={}){
-  const cfg = Object.assign({
-    levels:5, max:100, pad:72,
-    ring: getCSS('--ring'), label:'#493828',
-    fill:'rgba(0,0,0,.08)', stroke:'#000',
-    font:'12px "Noto Serif JP", serif', labelOffset:28, point:3
-  }, opts);
-
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  const w0 = canvas.width, h0 = canvas.height;
-  canvas.width = Math.floor(w0*dpr); canvas.height = Math.floor(h0*dpr);
-  ctx.scale(dpr,dpr);
-
-  const W = w0, H = h0, cx=W/2, cy=H/2, R=Math.min(W,H)/2 - cfg.pad;
-  const N = labels.length;
-  const toXY = (i, r)=>{
-    const ang = (-Math.PI/2) + (2*Math.PI*i/N);
-    return [cx + r*Math.cos(ang), cy + r*Math.sin(ang)];
-  };
-
-  ctx.clearRect(0,0,W,H);
-  ctx.lineWidth=1; ctx.strokeStyle=cfg.ring;
-
-  // rings
-  for(let lvl=1; lvl<=cfg.levels; lvl++){
-    const rr = R*(lvl/cfg.levels);
-    ctx.beginPath();
-    for(let i=0;i<N;i++){
-      const [x,y]=toXY(i,rr);
-      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-    }
-    ctx.closePath(); ctx.stroke();
-  }
-
-  // axes
-  for(let i=0;i<N;i++){
-    const [x,y]=toXY(i,R);
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
-  }
-
-  // labels（改行対応）
-  ctx.fillStyle=cfg.label; ctx.font=cfg.font;
-  for(let i=0;i<N;i++){
-    const raw = labels[i];
-    const lines = String(raw).split(/\n/);
-    const [lx,ly]=toXY(i,R+cfg.labelOffset);
-    const align = Math.abs(lx-cx)<8 ? 'center' : (lx>cx?'left':'right');
-    ctx.textAlign=align; ctx.textBaseline='middle';
-    const lh = 14;
-    const baseY = ly - (lh*(lines.length-1))/2;
-    lines.forEach((t,k)=> ctx.fillText(t, lx, baseY + k*lh));
-  }
-
-  // polygon
-  ctx.beginPath();
-  for(let i=0;i<N;i++){
-    const rr = R*(Math.max(0,Math.min(100,values[i]))/cfg.max);
-    const [x,y]=toXY(i,rr);
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  }
-  ctx.closePath();
-  ctx.fillStyle=cfg.fill; ctx.fill();
-  ctx.strokeStyle=cfg.stroke; ctx.lineWidth=2; ctx.stroke();
-
-  // points
-  ctx.fillStyle=cfg.stroke;
-  for(let i=0;i<N;i++){
-    const rr = R*(Math.max(0,Math.min(100,values[i]))/cfg.max);
-    const [x,y]=toXY(i,rr);
-    ctx.beginPath(); ctx.arc(x,y,cfg.point,0,Math.PI*2); ctx.fill();
-  }
-}
-const wrapBig5Label = n => (n==='神経症傾向' ? '神経症\n傾向' : n);
-
-function renderRadarAll(){
-  drawRadar(
-    document.getElementById('radar-big5'),
-    BIG5.map(d=>wrapBig5Label(d.name)),
-    BIG5.map(d=>d.pct),
-    {stroke:getCSS('--blue'), fill:getCSS('--blue-fill'), label:'#2e3c68', pad:72, levels:5, labelOffset:28}
-  );
-  drawRadar(
-    document.getElementById('radar-love'),
-    LOVE.map(d=>d.name),
-    LOVE.map(d=>d.pct),
-    {stroke:getCSS('--red'), fill:getCSS('--red-fill'), label:'#6f2a33', pad:72, levels:5, labelOffset:28}
-  );
-  const top8 = [...SCHEMA].sort((a,b)=>b.pct-a.pct).slice(0,8);
-  drawRadar(
-    document.getElementById('radar-schema'),
-    top8.map(d=>d.abbr),
-    top8.map(d=>d.pct),
-    {stroke:getCSS('--green'), fill:getCSS('--green-fill'), label:'#0f4b3f', pad:78, levels:5, labelOffset:30, point:2.6, font:'11px "Noto Serif JP", serif'}
-  );
-  const leg = document.getElementById('schema-legend');
-  leg.innerHTML = top8.map(d=>(`
-    <div class="item">
-      <span class="dot"></span>
-      <span>${d.name}</span>
-      <span style="margin-left:auto;color:#6a5741">${d.pct}%</span>
-    </div>`)).join('');
-}
-
-/* 各◯◯の傾向（置換トークン） */
-function renderBig5Details(){
-  const dst = document.getElementById('big5-details');
-  const sorted = [...BIG5].sort((a,b)=>b.pct-a.pct);
-  dst.innerHTML = sorted.map((d,i)=>{
-    const token = `[[BIG5_TEND_${String(i+1).padStart(2,'0')}]]`;
-    return `<details><summary><b>${d.name}</b>：${d.pct}%</summary><p class="small" style="margin-top:6px">${token}</p></details>`;
-  }).join('');
-}
-function renderLoveDetails(){
-  const dst = document.getElementById('love-details');
-  const sorted = [...LOVE].sort((a,b)=>b.pct-a.pct);
-  dst.innerHTML = sorted.map((d,i)=>{
-    const token = `[[LOVE_TEND_${String(i+1).padStart(2,'0')}]]`;
-    return `<details><summary><b>${d.name}</b>：${d.pct}%</summary><p class="small" style="margin-top:6px">${token}</p></details>`;
-  }).join('');
-}
-function renderSchemaDetails(){
-  const dst = document.getElementById('schema-details');
-  const sorted = [...SCHEMA].sort((a,b)=>b.pct-a.pct);
-  dst.innerHTML = sorted.map((d,i)=>{
-    const token = `[[SCHEMA_TEND_${String(i+1).padStart(2,'0')}]]`;
-    return `<details><summary><b>${d.name}</b>：${d.pct}%</summary><p class="small" style="margin-top:6px">${token}</p></details>`;
-  }).join('');
-}
-
-/* 画像適用 */
-function applyHero(){
-  document.getElementById('heroImg').style.backgroundImage = `url('${HERO_IMAGE_URL}')`;
-}
-
-/* util */
-function getCSS(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-
-/* init */
-document.addEventListener('DOMContentLoaded', ()=>{
-  applyHero();
-  renderBig5Details();
-  renderLoveDetails();
-  renderSchemaDetails();
-  renderRadarAll();
-});
-</script>
-<!-- ▼ Big Five 下位因子：読者向けテキスト（段落スタイル） ▼ -->
-<script>
-	/* ── 恋愛／スキーマ／好きなもの：ラベル行に整形 ───────────────── */
-(function formatKV(){
-  // 対象セクション（id は実ファイルの構造に合わせてある程度ゆるく拾う）
-  var targets = [
-    document.querySelector('#sec-love')    || document.getElementById('love-details')    || document.querySelector('[data-sec="love"]'),
-    document.querySelector('#sec-schema')  || document.getElementById('schema-details')  || document.querySelector('[data-sec="schema"]'),
-    document.querySelector('#sec-like')    || document.getElementById('like-details')    || document.querySelector('[data-sec="like"]')
-  ].filter(Boolean);
-
-  var LABELS = /(傾向|うれしい|嬉しい|苦手|コツ|サイン|ポイント|好きなもの|食べもの|スイーツ|場所|趣味|音楽|動物)[：:\s]/;
-
-  targets.forEach(function(sec){
-    // 本文候補（p・li・div）をスキャン
-    Array.from(sec.querySelectorAll('.body p, .body li, .body div, .item p')).forEach(function(el){
-      if (el.classList.contains('kvrow')) return; // 既に整形済み
-      var raw = (el.innerHTML || '').trim();
-
-      // ラベル「傾向：うれしい：…」を抽出
-      var m = raw.replace(/<br\s*\/?>/gi,'\n').match(/^(.{1,8}?)[：:\s]\s*([\s\S]+)$/);
-      if(!m || !LABELS.test(m[1])) return;
-
-      var label = m[1].replace(/\s/g,'');
-      var text  = m[2].trim().replace(/\n+/g,'<br>');
-
-      el.classList.add('kvrow');
-      el.innerHTML = '<b class="lab">'+label+'：</b><span class="txt">'+ text +'</span>';
-    });
-  });
-})();
-document.addEventListener('DOMContentLoaded', function(){
-  var map = {
-    '[[BIG5_TEND_01]]': '【傾向】\n好奇心のスイッチが入りやすいタイプ。知らないものを見つけると「ちょっと触ってみたい」が自然に出ます。\n\n【うれしい】\n新しい視点・比喩で遊ぶ会話、アートや自然の共有。\n\n【苦手】\n正解を急ぐ／型にはめる進め方。\n\n【コツ】\nアイデアは「小さく試す → 一言ふりかえり」で現実に落とす。',
-    '[[BIG5_TEND_02]]': '【傾向】\n計画・責任感・達成志向が高いタイプ。やると決めたら丁寧に仕上げます。\n\n【うれしい】\n最初に目的・基準・締切の共有。「ここまででOK」の合図。\n\n【苦手】\n基準が曖昧なまま走ること。\n\n【コツ】\n段取り→進捗の見える化→完了宣言、の三拍子。',
-    '[[BIG5_TEND_03]]': '【傾向】\n親切で率直。合わせて取り繕うより、公平に本音で話すのが好き。\n\n【うれしい】\n結論だけでなく「なぜそう思うか」の共有。\n\n【苦手】\n感情の置き去りや、言いっぱなしの正論。\n\n【コツ】\nまず気持ちを受け止めてから意見交換。',
-    '[[BIG5_TEND_04]]': '【傾向】\nにぎやかな場より、少人数で深く話すと力が出ます。自己主張は控えめでも親しい人とはよく話す。\n\n【うれしい】\n設計・準備・改善など“裏方”役。\n\n【苦手】\n突然の指名や大声の争い。\n\n【コツ】\n合図を決めて順番に話す／書いて整える。',
-    '[[BIG5_TEND_05]]': '【傾向】\n見た目は落ち着いていますが、拒絶や理由のない変化には敏感。静かになるのはクールダウンの合図。\n\n【うれしい】\n「少し休んでから話そう」「理由はこうだよ」と添える一言。\n\n【苦手】\n急かす・無言の圧。\n\n【コツ】\nタイムアウト→再開時間を決めて対話再開。'
-  };
-
-  var box = document.getElementById('big5-details');
-  if (!box) return;
-  box.innerHTML = box.innerHTML.replace(/\[\[BIG5_TEND_\d{2}\]\]/g, function(k){
-    return (k in map) ? map[k].replace(/\n/g,'<br>') : '';
-  });
-});
-</script>
-<!-- ▼ LOVE：各スタイルの読者向けテキストを適用（preline運用・内容そのまま） ▼ -->
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var loveMap = {
-    '[[LOVE_TEND_01]]': '傾向：ロマンチックでまっすぐ。好きははっきり伝え合いたいタイプ。\nうれしい：言葉での好意や小さなサプライズ。\n苦手：曖昧な態度や温度差の放置。\nコツ：気持ちは言葉に、約束は短くても具体的に。',
-    '[[LOVE_TEND_02]]': '傾向：軽やかで自由。安心があれば会う頻度が少なくてもOK。\nうれしい：「今日は各自の時間、夜に一言ね」など自由＋合図のセット。\n苦手：強い束縛や駆け引き。\nコツ：チェックインの合図（いつ・どうやって）を決めておく。',
-    '[[LOVE_TEND_03]]': '傾向：友情ベースでゆっくり温まる。日常の共有や静かな共同作業が効く。\nうれしい：定番カフェや一緒の家事など、ルーティンの安心。\n苦手：急な激変やラベル付けを急がせること。\nコツ：「まずは隣で」を積み重ねる。',
-    '[[LOVE_TEND_04]]': '傾向：打算より気持ち。条件の照合より、人柄や成長ストーリーに心が動く。\nうれしい：努力や変化の話、価値観トーク。\n苦手：履歴書みたいな条件チェック。\nコツ：未来を語る時は数字だけでなく「大事にしたい暮らし」から入る。',
-    '[[LOVE_TEND_05]]': '傾向：確かめ合いたいタイプ。愛情の明確さと一貫性が安心のカギ。\nうれしい：「好き」「ここが助かった」など具体的な言葉、再接続の約束。\n苦手：放置、未読スルー、曖昧な関係の長期化。\nコツ：連絡頻度や遅れる時の一言、修復の合図を一緒に決めておく。',
-    '[[LOVE_TEND_06]]': '傾向：思いやり重視。相手の喜びが自分の喜びになりやすいが、無理な自己犠牲はしないバランスが理想。\nうれしい：小さなケア（お茶・メモ）と「助かった」の一言。\n苦手：「与えるのが当たり前」な雰囲気。\nコツ：やってもらう番も忘れず、感謝を言葉で循環させる。'
-  };
-
-  var loveBox = document.getElementById('love-details');
-  if (!loveBox) return;
-  loveBox.innerHTML = loveBox.innerHTML.replace(/\[\[LOVE_TEND_\d{2}\]\]/g, function(k){
-    return (k in loveMap) ? ('<p class="small preline">'+loveMap[k].replace(/\n/g,'<br>')+'</p>') : '';
-  });
-});
-</script>
-<!-- ▼ SCHEMA：各スキーマの読者向けテキスト（preline運用・内容そのまま） ▼ -->
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var schemaMap = {
-    '[[SCHEMA_TEND_01]]': '傾向：関係が切れるサインに敏感。優しさが続くか不安になりやすい。\nサイン：反応が薄いと「終わり」を想像しがち。\nコツ：好意は言葉で、予定変更は理由ひと言＋再接続の約束（いつ・どうやって）。',
-    '[[SCHEMA_TEND_02]]': '傾向：まず身を守る視点が働く。信頼は少しずつ積み上げたい。\nサイン：裏を読んでしまう、先に守りを固める。\nコツ：結論だけでなく経緯を共有。小さな約束を守ることが最大の安心材料。',
-    '[[SCHEMA_TEND_03]]': '傾向：「本当に欲しい共感は届きにくい」と感じやすい。\nサイン：困った時ほど孤独感が強まる。\nコツ：まず受け止めてから「今してほしいことは？」「聴いてほしい／意見ほしい？」を選べる形で。',
-    '[[SCHEMA_TEND_04]]': '傾向：基本は自己否定が強くないが、ときどき「自分に根本的な欠点がある気がする」が顔を出す。\nサイン：ふいに評価を過小に受け取る。\nコツ：行動と人柄を分けてフィードバック。「助かった具体」を短く伝えると落ち着く。',
-    '[[SCHEMA_TEND_05]]': '傾向：「どこか自分だけ違う」感覚が強い。居場所づくりが鍵。\nサイン：集団より小さな島（少人数）を好む。\nコツ：小さな儀式（定番カフェ・定例通話）で安心を固定化。',
-    '[[SCHEMA_TEND_06]]': '傾向：基本は自立。新しい課題だけ最初の道しるべがあると進みやすい。\nサイン：初手の具体がほしい。\nコツ：最初の一歩・チェックリストを共有→あとは任せる。',
-    '[[SCHEMA_TEND_07]]': '傾向：破局想像に囚われにくい。\nサイン：リスク話も落ち着いて整理できる。\nコツ：必要な備えだけ決めたら、良い面とセットで前進。',
-    '[[SCHEMA_TEND_08]]': '傾向：基本は自分軸。ただ、近い人の感情に同調したり、一人時間が長いと空っぽ感が出ることがある。\nサイン：相手優先が続くと疲れやすい。\nコツ：「今日の自分の希望」を一つ表明／一人時間の確保をルール化。',
-    '[[SCHEMA_TEND_09]]': '傾向：失敗前提で自分を決めつけにくい。\nサイン：新しい挑戦にも前向き。\nコツ：成果だけでなく学びも一緒にメモして残すとさらに安定。',
-    '[[SCHEMA_TEND_10]]': '傾向：基本は自分の希望を持てるが、衝突を避けて引っ込めがちになる場面がある。\nサイン：「まあいいか」で呑み込む。\nコツ：OK／NG／保留の3択で意思表示を楽に。小さなNGから練習。',
-    '[[SCHEMA_TEND_11]]': '傾向：人を助けたい気持ちは強いが、無理は長続きしない。\nサイン：断ると少し罪悪感。\nコツ：「今日は30分だけ」など時間で区切る／自分の休憩も予定化。',
-    '[[SCHEMA_TEND_12]]': '傾向：評価に左右されにくいが、反応が薄い状況だけ不安が出やすい。\nサイン：既読スルーに弱い。\nコツ：「既読にはスタンプだけでOK」など反応ルールを先に決める。',
-    '[[SCHEMA_TEND_13]]': '傾向：悪い面に引っ張られにくいが、時々リスクを先に並べがち。\nサイン：先に懸念から話す。\nコツ：「良い点→懸念→対策」の順に並べると噛み合う。',
-    '[[SCHEMA_TEND_14]]': '傾向：感情を見せるのが苦手。落ち着いて見えるほど、内側は言葉待ちのことがある。\nサイン：喜怒哀楽を抑えて平静を保とうとする。\nコツ：「気持ち→要望→提案」の順で短く。例：『今は不安。10分休んで、また話そう』。',
-    '[[SCHEMA_TEND_15]]': '傾向：常に高い基準。「もっと良く」がデフォルト。\nサイン：80点でも満足しにくい／休むより生産。\nコツ：先にDone基準を決める／進捗を言葉で称える／休むタスクも予定に入れる。',
-    '[[SCHEMA_TEND_16]]': '傾向：普段は謙虚。ただ、欲しいものに向かう時はドライブが強くかかる。\nサイン：目標に一直線になりやすい瞬間。\nコツ：価値観と整合チェック／相互のメリットを確認して進む。',
-    '[[SCHEMA_TEND_17]]': '傾向：衝動に流されにくい。\nサイン：計画的に動ける。\nコツ：作業は「25分集中→5分休憩」などリズム化でさらに安定。',
-    '[[SCHEMA_TEND_18]]': '傾向：普段は穏やかでも、「甘さ」やルーズさには厳しくなりやすい。\nサイン：ミスへの視線が厳格になりやすい場面がある。\nコツ：「ミス→原因→次の一手」で建設的に／やさしさは成長を止めない、と言葉でリセット。'
-  };
-
-  var schemaBox =
-    document.getElementById('schema-details')
-    || document.getElementById('sk-details')
-    || document.getElementById('schemaArea');
-
-  if (!schemaBox) return;
-
-  schemaBox.innerHTML = schemaBox.innerHTML.replace(/\[\[SCHEMA_TEND_\d{2}\]\]/g, function(k){
-    return (k in schemaMap) ? ('<p class="small preline">'+schemaMap[k].replace(/\n/g,'<br>')+'</p>') : '';
-  });
-});
-</script>
-<script>
-/* 🎰 スロットで “揃ったら開放” する仕掛け（25%で当たり）
-   性格=🐱 / 恋愛=🦥 / スキーマ=🐧 / 誤解=🐶
-   各セクションは「各傾向」と「総評」の2か所をスロット解放 */
-(function(){
-  var WIN_RATE = 0.25;
-  function rollEmojiPool(icon){
-  // 当たりアイコンも回るように最初に入れる
-  return [icon,'🍒','⭐️','🔔','7️⃣','🍉','🍇','🍋'];
-}
-
-  function q(sel){ return document.querySelector(sel); }
-
-  // 共通スピン関数（当たり判定もここで）
-  function spin(reelsEl, icon, winRate, onDone){
-    var t = 0, timer = setInterval(function(){
-      reelsEl.forEach(function(el){
-        var pool = rollEmojiPool(icon);
-el.textContent = pool[Math.floor(Math.random()*pool.length)];
-      });
-      if(++t > 12){
-        clearInterval(timer);
-        var win = Math.random() < winRate;
-        if(win){ reelsEl.forEach(function(el){ el.textContent = icon; }); }
-        onDone && onDone(win);
-      }
-    }, 90);
-  }
-
-  // スロットを作って anchor の直後に設置。target は当たるまで非表示
-  function makeGacha(opts){
-    var anchor  = (typeof opts.anchor === 'string') ? q(opts.anchor) : opts.anchor;
-    var target  = (typeof opts.target === 'string') ? q(opts.target) : opts.target;
-    var icon    = opts.icon || '🍒';
-    var winRate = (typeof opts.winRate === 'number') ? opts.winRate : WIN_RATE;
-    if(!anchor || !target) return;
-
-    // 当たるまで絶対に見せない
-    target.style.display = 'none';
-
-    var box = document.createElement('div');
-    box.className = 'gacha';
-    box.innerHTML =
-      '<div class="hint">🎰 '+ icon +'×3 が揃ったら開放</div>' +
-      '<div class="reels"><div class="reel">🍒</div><div class="reel">⭐️</div><div class="reel">🍒</div></div>' +
-      '<button type="button" class="btn spin">回す</button>';
-    anchor.insertAdjacentElement('afterend', box);
-
-    var btn = box.querySelector('.spin');
-    var reels = Array.from(box.querySelectorAll('.reel'));
-
-    btn.addEventListener('click', function(){
-      btn.disabled = true;
-      spin(reels, icon, winRate, function(win){
-        if(win){
-          target.style.display = '';
-          box.querySelector('.hint').textContent = '開放！ 詳しい内容が表示されました。';
-          btn.textContent = 'OPEN';
-        }else{
-          btn.disabled = false;
-          box.classList.add('shake'); setTimeout(function(){ box.classList.remove('shake'); }, 300);
-        }
-      });
-    });
-  }
-
-  window.addEventListener('load', function(){
-    /* ===== 性格（Big Five） ===== */
-    // 各性格の傾向 → スロット
-    var big5H3      = q('#sec-big5 h3');
-    var big5Details = q('#big5-details');
-    if(big5H3 && big5Details) makeGacha({ anchor: big5H3, target: big5Details, icon:'🐱' });
-
-    // 性格｜総評 → スロット（本文 .body をロック）
-    var big5SumH3   = q('#sec-big5 .sec-ttl');
-    var big5SumBody = q('#sec-big5 .body');
-    if(big5SumH3 && big5SumBody) makeGacha({ anchor: big5SumH3, target: big5SumBody, icon:'🐱' });
-
-    /* ===== 恋愛 ===== */
-    var loveH3      = q('#sec-love h3');
-    var loveDetails = q('#love-details');
-    if(loveH3 && loveDetails) makeGacha({ anchor: loveH3, target: loveDetails, icon:'🦥' });
-
-    var loveSumH3   = q('#sum-love .sec-ttl');
-    var loveSumBody = q('#sum-love .body');
-    if(loveSumH3 && loveSumBody) makeGacha({ anchor: loveSumH3, target: loveSumBody, icon:'🦥' });
-
-    /* ===== スキーマ ===== */
-    var schemaH3      = q('#sec-schema h3');
-    var schemaDetails = q('#schema-details');
-    if(schemaH3 && schemaDetails) makeGacha({ anchor: schemaH3, target: schemaDetails, icon:'🐧' });
-
-    var schemaSumH3   = q('#sum-schema .sec-ttl');
-    var schemaSumBody = q('#sum-schema .body');
-    if(schemaSumH3 && schemaSumBody) makeGacha({ anchor: schemaSumH3, target: schemaSumBody, icon:'🐧' });
-
-    /* ===== よくある誤解：代表例だけロック ===== */
-    var myth = q('#sec-misunderstand');
-    if(myth){
-      var h = Array.from(myth.querySelectorAll('h3')).find(function(x){
-        return (x.textContent || '').trim().indexOf('代表例') === 0;
-      });
-      if(h){
-        // 代表例ブロックを次の .hr 手前までまとめて隠す
-        var nodes=[], cur=h.nextElementSibling;
-        while(cur && !cur.classList.contains('hr')){ nodes.push(cur); cur = cur.nextElementSibling; }
-        if(nodes.length){
-          nodes.forEach(function(n){ n.style.display='none'; });
-          var box = document.createElement('div');
-          box.className = 'gacha';
-          box.innerHTML =
-            '<div class="hint">🎰 🐶×3 が揃ったら開放</div>' +
-            '<div class="reels"><div class="reel">🍒</div><div class="reel">⭐️</div><div class="reel">🍒</div></div>' +
-            '<button type="button" class="btn">回す</button>';
-          h.insertAdjacentElement('afterend', box);
-          var btn = box.querySelector('.btn');
-          var reels = Array.from(box.querySelectorAll('.reel'));
-          btn.addEventListener('click', function(){
-            btn.disabled = true;
-            spin(reels, '🐶', WIN_RATE, function(win){
-              if(win){
-                nodes.forEach(function(n){ n.style.display=''; });
-                box.querySelector('.hint').textContent = '開放！代表例が表示されました。';
-                btn.textContent = 'OPEN';
-              }else{
-                btn.disabled = false;
-                box.classList.add('shake'); setTimeout(function(){ box.classList.remove('shake'); }, 300);
-              }
-            });
-          });
-        }
-      }
-    }
-  });
-})();
-</script>
-<a href="index.html" class="btn-back btn-back--bottom" aria-label="診断一覧に戻る">← 診断一覧に戻る</a>
-<script>
-// 性格のヘッダ画像：読み込めたら .poster に <img.hero> を自動挿入
-(function(){
-  if (!window.HERO_IMAGE_URL) return;
-  var url = window.HERO_IMAGE_URL;
-  var img = new Image();
-  img.onload = function(){
-    var holder = document.querySelector('#sec-big5 .poster') || document.querySelector('.poster');
-    if (!holder) return;
-    if (!holder.querySelector('img.hero')) {
-      var tag = document.createElement('img');
-      tag.className = 'hero';
-      tag.alt = '';
-      tag.src = url;
-      holder.insertAdjacentElement('afterbegin', tag);
-    }
-  };
-  img.src = url;
-})();
-</script>
-<script>
-/* no-op: 総評見出しの自動移動は停止 */
-</script>
 <script>
 (function(){
-  function placeBig5SumTitle(){
-    var sec = document.getElementById('sec-big5');
-    var list = document.getElementById('big5-details');
-    if(!sec || !list) return;
+  const $  = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
 
-    // 既存見出しの候補をテキストで特定
-    var cand = Array.from(sec.querySelectorAll('h2,h3,.cap,.title,.ttl,.heading'))
-      .find(function(el){
-        var t = (el.textContent || '').replace(/\s/g,'');
-        return t.includes('性格') && t.includes('総評');
-      });
+  const splash  = $('#splash');
+  const content = $('#content');
+  const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
 
-    if(cand && cand.nextElementSibling !== list){
-      // 一度だけクラス付与してスタイルも揃える
-      cand.classList.add('sum-title');
-      list.parentNode.insertBefore(cand, list);
-    }
+  // Splash open
+  const GUARD_MS=600, HIDE_DELAY=300; let opened=false, guardUntil=0;
+  function startClickGuard(){
+    guardUntil=performance.now()+GUARD_MS;
+    const guard=(e)=>{ if(performance.now()<guardUntil){ e.stopPropagation(); e.preventDefault(); } else { window.removeEventListener('click',guard,true); } };
+    window.addEventListener('click',guard,true);
+    content.style.pointerEvents='none'; setTimeout(()=>{content.style.pointerEvents='';},GUARD_MS);
   }
-
-  // 初回配置
-  document.addEventListener('DOMContentLoaded', placeBig5SumTitle);
-
-  // スロット解放などでDOMが変わっても上に置き直す
-  var sec = document.getElementById('sec-big5');
-  if(sec){
-    new MutationObserver(function(){ placeBig5SumTitle(); })
-      .observe(sec, {subtree:true, childList:true});
+  function reveal(ev){
+    if(opened) return; opened=true;
+    if(ev){ try{ ev.preventDefault(); ev.stopPropagation(); }catch{} }
+    startClickGuard();
+    splash.classList.add('closing'); splash.setAttribute('aria-hidden','true');
+    content.classList.add('show'); vibrate(12);
+    setTimeout(()=>{ splash.classList.add('hidden'); splash.classList.remove('closing'); try{ content.removeAttribute('inert'); content.focus({preventScroll:true}); }catch{} }, Math.max(HIDE_DELAY,GUARD_MS));
   }
-})();
-</script>
-<style>
-/* === 好きなもの：縦並び＆きれいに折り返し === */
-#sec-likes .likes-grid{
-  display:grid; gap:14px 20px; grid-template-columns: 1fr 2.4fr;
+  splash.addEventListener('pointerup', e=>{ if(e?.target?.closest?.('a,button,input,label')) return; reveal(e); });
+  splash.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reveal(e); } });
+
+  // NEWバッジ（21日以内）
+  const today=new Date();
+  $$('#list a.link').forEach(a=>{
+    const badge=a.querySelector('[data-new]'); const ds=a.dataset.updated;
+    if(badge && ds){ const diff=(today - new Date(ds+'T00:00:00'))/86400000; badge.style.display=(diff<=21)?'inline-flex':'none'; }
+  });
+
+  // data-thumb → サムネ（指定カードのみ）
+  $$('#list a.link').forEach(a=>{
+    const src=a.dataset.thumb; if(!src) return;
+    a.classList.add('with-thumb');
+    const fg=document.createElement('figure'); fg.className='thumb';
+    const img=new Image(); img.loading='lazy'; img.src=src; img.alt=(a.querySelector('.ttl')?.textContent||'診断')+'のサムネイル';
+    fg.appendChild(img); a.insertBefore(fg,a.firstChild);
+  });
+
+// 検索・タグ（単一選択）
+  const q=$('#q'), chipsWrap=$('#chips'), clearBtn=$('#clearBtn');
+  
+// 「未挑戦だけ」ボタンを動的に追加 & “済”マーキング
+let btnTodo = document.getElementById('btnTodo');
+if(!btnTodo){
+  btnTodo = document.createElement('button');
+  btnTodo.id = 'btnTodo';
+  btnTodo.type = 'button';
+  btnTodo.className = 'btn';
+  btnTodo.setAttribute('aria-pressed','false');
+  btnTodo.textContent = '未挑戦だけ';
+// 検索行に追加（クリアの左）
+const row = q.closest('.row');
+if (clearBtn && row) row.insertBefore(btnTodo, clearBtn);
+else document.querySelector('.controls .row')?.appendChild(btnTodo);
 }
-#sec-likes .likes-term{
-  font-weight:700; letter-spacing:.06em; color:#3a2a1a;
+
+// 既読（=やった診断）をローカルから復元してカードに data-done を付与
+const LS_BYID_KEY = "specimens:open:byid";
+function getDoneMap(){
+  try{ return JSON.parse(localStorage.getItem(LS_BYID_KEY)||"{}"); }catch(e){ return {}; }
 }
-#sec-likes .likes-desc{
-  line-height:2; color:#4a3a2a;
-  /* 日本語の自然な改行＋どこでも折り返せる保険 */
-  line-break: strict; word-break: keep-all; overflow-wrap:anywhere;
+function markDoneCards(){
+  const done = getDoneMap();
+  document.querySelectorAll('#list a.link').forEach(a=>{
+    const id=a.dataset.id; if(!id) return;
+    if(done[id]>0) a.setAttribute('data-done','1'); else a.removeAttribute('data-done');
+  });
 }
-/* スラッシュの直後で折り返せるようにする */
-#sec-likes .likes-desc .wrap wbr{ display:inline; }
+markDoneCards();
+// 他タブ更新にも同期
+window.addEventListener('storage', (e)=>{ if(e.key===LS_BYID_KEY) markDoneCards(); });
 
-/* モバイルは dt↑ / 内容↓ の縦並び */
-@media (max-width: 768px){
-  #sec-likes .likes-grid{ grid-template-columns: 1fr; }
-  #sec-likes .likes-term{ margin-top:10px; }
-  #sec-likes .likes-desc{ text-indent:0; }
-}
-</style>
-<script>
-/* === 「好きなもの」を縦並びに整形（table でも dl でもOK） === */
-(function(){
-  // 見出しテキストからセクションを特定（"好きなもの" を含む h2/h3 など）
-  const head = Array.from(document.querySelectorAll('h1,h2,h3,h4,.cap,.ttl,.heading'))
-    .find(el => /好きなもの/.test(el.textContent));
-  if(!head) return;
+// 「未挑戦だけ」トグル（apply()は既存のを利用）
+let todoOnly=false;
+btnTodo.addEventListener('click', ()=>{
+  todoOnly=!todoOnly;
+  btnTodo.classList.toggle('primary',todoOnly);
+  btnTodo.setAttribute('aria-pressed', String(todoOnly));
+  btnTodo.textContent = todoOnly ? '未挑戦だけ（解除）' : '未挑戦だけ';
+  apply();
+});
+// エイリアス正規化（カード側タグの軽い寄せ）
+  const ALIAS={ '性格':'こころ', '短時間':'さくっと' };
 
-  // セクション要素（見出しの一番近い section/article/div）を推定
-  const sec = head.closest('section,article,div') || head.parentElement;
-  if(!sec) return;
-  sec.id = sec.id || 'sec-likes';
+  // カードのタグ正規化 + メタ整形
+  $$('#list a.link').forEach(a=>{
+    const tags=(a.dataset.tags||'').split(',').map(s=>s.trim()).filter(Boolean).map(t=>ALIAS[t]||t);
+    a.dataset.tags=[...new Set(tags)].join(',');
+    const meta=a.querySelector('.meta'); meta.innerHTML='';
+    const mins=a.dataset.mins; if(mins){ const s=document.createElement('span'); s.className='pill'; s.textContent=`⏱${mins}分`; meta.appendChild(s); }
+  });
 
-  // 既存の中身候補（table または dl）を探す
-  const tbl = sec.querySelector('table');
-  const dlist = sec.querySelector('dl');
+  // —— 固定4タグ（占い・ゲーム は統合表示／背後で「占い or ゲーム風」にマッチ）——
+  const CHIP_DEFS=[
+    { key:'さくっと',     label:'さくっと',     test:(tags)=>tags.includes('さくっと') },
+    { key:'ふつう',       label:'ふつう',       test:(tags)=>tags.includes('ふつう')   },
+    { key:'しっかり',     label:'しっかり',     test:(tags)=>tags.includes('しっかり') },
+    { key:'占い・ゲーム', label:'占い・ゲーム', test:(tags)=>tags.includes('占い') || tags.includes('ゲーム風') || tags.includes('ゲーム') },
+  ];
 
-  // 新しいグリッドを用意
-  const grid = document.createElement('div');
-  grid.className = 'likes-grid';
-
-  // “／”や“/”の直後で折り返せるよう <wbr> を挿入
-  const addBreak = (txt) =>
-    txt.replace(/\/|／/g, '／<wbr>') // 半角/も全角に揃えつつ折り返し点を追加
-       .replace(/\s+/g,' ')          // 余分な空白整理
-       .trim();
-
-  const pushRow = (term, descHTML) => {
-    const dt = document.createElement('div');
-    dt.className = 'likes-term';
-    dt.textContent = term.trim();
-
-    const dd = document.createElement('div');
-    dd.className = 'likes-desc';
-    const span = document.createElement('span');
-    span.className = 'wrap';
-    span.innerHTML = addBreak(descHTML);
-    dd.appendChild(span);
-
-    grid.appendChild(dt);
-    grid.appendChild(dd);
-  };
-
-  if(tbl){
-    // table → 縦並び
-    Array.from(tbl.querySelectorAll('tr')).forEach(tr=>{
-      const tds = tr.querySelectorAll('th,td');
-      if(tds.length >= 2){
-        const term = tds[0].textContent || '';
-        const desc = tds[1].innerHTML || '';
-        pushRow(term, desc);
+  // チップ生成（単一選択）
+  let activeTag=null; const chipMap=new Map();
+  CHIP_DEFS.forEach(def=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='chip'; b.textContent='#'+def.label; b.dataset.tag=def.key;
+    b.setAttribute('role','option'); b.setAttribute('aria-selected','false');
+    b.addEventListener('click',()=> setActiveTag(activeTag===def.key? null : def.key));
+    b.addEventListener('keydown',e=>{
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); b.click(); }
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault(); const chips=[...chipsWrap.querySelectorAll('.chip')];
+        const i=chips.indexOf(document.activeElement); if(i>-1){ chips[(i+(e.key==='ArrowRight'?1:-1)+chips.length)%chips.length].focus(); }
       }
     });
-    tbl.replaceWith(grid);
-  }else if(dlist){
-    // dl → 縦並び
-    const dts = dlist.querySelectorAll('dt');
-    dts.forEach(dt=>{
-      const dd = dt.nextElementSibling && dt.nextElementSibling.tagName.toLowerCase()==='dd'
-        ? dt.nextElementSibling : null;
-      if(dd){ pushRow(dt.textContent, dd.innerHTML); }
-    });
-    dlist.replaceWith(grid);
-  }else{
-    // フォールバック：見出し直下に並んだ .row などを探す
-    const rows = sec.querySelectorAll('.row, .likes-row');
-    if(rows.length){
-      rows.forEach(r=>{
-        const term = r.querySelector('.term, .left, .label')?.textContent || '';
-        const desc = r.querySelector('.desc, .right, .value')?.innerHTML || '';
-        if(term && desc) pushRow(term, desc);
-      });
-      rows[0].parentElement.replaceWith(grid);
-    }
+    chipsWrap.appendChild(b); chipMap.set(def.key,b);
+  });
+
+  function setActiveTag(tag){
+    activeTag=tag;
+    chipMap.forEach((btn,k)=>{ const on=(k===tag); btn.classList.toggle('active',on); btn.setAttribute('aria-selected',on?'true':'false'); });
+    if(tag){ history.replaceState({},'', '#tag='+encodeURIComponent(tag)); }
+    else { history.replaceState({},'', location.pathname + location.search); }
+    apply();
+  }
+
+  // 初期：#tag= / ?q=
+  const params=new URLSearchParams(location.search);
+  q.value=params.get('q')||'';
+  const initTag=location.hash.startsWith('#tag=') ? decodeURIComponent(location.hash.slice(5)) : '';
+  if(initTag && chipMap.has(initTag)) setActiveTag(initTag);
+
+  // 入力：末尾 #タグ を同期（4タグのみ許可）
+  q.addEventListener('input', ()=>{
+    const m=q.value.match(/(^|\s)#([^\s#]+)$/);
+    if(m){ const t=m[2]; if(chipMap.has(t)) setActiveTag(t); }
+    apply();
+  });
+
+  
+
+  // クリア（検索文字・タグ・URLの #tag を完全リセット）
+  clearBtn.addEventListener('click', ()=>{
+  q.value='';
+  setActiveTag(null);
+  // 念のため明示的にハッシュも消す
+  if(location.hash) history.replaceState({},'', location.pathname + location.search);
+  apply();
+});
+
+  // フィルタ
+  function apply(){
+  function apply(){
+  const kw=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
+  const def = CHIP_DEFS.find(d=>d.key===activeTag);
+  let shown=0;
+  $$('#list a.link').forEach(a=>{
+    const tags=(a.dataset.tags||'').split(',').filter(Boolean);
+    const text=(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase();
+    const okTag  = activeTag ? (def ? def.test(tags) : true) : true;
+    const okKw   = kw.length ? kw.every(w=>text.includes(w)) : true;
+    const okTodo = todoOnly ? !a.hasAttribute('data-done') : true;  // 未挑戦だけ
+    const show   = okTag && okKw && okTodo;
+    a.style.display = show ? '' : 'none';
+    if(show) shown++;
+  });
+  $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+}
+  $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+}
+  apply();
+
+  // Escで検索クリア
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ q.value=''; setActiveTag(null); apply(); } });
+})();
+</script>
+<script>
+/* ====== 標本オープン数（ローカル保持＋全体） ======================
+   まずはローカルに最後の全体値をキャッシュして表示のリセットを防ぐ。
+   可能なら下の②の「独自カウンタ（CF/GAS）」も設定してCF_WORKER_URLへ切替。
+=================================================================== */
+
+const myEl  = document.querySelector('#myOpenCount');
+const allEl = document.querySelector('#allOpenCount');
+
+// ---- 設定（必要なら②でURLを入れる） ------------------------------
+const CF_WORKER_URL = "https://counter.asagikarin.workers.dev";
+const GLOBAL_KEY    = "specimens_open_total";
+// ------------------------------------------------------------------
+
+// LocalStorage keys
+const LS_TOTAL_KEY      = "specimens:open:total";
+const LS_BYID_KEY       = "specimens:open:byid";
+const LS_GLOBAL_LAST    = "specimens:open:global:last"; // ← 追加：前回の全体値
+
+// CountAPI フォールバック
+const COUNTAPI_NS  = "haisuikounozarigani_shindan";
+const COUNTAPI_KEY = GLOBAL_KEY;
+
+// UI：全体数の安全セット + キャッシュ保存
+function setAll(val){
+  if(!allEl) return;
+  if (typeof val === "number" && Number.isFinite(val)) {
+    allEl.textContent = val.toLocaleString("ja-JP");
+    try{ localStorage.setItem(LS_GLOBAL_LAST, String(val)); }catch(e){}
+  } else {
+    // 失敗時は前回値を維持（落ち着いた表示）
+    const last = parseInt(localStorage.getItem(LS_GLOBAL_LAST) || "0", 10);
+    allEl.textContent = last ? last.toLocaleString("ja-JP") : "—";
+  }
+}
+
+// ---- ローカル加算 ------------------------------------------------
+function getLocalTotal(){
+  const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || "0", 10);
+  return Number.isFinite(n) ? n : 0;
+}
+function setLocalTotal(n){
+  localStorage.setItem(LS_TOTAL_KEY, String(n));
+}
+function incLocalById(id){
+  const t = getLocalTotal() + 1;
+  setLocalTotal(t);
+  // 個別
+  let map = {};
+  try{ map = JSON.parse(localStorage.getItem(LS_BYID_KEY) || "{}"); }catch(e){}
+  map[id] = (map[id] || 0) + 1;
+  localStorage.setItem(LS_BYID_KEY, JSON.stringify(map));
+  if(myEl) myEl.textContent = t.toLocaleString("ja-JP");
+}
+
+// ---- 全体：取得 --------------------------------------------------
+async function getGlobalCount(){
+  // 優先：独自エンドポイント（②で設定）
+  if(CF_WORKER_URL){
+    try{
+      const url = new URL(CF_WORKER_URL);
+      url.searchParams.set("key", GLOBAL_KEY);
+      const r = await fetch(url.toString(), {mode:"cors", cache:"no-store"});
+      const d = await r.json();
+      return (d && typeof d.value === "number") ? d.value : null;
+    }catch(e){ /* fallthrough */ }
+  }
+  // フォールバック：CountAPI
+  try{
+    const r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:"cors", cache:"no-store"});
+    const d = await r.json();
+    return (d && typeof d.value === "number") ? d.value : null;
+  }catch(e){
+    return null;
+  }
+}
+
+// ---- 全体：加算 --------------------------------------------------
+function bumpGlobal(){
+  // 優先：独自エンドポイント（sendBeacon→fetch）
+  if(CF_WORKER_URL){
+    try{
+      const url = new URL(CF_WORKER_URL);
+      url.searchParams.set("key", GLOBAL_KEY);
+      url.searchParams.set("hit", "1");
+      const u = url.toString();
+      if (navigator.sendBeacon) {
+        // sendBeacon は POST 送信になるが、Worker 側で method 無視 or POST 対応にしておく
+        const ok = navigator.sendBeacon(u, "");
+        if (ok) return;
+      }
+      fetch(u, {mode:"cors", cache:"no-store", keepalive:true}).catch(()=>{});
+      return;
+    }catch(e){ /* fallthrough */ }
+  }
+  // フォールバック：CountAPI
+  fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
+    method:"GET", mode:"cors", cache:"no-store", keepalive:true
+  }).catch(()=>{});
+}
+
+// ---- 初期化 ------------------------------------------------------
+(function initOpenCounter(){
+  // 自分の回数（ローカル）
+  if(myEl) myEl.textContent = getLocalTotal().toLocaleString("ja-JP");
+
+  // 全体：まず前回値を表示（リセット感をなくす）
+  const last = parseInt(localStorage.getItem(LS_GLOBAL_LAST) || "0", 10);
+  if(allEl) allEl.textContent = last ? last.toLocaleString("ja-JP") : "—";
+
+  // その後に最新を取得して置き換え
+  getGlobalCount().then(val => setAll(val)).catch(()=>setAll(null));
+
+  // クリックで加算（遷移前に送る／UIは楽観更新）
+  const list = document.querySelector('#list');
+  if(list){
+    list.addEventListener('click', function(e){
+      const a = e.target.closest('a.link');
+      if(!a) return;
+      const id = a.dataset.id || "unknown";
+      incLocalById(id);
+      try{ a.setAttribute('data-done','1'); }catch(_){}
+      bumpGlobal();
+      // 楽観更新で +1（ネットワーク失敗でも数字が戻らない）
+      const cur = parseInt((localStorage.getItem(LS_GLOBAL_LAST) || "0"), 10) || 0;
+      setAll(cur + 1);
+    }, {capture:true});
   }
 })();
 </script>
