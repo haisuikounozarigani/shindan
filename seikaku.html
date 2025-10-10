@@ -303,6 +303,9 @@ details p.small{ line-height:2.0; }
 }
 /* 性格の特徴内だけ <br> を隠す（他セクションは従来通り） */
 #sec-big5 .hl .txt.small br{ display:none; }
+
+/* 総評本文の入れ子 <p class="preline"> をフラット表示（HTMLは触らず見た目だけ安定） */
+#sec-big5 .body > p.preline{ display:contents; }
 /* 性格セクションのバッジ干渉を最小化（さらに縮小＆間隔） */
 @media (max-width:560px){
   #sec-big5 .poster{ padding-top:78px; }
@@ -346,6 +349,32 @@ details p.small{ line-height:2.0; }
   clear:both;     /* ←横並びを阻止して必ず独立行に */
   width:100%;
 }
+/***** --- mobile fix: 横はみ出し＆カード中央寄せ --- *****/
+html,body{overflow-x:hidden;}
+/* 上部の指名手配カード類を常に中央寄せ＆横幅は端末幅に追従 */
+.wanted, .poster, .top-card, .hero, .wanted-card{
+  max-width: 720px;
+  width: min(720px, 100% - 24px);
+  margin-left: auto;
+  margin-right: auto;
+}
+/* 画像は親幅にフィット */
+.wanted img, .poster img, .hero img{display:block;max-width:100%;height:auto;}
+/* スタンプが原因で右に当たり判定が伸びないよう余白再調整（被り軽減） */
+.bounty{ left: clamp(-18px, -3vw, -8px); }
+.stamp-big{ right: clamp(-18px, -3vw, -8px); }
+
+/* ── ラベル行（傾向／うれしい／苦手／コツなど）を性格と同じレイアウトで統一 ── */
+.kvrow{display:flex;gap:.75em;align-items:flex-start;line-height:1.9;margin:.35em 0 1.05em;}
+.kvrow .lab{min-width:5.5em;font-weight:700;letter-spacing:.02em;}
+/* スキーマは「サイン」ラベルも使うので幅を少しだけ広げる */
+#sec-schema .kvrow .lab{min-width:6em;}
+/* “好きなもの”の2カラム内も同じ行間で読みやすく */
+#sec-like .kvrow{line-height:1.95}
+
+/* 既存の <p class="preline"> ラッパの段落ズレを抑える（見た目のみフラット化） */
+#sec-big5 .body > p.preline{display:contents;}
+/***** --- end mobile fix --- *****/
 </style>
 </head>
 <body>
@@ -925,6 +954,35 @@ document.addEventListener('DOMContentLoaded', ()=>{
 </script>
 <!-- ▼ Big Five 下位因子：読者向けテキスト（段落スタイル） ▼ -->
 <script>
+	/* ── 恋愛／スキーマ／好きなもの：ラベル行に整形 ───────────────── */
+(function formatKV(){
+  // 対象セクション（id は実ファイルの構造に合わせてある程度ゆるく拾う）
+  var targets = [
+    document.querySelector('#sec-love')    || document.getElementById('love-details')    || document.querySelector('[data-sec="love"]'),
+    document.querySelector('#sec-schema')  || document.getElementById('schema-details')  || document.querySelector('[data-sec="schema"]'),
+    document.querySelector('#sec-like')    || document.getElementById('like-details')    || document.querySelector('[data-sec="like"]')
+  ].filter(Boolean);
+
+  var LABELS = /(傾向|うれしい|嬉しい|苦手|コツ|サイン|ポイント|好きなもの|食べもの|スイーツ|場所|趣味|音楽|動物)[：:\s]/;
+
+  targets.forEach(function(sec){
+    // 本文候補（p・li・div）をスキャン
+    Array.from(sec.querySelectorAll('.body p, .body li, .body div, .item p')).forEach(function(el){
+      if (el.classList.contains('kvrow')) return; // 既に整形済み
+      var raw = (el.innerHTML || '').trim();
+
+      // ラベル「傾向：うれしい：…」を抽出
+      var m = raw.replace(/<br\s*\/?>/gi,'\n').match(/^(.{1,8}?)[：:\s]\s*([\s\S]+)$/);
+      if(!m || !LABELS.test(m[1])) return;
+
+      var label = m[1].replace(/\s/g,'');
+      var text  = m[2].trim().replace(/\n+/g,'<br>');
+
+      el.classList.add('kvrow');
+      el.innerHTML = '<b class="lab">'+label+'：</b><span class="txt">'+ text +'</span>';
+    });
+  });
+})();
 document.addEventListener('DOMContentLoaded', function(){
   var map = {
     '[[BIG5_TEND_01]]': '【傾向】\n好奇心のスイッチが入りやすいタイプ。知らないものを見つけると「ちょっと触ってみたい」が自然に出ます。\n\n【うれしい】\n新しい視点・比喩で遊ぶ会話、アートや自然の共有。\n\n【苦手】\n正解を急ぐ／型にはめる進め方。\n\n【コツ】\nアイデアは「小さく試す → 一言ふりかえり」で現実に落とす。',
@@ -1156,6 +1214,7 @@ el.textContent = pool[Math.floor(Math.random()*pool.length)];
 <script>
 /* no-op: 総評見出しの自動移動は停止 */
 </script>
+<script>
 (function(){
   function placeBig5SumTitle(){
     var sec = document.getElementById('sec-big5');
