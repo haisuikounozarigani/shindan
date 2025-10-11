@@ -168,7 +168,7 @@ a.link[data-done] .mini[data-new]{display:none}
   <span class="emo">💗</span>
   <div class="body">
     <div class="ttl">HSPハート診断<span class="mini new" data-new>NEW</span></div>
-    <div class="sub2">18問で6因子を％化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤの5ハート。</div>
+    <div class="sub2">18問で刺激に対する敏感さを見える化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤの5ハート。</div>
     <div class="meta"><span class="pill">⏱6分</span><span class="pill">#性格</span><span class="pill">#ふつう</span><span class="pill">#しっかり</span></div>
   </div>
   <span class="badge">診断へ</span>
@@ -937,26 +937,33 @@ btnTodo.addEventListener('click', ()=>{
   apply();
 });
 
-  // フィルタ
+// フィルタ
   function apply(){
-  function apply(){
-  const kw=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
-  const def = CHIP_DEFS.find(d=>d.key===activeTag);
-  let shown=0;
-  $$('#list a.link').forEach(a=>{
-    const tags=(a.dataset.tags||'').split(',').filter(Boolean);
-    const text=(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase();
-    const okTag  = activeTag ? (def ? def.test(tags) : true) : true;
-    const okKw   = kw.length ? kw.every(w=>text.includes(w)) : true;
-    const okTodo = todoOnly ? !a.hasAttribute('data-done') : true;  // 未挑戦だけ
-    const show   = okTag && okKw && okTodo;
-    a.style.display = show ? '' : 'none';
-    if(show) shown++;
-  });
-  $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
-}
-  $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
-}
+    const kw = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean).filter(t=>!t.startsWith('#'));
+    const def = CHIP_DEFS.find(d=>d.key===activeTag);
+    let shown = 0;
+
+    $$('#list a.link').forEach(a=>{
+      const tags=(a.dataset.tags||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const text=(
+        (a.querySelector('.ttl')?.textContent||'')+' '+
+        (a.querySelector('.sub2')?.textContent||'')+' '+
+        (a.dataset.keywords||'')
+      ).toLowerCase();
+
+      const okTag  = activeTag ? (def ? def.test(tags) : true) : true;
+      const okKw   = kw.length ? kw.every(w=>text.includes(w)) : true;
+      const okTodo = todoOnly ? !a.hasAttribute('data-done') : true;
+
+      const show   = okTag && okKw && okTodo;
+      a.style.display = show ? '' : 'none';
+      if(show) shown++;
+    });
+
+    $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+  }
+
+  // 初期反映
   apply();
 
   // Escで検索クリア
