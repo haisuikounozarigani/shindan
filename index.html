@@ -101,11 +101,40 @@ a.link > div{flex:1 1 auto;min-width:0}
 
 /* 標本カウンタ（控えめ） */
 .stats-inline{justify-content:flex-end;gap:10px;margin-top:6px}
-.stats-inline .mini{
-  color:var(--muted);font-size:.9em;
-  border:1px solid var(--line);border-radius:999px;
-  padding:4px 8px;background:#fff;line-height:1.6
+.stats-inline .mini{color:var(--muted);font-size:.9em}
+
+/* === ランクボックス === */
+.rankbox{
+  margin:12px 0 8px; padding:12px;
+  border:1px solid var(--line); border-radius:12px; background:#fff;
+  box-shadow:0 1px 0 #f2e6f0;
 }
+.rankbox.pop{animation:rk-pop .5s}
+@keyframes rk-pop{
+  0%{transform:scale(.98)} 50%{transform:scale(1.01)} 100%{transform:scale(1)}
+}
+.rk-head{display:flex;align-items:center;gap:8px}
+.rk-emo{font-size:1.25em}
+.rk-name{font-weight:700}
+.rk-pct{margin-left:auto;color:var(--muted);font-size:.9em}
+
+.rk-bar{
+  height:10px;border-radius:999px;background:#f6edf5;border:1px solid #eed8ea;
+  overflow:hidden;margin:8px 0;
+}
+.rk-bar #rkFill{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .4s;
+}
+.rk-next{font-size:.9em;color:#7b6571}
+
+.rk-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.rk-badge{
+  padding:4px 8px;border-radius:999px;border:1px dashed #e7d6e4;
+  color:#9a8392;background:#fff;opacity:.4
+}
+.rk-badge.on{border-style:solid;opacity:1}
 /* --- done marker（既に受けた診断表示） --- */
 a.link[data-done]{position:relative;opacity:.9}
 a.link[data-done]::after{
@@ -150,16 +179,53 @@ a.link[data-done] .mini[data-new]{display:none}
     <div id="chips" class="chips" role="listbox" aria-multiselectable="false" aria-label="タグ（1つ選択で絞り込み）"></div>
   </section>
   
-  <!-- ▼ chips のすぐ下にこれを追加 -->
-<div class="row stats-inline" aria-label="標本カウンタ">
-  <span class="mini">🗡️ あなたのこころLv <strong id="myOpenCount">0</strong></span>
-  <span class="mini">⚔️ みんなのこころLv <strong id="allOpenCount">—</strong></span>
-    <span class="mini">※Lv＝開いた回数です。Lvを上げて心の冒険を進めよう！</span>
+  <!-- ▼ chips のすぐ下にこれを追加（置換） -->
+<div class="row stats-inline" aria-live="polite">
+  <span class="mini">あなたのこころLv：<strong id="myOpenCount">0</strong></span>
+  <span class="mini">みんなのこころLv：<strong id="allOpenCount">—</strong></span>
 </div>
+
+<!-- ★ 進捗ランク（コンプリート率） -->
+<section id="rankbox" class="rankbox" aria-live="polite">
+  <div class="rk-head">
+    <span id="rkEmoji" class="rk-emo" aria-hidden="true">🔹</span>
+    <strong id="rkName" class="rk-name">水晶</strong>
+    <span class="rk-pct"><span id="rkPct">0</span>%</span>
+  </div>
+
+  <div class="rk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="コンプリート進捗">
+    <span id="rkFill"></span>
+  </div>
+
+  <div id="rkNext" class="rk-next">次は <strong>銅</strong>（あと <span id="rkRemain">1</span> 件）</div>
+
+  <div class="rk-badges" aria-label="ランク一覧">
+    <span class="rk-badge" data-min="0">🔹水晶</span>
+    <span class="rk-badge" data-min="10">🥉 銅</span>
+    <span class="rk-badge" data-min="25">🥈 銀</span>
+    <span class="rk-badge" data-min="45">🥇 金</span>
+    <span class="rk-badge" data-min="70">✨ 白金</span>
+    <span class="rk-badge" data-min="90">💎 ダイヤモンド</span>
+  </div>
+</section>
 
   <!-- Cards -->
   <nav class="links" id="list" aria-label="診断一覧（検索結果）">
     <!-- 以降のカードはそのまま（data-tags内の「性格」はJSで「こころ」に正規化されます） -->
+    	
+
+  <!-- ★ 推し顔診断（男性／女性） -->
+  <a class="link" href="/shindan/oshi-face.html?src=specimens"
+     data-id="oshi-face" data-tags="ふつう,占い" data-mins="6" data-updated="2025-10-05"
+     data-keywords="推し顔 顔 好み 明るさ 対比 ツヤ 情報量 直線 曲線 テンポ 18タイプ 隠し クズチャーム 男女切替 24問 因子％">
+    <span class="emo">✨</span>
+    <div class="body">
+      <div class="ttl">推し顔診断（男性／女性）<span class="mini new" data-new>NEW</span></div>
+      <div class="sub2">24問で「明るさ・対比・質感・情報量・きちんと感・所作テンポ」を％化。18タイプ＋隠しタイプ。</div>
+      <div class="meta"><span class="pill" data-min>⏱6分</span></div>
+    </div>
+    <span class="badge">診断へ</span>
+  </a>
     	
     <!-- ★ HSPハート診断（5ランク） -->
 <a class="link" href="/shindan/hsp-heart.html?src=specimens"
@@ -857,8 +923,79 @@ function markDoneCards(){
   });
 }
 markDoneCards();
+updateCompletion();
+// 進捗バー＆ランク表示
+let lastRankName = null;
+function updateCompletion(){
+  // カード総数（表示/非表示に関わらず全カード）
+  const cards = document.querySelectorAll('#list a.link');
+  const total = cards.length;
+
+  // 既読マップから「この一覧に存在するIDだけ」完了数を数える
+  let doneMap = {};
+  try{ doneMap = JSON.parse(localStorage.getItem(LS_BYID_KEY)||"{}"); }catch(e){}
+  let done = 0;
+  cards.forEach(a=>{ const id=a.dataset.id; if(id && doneMap[id]>0) done++; });
+
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  // ランク定義（％閾値）
+  const ranks = [
+    {min:  0, name:'水晶',  emo:'🔹'},
+    {min: 10, name:'銅',   emo:'🥉'},
+    {min: 25, name:'銀',   emo:'🥈'},
+    {min: 45, name:'金',     emo:'🥇'},
+    {min: 70, name:'白金', emo:'✨'},
+    {min: 90, name:'ダイヤモンド',  emo:'💎'}
+  ];
+  // 現在ランク
+  let cur = ranks[0];
+  for(const r of ranks){ if(pct>=r.min) cur=r; }
+  // 次ランク
+  const next = ranks.find(r=>r.min>pct);
+
+  // UI
+  const box   = document.getElementById('rankbox');
+  const emo   = document.getElementById('rkEmoji');
+  const name  = document.getElementById('rkName');
+  const fill  = document.getElementById('rkFill');
+  const pctEl = document.getElementById('rkPct');
+  const nextEl= document.getElementById('rkNext');
+  const remEl = document.getElementById('rkRemain');
+  if(!box) return;
+
+  emo.textContent  = cur.emo;
+  name.textContent = cur.name;
+  pctEl.textContent= pct;
+  fill.style.width = pct+'%';
+
+  // バッジON/OFF
+  document.querySelectorAll('.rk-badge').forEach(b=>{
+    const need = parseInt(b.dataset.min||'0',10);
+    b.classList.toggle('on', pct>=need);
+  });
+
+  if(next){
+    const needDone = Math.ceil((next.min/100)*total);
+    const remain   = Math.max(0, needDone - done);
+    nextEl.innerHTML = `次は <strong>${next.name}</strong>（あと <span id="rkRemain">${remain}</span> 件）`;
+  }else{
+    nextEl.textContent = 'コンプリート間近！ 予備の新作を鋭意制作中。';
+  }
+
+  // ランクアップ演出
+  if(lastRankName!==null && lastRankName!==cur.name){
+    box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
+  }
+  lastRankName = cur.name;
+}
 // 他タブ更新にも同期
-window.addEventListener('storage', (e)=>{ if(e.key===LS_BYID_KEY) markDoneCards(); });
+window.addEventListener('storage', (e)=>{
+  if(e.key===LS_BYID_KEY){
+    markDoneCards();
+    updateCompletion();
+  }
+});
 
 // 「未挑戦だけ」トグル（apply()は既存のを利用）
 let todoOnly=false;
@@ -961,6 +1098,7 @@ btnTodo.addEventListener('click', ()=>{
     });
 
     $('#list').setAttribute('aria-label', `診断一覧（検索結果 ${shown} 件）`);
+updateCompletion();
   }
 
   // 初期反映
@@ -1091,6 +1229,7 @@ function bumpGlobal(){
       if(!a) return;
       const id = a.dataset.id || "unknown";
       incLocalById(id);
+updateCompletion();
       try{ a.setAttribute('data-done','1'); }catch(_){}
       bumpGlobal();
       // 楽観更新で +1（ネットワーク失敗でも数字が戻らない）
