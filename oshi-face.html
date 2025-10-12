@@ -237,43 +237,56 @@ mark.need{animation:need 1.6s ease}
   modeFemaleBtn.addEventListener("click", function(){ setGender("female"); }, false);
 
   // ====== 因子・設問 ======
-  // 6因子（LIGHT/CONTRAST/GLOSS/DENSITY/STRUCTURE/TEMPO）
-  var FACTORS = {
-    LIGHT:{ name:"明るさ（LIGHT）",     items:["Q01","Q02","Q20"] },
-    CONTRAST:{ name:"対比（CONTRAST）", items:["Q03","Q04","Q14","Q21"] },
-    GLOSS:{ name:"質感ツヤ（GLOSS）",   items:["Q05","Q06","Q13","Q22","Q19"] },
-    DENSITY:{ name:"情報量（DENSITY）", items:["Q07","Q08","Q18","Q23","Q15"] },
-    STRUCTURE:{ name:"きちんと感（STRUCTURE）", items:["Q09","Q10","Q16","Q24"] },
-    TEMPO:{ name:"所作テンポ（TEMPO）", items:["Q11","Q12","Q17"] }
-  };
-  // 設問テキスト（24）
-  var ITEMS = {
-    Q01:{ text:"明るめの写真（露出高め）の方が好きだ。" },
-    Q02:{ text:"部屋の照明は、やや暗めの落ち着きが心地よい。", rev:true },
-    Q03:{ text:"白黒の“はっきり効いた”対比に気分が上がる。" },
-    Q04:{ text:"ほんのり淡い色の重なりにきれいさを感じる。", rev:true },
-    Q05:{ text:"ツヤや光沢のある質感に目がいきやすい。" },
-    Q06:{ text:"マットな質感の方が安心できる。", rev:true },
-    Q07:{ text:"柄や小物が“少し多め”でも楽しい。" },
-    Q08:{ text:"無地や余白が多いと、ほっとする。", rev:true },
-    Q09:{ text:"直線的で端正な形に惹かれる。" },
-    Q10:{ text:"ゆるやかな曲線や落ち感が心地よい。", rev:true },
-    Q11:{ text:"初対面では、テンポよく明るいムードに惹かれやすい。" },
-    Q12:{ text:"静かで間のある振る舞いに安心する。", rev:true },
-    Q13:{ text:"香りが“しっかりめ”でも場に合っていれば好印象。" },    // GLOSS/DENSITY補助
-    Q14:{ text:"低彩度よりコントラストで締めたい。" },
-    Q15:{ text:"レトロ喫茶や古い映画の質感にときめく。" },             // DENSITY-/STRUCTURE-補助
-    Q16:{ text:"機能を感じる見た目（実用的）に好感。" },                 // STRUCTURE+/DENSITY-補助
-    Q17:{ text:"その場の中心に“少し”視線が集まる感じが好き。" },         // GLOSS+/DENSITY+/TEMPO+補助
-    Q18:{ text:"余計な装飾がない“素の良さ”に惹かれる。", rev:true },
-    Q19:{ text:"ネオンや夜景のキラキラにテンションが上がる。" },         // GLOSS+/TEMPO+
-    Q20:{ text:"キャンドルや間接照明の落ち着きが似合うと感じる。", rev:true },
-    Q21:{ text:"なめらかなグラデーションや中間色が好き。", rev:true },
-    Q22:{ text:"ツヤより“マットの上品さ”が好き。", rev:true },
-    Q23:{ text:"ロゴや柄より、素材の良さが目立つ方が良い。" },
-    Q24:{ text:"ラフで崩した形の方がこなれて見える。", rev:true }
-  };
-  var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
+// ====== 因子・設問 ======
+// 6因子（LIGHT/CONTRAST/GLOSS/DENSITY/STRUCTURE/TEMPO）は既存のまま利用
+var FACTORS = {
+  LIGHT:{ name:"明るさ（LIGHT）",     items:["Q01","Q02","Q20"] },
+  CONTRAST:{ name:"対比（CONTRAST）", items:["Q03","Q04","Q14","Q21"] },
+  GLOSS:{ name:"質感ツヤ（GLOSS）",   items:["Q05","Q06","Q13","Q22","Q19"] },
+  DENSITY:{ name:"情報量（DENSITY）", items:["Q07","Q08","Q18","Q23","Q15"] },
+  STRUCTURE:{ name:"きちんと感（STRUCTURE）", items:["Q09","Q10","Q16","Q24"] },
+  TEMPO:{ name:"所作テンポ（TEMPO）", items:["Q11","Q12","Q17"] }
+};
+
+// ▼新しい“好み中心”24問（0=ぜんぜん〜4=とても／revは逆転）
+var ITEMS = {
+  Q01:{ text:"明るい笑顔やキラッとした表情に惹かれる。" },
+  Q02:{ text:"薄暗く静かな空気のほうが色気を感じる。", rev:true },
+
+  Q03:{ text:"白黒の“くっきり効いた”対比に胸が高鳴る。" },
+  Q04:{ text:"やわらかな同系色・グラデーションが好き。", rev:true },
+
+  Q05:{ text:"髪・肌・アクセの“艶”があると一気に刺さる。" },
+  Q06:{ text:"マットで落ち着いた質感のほうが安心する。", rev:true },
+
+  Q07:{ text:"小物や柄が“少し多め”でもワクワクする。"},
+  Q08:{ text:"無地＆余白たっぷりのミニマルに惹かれる。", rev:true },
+
+  Q09:{ text:"直線的で端正なシルエットにグッとくる。"},
+  Q10:{ text:"ゆるい落ち感や丸みのあるラインが心地よい。", rev:true },
+
+  Q11:{ text:"明るくテンポの速い所作に惹かれがち。"},
+  Q12:{ text:"ゆっくり丁寧な所作に安心する。", rev:true },
+
+  Q13:{ text:"香りやラメなど“キラッ”と光る要素は歓迎。"},
+  Q14:{ text:"色数は少なく、コントラストではっきり決めたい。"},
+
+  Q15:{ text:"フィルム写真やレトロ喫茶の雰囲気が刺さる。"},
+  Q16:{ text:"機能的・実用的なディテールを見ると好印象。"},
+
+  Q17:{ text:"場の中心でも様になる“主役感”に惹かれる。"},
+  Q18:{ text:"装飾は少なめ、“素の良さ”がいちばん。", rev:true },
+
+  Q19:{ text:"夜景やネオン、イルミのきらめきに弱い。"},
+  Q20:{ text:"キャンドルや間接照明の落ち着きが似合う人が好き。", rev:true },
+
+  Q21:{ text:"淡い中間色やぼかしの繊細さが“綺麗”だと思う。", rev:true },
+  Q22:{ text:"ツヤより“マットの上品さ”を推したい。", rev:true },
+
+  Q23:{ text:"ロゴより素材・形の良さを重視する。"},
+  Q24:{ text:"少し崩した“抜け感”に惹かれる。", rev:true }
+};
+var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
 
   // ====== タイプ定義（18＋隠し19） ======
   var TYPES = [
@@ -456,6 +469,65 @@ mark.need{animation:need 1.6s ease}
     return TYPES.find(function(t){ return t.id===map[top]; }) || TYPES[0];
   }
 
+// ▼占い風コメント生成
+function buildFortune(pct, type){
+  // high/lowのしきい値
+  var H=60, L=40;
+
+  function pick(txtHigh, txtLow, key){
+    var v=pct[key]; return v>=H ? txtHigh : (v<=L ? txtLow : "");
+  }
+
+  // あなたはこんな人に惹かれやすい
+  var likes = [
+    pick("明るい笑顔と透明感のある人","落ち着いた照度で静かな色気の人","LIGHT"),
+    pick("白黒のメリハリが似合う端正な人","淡色の同系色が似合うやさしい人","CONTRAST"),
+    pick("艶のある髪やアクセが映える人","マットで素肌感のある人","GLOSS"),
+    pick("小物・柄で“情報多め”の主役感がある人","無地＆余白のミニマルが似合う人","DENSITY"),
+    pick("直線的で端正・きちんと感のある人","落ち感や曲線の“抜け”が上手な人","STRUCTURE"),
+    pick("テンポよく明るい所作の人","ゆっくり丁寧な所作の人","TEMPO")
+  ].filter(Boolean);
+
+  // あるある（上位2因子ベース）
+  var topKeys = Object.keys(pct).sort(function(a,b){return pct[b]-pct[a];}).slice(0,2);
+  var aaDict = {
+    LIGHT:["昼の写真を保存しがち","キャンドル写真に弱い"],
+    CONTRAST:["白黒コーデの画像に保存ボタンが暴発","淡色リンク集めがち"],
+    GLOSS:["“艶髪”と聞くと秒でタップ","マットリップ紹介は即チェック"],
+    DENSITY:["アクセ多めコーデに『わかる…』と呟く","無地×余白コーデをピン留めしがち"],
+    STRUCTURE:["直線シルエットで一目惚れ","落ち感シルエットに『抜けが神』と言いがち"],
+    TEMPO:["笑顔の連写にやられる","静かな横顔の動画を無限リピ"]
+  };
+  var alist=[];
+  topKeys.forEach(function(k){
+    var arr=aaDict[k]||[];
+    // 上位値で0番、低位なら1番
+    alist.push( pct[k]>=H ? arr[0] : (pct[k]<=L ? arr[1] : (arr[0]||"")) );
+  });
+
+  // 距離の縮め方（トップ因子で一言）
+  var tipMap = {
+    LIGHT:   {hi:"昼の写真＆爽やかな挨拶が近道。", lo:"落ち着いた照明の場で静かに話すと刺さる。"},
+    CONTRAST:{hi:"色数は絞って“白黒はっきり”で印象UP。", lo:"同系色でトーンを合わせると好感度UP。"},
+    GLOSS:   {hi:"髪や靴を“艶の面”で整えると一気に雰囲気が出る。", lo:"マットな質感と清潔感で『わかってる』を演出。"},
+    DENSITY: {hi:"小物や柄に一つ“盛り”を乗せると会話の糸口に。", lo:"無地＋余白で素材の良さを見せると刺さる。"},
+    STRUCTURE:{hi:"直線的で端正なシルエットを選ぶと信頼感が増す。", lo:"力の抜けた落ち感で“親しみやすさ”を。"},
+    TEMPO:   {hi:"テンポ良く笑顔多めで距離が縮まる。", lo:"間を大切に、ゆったり目の会話が合う。"}
+  };
+  var tk=topKeys[0], tip=(pct[tk]>=H?tipMap[tk].hi: (pct[tk]<=L?tipMap[tk].lo: tipMap[tk].hi));
+
+  // タイプ固有の一言（軽め）
+  var typeNote = (type.hidden)
+    ? "※レア枠『隠しタイプ』解放。黒×シルバーと“艶の面”が決め手。"
+    : "このタイプは写真の“面の作り”と色合わせが鍵。日によって寄せ替えも楽しんで。";
+
+  return {
+    likes: (likes.length? likes.join("／") : "状況に合わせて好みが変わりやすいタイプ"),
+    alist: alist,
+    tip: tip,
+    note: typeNote
+  };
+}
   // ====== 表示 ======
   function heroPath(typeNo){
     var id = String(typeNo).padStart(2,"0");
@@ -499,12 +571,20 @@ mark.need{animation:need 1.6s ease}
     // 因子バー
     drawBars(o.fPct);
 
-    // ランク／長文（必要なら追記）
-    longCopy.innerHTML =
-      '<div class="note"><h4>タイプ解説</h4>'+
-      '<p>'+t.catch+' '+t.taste+'</p>'+
-      (t.hidden?'<p>※条件一致でレア枠（隠しタイプ）が解放されました。</p>':'')+
-      '</div>';
+// ランク／長文（占い風）
+var fortune = buildFortune(o.fPct, t);
+longCopy.innerHTML =
+  '<div class="note"><h4>あなたはこんな人に惹かれがち</h4>'+
+  '<p>'+ fortune.likes +'</p>'+
+  '<h4 style="margin-top:10px">あるある</h4>'+
+  '<ul style="margin:6px 0 0 18px;line-height:1.9">'+
+    fortune.alist.map(function(s){return '<li>'+s+'</li>';}).join("")+
+  '</ul>'+
+  '<h4 style="margin-top:10px">距離の縮め方</h4>'+
+  '<p>'+ fortune.tip +'</p>'+
+  '<p class="small" style="margin-top:8px">'+ fortune.note +'</p>'+
+  (t.hidden?'<p class="small" style="margin-top:6px">※条件一致でレア枠（隠しタイプ）が解放されました。</p>':'')+
+  '</div>';
 
     // 研究メモ（やさしい語彙）
     var memo = [
