@@ -124,8 +124,8 @@ a.link > div{flex:1 1 auto;min-width:0}
 }
 .rk-bar #rkFill{
   display:block;height:100%;width:0;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  transition:width .4s;
+  background:#dfe3ff; /* JSでランクごとに上書き */
+  transition:width .4s, filter .2s;
 }
 .rk-next{font-size:.9em;color:#7b6571}
 
@@ -197,16 +197,7 @@ a.link[data-done] .mini[data-new]{display:none}
     <span id="rkFill"></span>
   </div>
 
-  <div id="rkNext" class="rk-next">次は <strong>銅</strong>（あと <span id="rkRemain">1</span> 件）</div>
-
-  <div class="rk-badges" aria-label="ランク一覧">
-    <span class="rk-badge" data-min="0">🔹水晶</span>
-    <span class="rk-badge" data-min="10">🥉 銅</span>
-    <span class="rk-badge" data-min="25">🥈 銀</span>
-    <span class="rk-badge" data-min="45">🥇 金</span>
-    <span class="rk-badge" data-min="70">✨ 白金</span>
-    <span class="rk-badge" data-min="90">💎 ダイヤモンド</span>
-  </div>
+  <div id="rkNext" class="rk-next">あと <span id="rkRemain">1</span> 件でランクアップ</div>
 </section>
 
   <!-- Cards -->
@@ -933,25 +924,25 @@ function updateCompletion(){
 
   // 既読マップから「この一覧に存在するIDだけ」完了数を数える
   let doneMap = {};
-  try{ doneMap = JSON.parse(localStorage.getItem(LS_BYID_KEY)||"{}"); }catch(e){}
+  try{ doneMap = JSON.parse(localStorage.getItem("specimens:open:byid")||"{}"); }catch(e){}
   let done = 0;
   cards.forEach(a=>{ const id=a.dataset.id; if(id && doneMap[id]>0) done++; });
 
   const pct = total ? Math.round(done/total*100) : 0;
 
-  // ランク定義（％閾値）
+  // ランク定義（％閾値 + バー色）
   const ranks = [
-    {min:  0, name:'水晶',  emo:'🔹'},
-    {min: 10, name:'銅',   emo:'🥉'},
-    {min: 25, name:'銀',   emo:'🥈'},
-    {min: 45, name:'金',     emo:'🥇'},
-    {min: 70, name:'白金', emo:'✨'},
-    {min: 90, name:'ダイヤモンド',  emo:'💎'}
+    {min:  0, name:'水晶',        emo:'🔹', grad:'linear-gradient(90deg,#8fd3ff,#c9c9ff)'},
+    {min: 10, name:'銅',          emo:'🥉', grad:'linear-gradient(90deg,#d68b49,#ffd29d)'},
+    {min: 25, name:'銀',          emo:'🥈', grad:'linear-gradient(90deg,#aeb6bf,#e6eef5)'},
+    {min: 45, name:'金',          emo:'🥇', grad:'linear-gradient(90deg,#f2c94c,#f2994a)'},
+    {min: 70, name:'白金',        emo:'✨', grad:'linear-gradient(90deg,#d6d0ff,#ffffff)'},
+    {min: 90, name:'ダイヤモンド', emo:'💎', grad:'linear-gradient(90deg,#8be9ff,#b69cff)'}
   ];
-  // 現在ランク
+
+  // 現在ランク／次ランク
   let cur = ranks[0];
   for(const r of ranks){ if(pct>=r.min) cur=r; }
-  // 次ランク
   const next = ranks.find(r=>r.min>pct);
 
   // UI
@@ -964,10 +955,15 @@ function updateCompletion(){
   const remEl = document.getElementById('rkRemain');
   if(!box) return;
 
-  emo.textContent  = cur.emo;
-  name.textContent = cur.name;
-  pctEl.textContent= pct;
-  fill.style.width = pct+'%';
+  // 値反映
+  emo.textContent   = cur.emo;
+  name.textContent  = cur.name;
+  pctEl.textContent = pct;
+  fill.style.width  = pct+'%';
+  // バー色（ランクごと）
+  fill.style.background = cur.grad;
+  // うっすらグロー
+  fill.style.filter = 'drop-shadow(0 0 6px rgba(255,255,255,.5))';
 
   // バッジON/OFF
   document.querySelectorAll('.rk-badge').forEach(b=>{
@@ -975,20 +971,46 @@ function updateCompletion(){
     b.classList.toggle('on', pct>=need);
   });
 
+  // 次ランク名は非表示で「あと◯件でランクアップ」
   if(next){
     const needDone = Math.ceil((next.min/100)*total);
     const remain   = Math.max(0, needDone - done);
-    nextEl.innerHTML = `次は <strong>${next.name}</strong>（あと <span id="rkRemain">${remain}</span> 件）`;
+    nextEl.innerHTML = `あと <span id="rkRemain">${remain}</span> 件でランクアップ`;
   }else{
     nextEl.textContent = 'コンプリート間近！ 予備の新作を鋭意制作中。';
   }
 
-  // ランクアップ演出
-  if(lastRankName!==null && lastRankName!==cur.name){
+  // ランクアップ時の小祝砲（キラッ）
+  if(window.lastRankName!==undefined && window.lastRankName!==null && window.lastRankName!==cur.name){
+    // 既存ポップ
     box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
+    // きらめき絵文字を一瞬だけ散らす
+    const burst = document.createElement('span');
+    burst.textContent = (cur.name==='ダイヤモンド' ? '💎' : '✨');
+    burst.setAttribute('aria-hidden','true');
+    burst.style.position='absolute';
+    burst.style.right='14px';
+    burst.style.top='-6px';
+    burst.style.fontSize='20px';
+    burst.style.animation='fadeUp .8s ease-out forwards';
+    box.style.position='relative';
+    box.appendChild(burst);
+    setTimeout(()=>{ burst.remove(); }, 900);
+    // ついでにバーをきらっと
+    fill.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,.9))';
+    setTimeout(()=>{ fill.style.filter='drop-shadow(0 0 6px rgba(255,255,255,.5))'; }, 300);
   }
-  lastRankName = cur.name;
+  window.lastRankName = cur.name;
 }
+
+// 祝砲アニメ（CSSが無くてもinlineで動くよう最小限）
+(function addFadeUpKeyframes(){
+  const id='rkFadeUpKF';
+  if(document.getElementById(id)) return;
+  const st=document.createElement('style'); st.id=id;
+  st.textContent=`@keyframes fadeUp{0%{opacity:0;transform:translateY(6px) scale(.95)}60%{opacity:1}100%{opacity:.0;transform:translateY(-8px) scale(1.1)}}`;
+  document.head.appendChild(st);
+})();
 // 他タブ更新にも同期
 window.addEventListener('storage', (e)=>{
   if(e.key===LS_BYID_KEY){
