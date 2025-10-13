@@ -168,7 +168,7 @@ mark.need{animation:need 1.6s ease}
   <a id="btnShot" class="btn save" href="#">結果画像を保存</a>
   <a id="shareTw" class="btn tw"   href="#" target="_blank" rel="noopener">Xで共有</a>
   <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
-  <a id="shareIg" class="btn ig"   href="#" aria-label="Instagramでシェア">Instagram</a>
+  <a id="shareIg" class="btn ig"   href="#" target="_blank" rel="noopener" aria-label="Instagram（Web）">Instagram</a>
 </div>
 <!-- まとめ画像を生成するためのキャンバス（非表示） -->
 <canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
@@ -332,32 +332,27 @@ var sumNote = document.getElementById("sumNote");
 var bars    = document.getElementById("bars");
 var longCopy= document.getElementById("longCopy");
 var resMemo = document.getElementById("resMemo");
+var qWrap   = document.getElementById("qWrap");
+var prog    = document.getElementById("prog");
+var resEmpty= document.getElementById("resEmpty");
+var resArea = document.getElementById("resArea");
+var typeLine= document.getElementById("typeLine");
+var heroImg = document.getElementById("heroImg");
+var heroTitle= document.getElementById("heroTitle");
+var heroCopy = document.getElementById("heroCopy");
+var heroTaste= document.getElementById("heroTaste");
+var sumAvg  = document.getElementById("sumAvg");
+var sumPct  = document.getElementById("sumPct");
+var sumNote = document.getElementById("sumNote");
+var bars    = document.getElementById("bars");
+var longCopy= document.getElementById("longCopy");
+var resMemo = document.getElementById("resMemo");
 var shareRow= document.getElementById("shareRow");
 var shareTw = document.getElementById("shareTw");
 var shareLn = document.getElementById("shareLn");
 var shareIg = document.getElementById("shareIg");
-// ▼ 追加
 var btnShot = document.getElementById("btnShot");
 var shotCanvas = document.getElementById("shotCanvas");
-  var qWrap   = document.getElementById("qWrap");
-  var prog    = document.getElementById("prog");
-  var resEmpty= document.getElementById("resEmpty");
-  var resArea = document.getElementById("resArea");
-  var typeLine= document.getElementById("typeLine");
-  var heroImg = document.getElementById("heroImg");
-  var heroTitle= document.getElementById("heroTitle");
-  var heroCopy = document.getElementById("heroCopy");
-  var heroTaste= document.getElementById("heroTaste");
-  var sumAvg  = document.getElementById("sumAvg");
-  var sumPct  = document.getElementById("sumPct");
-  var sumNote = document.getElementById("sumNote");
-  var bars    = document.getElementById("bars");
-  var longCopy= document.getElementById("longCopy");
-  var resMemo = document.getElementById("resMemo");
-  var shareRow= document.getElementById("shareRow");
-  var shareTw = document.getElementById("shareTw");
-  var shareLn = document.getElementById("shareLn");
-  var shareIg = document.getElementById("shareIg");
 
   // ====== 設問生成 ======
   function buildQuestions(){
@@ -624,19 +619,28 @@ longCopy.innerHTML =
 
     // 共有リンク
     var shareText = '『推し顔診断』タイプ：'+t.name+'｜因子平均 '+avg.toFixed(2)+' / 4';
-    var url = location.href.split('#')[0];
-    shareTw.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
-    shareLn.href = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url);
-    shareIg.onclick = function(e){
-      e.preventDefault();
-      var caption = shareText + ' ' + url;
-      copyToClipboard(caption).then(function(){
-        var opened=false; try{ var w=window.open('instagram://app','_blank'); opened=!!w; }catch(_){}
-        if(!opened){ window.open('https://www.instagram.com/','_blank'); }
-        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
-      });
-    };
-    shareRow.hidden = false;
+var url = location.href.split('#')[0];
+
+// X（旧Twitter）
+shareTw.href = 'https://twitter.com/intent/tweet?text='
+  + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+
+// LINE（テキスト）
+shareLn.href = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url);
+
+// Instagram：Webを開きつつキャプションコピー
+shareIg.onclick = function(e){
+  e.preventDefault();
+  var caption = shareText + ' ' + url;
+  copyToClipboard(caption).then(function(){
+    window.open('https://www.instagram.com/','_blank');
+    toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+  });
+};
+
+// 表示（hidden属性も外す）
+shareRow.hidden = false;
+shareRow.removeAttribute('hidden');
 
     // 表示切替
     resEmpty.style.display = "none";
@@ -746,15 +750,25 @@ async function buildShareImage(data){
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0,0,W,H);
 
-  // ヒーロー画像（上部 3:4 をだいたいで）
-  var img = await loadImage(data.heroSrc);
-  var heroW = W - 120, heroH = Math.round(heroW * 4/3);
-  if (heroH > 680){ heroH = 680; heroW = Math.round(heroH * 3/4); }
-  var hx = Math.round((W - heroW)/2), hy = 60;
+// ヒーロー画像（上部 3:4 をだいたいで）
+var heroW = W - 120, heroH = Math.round(heroW * 4/3);
+if (heroH > 680){ heroH = 680; heroW = Math.round(heroH * 3/4); }
+var hx = Math.round((W - heroW)/2), hy = 60;
 
-  // 角丸背景
-  roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+// 角丸背景
+roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+
+try{
+  var img = await loadImage(data.heroSrc);
   ctx.drawImage(img, hx, hy, heroW, heroH);
+}catch(_){
+  // 画像が取れない環境（file:// 直開き等）はプレースホルダ
+  ctx.fillStyle = "#e6ecf7";
+  ctx.fillRect(hx, hy, heroW, heroH);
+  ctx.fillStyle = "#9aa3b2";
+  ctx.font = "600 24px 'Noto Sans JP',system-ui";
+  ctx.fillText("画像を表示できませんでした", hx + 24, hy + heroH/2);
+}
 
   // タイトル
   var y = hy + heroH + 40;
@@ -793,14 +807,32 @@ async function buildShareImage(data){
 }
 
 // 画像読込（CORS考慮）
-function loadImage(src){
-  return new Promise(function(res, rej){
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){ res(img); };
-    img.onerror = rej;
-    img.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now(); // キャッシュ回避
-  });
+async function loadImage(src){
+  // 1) fetch→blob→blobURL 経由（同一オリジン化）
+  try{
+    const r = await fetch(src, {cache:'no-store'});
+    if(!r.ok) throw new Error('fetch failed');
+    const b = await r.blob();
+    const blobUrl = URL.createObjectURL(b);
+    const img = await new Promise((res, rej)=>{
+      const im = new Image();
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = blobUrl;
+    });
+    // 使い終わったら解放
+    setTimeout(()=>URL.revokeObjectURL(blobUrl), 1000);
+    return img;
+  }catch(e){
+    // 2) 従来の anonymous 読み込み（CORS通ればOK）
+    return await new Promise((res, rej)=>{
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now();
+    });
+  }
 }
 
 // 角丸矩形
