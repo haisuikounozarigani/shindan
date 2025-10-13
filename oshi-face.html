@@ -99,6 +99,7 @@ mark.need{animation:need 1.6s ease}
   .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
   .note h4{font-size:15px}
 }
+#shareRow{display:flex !important; flex-wrap:wrap; gap:8px}
 </style>
 </head>
 <body>
@@ -165,10 +166,11 @@ mark.need{animation:need 1.6s ease}
           <div class="capmini" id="heroCopy">—</div>
           <div class="capmini" id="heroTaste" style="margin-top:4px">—</div>
      <div class="share-row" id="shareRow" hidden>
-  <a id="btnShot" class="btn save" href="#">結果画像を保存</a>
-  <a id="shareTw" class="btn tw"   href="#" target="_blank" rel="noopener">Xで共有</a>
-  <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
-  <a id="shareIg" class="btn ig"   href="#" target="_blank" rel="noopener" aria-label="Instagram（Web）">Instagram</a>
+  <button id="btnShot"  class="btn save" type="button">結果画像を保存</button>
+  <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>
+  <button id="shareLn"  class="btn line" type="button">LINEで送る</button>
+  <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>
+  <button id="shareCp"  class="btn"      type="button">リンクをコピー</button>
 </div>
 <!-- まとめ画像を生成するためのキャンバス（非表示） -->
 <canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
@@ -345,9 +347,10 @@ function renderType(){
   if(!state || !state.type) return;
   var t = state.type;
   heroImg.src = (function(){
-    var id = String(t.id).padStart(2,"0");
-    return IMG_BASE + CURRENT_GENDER + "/t" + id + ".webp";
-  })();
+  var id = String(t.id).padStart(2,"0");
+  var g = (CURRENT_GENDER === "male" ? "female" : "male"); // 逆フォルダを使う
+  return IMG_BASE + g + "/t" + id + ".webp";
+})();
   heroImg.alt = (ALT[t.id] && ALT[t.id][CURRENT_GENDER]) || "結果イメージ";
 }
   // ====== 設問生成 ======
@@ -546,10 +549,11 @@ function buildFortune(pct, type){
   };
 }
   // ====== 表示 ======
-  function heroPath(typeNo){
-    var id = String(typeNo).padStart(2,"0");
-    return IMG_BASE + CURRENT_GENDER + "/t" + id + ".webp";
-  }
+function heroPath(typeNo){
+  var id = String(typeNo).padStart(2,"0");
+  var g = (CURRENT_GENDER === "male" ? "female" : "male"); // 逆フォルダを使う
+  return IMG_BASE + g + "/t" + id + ".webp";
+}
   function drawBars(pct){
     var html = "";
     Object.keys(FACTORS).forEach(function(key){
@@ -614,30 +618,46 @@ longCopy.innerHTML =
     resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
 
     // 共有リンク
-    var shareText = '『推し顔診断』タイプ：'+t.name+'｜因子平均 '+avg.toFixed(2)+' / 4';
+// 共有リンク（buttonで確実に表示＆開く）
+var shareText = '『推し顔診断』タイプ：'+t.name+'｜因子平均 '+avg.toFixed(2)+' / 4';
 var url = location.href.split('#')[0];
 
+function openBlank(u){ window.open(u, '_blank', 'noopener'); }
+
 // X（旧Twitter）
-shareTw.href = 'https://twitter.com/intent/tweet?text='
-  + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
+shareTw.onclick = function(){
+  openBlank('https://twitter.com/intent/tweet?text='
+    + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url));
+};
 
-// LINE（テキスト）
-shareLn.href = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url);
+// LINE
+shareLn.onclick = function(){
+  openBlank('https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url));
+};
 
-// Instagram：Webを開きつつキャプションコピー
-shareIg.onclick = function(e){
-  e.preventDefault();
+// Instagram（Webを開き、キャプションは自動コピー）
+shareIg.onclick = function(){
   var caption = shareText + ' ' + url;
   copyToClipboard(caption).then(function(){
-    window.open('https://www.instagram.com/','_blank');
+    openBlank('https://www.instagram.com/');
     toast('キャプションをコピーしました。Instagramで貼り付けてください。');
   });
 };
 
-// 表示（hidden属性も外す）
+// リンクをコピー
+var shareCp = document.getElementById('shareCp');
+if(shareCp){
+  shareCp.onclick = function(){
+    copyToClipboard(shareText + ' ' + url).then(function(){
+      toast('リンクをコピーしました');
+    });
+  };
+}
+
+// 表示（hidden解除）
 shareRow.hidden = false;
 shareRow.removeAttribute('hidden');
-shareRow.style.display = "flex"; // ←念押しで表示
+shareRow.style.display = 'flex';
 
     // 表示切替
     resEmpty.style.display = "none";
