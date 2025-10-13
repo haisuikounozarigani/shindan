@@ -240,17 +240,17 @@ mark.need{animation:need 1.6s ease}
   modeMaleBtn.addEventListener("click", function(){ setGender("male"); }, false);
   modeFemaleBtn.addEventListener("click", function(){ setGender("female"); }, false);
 
-  // ====== 因子・設問 ======
 // ====== 因子・設問 ======
 // 6因子（LIGHT/CONTRAST/GLOSS/DENSITY/STRUCTURE/TEMPO）は既存のまま利用
 var FACTORS = {
-  LIGHT:{ name:"明るさ（LIGHT）",     items:["Q01","Q02","Q20"] },
-  CONTRAST:{ name:"対比（CONTRAST）", items:["Q03","Q04","Q14","Q21"] },
-  GLOSS:{ name:"質感ツヤ（GLOSS）",   items:["Q05","Q06","Q13","Q22","Q19"] },
-  DENSITY:{ name:"情報量（DENSITY）", items:["Q07","Q08","Q18","Q23","Q15"] },
-  STRUCTURE:{ name:"きちんと感（STRUCTURE）", items:["Q09","Q10","Q16","Q24"] },
-  TEMPO:{ name:"所作テンポ（TEMPO）", items:["Q11","Q12","Q17"] }
+  LIGHT:     { name:"明るさ（LIGHT）",               items:["Q01","Q02","Q20"] },
+  CONTRAST:  { name:"対比（CONTRAST）",             items:["Q03","Q04","Q14","Q21"] },
+  GLOSS:     { name:"質感ツヤ（GLOSS）",             items:["Q05","Q06","Q13","Q22","Q19"] },
+  DENSITY:   { name:"情報量（DENSITY）",             items:["Q07","Q08","Q18","Q23","Q15"] },
+  STRUCTURE: { name:"きちんと感（STRUCTURE）",       items:["Q09","Q10","Q16","Q24"] },
+  TEMPO:     { name:"所作テンポ（TEMPO）",           items:["Q11","Q12","Q17"] }
 };
+window.FACTORS = FACTORS;
 
 // ▼新しい“好み中心”24問（0=ぜんぜん〜4=とても／revは逆転）
 var ITEMS = {
@@ -332,28 +332,24 @@ var sumNote = document.getElementById("sumNote");
 var bars    = document.getElementById("bars");
 var longCopy= document.getElementById("longCopy");
 var resMemo = document.getElementById("resMemo");
-var qWrap   = document.getElementById("qWrap");
-var prog    = document.getElementById("prog");
-var resEmpty= document.getElementById("resEmpty");
-var resArea = document.getElementById("resArea");
-var typeLine= document.getElementById("typeLine");
-var heroImg = document.getElementById("heroImg");
-var heroTitle= document.getElementById("heroTitle");
-var heroCopy = document.getElementById("heroCopy");
-var heroTaste= document.getElementById("heroTaste");
-var sumAvg  = document.getElementById("sumAvg");
-var sumPct  = document.getElementById("sumPct");
-var sumNote = document.getElementById("sumNote");
-var bars    = document.getElementById("bars");
-var longCopy= document.getElementById("longCopy");
-var resMemo = document.getElementById("resMemo");
 var shareRow= document.getElementById("shareRow");
 var shareTw = document.getElementById("shareTw");
 var shareLn = document.getElementById("shareLn");
 var shareIg = document.getElementById("shareIg");
 var btnShot = document.getElementById("btnShot");
 var shotCanvas = document.getElementById("shotCanvas");
+window.shotCanvas = shotCanvas;
 
+// 現在の判定があるとき、性別だけ反映して画像/altを更新
+function renderType(){
+  if(!state || !state.type) return;
+  var t = state.type;
+  heroImg.src = (function(){
+    var id = String(t.id).padStart(2,"0");
+    return IMG_BASE + CURRENT_GENDER + "/t" + id + ".webp";
+  })();
+  heroImg.alt = (ALT[t.id] && ALT[t.id][CURRENT_GENDER]) || "結果イメージ";
+}
   // ====== 設問生成 ======
   function buildQuestions(){
     var html = "";
@@ -641,6 +637,7 @@ shareIg.onclick = function(e){
 // 表示（hidden属性も外す）
 shareRow.hidden = false;
 shareRow.removeAttribute('hidden');
+shareRow.style.display = "flex"; // ←念押しで表示
 
     // 表示切替
     resEmpty.style.display = "none";
@@ -666,7 +663,7 @@ if (btnShot && shotCanvas){
       saveBlob(blob, "oshi-face_"+t.key+".png");
     }catch(err){
       console.error(err);
-      alert("画像の生成に失敗しました。ローカル直開きの場合は簡易サーバーからお試しください。");
+      alert("画像の生成に失敗しました。\n画像はプレースホルダで保存される場合があります（file://直開きだと外部画像は描けません）。");
     }finally{
       btnShot.textContent = original;
       btnShot.disabled = false;
@@ -742,9 +739,12 @@ resEmpty.style.display = "none";
 
 // ====== まとめ画像生成（1080x1350） ======
 async function buildShareImage(data){
-  var cvs = shotCanvas;
+  // グローバル（window）から安全に取得
+  var cvs = (window.shotCanvas || document.getElementById("shotCanvas"));
+  if(!cvs) throw new Error("shotCanvas not found");
   var ctx = cvs.getContext("2d");
   var W = cvs.width, H = cvs.height;
+  var FACT = (window.FACTORS || {}); // ←追加
 
   // 背景
   ctx.fillStyle = "#ffffff";
@@ -790,7 +790,7 @@ try{
   for(var i=0;i<order.length;i++){
     var key = order[i], val = data.pct[key]||0;
     drawBar(ctx, 60, baseY + i*70, W-120, 18, val,
-      FACTORS[key].name.replace("（"," ").replace("）",""), "#ff7a6b", "#ffba7e");
+      (FACT[key] ? FACT[key].name : key).replace("（"," ").replace("）",""), "#ff7a6b", "#ffba7e");
   }
 
   // 平均とフッター
