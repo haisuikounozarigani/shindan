@@ -85,6 +85,7 @@ mark.need{animation:need 1.6s ease}
 .btn.tw::before{content:"𝕏";margin-right:.25em}
 .btn.line::before{content:"💬";margin-right:.25em}
 .btn.ig::before{content:"📸";margin-right:.25em}
+.btn.save::before{content:"⬇️";margin-right:.25em}
 
 @media (max-width: 560px){
   .wrap{padding:0 10px}
@@ -163,11 +164,14 @@ mark.need{animation:need 1.6s ease}
           <div class="capline" id="heroTitle">—</div>
           <div class="capmini" id="heroCopy">—</div>
           <div class="capmini" id="heroTaste" style="margin-top:4px">—</div>
-          <div class="share-row" id="shareRow" hidden>
-            <a id="shareTw" class="btn tw" href="#" target="_blank" rel="noopener">で共有</a>
-            <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
-            <a id="shareIg" class="btn ig" href="#" aria-label="Instagramでシェア">Instagramでシェア</a>
-          </div>
+     <div class="share-row" id="shareRow" hidden>
+  <a id="btnShot" class="btn save" href="#">結果画像を保存</a>
+  <a id="shareTw" class="btn tw"   href="#" target="_blank" rel="noopener">Xで共有</a>
+  <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
+  <a id="shareIg" class="btn ig"   href="#" aria-label="Instagramでシェア">Instagram</a>
+</div>
+<!-- まとめ画像を生成するためのキャンバス（非表示） -->
+<canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
         </figcaption>
       </div>
 
@@ -312,7 +316,29 @@ var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
   ];
   var ALT = {}; TYPES.forEach(function(t){ ALT[t.id] = { male: t.name+"（男性版）", female:t.name+"（女性版）" }; });
 
-  // ====== 要素参照 ======
+// ====== 要素参照 ======
+var qWrap   = document.getElementById("qWrap");
+var prog    = document.getElementById("prog");
+var resEmpty= document.getElementById("resEmpty");
+var resArea = document.getElementById("resArea");
+var typeLine= document.getElementById("typeLine");
+var heroImg = document.getElementById("heroImg");
+var heroTitle= document.getElementById("heroTitle");
+var heroCopy = document.getElementById("heroCopy");
+var heroTaste= document.getElementById("heroTaste");
+var sumAvg  = document.getElementById("sumAvg");
+var sumPct  = document.getElementById("sumPct");
+var sumNote = document.getElementById("sumNote");
+var bars    = document.getElementById("bars");
+var longCopy= document.getElementById("longCopy");
+var resMemo = document.getElementById("resMemo");
+var shareRow= document.getElementById("shareRow");
+var shareTw = document.getElementById("shareTw");
+var shareLn = document.getElementById("shareLn");
+var shareIg = document.getElementById("shareIg");
+// ▼ 追加
+var btnShot = document.getElementById("btnShot");
+var shotCanvas = document.getElementById("shotCanvas");
   var qWrap   = document.getElementById("qWrap");
   var prog    = document.getElementById("prog");
   var resEmpty= document.getElementById("resEmpty");
@@ -614,6 +640,38 @@ longCopy.innerHTML =
 
     // 表示切替
     resEmpty.style.display = "none";
+    shareRow.hidden = false;
+
+// ▼ 結果画像を保存（まとめスクショ）
+if (btnShot && shotCanvas){
+  btnShot.onclick = async function(e){
+    e.preventDefault();
+    var original = btnShot.textContent;
+    btnShot.textContent = "画像を生成中…";
+    btnShot.disabled = true;
+
+    try{
+      var blob = await buildShareImage({
+        heroSrc: heroImg.src,
+        title: (t.hidden? t.name+"（隠し）" : t.name),
+        catch: t.catch,
+        taste: t.taste,
+        avg: avg.toFixed(2),
+        pct: o.fPct
+      });
+      saveBlob(blob, "oshi-face_"+t.key+".png");
+    }catch(err){
+      console.error(err);
+      alert("画像の生成に失敗しました。ローカル直開きの場合は簡易サーバーからお試しください。");
+    }finally{
+      btnShot.textContent = original;
+      btnShot.disabled = false;
+    }
+  };
+}
+
+// 表示切替
+resEmpty.style.display = "none";
     resArea.style.display  = "block";
     document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
 
@@ -677,6 +735,155 @@ longCopy.innerHTML =
   // 状態
   var state = { type:null, pct:null };
 })();
+
+// ====== まとめ画像生成（1080x1350） ======
+async function buildShareImage(data){
+  var cvs = shotCanvas;
+  var ctx = cvs.getContext("2d");
+  var W = cvs.width, H = cvs.height;
+
+  // 背景
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,W,H);
+
+  // ヒーロー画像（上部 3:4 をだいたいで）
+  var img = await loadImage(data.heroSrc);
+  var heroW = W - 120, heroH = Math.round(heroW * 4/3);
+  if (heroH > 680){ heroH = 680; heroW = Math.round(heroH * 3/4); }
+  var hx = Math.round((W - heroW)/2), hy = 60;
+
+  // 角丸背景
+  roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+  ctx.drawImage(img, hx, hy, heroW, heroH);
+
+  // タイトル
+  var y = hy + heroH + 40;
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "800 40px 'Noto Sans JP',system-ui";
+  ctx.fillText("推し顔診断", 60, y);
+  ctx.font = "800 44px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, "タイプ："+data.title, 60, y+54, W-120, 48);
+
+  // キャッチ＆テイスト
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.catch, 60, y+120, W-120, 36, "#667087");
+  ctx.font = "600 26px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.taste, 60, y+176, W-120, 34, "#667087");
+
+  // 因子バー（6つ）
+  var baseY = y + 230;
+  var order = ["LIGHT","CONTRAST","GLOSS","DENSITY","STRUCTURE","TEMPO"];
+  for(var i=0;i<order.length;i++){
+    var key = order[i], val = data.pct[key]||0;
+    drawBar(ctx, 60, baseY + i*70, W-120, 18, val,
+      FACTORS[key].name.replace("（"," ").replace("）",""), "#ff7a6b", "#ffba7e");
+  }
+
+  // 平均とフッター
+  var ftY = baseY + order.length*70 + 40;
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#1f2732";
+  ctx.fillText("因子平均："+data.avg+" / 4（= "+Math.round((parseFloat(data.avg)/4)*100)+"%）", 60, ftY);
+
+  ctx.font = "600 20px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#9aa3b2";
+  ctx.fillText("© 推し顔診断 / 画像は端末内で生成されます", 60, H-40);
+
+  return await canvasToBlob(cvs, "image/png");
+}
+
+// 画像読込（CORS考慮）
+function loadImage(src){
+  return new Promise(function(res, rej){
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function(){ res(img); };
+    img.onerror = rej;
+    img.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now(); // キャッシュ回避
+  });
+}
+
+// 角丸矩形
+function roundRect(ctx, x, y, w, h, r, fill, stroke){
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle = stroke; ctx.stroke(); }
+  ctx.restore();
+}
+
+// テキスト折返し
+function drawWrapText(ctx, text, x, y, maxW, lh, color){
+  ctx.fillStyle = color || "#1f2732";
+  var words = (text||"").split(/(\s+)/);
+  var line = "", cursor = y;
+  for(var i=0;i<words.length;i++){
+    var test = line + words[i];
+    if(ctx.measureText(test).width > maxW && i>0){
+      ctx.fillText(line, x, cursor);
+      line = words[i].trimStart();
+      cursor += lh;
+    }else{
+      line = test;
+    }
+  }
+  if(line){ ctx.fillText(line, x, cursor); }
+}
+
+// バー
+function drawBar(ctx, x, y, w, h, pct, label, c1, c2){
+  ctx.save();
+  // ラベル
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "700 22px 'Noto Sans JP',system-ui";
+  ctx.fillText(label, x, y-10);
+
+  // 下地
+  var by = y+10;
+  roundRect(ctx, x, by, w, h, 10, "#edf2fb", "#e8eef9");
+
+  // 実バー
+  var ww = Math.max(0, Math.min(w, Math.round(w*pct/100)));
+  var grad = ctx.createLinearGradient(x,0,x+w,0);
+  grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+  roundRect(ctx, x, by, ww, h, 10, grad);
+
+  // 数値
+  ctx.fillStyle = "#667087";
+  ctx.font = "600 18px 'Noto Sans JP',system-ui";
+  var txt = String(pct).padStart(2,"0")+"%";
+  ctx.fillText(txt, x + w - ctx.measureText(txt).width, by + h + 22);
+  ctx.restore();
+}
+
+// 保存
+function saveBlob(blob, filename){
+  var a = document.createElement("a");
+  var url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename || "result.png";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);
+}
+
+// toBlob（fallback）
+function canvasToBlob(cvs, type){
+  return new Promise(function(res){
+    if(cvs.toBlob){ cvs.toBlob(function(b){ res(b); }, type||"image/png"); }
+    else{ res(dataURLtoBlob(cvs.toDataURL(type||"image/png"))); }
+  });
+}
+function dataURLtoBlob(dataUrl){
+  var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], {type:mime});
+}
 </script>
 </body>
 </html>
