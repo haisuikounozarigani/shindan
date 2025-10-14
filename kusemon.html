@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>思考クセモン診断</title>
+<meta name="description" content="25問で“見え方のクセ”を10体のクセモンとして図鑑化。主役クセモン＋相棒とLvを表示。エンタメ自己理解です。">
+<meta name="theme-color" content="#f7f9ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="思考クセモン診断">
+<meta property="og:description" content="25問・10因子％で主役クセモンを判定。画像webp対応＆結果画像保存OK。">
+<meta property="og:image" content="/shindan/assets/results/kusemon/t01.webp">
+<style>
+:root{
+  --accent:#6b9bff; --accent2:#8bd3ff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f2fbff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e6f0ff,#e9fffe);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(107,155,255,.45)}100%{box-shadow:0 0 0 0 rgba(107,155,255,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:22px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+/* ヒーロー（画像→テキスト） */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+
+/* 共有ボタン */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"𝕏";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+.btn.save::before{content:"⬇️";margin-right:.25em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">📘</div>
+    <div>
+      <h1>思考クセモン診断</h1>
+      <p class="sub">25問（0〜4の5件法）。10因子の％と「主役クセモン」を表示します。※エンタメ自己理解／因果は断定しません。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="25">
+      <span id="prog"></span>
+    </div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：25</span>
+      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>
+      <span class="pill">出力：10因子％→主役＋相棒（条件）</span>
+    </div>
+    <p class="small">“見え方のクセ”を10体のキャラで図鑑化。日常で使える**一言ヒント**も表示します。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（ぜんぜん／あまり／ときどき／よく／とても）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全25問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- タイプ画像＋ミニ情報（正方形） -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/kusemon/t01.webp" alt="結果イメージ" loading="lazy" width="1080" height="1080">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+          <div class="capmini" id="heroHint" style="margin-top:4px">—</div>
+
+          <div class="share-row" id="shareRow" hidden>
+            <button id="btnShot"  class="btn save" type="button">結果画像を保存</button>
+            <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>
+            <button id="shareLn"  class="btn line" type="button">LINEで送る</button>
+            <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>
+            <button id="shareCp"  class="btn"      type="button">リンクをコピー</button>
+          </div>
+          <canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
+        </figcaption>
+      </div>
+
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>因子平均（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="相棒">
+          <div><strong>相棒クセモン</strong></div>
+          <div class="big" id="allyName">—</div>
+          <div class="small" id="allyNote">条件一致のとき表示</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー（10） -->
+      <div class="section">
+        <h3 style="margin:8px 0">10因子（％）</h3>
+        <div id="bars" class="factor-mini"></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 長文 -->
+      <div id="longCopy" class="small"></div>
+
+      <div class="hr"></div>
+      <!-- 今日のケア -->
+      <details class="section" open id="careSec">
+        <summary><strong>今日のケア</strong></summary>
+        <ul class="small" id="careList" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+      </details>
+
+      <div class="hr"></div>
+      <!-- 研究メモ -->
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差があります。医療・採用などの用途には使えません。</p>
+      </details>
+
+      <div class="back-area" style="display:flex;justify-content:center;margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="small">このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
+    データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "kusemon";
+  var TITLE = "思考クセモン診断";
+  var ANS_KEY = "specimens:"+SLUG+":answers";
+  var IMG_BASE = "/shindan/assets/results/kusemon/"; // t01.webp..t10.webp
+
+  // ====== 因子・設問 ======
+  var FACTORS = {
+    ZO:{ name:"ゼロイチくん（白黒化）",     items:["Q01","Q02","Q03"] },
+    YS:{ name:"よみスギさん（先読み/読心）", items:["Q04","Q05","Q06"] },
+    BK:{ name:"バクハツさん（拡大縮小）",   items:["Q07","Q08","Q09"] },
+    BB:{ name:"べきべき団（べき思考）",     items:["Q10","Q11","Q12"] },
+    WS:{ name:"わたしのせい妖精（個人化）", items:["Q13","Q14","Q15"] },
+    LB:{ name:"ラベル職人（レッテル貼り）", items:["Q16","Q17"] },
+    EJ:{ name:"気分ジャッジ（感情決めつけ）", items:["Q18","Q19"] },
+    SL:{ name:"穴メガネ（選択的抽出）",     items:["Q20","Q21"] },
+    OG:{ name:"一般化オウム（過度の一般化）", items:["Q22","Q23"] },
+    PD:{ name:"ポジ却下マン（ポジ否認）",     items:["Q24","Q25"] }
+  };
+  window.FACTORS = FACTORS;
+
+  // 25問（rev: 逆転）
+  var ITEMS = {
+    Q01:{ text:"ちょっとしたミスでも、全体が“台なし”に感じる。" },
+    Q02:{ text:"物事は「完璧か不合格か」で見やすい。" },
+    Q03:{ text:"途中の良い点もちゃんと残ると思える。", rev:true },
+
+    Q04:{ text:"悪い展開を先に想像して気持ちが沈みがち。" },
+    Q05:{ text:"相手の本心は“たぶんこうだ”と決めてしまう。" },
+    Q06:{ text:"実際に確かめてから判断するほうだ。", rev:true },
+
+    Q07:{ text:"小さな失敗を大ごとに感じてしまう。" },
+    Q08:{ text:"うまくいっても「運が良かっただけ」と思いがち。" },
+    Q09:{ text:"良かった点は素直にカウントできる。", rev:true },
+
+    Q10:{ text:"「〜すべき」が多く、自分にきびしい。" },
+    Q11:{ text:"状況に合わせて基準をゆるめられる。", rev:true },
+    Q12:{ text:"休むより、まず義務を優先しがちだ。" },
+
+    Q13:{ text:"トラブルがあると、自分のせいだと感じやすい。" },
+    Q14:{ text:"物事にはいろいろな要因があると考えられる。", rev:true },
+    Q15:{ text:"人に頼ると迷惑をかける気がして抱え込みやすい。" },
+
+    Q16:{ text:"一度の出来事で「自分は◯◯な人」と名乗りたくなる。" },
+    Q17:{ text:"人にも自分にも短い言葉で固定ラベルを付けがちだ。" },
+
+    Q18:{ text:"不安だから、きっとうまくいかないと思う。" },
+    Q19:{ text:"気分が落ちると、そのまま事実も悪いと感じる。" },
+
+    Q20:{ text:"欠点のほうが目に飛び込んでくる。" },
+    Q21:{ text:"良い点も同じくらい目に入る。", rev:true },
+
+    Q22:{ text:"一度の失敗で「いつも/絶対ダメ」に広げてしまう。" },
+    Q23:{ text:"次は違うかも、と思い直せる。" },
+
+    Q24:{ text:"褒められても「大したことない」と否定しがちだ。" },
+    Q25:{ text:"褒めや成功を、そのまま受け取れる。", rev:true }
+  };
+  var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
+
+  // 10タイプ（t01..t10）
+  var TYPES = [
+    { id:1,  key:"t01", code:"ZO", name:"ZO｜ゼロイチくん（白黒化）",
+      one:"白か黒で決めたい俊足タイプ。迷いが少なく動けるのが強み。",
+      hint:"評価はOK/改善の二段わけ。中間の「まあ良し」を1つ探す。"
+    },
+    { id:2,  key:"t02", code:"YS", name:"YS｜よみスギさん（先読み/読心）",
+      one:"空気読みと先回りが上手。ただし根拠薄の“悪い予報”に傾きがち。",
+      hint:"合言葉は「確かめた？」。短い確認をひとつ足す。"
+    },
+    { id:3,  key:"t03", code:"BK", name:"BK｜バクハツさん（拡大縮小）",
+      one:"失敗は巨大化、成功は控えめ。細部への感度が高い証。",
+      hint:"事実を3つ書き出し、形容詞を外して等倍に戻す。"
+    },
+    { id:4,  key:"t04", code:"BB", name:"BB｜べきべき団（べき思考）",
+      one:"「こうあるべき」で品質を守る番人。状況変化に硬くなりやすい。",
+      hint:"目的→手段で見直し。今日は“7割OK”の日を作る。"
+    },
+    { id:5,  key:"t05", code:"WS", name:"WS｜わたしのせい妖精（個人化）",
+      one:"責任感が強く、人のために動ける。背負い過ぎに注意。",
+      hint:"出来事を自分/相手/状況の3箱へ。まずは1/3ずつ。"
+    },
+    { id:6,  key:"t06", code:"LB", name:"LB｜ラベル職人（レッテル貼り）",
+      one:"短い言葉で“自分/人”を定義したくなる器用さ。扱いに注意。",
+      hint:"名詞ラベル→行動ラベルへ（例：今は疲れて反応が遅い）。"
+    },
+    { id:7,  key:"t07", code:"EJ", name:"EJ｜気分ジャッジ（感情的決めつけ）",
+      one:"気分＝事実になりやすい。感受性の高さは武器。",
+      hint:"気分と事実を別レイヤーに分けて1行ずつ書く。"
+    },
+    { id:8,  key:"t08", code:"SL", name:"SL｜穴メガネ（選択的抽出）",
+      one:"欠点を見つける名人。良い点のピントも合わせよう。",
+      hint:"欠点1つに対し、良い点2つを書き添える。"
+    },
+    { id:9,  key:"t09", code:"OG", name:"OG｜一般化オウム（過度の一般化）",
+      one:"「一度の失敗＝いつもダメ」に広げやすい口ぐせ。",
+      hint:"条件を限定して言い換え（例：今日は時間が足りなかった）。"
+    },
+    { id:10, key:"t10", code:"PD", name:"PD｜ポジ却下マン（ポジ否認）",
+      one:"謙虚さの裏に、ポジを受け取りにくいクセ。",
+      hint:"褒めを引用してメモ→反論は明日。"
+    }
+  ];
+
+  // 要素参照
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroCopy = document.getElementById("heroCopy");
+  var heroHint = document.getElementById("heroHint");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumPct  = document.getElementById("sumPct");
+  var sumNote = document.getElementById("sumNote");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+  var shareRow= document.getElementById("shareRow");
+  var shareTw = document.getElementById("shareTw");
+  var shareLn = document.getElementById("shareLn");
+  var shareIg = document.getElementById("shareIg");
+var btnShot = document.getElementById("btnShot");
+var careList = document.getElementById("careList");
+  var shotCanvas = document.getElementById("shotCanvas");
+  var allyName = document.getElementById("allyName");
+  var allyNote = document.getElementById("allyNote");
+  window.shotCanvas = shotCanvas;
+
+  // 設問生成
+  function buildQuestions(){
+    var html = "";
+    Object.keys(ITEMS).forEach(function(qid, i){
+      var q = ITEMS[qid];
+      html += '<fieldset class="q" id="fs-'+qid+'">'+
+        '<legend>'+String(i+1).padStart(2,"0")+'. '+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+qid+'-'+v+'" type="radio" name="q'+qid+'" value="'+v+'">'+
+          '<label for="q'+qid+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    });
+    qWrap.innerHTML = html;
+
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){
+      r.addEventListener('change', function(){ saveAnswers(); updateProgress(); }, false);
+    });
+    restoreAnswers();
+    updateProgress();
+  }
+
+  // 保存/復元
+  function saveAnswers(){
+    try{
+      var out = {};
+      Object.keys(ITEMS).forEach(function(id){
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      });
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
+
+  function updateProgress(){
+    var total = Object.keys(ITEMS).length; // 25
+    var answered = 0;
+    Object.keys(ITEMS).forEach(function(id){
+      if(qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked')) answered++;
+    });
+    var pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    var bar = prog.parentElement;
+    if(bar){
+      bar.setAttribute("aria-valuenow", answered);
+      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+    }
+  }
+
+  // スコア計算
+  function valOf(id, raw){ var v=Number(raw); return (ITEMS[id].rev? (4-v):v); }
+  function calc(){
+    var missing = [];
+    var ans = {};
+    Object.keys(ITEMS).forEach(function(id){
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); return; }
+      ans[id] = parseInt(chk.value,10);
+    });
+    if(missing.length){
+      alert("未回答があります。全25問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    var fScore = {}, fPct = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);
+      var avg = sum / ids.length; // 0-4
+      fScore[key] = avg;
+      fPct[key] = Math.round((avg/4)*100);
+    });
+
+    var keys = Object.keys(FACTORS);
+    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;
+    var totalPct = Math.round((totalAvg/4)*100);
+
+    render({ fScore, fPct, totalAvg, totalPct });
+  }
+
+  // タイプ判定（主役＝最大、相棒＝主役との差が8pt未満）
+  function pickType(p){
+    var order = Object.keys(p).sort(function(a,b){ return p[b]-p[a]; });
+    var top = order[0];
+    var second = order[1];
+    var map = {ZO:1,YS:2,BK:3,BB:4,WS:5,LB:6,EJ:7,SL:8,OG:9,PD:10};
+    return {
+      main: TYPES.find(function(t){ return t.id===map[top]; }),
+      ally: (p[top] - p[second] < 8) ? TYPES.find(function(t){ return t.id===map[second]; }) : null
+    };
+  }
+
+  function heroPath(typeNo){ var id = String(typeNo).padStart(2,"0"); return IMG_BASE + "t" + id + ".webp"; }
+
+  function drawBars(pct){
+    var order = ["ZO","YS","BK","BB","WS","LB","EJ","SL","OG","PD"];
+    var html = "";
+    order.forEach(function(key){
+      var def = FACTORS[key], val = pct[key]||0;
+      html += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = html;
+  }
+
+  // 長文（各体）
+  var LONG = {
+    ZO:"はっきり結論を出せるのは立派な資質。締切や危機対応で頼られます。ただ、ミスや遅れが「全部ダメ」に見えやすく、気持ちの落差も大きくなりがち。まずは結果を「OK」と「改善」に二段で分け、改善点は次の一手に落とし込んでメモ。良かった点を1つ残せば、ゼロイチくんは暴れにくくなります。白と黒の間に広がる“ちょうど良いグレー”を、小さく増やしていきましょう。",
+    YS:"配慮の厚さは大きな長所。場を整える力があります。情報が少ない時ほど悪い結論に飛びやすいので、まずは頭の中の結論に“仮説”とラベルを付けて保留し、短い確認行動を1つ挟みましょう。返信が遅い＝嫌われた、ではなく「忙しいだけかも？」という別案を並べると視野が広がります。確かめる一歩は人間関係を丁寧にする技でもあります。",
+    BK:"気づく力が高いからこそ、ネガ要素が拡大して見えます。紙に事実3つ（時刻・数・誰が何を）を書き出し、評価語を一度外しましょう。良かった点を1つ努力に帰属させれば、次への地図になります。成功を縮小しないことは自慢ではなく、再現手順の記録です。バクハツさんは適度に空気を抜けば、ちょうど良いサイズで働いてくれます。",
+    BB:"高い基準は安心の土台。でも全場面に同じ基準を当てると窮屈さや摩擦が増えます。まず目的（何のため？）を書き、手段を2案並べて選ぶ習慣を。日によって7割OKを許すことは、次の100%の助走になります。自分にも他者にも、状況に応じた“柔らかい旗”を。柔軟性が加わると、べきべき団は頼れる護衛隊に変わります。",
+    WS:"思いやりの深さは魅力。けれど他人の機嫌や結果まで背負うと疲弊します。起きた出来事を3箱に配分し、お願い・相談でバランスを整えましょう。頼ることは弱さではなく、関係の技能です。自分の分だけに集中すると、妖精は肩から軽く降ります。手放し方を覚えるほど、持続可能な優しさになります。",
+    LB:"言語化が速いのは強み。ただ一回の出来事で「自分は◯◯」「あの人は××」と固定すると選択肢を失いがち。名詞ではなく動詞で表す練習をしてみましょう（例：今は疲れて反応が遅い、休めば戻る）。期間や状況を時限でつけるだけでも余白が生まれます。ラベルが扱いやすい付箋に変われば、職人は頼れる編集者に。",
+    EJ:"敏感さは大切なセンサー。けれど不安＝失敗の確定にはなりません。まず「今の気分」と「観測された事実」を別行に分離して記録。気分が落ちる日は負荷を下げるほうが成果的なこともあります。判断は翌日に回す、をルール化するとジャッジは穏やかに。感情はナビ、最終決定は少し後がちょうどよい。",
+    SL:"観察眼が鋭いので、リスク管理に強いタイプ。ただし“穴”だけを拡大するとバランスが崩れます。レビュー時は良い点2つ＋改善1つの順でメモ。順番を守るだけで、脳のピントが整います。週1回は成功フォルダを見返し、再現可能な手がかりを抽出。穴メガネは、両眼にすると一気に頼もしくなります。",
+    OG:"再発防止に真剣だからこそ、広く厳しく言い切りがち。「いつも」「絶対」を外して、場面・時間・相手を限定した文章に変えましょう。次に試す一手を1つ書くと、学びに変わります。成功の例外も集めれば、オウムのフレーズは豊かに。一般化は設計図にリライトできます。",
+    PD:"伸びる人ほど謙虚。でも褒めを拒否すると、成長の燃料が減ります。まずは反論しないでそのまま引用。翌日に読み返して、具体的行動に変換しましょう（例：また同じ準備をする）。評価は相手の所有物でもあります。受け取ることは、相手の好意を尊重する行為。否認を一歩やめるだけで、自己効力感が静かに積み上がります。"
+  };
+  // タイプ別：具体的ケア（3行）
+var CARE = {
+  ZO: [
+    "評価はOK/改善の二段でメモ。まず“良かった点”を1つ書く。",
+    "白黒の間に“まあ良し”を1つ置く。",
+    "今日の判断に“グレー案”を1個混ぜる。"
+  ],
+  YS: [
+    "結論に“仮説？”ラベルを付けて保留→短い確認を1往復。",
+    "返信が遅い＝“忙しいだけかも”という別案を並べる。",
+    "確かめる一歩（質問1つ・DM1通）を先に入れる。"
+  ],
+  BK: [
+    "事実を3つ（時刻/数/誰が何を）書き出し、形容詞を外す。",
+    "成功の“手順1行”を追記して縮小しない。",
+    "感情の強さを0〜10で書き、等倍に戻す。"
+  ],
+  BB: [
+    "“目的→手段”で見直し、手段を2案並べて選ぶ。",
+    "週に1回“7割OKデー”を作る。",
+    "ToDo3つ→“今は1つだけ”に絞る。"
+  ],
+  WS: [
+    "出来事を自分/相手/状況の3箱に配分（まず1/3ずつ）。",
+    "お願いテンプレを用意して“頼る”を練習。",
+    "自分の領域にラベルを付けて境界を可視化。"
+  ],
+  LB: [
+    "名詞ラベル→“行動ラベル”に言い換える（今は疲れて遅い等）。",
+    "ラベルに期限を付ける（今日は/今週は）。",
+    "例外を2件集めて固定観念をゆるめる。"
+  ],
+  EJ: [
+    "“気分”と“事実”を別行に分けて記録。",
+    "重要判断は翌日に回すルール。",
+    "睡眠と血糖ケア（軽食/水分）で土台を整える。"
+  ],
+  SL: [
+    "レビューは“良い点2＋改善1”の順で書く。",
+    "成功フォルダを週1で見返し、再現の手がかりを抽出。",
+    "欠点メモの前に“良い点”を必ず2つ置く。"
+  ],
+  OG: [
+    "“いつも/絶対”を外し、条件を限定して言い換える。",
+    "次に試す一手を1つだけ書く。",
+    "成功の例外を集めて“拡げ過ぎ”を戻す。"
+  ],
+  PD: [
+    "褒めを“引用”で保存。反論は24時間保留。",
+    "翌日に読み返し、再現アクションを1つ決める。",
+    "評価は相手の所有物。受け取る＝相手を尊重する。"
+  ]
+};
+
+  function render(o){
+    // 判定
+    var pair = pickType(o.fPct);
+    var t = pair.main, ally = pair.ally;
+    var code = t.code;
+
+    // タイトル行
+    typeLine.textContent = '今日の主役クセモン：' + t.name;
+
+    // ヒーロー
+    heroImg.src = heroPath(t.id);
+    heroImg.alt = t.name + " のイメージ";
+    heroTitle.textContent = t.name;
+    heroCopy.innerHTML = LONG[code];
+    heroHint.textContent  = "ヒント：" + t.hint;
+
+    // 総合
+    var avg = Object.keys(o.fScore).reduce(function(s,k){return s+o.fScore[k];},0)/Object.keys(o.fScore).length;
+    sumAvg.textContent = avg.toFixed(2);
+    sumPct.textContent = "= " + o.totalPct + "%";
+    var topKey = Object.keys(o.fPct).sort(function(a,b){ return o.fPct[b]-o.fPct[a]; })[0];
+    sumNote.textContent = "上位因子："+FACTORS[topKey].name;
+
+    // 相棒
+    if(ally){
+      allyName.textContent = ally.name;
+      allyNote.textContent = "主役との差が小さいため相棒として表示しています。";
+    }else{
+      allyName.textContent = "—";
+      allyNote.textContent = "条件一致のとき表示";
+    }
+
+    // 因子バー
+    drawBars(o.fPct);
+
+longCopy.innerHTML = '';
+
+  // ケア（タイプ別3行）
+if (careList && CARE[code]) {
+  careList.innerHTML = CARE[code].map(function(s){ return "<li>"+s+"</li>"; }).join("");
+}
+
+// 研究メモ
+// 研究メモ（やさしい要約：10件）
+var memo = [
+  "感情を根拠に結論づけやすい傾向が、落ち込みと関連することが報告されています（感情決めつけ）。",
+  "成功や称賛を受け取りにくい傾向が、対人不安と結びつくことが示されています（ポジティブの否認）。",
+  "物事を白か黒かで分けやすい傾向が、気分との関連に影響しうることが示唆されています（白黒化）。",
+  "読心や先読みなど複数の思考のクセを測る短い質問票が妥当で、対人不安との関連が示されています（先読み・読心）。",
+  "出来事を大きく捉え過ぎたり小さく扱い過ぎたりする傾向の測定が支持され、臨床での実用性が示されています（拡大・縮小）。",
+  "欠点にだけ目が向きやすい傾向など、子ども〜思春期でも気分と関連することが報告されています（選択的抽出）。",
+  "ひとつの失敗を『いつも／絶対』に広げてしまう傾向が、不安や落ち込みと結びつくパターンが示されています（過度の一般化）。",
+  "自分や他者に短いラベルを貼って固定化しやすい傾向を含む尺度が開発され、安定して測定できることが示されています（レッテル貼り）。",
+  "物事を『〜すべき』で縛りやすい傾向を含む質問票が、短時間で活用しやすく内的一貫性が高いと報告されています（べき思考）。",
+  "出来事を自分のせいにしやすい傾向などが、SNS言語の分析でも落ち込みと関連することが示されています（個人化）。"
+];
+// 表示（既存の注意書きはこの下にあります）
+resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 共有（ボタンで確実に開く）
+    var shareText = '『思考クセモン診断』主役：'+t.name+'｜因子平均 '+avg.toFixed(2)+' / 4';
+    var url = location.href.split('#')[0];
+    function openBlank(u){ window.open(u, '_blank', 'noopener'); }
+
+    shareTw.onclick = function(){ openBlank('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText)+'&url='+encodeURIComponent(url)); };
+    shareLn.onclick = function(){ openBlank('https://line.me/R/msg/text/?'+encodeURIComponent(shareText+' '+url)); };
+    shareIg.onclick = function(){
+      var cap = shareText+' '+url;
+      copyToClipboard(cap).then(function(){
+        openBlank('https://www.instagram.com/');
+        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+      });
+    };
+    var shareCp = document.getElementById('shareCp');
+    if(shareCp){
+      shareCp.onclick = function(){
+        copyToClipboard(shareText+' '+url).then(function(){ toast('リンクをコピーしました'); });
+      };
+    }
+    shareRow.hidden = false;
+    shareRow.style.display = 'flex';
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 保存
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // 共有ヘルパー
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(text); }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';
+    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },1500);
+  }
+
+  // クリア
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });
+    wipeAnswers(); prog.style.width="0%";
+    resEmpty.style.display=""; resArea.style.display="none";
+    var app=document.getElementById("app"); if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // 初期化
+  function init(){
+    buildQuestions();
+    resMemo.innerHTML = ["ある研究では、複数要素が重なって印象が形づくられる示唆。"].map(function(s){return "<li>"+s+"</li>";}).join("");
+  }
+  if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+  document.getElementById("doScore").addEventListener("click", calc, false);
+  document.getElementById("doScore2").addEventListener("click", calc, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+
+  // 状態（未使用保持用）
+  var state = { };
+})(); // IIFE
+
+// ====== 結果画像（1080x1350） ======
+async function buildShareImage(data){
+  var cvs = (window.shotCanvas || document.getElementById("shotCanvas"));
+  if(!cvs) throw new Error("shotCanvas not found");
+  var ctx = cvs.getContext("2d");
+  var W = cvs.width, H = cvs.height;
+  var FACT = (window.FACTORS || {});
+
+  // 背景
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,W,H);
+
+  // ヒーロー画像（正方形）
+  var heroW = W - 120, heroH = heroW;
+  var hx = Math.round((W - heroW)/2), hy = 60;
+  roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+  try{
+    var img = await loadImage(data.heroSrc);
+    ctx.drawImage(img, hx, hy, heroW, heroH);
+  }catch(_){
+    ctx.fillStyle = "#e6ecf7"; ctx.fillRect(hx, hy, heroW, heroH);
+    ctx.fillStyle = "#9aa3b2"; ctx.font = "600 24px 'Noto Sans JP',system-ui";
+    ctx.fillText("画像を表示できませんでした", hx + 24, hy + heroH/2);
+  }
+
+  // タイトル
+  var y = hy + heroH + 40;
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "800 40px 'Noto Sans JP',system-ui";
+  ctx.fillText("思考クセモン診断", 60, y);
+  ctx.font = "800 44px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, "主役："+data.title, 60, y+54, W-120, 48);
+
+  // 一言・ヒント
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.one, 60, y+120, W-120, 36, "#667087");
+  ctx.font = "600 26px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, "ヒント："+data.hint, 60, y+176, W-120, 34, "#667087");
+
+  // 因子バー（10）
+  var baseY = y + 230;
+  var order = ["ZO","YS","BK","BB","WS","LB","EJ","SL","OG","PD"];
+  for(var i=0;i<order.length;i++){
+    var key = order[i], val = data.pct[key]||0;
+    drawBar(ctx, 60, baseY + i*60, W-120, 16, val,
+      (FACT[key] ? FACT[key].name : key), "#6b9bff", "#8bd3ff");
+  }
+
+  // 平均
+  var ftY = baseY + order.length*60 + 36;
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#1f2732";
+  ctx.fillText("因子平均："+data.avg+" / 4（= "+Math.round((parseFloat(data.avg)/4)*100)+"%）", 60, ftY);
+
+  return await canvasToBlob(cvs, "image/png");
+}
+
+// 画像読込
+async function loadImage(src){
+  try{
+    const r = await fetch(src, {cache:'no-store'});
+    if(!r.ok) throw new Error('fetch failed');
+    const b = await r.blob();
+    const blobUrl = URL.createObjectURL(b);
+    const img = await new Promise((res, rej)=>{
+      const im = new Image();
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = blobUrl;
+    });
+    setTimeout(()=>URL.revokeObjectURL(blobUrl), 1000);
+    return img;
+  }catch(e){
+    return await new Promise((res, rej)=>{
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now();
+    });
+  }
+}
+
+// 角丸
+function roundRect(ctx, x, y, w, h, r, fill, stroke){
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle = stroke; ctx.stroke(); }
+  ctx.restore();
+}
+// 折返し
+function drawWrapText(ctx, text, x, y, maxW, lh, color){
+  ctx.fillStyle = color || "#1f2732";
+  var words = (text||"").split(/(\s+)/);
+  var line = "", cursor = y;
+  for(var i=0;i<words.length;i++){
+    var test = line + words[i];
+    if(ctx.measureText(test).width > maxW && i>0){
+      ctx.fillText(line, x, cursor);
+      line = words[i].trimStart();
+      cursor += lh;
+    }else{ line = test; }
+  }
+  if(line){ ctx.fillText(line, x, cursor); }
+}
+// バー
+function drawBar(ctx, x, y, w, h, pct, label, c1, c2){
+  ctx.save();
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "700 20px 'Noto Sans JP',system-ui";
+  ctx.fillText(label, x, y-8);
+  var by = y+8;
+  roundRect(ctx, x, by, w, h, 10, "#edf2fb", "#e8eef9");
+  var ww = Math.max(0, Math.min(w, Math.round(w*pct/100)));
+  var grad = ctx.createLinearGradient(x,0,x+w,0);
+  grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+  roundRect(ctx, x, by, ww, h, 10, grad);
+  ctx.fillStyle = "#667087";
+  ctx.font = "600 16px 'Noto Sans JP',system-ui";
+  var txt = String(pct).padStart(2,"0")+"%";
+  ctx.fillText(txt, x + w - ctx.measureText(txt).width, by + h + 18);
+  ctx.restore();
+}
+// 保存
+function saveBlob(blob, filename){
+  var a = document.createElement("a");
+  var url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename || "result.png";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);
+}
+// toBlob
+function canvasToBlob(cvs, type){
+  return new Promise(function(res){
+    if(cvs.toBlob){ cvs.toBlob(function(b){ res(b); }, type||"image/png"); }
+    else{ res(dataURLtoBlob(cvs.toDataURL(type||"image/png"))); }
+  });
+}
+function dataURLtoBlob(dataUrl){
+  var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], {type:mime});
+}
+</script>
+</body>
+</html>
