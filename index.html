@@ -937,7 +937,7 @@ function updateCompletion(){
     {min: 25, name:'銀',          emo:'🥈', grad:'linear-gradient(90deg,#aeb6bf,#e6eef5)'},
     {min: 45, name:'金',          emo:'🥇', grad:'linear-gradient(90deg,#f2c94c,#f2994a)'},
     {min: 70, name:'白金',        emo:'✨', grad:'linear-gradient(90deg,#d6d0ff,#ffffff)'},
-    {min: 90, name:'ダイヤモンド', emo:'💎', grad:'linear-gradient(90deg,#8be9ff,#b69cff)'}
+    {min: 100, name:'ダイヤモンド', emo:'💎', grad:'linear-gradient(90deg,#8be9ff,#b69cff)'}
   ];
 
   // 現在ランク／次ランク
@@ -1259,6 +1259,38 @@ updateCompletion();
       setAll(cur + 1);
     }, {capture:true});
   }
+})();
+</script>
+<!-- ▼ 結果確定時に「済」を付ける：index の済バッジ・ランク用（戻るボタン不要） ▼ -->
+<script>
+(function(){
+  var DONE_KEY = 'specimens:open:byid';
+  // このページのID（index の data-id と一致させる）
+  // 例）'seikaku' / 'oshi-face' / 'best-friend' など
+  var MY_ID = document.body.getAttribute('data-id') || 'oshi-face';
+
+  var marked = false;
+  function markDoneOnce(){
+    if(marked) return; // 二重実行防止
+    marked = true;
+    try{
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(map));
+      // 他タブの index にも即時反映させるため storage イベントを発火させる
+      // （同じ値を書いてもブラウザによっては発火しないため、時刻スタンプを混ぜる）
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+    }catch(_){}
+  }
+
+  // 1) あなたのページで「結果が描画されるタイミング」の末尾で呼ぶ
+  //   例）render() の最後 / 結果カードを .show() した直後 など
+  // window.dispatchEvent(new Event('result:ready')); のようなイベントが使えるならそれを使う
+  document.addEventListener('result:ready', markDoneOnce);
+
+  // 2) フォールバック：結果UIが見えた後に一度だけ実行（2秒遅延）
+  //    「戻る」を押さなくても必ず済が付く
+  setTimeout(markDoneOnce, 2000);
 })();
 </script>
 </body>
