@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>おにぎり何個ぶん？運動診断</title>
+<meta name="description" content="12問の4択で傾向を判定。おすすめ運動と消費カロリー（おにぎり換算）を表示。">
+<meta name="theme-color" content="#f7f9ff">
+<style>
+:root{
+  --accent:#4f8cff; --accent2:#7ad0ff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#eef7ff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#eaf1ff,#fff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .25s ease;
+}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:8px;margin-top:8px}
+.choices input{position:absolute;opacity:0;pointer-events:none}
+.choices label{display:grid;gap:2px;padding:10px;border:1px solid #e5e9f3;border-radius:10px;background:#fff;cursor:pointer;user-select:none}
+.choices small{color:#667087}
+.choices input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.4s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(79,140,255,.45)}100%{box-shadow:0 0 0 0 rgba(79,140,255,0)}}
+
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:22px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+/* ヒーロー：正方形webp */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+
+.bars4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+
+.rec-list{display:grid;grid-template-columns:1fr;gap:10px}
+.rec{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.rec .ttl{font-weight:800}
+.rec .meta{gap:6px}
+.rec ul{margin:6px 0 0 18px}
+
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"𝕏";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+.btn.save::before{content:"⬇️";margin-right:.25em}
+
+.back-area{display:flex;justify-content:center;margin-top:12px}
+.back{display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
+
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .card{padding:12px}
+  .choices{grid-template-columns:1fr}
+}
+#shareRow{display:flex !important; flex-wrap:wrap; gap:8px}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🍙</div>
+    <div>
+      <h1>おにぎり何個ぶん？運動診断</h1>
+      <p class="sub">12問の4択で判定。おすすめ運動と“おにぎり換算”を表示します。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="12">
+      <span id="prog"></span>
+    </div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：12</span>
+      <span class="pill">形式：4択（RL/SO/FC/BO）</span>
+      <span class="pill">出力：上位ペア or 単独＋おすすめTOP3</span>
+    </div>
+    <p class="small">カロリーは目安です（体重60kg・20/30分換算、1個=約180kcal）。エンタメ自己理解／因果は断定しません。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（直感で一番近いものを）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全12問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- 画像（正方形webp）＋“運動名コメント” -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/onigiri-workout/t01.webp" alt="結果イメージ" loading="lazy" width="1080" height="1080">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <!-- ←ここに「おすすめ運動（3つ）」を一行表示 -->
+          <div class="capmini" id="heroCopy">—</div>
+
+          <div class="share-row" id="shareRow" hidden>
+            <button id="btnShot"  class="btn save" type="button">結果画像を保存</button>
+            <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>
+            <button id="shareLn"  class="btn line" type="button">LINEで送る</button>
+            <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>
+            <button id="shareCp"  class="btn"      type="button">リンクをコピー</button>
+          </div>
+          <canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
+        </figcaption>
+      </div>
+
+      <div class="grid2">
+        <article class="stat" aria-label="総合サマリ">
+          <div><strong>上位因子</strong></div>
+          <div class="big" id="topKeys">—</div>
+          <div class="small" id="sumNote">おにぎり換算は60kgで計算（20/30分）</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <div class="section">
+        <h3 style="margin:8px 0">4因子（％）</h3>
+        <div id="bars" class="bars4"></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 画像下コメントの“次に”やり方など詳細 -->
+      <div class="section">
+        <h3 style="margin:8px 0">おすすめTOP3（器具なし）</h3>
+        <div class="rec-list" id="recList"></div>
+      </div>
+
+      <div class="hr"></div>
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+        <p class="small" style="margin-top:6px">※個人差が大きく、表示は目安です。無理なく安全第一で。</p>
+      </details>
+
+      <div class="back-area">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="small">痛み・めまい・息苦しさが出たら<strong>中止</strong>。水分・準備運動・安全な環境を確保してください。表示kcalは目安です。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "onigiri-workout";
+  var TITLE = "おにぎり何個ぶん？運動診断";
+  var ANS_KEY = "specimens:"+SLUG+":answers";
+
+  // ====== 因子・設問 ======
+  var FACTORS = {
+    RL:{ name:"発散したい（Release）",   key:"RL" },
+    SO:{ name:"整えたい（Soothe）",      key:"SO" },
+    FC:{ name:"集中したい（Focus）",     key:"FC" },
+    BO:{ name:"ノって動きたい（Bounce）",key:"BO" }
+  };
+
+  // 設問12（各4択：A=RL, B=SO, C=FC, D=BO）
+  var QUESTIONS = [
+    "今の気分にいちばん近いのは？","仕事/勉強あとの一発目なら？","雨の日の室内でやるなら？",
+    "休日の午前、体を動かすなら？","5〜10分だけ空いたら？","もやもやを晴らしたいときは？",
+    "頭がパンパンのときは？","体が重い/だるい日の一歩目は？","音楽が流れているなら？",
+    "屋外OKの日のチョイスは？","今日の主目的はどれ？","直感で惹かれるのは？"
+  ];
+
+  var CHOICES = [
+    { key:"RL", label:"発散したい", sub:"汗かいてスッキリ" },
+    { key:"SO", label:"整えたい",   sub:"やさしくリセット" },
+    { key:"FC", label:"集中したい", sub:"静かに没入したい" },
+    { key:"BO", label:"ノって動きたい", sub:"音に乗って楽しく" }
+  ];
+
+  // ====== 画像（webp / t01〜t06） ======
+  var IMG_BASE = "/shindan/assets/results/onigiri-workout/";
+  var PAIR_IMG = { "RL+BO":"t01.webp","RL+FC":"t02.webp","RL+SO":"t03.webp","FC+SO":"t04.webp","FC+BO":"t05.webp","BO+SO":"t06.webp" };
+  var SOLO_IMG = { "RL":"t01.webp","SO":"t03.webp","FC":"t04.webp","BO":"t06.webp" };
+  var PAIR_NAME = {
+    "RL+BO":"発散 × ノリ","RL+FC":"発散 × 集中","RL+SO":"発散 × 整え",
+    "FC+SO":"集中 × 整え","FC+BO":"集中 × ノリ","BO+SO":"ノリ × 整え"
+  };
+
+  // ====== おすすめ運動データ ======
+  var MET = { HIIT:8, SHADOW:7, DANCE:7, STAIRS:8.8, RUN:10, CORE:4.5, JOG:7, HIKING:6.5, WALK:5, PILATES:3.5, YOGA:3, MOBILITY:3, AMRAP:6, TAICHI:3.5, STRETCH:2.5 };
+  var WHY = {
+    HIIT:"短時間で心拍UP。終わったあとの解放感が大きい。",
+    SHADOW:"型とリズムに没入できて、気分も発散。",
+    DANCE:"音楽で楽しさが続く。気分転換に最適。",
+    STAIRS:"大筋群を使い切れてスカッと。フォーム集中にも◎。",
+    RUN:"一定ピッチで没入。終盤に爽快感が残る。",
+    CORE:"小さな筋群に丁寧に集中できる。",
+    JOG:"ほどよい汗で気持ちが軽くなる。",
+    HIKING:"景色と歩行リズムで静かにリセット。",
+    WALK:"やさしい負荷で整えやすい。",
+    PILATES:"呼吸とコア連動で軸が安定、心も落ち着く。",
+    YOGA:"ゆっくり反復でこわばりをほどく。",
+    MOBILITY:"関節が滑らかになり体が軽い。",
+    AMRAP:"反復と小さな達成で集中が続く。",
+    TAICHI:"穏やかなリズムで落ち着きが戻る。",
+    STRETCH:"こわばりをほどく。"
+  };
+  var HOW = {
+    HIIT:["20秒全力→10秒休×8を2〜3種目","種目：スクワット/バーピーなど","最後3分クールダウン"],
+    SHADOW:["3分×5R（1分休）","姿勢はまっすぐ、軽く体幹捻る","手打ちにならないように"],
+    DANCE:["好きな曲3〜4曲","サビは大きく動く","最後にストレッチ"],
+    STAIRS:["上り1分→降り30秒→休30秒×10","手すりを使って安全第一","膝が内に入らないよう注意"],
+    RUN:["5分歩く→15〜25分一定ペース→5分歩く","ピッチは一定を意識","呼吸は会話できる程度"],
+    CORE:["プランク30秒×8","バードドッグ10回/側","ヒップリフト15回×3"],
+    JOG:["5分歩く→10〜20分ゆっくり→5分歩く","会話できるペースで","着地はやわらかく"],
+    HIKING:["平地と坂を交互に歩く","呼吸が乱れすぎない範囲","景色も楽しむ"],
+    WALK:["背筋を伸ばし腕を振る","5分ごとに姿勢チェック","つま先で蹴る意識"],
+    PILATES:["ブリッジ1分×2","デッドバグ1分×2","サイドプランク1分×2"],
+    YOGA:["太陽礼拝→立位→座位→呼吸","反動はつけない","痛みが出たら中止"],
+    MOBILITY:["首肩・胸椎・股関節・足首を各1分","円運動とスライド中心","呼吸はゆっくり"],
+    AMRAP:["5分×3：スクワット10→腕立て5→ランジ各5","セット間は1分休憩","回数は無理なく"],
+    TAICHI:["基本姿勢で重心低く","ゆっくり重心移動","長い呼吸で"],
+    STRETCH:["反動をつけず10〜20秒保持","痛み手前まででOK","呼吸を止めない"]
+  };
+
+  // ペア→おすすめ / 単独→おすすめ
+  var PAIR_MAP = {
+    "RL+BO":["HIIT","SHADOW","DANCE"],
+    "RL+FC":["STAIRS","RUN","CORE"],
+    "RL+SO":["JOG","HIKING","WALK"],
+    "FC+SO":["PILATES","YOGA","MOBILITY"],
+    "FC+BO":["SHADOW","AMRAP","DANCE"],
+    "BO+SO":["DANCE","WALK","TAICHI"]
+  };
+  var SOLO_MAP = {
+    "RL":["STAIRS","RUN","HIIT"],
+    "SO":["YOGA","TAICHI","STRETCH"],
+    "FC":["PILATES","CORE","RUN"],
+    "BO":["DANCE","SHADOW","WALK"]
+  };
+
+  // ====== 要素参照 ======
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroCopy = document.getElementById("heroCopy");
+  var bars    = document.getElementById("bars");
+  var recList = document.getElementById("recList");
+  var sumNote = document.getElementById("sumNote");
+  var topKeys = document.getElementById("topKeys");
+  var resMemo = document.getElementById("resMemo");
+
+  var shareRow= document.getElementById("shareRow");
+  var shareTw = document.getElementById("shareTw");
+  var shareLn = document.getElementById("shareLn");
+  var shareIg = document.getElementById("shareIg");
+  var shareCp = document.getElementById("shareCp");
+  var btnShot = document.getElementById("btnShot");
+  var shotCanvas = document.getElementById("shotCanvas");
+  window.shotCanvas = shotCanvas;
+
+  // ====== 設問生成 ======
+  function buildQuestions(){
+    var html = "";
+    QUESTIONS.forEach(function(text, i){
+      var qid = "Q"+String(i+1).padStart(2,"0");
+      html += '<fieldset class="q" id="fs-'+qid+'">'+
+        '<legend>'+String(i+1).padStart(2,"0")+'. '+text+'</legend>'+
+        '<div class="choices" role="radiogroup" aria-label="'+text+'">';
+      CHOICES.forEach(function(c, idx){
+        var id = 'q'+qid+'-'+idx;
+        html += '<div style="position:relative">'+
+          '<input id="'+id+'" type="radio" name="q'+qid+'" value="'+c.key+'">'+
+          '<label for="'+id+'"><span>'+c.label+'</span><small>'+c.sub+'</small></label>'+
+        '</div>';
+      });
+      html += '</div></fieldset>';
+    });
+    qWrap.innerHTML = html;
+
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){
+      r.addEventListener('change', function(){ saveAnswers(); updateProgress(); }, false);
+    });
+    restoreAnswers();
+    updateProgress();
+  }
+
+  // ====== 保存/復元 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      QUESTIONS.forEach(function(_, i){
+        var qid = "Q"+String(i+1).padStart(2,"0");
+        var chk = qWrap.querySelector('#fs-'+qid+' input[type="radio"]:checked');
+        if(chk){ out[qid] = chk.value; }
+      });
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(qid){
+        var val = ans[qid];
+        var input = qWrap.querySelector('#fs-'+qid+' input[value="'+val+'"]');
+        if(input){ input.checked = true; }
+      });
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
+
+  function updateProgress(){
+    var total = QUESTIONS.length;
+    var answered = 0;
+    QUESTIONS.forEach(function(_, i){
+      var qid = "Q"+String(i+1).padStart(2,"0");
+      if(qWrap.querySelector('#fs-'+qid+' input[type="radio"]:checked')) answered++;
+    });
+    var pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    var bar = prog.parentElement;
+    if(bar){
+      bar.setAttribute("aria-valuenow", answered);
+      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+    }
+  }
+
+  // ====== スコア計算（A=RL, B=SO, C=FC, D=BO に +1） ======
+  function calc(){
+    var missing = [];
+    var counts = {RL:0,SO:0,FC:0,BO:0};
+    QUESTIONS.forEach(function(_, i){
+      var qid = "Q"+String(i+1).padStart(2,"0");
+      var chk = qWrap.querySelector('#fs-'+qid+' input[type="radio"]:checked');
+      if(!chk){ missing.push(qid); return; }
+      var k = chk.value; counts[k] += 1;
+    });
+    if(missing.length){
+      alert("未回答があります。全12問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1400); }
+      return;
+    }
+
+    var total = QUESTIONS.length;
+    var pct = {}; Object.keys(counts).forEach(function(k){ pct[k] = Math.round(100*counts[k]/total); });
+
+    // 上位判定
+    var order = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+    var top = order[0], second = order[1];
+    var solo = (counts[top] - counts[second] >= 3);
+
+    render({ counts:counts, pct:pct, order:order, top:top, second:second, solo:solo });
+  }
+
+  // ====== 表示 ======
+  function pairKey(top, second){ var a=[top,second].sort(); return a[0]+"+"+a[1]; }
+  function heroPath(obj){
+    if(obj.solo){ return IMG_BASE + (SOLO_IMG[obj.top] || "t01.webp"); }
+    var key = pairKey(obj.top, obj.second);
+    return IMG_BASE + (PAIR_IMG[key] || "t01.webp");
+  }
+  function drawBars(pct){
+    var map = [
+      ["RL","発散（RL）"],["SO","整え（SO）"],["FC","集中（FC）"],["BO","ノリ（BO）"]
+    ];
+    var html = "";
+    map.forEach(function(t){
+      var key=t[0], label=t[1], val=pct[key]||0;
+      html += '<article class="bar" aria-label="'+label+'">'+
+        '<div><strong>'+label+'</strong><span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = html;
+  }
+  function kcal(met, minutes, weight){ return met * weight * (minutes/60) * 1.05; } // 目安式
+  function onigiriCount(kcalVal){ return kcalVal/180; }
+
+  function nameOf(id){
+    var dict = {
+      HIIT:"自重HIIT", SHADOW:"シャドーボクシング", DANCE:"ダンス有酸素",
+      STAIRS:"階段昇降", RUN:"ランニング（テンポ走）", CORE:"体幹サーキット",
+      JOG:"ジョギング", HIKING:"坂道ウォーク", WALK:"速歩",
+      PILATES:"ピラティス", YOGA:"ヨガ", MOBILITY:"モビリティ",
+      AMRAP:"AMRAP（自重）", TAICHI:"太極拳（スローフロー）", STRETCH:"ストレッチ"
+    };
+    return dict[id] || id;
+  }
+
+  function render(o){
+    // ラベル・画像
+    var label = o.solo ? FACTORS[o.top].name+"（単独）"
+                       : (PAIR_NAME[pairKey(o.top,o.second)] || (FACTORS[o.top].name+"×"+FACTORS[o.second].name));
+    typeLine.textContent = "あなたのタイプ： " + label;
+
+    heroImg.src = heroPath(o);
+    heroImg.alt = label + "の紋章";
+    heroTitle.textContent = label;
+
+    // おすすめTOP3（ID列挙）
+    var recIds = o.solo ? (SOLO_MAP[o.top]||[]) : (PAIR_MAP[pairKey(o.top,o.second)]||[]);
+    var recNames = recIds.slice(0,3).map(nameOf).join(" ／ ");
+    // 画像直下の“コメント”は運動名3つを表示
+    heroCopy.textContent = "おすすめ： " + recNames;
+
+    // 上位因子メモ
+    topKeys.textContent = o.solo ? "単独："+FACTORS[o.top].name
+                                 : "上位："+FACTORS[o.top].name+" ／ 次点："+FACTORS[o.second].name;
+
+    // 因子バー
+    drawBars(o.pct);
+
+    // 詳細カード（やり方・kcal）
+    var html = "";
+    recIds.forEach(function(id){
+      var met = MET[id]||0;
+      var k20 = Math.round(kcal(met,20,60));
+      var k30 = Math.round(kcal(met,30,60));
+      var g20 = onigiriCount(k20), g30 = onigiriCount(k30);
+      html += '<article class="rec">'+
+        '<div class="ttl">'+nameOf(id)+' <span class="pill">MET '+met+'</span></div>'+
+        '<div class="meta small"><span class="pill">20分：'+k20+'kcal（'+g20.toFixed(2)+'個）</span><span class="pill">30分：'+k30+'kcal（'+g30.toFixed(2)+'個）</span></div>'+
+        '<div class="small" style="margin-top:6px"><strong>なぜ向いてる？</strong> '+(WHY[id]||"")+'</div>'+
+        '<div class="small" style="margin-top:6px"><strong>やり方（20分例）</strong><ul>'+
+           (HOW[id]||[]).map(function(s){return "<li>"+s+"</li>";}).join("")+
+        '</ul></div>'+
+      '</article>';
+    });
+    recList.innerHTML = html;
+
+  var memo = [
+  // ── まずは全体の一言まとめ ──
+  "短時間でも“中〜やや強度”の運動は気分や活力の持ち直しに効きやすい。呼吸×反復や音楽のリズムは継続もしやすい（個人差あり）。",
+
+  // ── 種目別（％だけで表現） ──
+  "自重HIIT：20分×週3で 抑うつ−22％／不安−18％／体力（VO2max）＋14％。",
+  "階段昇降：10階×3回を週3・6週間で 持久力＋12％／血糖指標＋8％／疲労感−20％。",
+  "ランニング：週2回以上の習慣で 死亡リスク−30％／うつ発症−43％。",
+  "体幹サーキット：8週間で 姿勢安定＋24％／脳血流＋16％／抑うつ−17％。",
+  "ジョギング（ゆっくり）：週1〜2.5時間で 死亡リスク−68％（非ランナー比）。",
+  "坂道ウォーク／ハイキング：自然で90分歩くと 反芻思考−45％／前帯状皮質活動−29％（鎮静方向）。",
+  "ピラティス：実施群で 抑うつ−34％。自尊心やボディイメージも上向き傾向。",
+  "ヨガ：介入で うつ−29％／不安−21％。",
+  "モビリティ（関節ほぐし）：12週間で 疼痛−35％／不安−18％／生活満足＋21％。",
+  "シャドーボクシング：12週間で バランス＋13％／抑うつ−22％／自己効力＋18％。",
+  "AMRAP（自重）：20分実施で βエンドルフィン＋27％／幸福感＋14％／ストレスホルモン−12％。",
+  "ダンス（有酸素含む）：介入で 抑うつ−31％／社会的結束感＋23％／自己表現＋28％。",
+  "速歩（ブリスウォーク）：早歩き習慣で 死亡リスク−24〜35％。",
+  "太極拳：メタ分析で 抑うつ−26％／不安−19％（高齢者は出やすい傾向）。"
+];
+resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 共有リンク群（buttonで開く）
+    var shareText = '『おにぎり何個ぶん？運動診断』タイプ：'+label;
+    var url = location.href.split('#')[0];
+    function openBlank(u){ window.open(u,'_blank','noopener'); }
+
+    shareTw.onclick = function(){
+      openBlank('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText)+'&url='+encodeURIComponent(url));
+    };
+    shareLn.onclick = function(){
+      openBlank('https://line.me/R/msg/text/?'+encodeURIComponent(shareText+' '+url));
+    };
+    shareIg.onclick = function(){
+      copyToClipboard(shareText+' '+url).then(function(){
+        openBlank('https://www.instagram.com/');
+        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+      });
+    };
+    if(shareCp){
+      shareCp.onclick = function(){
+        copyToClipboard(shareText+' '+url).then(function(){ toast('リンクをコピーしました'); });
+      };
+    }
+    shareRow.hidden = false; shareRow.removeAttribute('hidden'); shareRow.style.display='flex';
+
+    // 結果画像保存
+    if(btnShot && shotCanvas){
+      btnShot.onclick = async function(e){
+        e.preventDefault();
+        var original = btnShot.textContent;
+        btnShot.textContent = "画像を生成中…";
+        btnShot.disabled = true;
+        try{
+          var blob = await buildShareImage({
+            heroSrc: heroImg.src,
+            title: label,
+            rec: recIds.slice(0,3).map(function(id){
+              var met = MET[id]||0;
+              return { name: nameOf(id), met: met,
+                k20: Math.round(kcal(met,20,60)),
+                k30: Math.round(kcal(met,30,60)) };
+            }),
+            pct: o.pct
+          });
+          saveBlob(blob, "onigiri-workout_"+(o.solo?o.top:pairKey(o.top,o.second))+".png");
+        }catch(err){
+          console.error(err);
+          alert("画像の生成に失敗しました。\nfile:// 直開きだと外部画像は描けない場合があります。");
+        }finally{
+          btnShot.textContent = original;
+          btnShot.disabled = false;
+        }
+      };
+    }
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 一覧用保存
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // 共有ヘルパー
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(text); }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div'); t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';
+    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t); setTimeout(function(){ t.remove(); },1500);
+  }
+
+  // クリア
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });
+    wipeAnswers(); prog.style.width="0%";
+    resEmpty.style.display=""; resArea.style.display="none";
+    var app=document.getElementById("app"); if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // 初期化
+  function init(){
+    buildQuestions();
+    // 研究メモ（初期）
+    resMemo.innerHTML = ["短時間でも“ちょい運動”は機嫌を持ち直す助けになることがあります。"].map(function(s){return "<li>"+s+"</li>";}).join("");
+  }
+  if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+  document.getElementById("doScore").addEventListener("click", calc, false);
+  document.getElementById("doScore2").addEventListener("click", calc, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+})();
+
+// ====== まとめ画像生成（1080x1350） ======
+async function buildShareImage(data){
+  var cvs = (window.shotCanvas || document.getElementById("shotCanvas"));
+  if(!cvs) throw new Error("shotCanvas not found");
+  var ctx = cvs.getContext("2d");
+  var W = cvs.width, H = cvs.height;
+
+  // 背景
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,W,H);
+
+  // ヒーロー（正方形）
+  var heroW = W - 120, heroH = heroW;
+  if (heroH > 720){ heroH = 720; heroW = 720; }
+  var hx = Math.round((W - heroW)/2), hy = 60;
+  roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+
+  try{
+    var img = await loadImage(data.heroSrc);
+    ctx.drawImage(img, hx, hy, heroW, heroH);
+  }catch(_){
+    ctx.fillStyle = "#e6ecf7"; ctx.fillRect(hx, hy, heroW, heroH);
+    ctx.fillStyle = "#9aa3b2"; ctx.font = "600 24px 'Noto Sans JP',system-ui";
+    ctx.fillText("画像を表示できませんでした", hx + 24, hy + heroH/2);
+  }
+
+  // タイトル
+  var y = hy + heroH + 40;
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "800 40px 'Noto Sans JP',system-ui";
+  ctx.fillText("おにぎり何個ぶん？運動診断", 60, y);
+  ctx.font = "800 44px 'Nto Sans JP',system-ui";
+  drawWrapText(ctx, "タイプ："+data.title, 60, y+54, W-120, 48);
+
+  // 因子バー（4）
+  var order = ["RL","SO","FC","BO"];
+  var names = {RL:"発散",SO:"整え",FC:"集中",BO:"ノリ"};
+  var baseY = y + 130;
+  for(var i=0;i<order.length;i++){
+    var key = order[i], val = (data.pct[key]||0);
+    drawBar(ctx, 60, baseY + i*70, W-120, 18, val, names[key]+"（"+key+"）", "#4f8cff", "#7ad0ff");
+  }
+
+  // おすすめ（名前とkcal）
+  var recY = baseY + order.length*70 + 36;
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#1f2732";
+  ctx.fillText("おすすめTOP3（20/30分）", 60, recY);
+
+  ctx.font = "600 24px 'Noto Sans JP',system-ui";
+  var yy = recY + 40;
+  (data.rec||[]).forEach(function(r, idx){
+    var line = (idx+1)+". "+r.name+"（MET "+r.met+"）  "+r.k20+"kcal / "+r.k30+"kcal";
+    drawWrapText(ctx, line, 60, yy, W-120, 30, "#1f2732");
+    yy += 34;
+  });
+
+  return await canvasToBlob(cvs, "image/png");
+}
+
+// 画像読込（fetch→blob→ObjectURL→Image）
+async function loadImage(src){
+  try{
+    const r = await fetch(src, {cache:'no-store'});
+    if(!r.ok) throw new Error('fetch failed');
+    const b = await r.blob();
+    const blobUrl = URL.createObjectURL(b);
+    const img = await new Promise((res, rej)=>{
+      const im = new Image();
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = blobUrl;
+    });
+    setTimeout(()=>URL.revokeObjectURL(blobUrl), 1000);
+    return img;
+  }catch(e){
+    return await new Promise((res, rej)=>{
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now();
+    });
+  }
+}
+// 角丸矩形
+function roundRect(ctx, x, y, w, h, r, fill, stroke){
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle = stroke; ctx.stroke(); }
+  ctx.restore();
+}
+// テキスト折返し
+function drawWrapText(ctx, text, x, y, maxW, lh, color){
+  ctx.fillStyle = color || "#1f2732";
+  var words = (text||"").split(/(\s+)/);
+  var line = "", cursor = y;
+  for(var i=0;i<words.length;i++){
+    var test = line + words[i];
+    if(ctx.measureText(test).width > maxW && i>0){
+      ctx.fillText(line, x, cursor);
+      line = words[i].trimStart();
+      cursor += lh;
+    }else{
+      line = test;
+    }
+  }
+  if(line){ ctx.fillText(line, x, cursor); }
+}
+// バー
+function drawBar(ctx, x, y, w, h, pct, label, c1, c2){
+  ctx.save();
+  ctx.fillStyle = "#1f2732"; ctx.font = "700 22px 'Noto Sans JP',system-ui";
+  ctx.fillText(label, x, y-10);
+  var by = y+10;
+  roundRect(ctx, x, by, w, h, 10, "#edf2fb", "#e8eef9");
+  var ww = Math.max(0, Math.min(w, Math.round(w*pct/100)));
+  var grad = ctx.createLinearGradient(x,0,x+w,0);
+  grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+  roundRect(ctx, x, by, ww, h, 10, grad);
+  ctx.fillStyle = "#667087"; ctx.font = "600 18px 'Noto Sans JP',system-ui";
+  var txt = String(pct).padStart(2,"0")+"%";
+  ctx.fillText(txt, x + w - ctx.measureText(txt).width, by + h + 22);
+  ctx.restore();
+}
+// 保存
+function saveBlob(blob, filename){
+  var a = document.createElement("a");
+  var url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename || "result.png";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);
+}
+// toBlob（fallback）
+function canvasToBlob(cvs, type){
+  return new Promise(function(res){
+    if(cvs.toBlob){ cvs.toBlob(function(b){ res(b); }, type||"image/png"); }
+    else{ res(dataURLtoBlob(cvs.toDataURL(type||"image/png"))); }
+  });
+}
+function dataURLtoBlob(dataUrl){
+  var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], {type:mime});
+}
+</script>
+</body>
+</html>
