@@ -1131,132 +1131,96 @@ updateCompletion();
 })();
 </script>
 <script>
-/* ====== 標本オープン数（ローカル保持＋全体） ======================
-   まずはローカルに最後の全体値をキャッシュして表示のリセットを防ぐ。
-   可能なら下の②の「独自カウンタ（CF/GAS）」も設定してCF_WORKER_URLへ切替。
-=================================================================== */
+/* ====== みんなのこころLv（CountAPI版・ここだけ置換） ==================
+   - 「あなたのこころLv」は localStorage を使用（従来どおり）
+   - 「みんなのこころLv」は CountAPI の総数（サーバ不要）
+   - クリック時は楽観更新（+1 即時表示）→ ネット失敗でも表示が戻らない
+===================================================================== */
+(function(){
+  const myEl  = document.getElementById('myOpenCount');
+  const allEl = document.getElementById('allOpenCount');
 
-const myEl  = document.querySelector('#myOpenCount');
-const allEl = document.querySelector('#allOpenCount');
+  // LocalStorage keys（従来のキー名そのまま）
+  const LS_TOTAL_KEY   = 'specimens:open:total';
+  const LS_BYID_KEY    = 'specimens:open:byid';
+  const LS_GLOBAL_LAST = 'specimens:open:global:last';
 
-// ---- 設定（必要なら②でURLを入れる） ------------------------------
-const CF_WORKER_URL = "https://counter.asagikarin.workers.dev";
-const GLOBAL_KEY    = "specimens_open_total";
-// ------------------------------------------------------------------
+  // CountAPI 設定（必要に応じて NS/KEY は変えてOK）
+  const COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  const COUNTAPI_KEY = 'specimens_open_total';
 
-// LocalStorage keys
-const LS_TOTAL_KEY      = "specimens:open:total";
-const LS_BYID_KEY       = "specimens:open:byid";
-const LS_GLOBAL_LAST    = "specimens:open:global:last"; // ← 追加：前回の全体値
-
-// CountAPI フォールバック
-const COUNTAPI_NS  = "haisuikounozarigani_shindan";
-const COUNTAPI_KEY = GLOBAL_KEY;
-
-// UI：全体数の安全セット + キャッシュ保存
-function setAll(val){
-  if(!allEl) return;
-  if (typeof val === "number" && Number.isFinite(val)) {
-    allEl.textContent = val.toLocaleString("ja-JP");
-    try{ localStorage.setItem(LS_GLOBAL_LAST, String(val)); }catch(e){}
-  } else {
-    // 失敗時は前回値を維持（落ち着いた表示）
-    const last = parseInt(localStorage.getItem(LS_GLOBAL_LAST) || "0", 10);
-    allEl.textContent = last ? last.toLocaleString("ja-JP") : "—";
+  // ---- UI：全体数の安全セット + キャッシュ保存
+  function setAll(val){
+    if(!allEl) return;
+    if(Number.isFinite(val)){
+      allEl.textContent = val.toLocaleString('ja-JP');
+      try{ localStorage.setItem(LS_GLOBAL_LAST, String(val)); }catch(_){}
+    }else{
+      const last = +localStorage.getItem(LS_GLOBAL_LAST) || 0;
+      allEl.textContent = last ? last.toLocaleString('ja-JP') : '—';
+    }
   }
-}
 
-// ---- ローカル加算 ------------------------------------------------
-function getLocalTotal(){
-  const n = parseInt(localStorage.getItem(LS_TOTAL_KEY) || "0", 10);
-  return Number.isFinite(n) ? n : 0;
-}
-function setLocalTotal(n){
-  localStorage.setItem(LS_TOTAL_KEY, String(n));
-}
-function incLocalById(id){
-  const t = getLocalTotal() + 1;
-  setLocalTotal(t);
-  // 個別
-  let map = {};
-  try{ map = JSON.parse(localStorage.getItem(LS_BYID_KEY) || "{}"); }catch(e){}
-  map[id] = (map[id] || 0) + 1;
-  localStorage.setItem(LS_BYID_KEY, JSON.stringify(map));
-  if(myEl) myEl.textContent = t.toLocaleString("ja-JP");
-}
-
-// ---- 全体：取得 --------------------------------------------------
-async function getGlobalCount(){
-  // 優先：独自エンドポイント（②で設定）
-  if(CF_WORKER_URL){
+  // ---- ローカル（あなたのこころLv）
+  function getLocalTotal(){
+    const n = +localStorage.getItem(LS_TOTAL_KEY) || 0;
+    return Number.isFinite(n) ? n : 0;
+  }
+  function setLocalTotal(n){
+    try{ localStorage.setItem(LS_TOTAL_KEY, String(n)); }catch(_){}
+  }
+  function incLocalById(id){
+    const t = getLocalTotal() + 1;
+    setLocalTotal(t);
     try{
-      const url = new URL(CF_WORKER_URL);
-      url.searchParams.set("key", GLOBAL_KEY);
-      const r = await fetch(url.toString(), {mode:"cors", cache:"no-store"});
+      const map = JSON.parse(localStorage.getItem(LS_BYID_KEY) || '{}');
+      map[id] = (map[id] || 0) + 1;
+      localStorage.setItem(LS_BYID_KEY, JSON.stringify(map));
+    }catch(_){}
+    if(myEl) myEl.textContent = t.toLocaleString('ja-JP');
+  }
+
+  // ---- みんなの（CountAPI）
+  async function getGlobalCount(){
+    try{
+      const r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:'cors', cache:'no-store'});
       const d = await r.json();
-      return (d && typeof d.value === "number") ? d.value : null;
-    }catch(e){ /* fallthrough */ }
+      return (d && typeof d.value === 'number') ? d.value : null;
+    }catch(_){ return null; }
   }
-  // フォールバック：CountAPI
-  try{
-    const r = await fetch(`https://api.countapi.xyz/get/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {mode:"cors", cache:"no-store"});
-    const d = await r.json();
-    return (d && typeof d.value === "number") ? d.value : null;
-  }catch(e){
-    return null;
+  function bumpGlobal(){
+    // 失敗しても無視（表示は楽観更新）
+    fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
+      mode:'cors', cache:'no-store', keepalive:true
+    }).catch(()=>{});
   }
-}
 
-// ---- 全体：加算 --------------------------------------------------
-function bumpGlobal(){
-  // 優先：独自エンドポイント（sendBeacon→fetch）
-  if(CF_WORKER_URL){
-    try{
-      const url = new URL(CF_WORKER_URL);
-      url.searchParams.set("key", GLOBAL_KEY);
-      url.searchParams.set("hit", "1");
-      const u = url.toString();
-      if (navigator.sendBeacon) {
-        // sendBeacon は POST 送信になるが、Worker 側で method 無視 or POST 対応にしておく
-        const ok = navigator.sendBeacon(u, "");
-        if (ok) return;
-      }
-      fetch(u, {mode:"cors", cache:"no-store", keepalive:true}).catch(()=>{});
-      return;
-    }catch(e){ /* fallthrough */ }
-  }
-  // フォールバック：CountAPI
-  fetch(`https://api.countapi.xyz/hit/${COUNTAPI_NS}/${COUNTAPI_KEY}`, {
-    method:"GET", mode:"cors", cache:"no-store", keepalive:true
-  }).catch(()=>{});
-}
+  // ---- 初期化
+  if(myEl) myEl.textContent = getLocalTotal().toLocaleString('ja-JP'); // あなたのLv
+  setAll(null);                                  // まずは前回値or—を表示
+  getGlobalCount().then(v=>setAll(v)).catch(()=>setAll(null)); // 取得できたら置換
 
-// ---- 初期化 ------------------------------------------------------
-(function initOpenCounter(){
-  // 自分の回数（ローカル）
-  if(myEl) myEl.textContent = getLocalTotal().toLocaleString("ja-JP");
-
-  // 全体：まず前回値を表示（リセット感をなくす）
-  const last = parseInt(localStorage.getItem(LS_GLOBAL_LAST) || "0", 10);
-  if(allEl) allEl.textContent = last ? last.toLocaleString("ja-JP") : "—";
-
-  // その後に最新を取得して置き換え
-  getGlobalCount().then(val => setAll(val)).catch(()=>setAll(null));
-
-  // クリックで加算（遷移前に送る／UIは楽観更新）
-  const list = document.querySelector('#list');
+  // ---- クリックで加算（遷移前に送る／UIは楽観更新）
+  const list = document.getElementById('list');
   if(list){
-    list.addEventListener('click', function(e){
+    list.addEventListener('click', (e)=>{
       const a = e.target.closest('a.link');
       if(!a) return;
-      const id = a.dataset.id || "unknown";
+      const id = a.dataset.id || 'unknown';
+
+      // あなたのLv（従来どおり）
       incLocalById(id);
-updateCompletion();
-      try{ a.setAttribute('data-done','1'); }catch(_){}
+
+      // ランク箱など即時更新（定義があれば）
+      try{
+        a.setAttribute('data-done','1');
+        if (typeof updateCompletion === 'function') updateCompletion();
+      }catch(_){}
+
+      // みんなのLv：送信 + 楽観更新
       bumpGlobal();
-      // 楽観更新で +1（ネットワーク失敗でも数字が戻らない）
-      const cur = parseInt((localStorage.getItem(LS_GLOBAL_LAST) || "0"), 10) || 0;
-      setAll(cur + 1);
+      const cur = (+localStorage.getItem(LS_GLOBAL_LAST) || 0) + 1;
+      setAll(cur);
     }, {capture:true});
   }
 })();
@@ -1267,30 +1231,81 @@ updateCompletion();
   var DONE_KEY = 'specimens:open:byid';
   // このページのID（index の data-id と一致させる）
   // 例）'seikaku' / 'oshi-face' / 'best-friend' など
-  var MY_ID = document.body.getAttribute('data-id') || 'oshi-face';
+  // index には data-id が無い → 何もしない／詳細ページだけ実行
+var MY_ID = document.body.getAttribute('data-id');
 
-  var marked = false;
-  function markDoneOnce(){
-    if(marked) return; // 二重実行防止
-    marked = true;
-    try{
-      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
-      map[MY_ID] = (map[MY_ID] || 0) + 1;
-      localStorage.setItem(DONE_KEY, JSON.stringify(map));
-      // 他タブの index にも即時反映させるため storage イベントを発火させる
-      // （同じ値を書いてもブラウザによっては発火しないため、時刻スタンプを混ぜる）
-      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
-    }catch(_){}
+var marked = false;
+function markDoneOnce(){
+  if(marked) return; // 二重実行防止
+  marked = true;
+  try{
+    var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+    map[MY_ID] = (map[MY_ID] || 0) + 1;
+    localStorage.setItem(DONE_KEY, JSON.stringify(map));
+    // 他タブにも即時反映（タイムスタンプで発火保証）
+    localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+  }catch(_){}
+}
+
+// 詳細ページ（data-id がある時）だけ「済」処理を走らせる
+if (MY_ID) {
+  // 1) 結果が描画された合図があればそれにフック
+  document.addEventListener('result:ready', markDoneOnce);
+  // 2) フォールバック：表示後に一度だけ実行（2秒遅延）
+  setTimeout(markDoneOnce, 2000);
+}
+</script>
+<script>
+/* こころLvの表示：index 用（あなた=localStorage／みんな=CountAPI） */
+(function(){
+  var LS_TOTAL_KEY = 'specimens:open:total';        // あなた
+  var GLOBAL_CACHE = 'specimens:open:global-cache'; // みんなのキャッシュ
+
+  // 表示先（好きなセレクタ1つでOK） data-you / data-all のどちらかがあれば使う
+  var elYou = document.querySelector('[data-you], #lvYou, .lv-you');
+  var elAll = document.querySelector('[data-all], #lvAll, .lv-all');
+
+  function renderYou(){
+    if(!elYou) return;
+    var val = +localStorage.getItem(LS_TOTAL_KEY) || 0;
+    elYou.textContent = val;
   }
 
-  // 1) あなたのページで「結果が描画されるタイミング」の末尾で呼ぶ
-  //   例）render() の最後 / 結果カードを .show() した直後 など
-  // window.dispatchEvent(new Event('result:ready')); のようなイベントが使えるならそれを使う
-  document.addEventListener('result:ready', markDoneOnce);
+  // CountAPI から総数を取得（失敗時はローカルキャッシュで表示）
+  var NS  = 'haisuikounozarigani_shindan';
+  var KEY = 'specimens_open_total';
+  var GET = 'https://api.countapi.xyz/get/'+NS+'/'+KEY;
 
-  // 2) フォールバック：結果UIが見えた後に一度だけ実行（2秒遅延）
-  //    「戻る」を押さなくても必ず済が付く
-  setTimeout(markDoneOnce, 2000);
+  function renderAll(n){
+    if(!elAll) return;
+    elAll.textContent = n;
+  }
+
+  function fetchAll(){
+    fetch(GET, {mode:'cors', cache:'no-store'})
+      .then(function(r){ return r.json(); })
+      .then(function(o){
+        var n = (o && typeof o.value==='number') ? o.value : (+localStorage.getItem(GLOBAL_CACHE)||0);
+        renderAll(n);
+        try{ localStorage.setItem(GLOBAL_CACHE, String(n)); }catch(_){}
+      })
+      .catch(function(){
+        var n = +localStorage.getItem(GLOBAL_CACHE) || 0;
+        renderAll(n); // 最後に見えた値でフォールバック
+      });
+  }
+
+  // 初期表示
+  renderYou();
+  fetchAll();
+
+  // 他タブで診断が済んだとき、あなたの表示は即時更新
+  window.addEventListener('storage', function(ev){
+    if(ev && ev.key === 'specimens:open:byid'){ renderYou(); }
+  });
+
+  // たまに最新化（任意）：30秒ごと
+  setInterval(fetchAll, 30000);
 })();
 </script>
 </body>
