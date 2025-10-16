@@ -1,170 +1,662 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>7つの休息×スイーツ診断</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    body{font-family:sans-serif;background:#fffdf8;color:#333;margin:0;padding:22px}
-    h1{color:#b86b77;text-align:center;margin:10px 0 8px}
-    p.lead{text-align:center;margin:0 0 18px;font-size:14px;color:#666}
-    .card{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:18px}
-    .question{margin:18px 0 22px}
-    .question p{margin:0 0 10px}
-    .scale{display:grid;gap:8px}
-    .scale label{display:flex;align-items:center;gap:10px;background:#f6f3f1;border-radius:8px;padding:10px}
-    .btn{display:inline-block;background:#b86b77;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-    .actions{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
-    #result{max-width:900px;margin:18px auto 0;display:none}
-    .pill{display:inline-block;background:#fde9ee;color:#b86b77;padding:4px 10px;border-radius:999px;font-size:12px;margin:0 0 10px}
-    .type{background:#fdf1f3;border-left:6px solid #b86b77;border-radius:10px;padding:12px 14px;margin:10px 0}
-    .type h3{margin:0 0 6px;color:#b86b77;font-size:18px}
-    .type small{color:#666}
-    .note{font-size:14px;color:#444;background:#fff7e6;border-left:6px solid #ffbf66;border-radius:6px;padding:10px 12px;margin:14px 0}
-    a.linkbtn{display:inline-block;text-decoration:none}
-    .footerlink{text-align:center;margin-top:12px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7つの休息 × スイーツ診断</title>
+<meta name="description" content="14問で今ほしい“7つの休息”タイプを判定。主役タイプとスイーツを表示。エンタメ自己理解です。">
+<meta name="theme-color" content="#fff7fb">
+<meta property="og:type" content="website">
+<meta property="og:title" content="7つの休息 × スイーツ診断">
+<meta property="og:description" content="14問・7タイプ％で主役の休息を判定。画像webp対応＆結果共有OK。">
+<meta property="og:image" content="/shindan/assets/results/sweets/t01.webp">
+<style>
+:root{
+  --accent:#b86b77; --accent2:#ffb6c1;
+  --ink:#44363a; --muted:#766e71; --paper:#fff;
+  --bg1:#fff7fb; --bg2:#fffdf6; --line:#efdfdf;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#ffe5ec,#fff5e6);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.06);border-bottom:1px solid #f0e3e3;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#fde8ee;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #efd8d8;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(184,107,119,.4)}100%{box-shadow:0 0 0 0 rgba(184,107,119,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:22px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+/* ヒーロー（画像→テキスト） */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#fff7fb}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#fde8ee;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+
+/* 共有ボタン */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"𝕏";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+.btn.save::before{content:"⬇️";margin-right:.25em}
+
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
 </head>
-<body>
-  <h1>🍰 7つの休息 × スイーツ診断</h1>
-  <p class="lead">当てはまる度合いを選んでください（1〜5の5件法）</p>
-
-  <div class="card" id="formWrap">
-    <form id="quizForm"></form>
-    <div class="actions">
-      <button class="btn" type="button" onclick="calculate()">診断する</button>
-      <button class="btn" type="button" onclick="resetForm()" style="background:#858585">リセット</button>
+<body data-id="sweetshin">
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🍰</div>
+    <div>
+      <h1>7つの休息 × スイーツ診断</h1>
+      <p class="sub">14問（0〜4の5件法）。7タイプの％と「今の主役休息」を表示します。※エンタメ自己理解／因果は断定しません。</p>
     </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="14">
+      <span id="prog"></span>
+    </div>
+    <button class="btn primary" id="doScore">診断する</button>
   </div>
 
-  <div id="result" class="card" aria-live="polite">
-  <span class="pill">基準：平均4.0以上の因子をすべて表示（該当なしなら上位2因子）</span>
-  <div id="types"></div>
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：14</span>
+      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>
+      <span class="pill">出力：7因子％→主役＋（条件で）相棒</span>
+    </div>
+    <p class="small">“休み方のクセ”を7タイプで判定。<b>ぴったりなスイーツ</b>と<b>今日のケア</b>も表示します。</p>
+  </section>
 
-  <div class="note">
-    🔖 複数の因子が出ることがあります。結果はこのページ内に表示されます。保存したい場合はスクショどうぞ。
-  </div>
-  <div class="footerlink">
-    <a class="btn linkbtn" href="/shindan/">診断一覧に戻る</a>
-    <button class="btn linkbtn" type="button"
-      onclick="window.scrollTo({top:0,behavior:'smooth'})">もう一度やる</button>
-  </div>
-</div>
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（ぜんぜん／あまり／ときどき／よく／とても）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
 
-  <script>
-    // 7つの休息タイプとスイーツの対応
-    const TYPES = {
-      body:   {label:"身体の休息",  sweet:"シュークリーム 🥐", desc:"ふわっと軽くやさしい休息を。睡眠・入浴・ストレッチで物理的に回復を。"},
-      soul:   {label:"魂の休息",    sweet:"バウムクーヘン 🍰", desc:"“やるべき”より“やりたい”を。好きな本・自然・内省で層にうるおいを。"},
-      create: {label:"創造の休息",  sweet:"ミルフィーユ 🍰",   desc:"遊び心と新しい刺激を。未体験のアートや街、即興の小さな創作を。"},
-      sense:  {label:"感覚の休息",  sweet:"杏仁豆腐 🍮",       desc:"五感を静かにクールダウン。照明・音・香りを落として穏やかに。"},
-      social: {label:"社会の休息",  sweet:"ドーナツ 🍩",       desc:"“空白の穴”を優しい交流で。気楽な相手と短時間の会話や散歩を。"},
-      emotion:{label:"感情の休息",  sweet:"プリン 🍮",         desc:"書く・話す・泣くで流す。評価せず“感じる”だけの時間を。"},
-      mental: {label:"精神の休息",  sweet:"マカロン 🍬",       desc:"情報と雑音を一度ミュート。瞑想・紙に書き出し・予定を減らす。"}
-    };
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全14問に回答して「診断する」を押してください。</p>
+    </div>
 
-    // 設問（2問×7因子＝14問） 5件法：1まったく〜5とても
-    const QUESTIONS = [
-      // 身体
-      {t:"朝起きても疲れが残っていることが多い", k:"body"},
-      {t:"体のコリや重だるさをよく感じる", k:"body"},
-      // 魂
-      {t:"“やりたいこと”より“やるべきこと”で一日が埋まりがちだ", k:"soul"},
-      {t:"自分の価値観や生きがいが薄くなっている気がする", k:"soul"},
-      // 創造
-      {t:"新しいアイデアが浮かびにくい／ワクワクが減った", k:"create"},
-      {t:"完璧を求めすぎて手が止まることが多い", k:"create"},
-      // 感覚
-      {t:"人混みや音・光でぐったりしやすい", k:"sense"},
-      {t:"通知や情報の多さに圧倒される", k:"sense"},
-      // 社会
-      {t:"気を使いすぎて、人と会うのがしんどいことがある", k:"social"},
-      {t:"最近、気楽に話せる相手と会っていない", k:"social"},
-      // 感情
-      {t:"感情を抑え込みがちで、うまく表現できない", k:"emotion"},
-      {t:"泣いたり怒ったりするのを我慢してしまう", k:"emotion"},
-      // 精神
-      {t:"考えごとが多すぎて頭が休まらない", k:"mental"},
-      {t:"集中できず、思考の引き出しが散らかっている感じがする", k:"mental"},
-    ];
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
 
-    const SCALE = [
-      "1（まったく当てはまらない）",
-      "2（あまり当てはまらない）",
-      "3（どちらともいえない）",
-      "4（やや当てはまる）",
-      "5（とても当てはまる）"
-    ];
+      <!-- タイプ画像（正方形webp） -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/sweets/t01.webp" alt="結果イメージ" loading="lazy" width="1080" height="1080">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+          <div class="capmini" id="heroHint" style="margin-top:4px">—</div>
 
-    // フォーム描画
-    const form = document.getElementById("quizForm");
-    QUESTIONS.forEach((q, i) => {
-      const block = document.createElement("div");
-      block.className = "question";
-      block.innerHTML = `<p>Q${i+1}. ${q.t}</p>
-        <div class="scale">
-          ${SCALE.map((label, idx) =>
-            `<label><input type="radio" name="q${i}" value="${idx+1}"> ${label}</label>`
-          ).join("")}
-        </div>`;
-      form.appendChild(block);
+          <div class="share-row" id="shareRow" hidden>
+            <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>
+            <button id="shareLn"  class="btn line" type="button">LINEで送る</button>
+            <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>
+            <button id="shareCp"  class="btn"      type="button">リンクをコピー</button>
+          </div>
+        </figcaption>
+      </div>
+
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>因子平均（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="相棒">
+          <div><strong>相棒タイプ</strong></div>
+          <div class="big" id="allyName">—</div>
+          <div class="small" id="allyNote">条件一致のとき表示</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー（7） -->
+      <div class="section">
+        <h3 style="margin:8px 0">7因子（％）</h3>
+        <div id="bars" class="factor-mini"></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 今日のケア -->
+      <details class="section" open id="careSec">
+        <summary><strong>今日のケア</strong></summary>
+        <ul class="small" id="careList" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+      </details>
+
+      <div class="hr"></div>
+      <!-- 研究メモ（柔らかく） -->
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差があります。医療・採用などの用途には使えません。</p>
+      </details>
+
+      <div class="back-area" style="display:flex;justify-content:center;margin-top:12px">
+        <a class="btn" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="small">このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
+    データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ===== ページ情報 =====
+  var SLUG = "sweetshin";
+  var TITLE = "7つの休息 × スイーツ診断";
+  var IMG_BASE = "/shindan/assets/results/sweets/"; // t01.webp..t07.webp
+
+  // ===== 因子定義（7） =====
+  // code→表示名・スイーツ・1行コピー・ヒント・ケア
+  var TYPES = [
+    { id:1,  code:"body",   name:"身体の休息",  sweet:"シュークリーム 🥐",
+      one:"ふわっと軽く、体にやさしい時間が必要そう。",
+      hint:"睡眠・入浴・ストレッチで“物理的に”回復。",
+      care:["寝る前のスマホを15分カット","お風呂で首肩を温める","1分の全身ストレッチ×3回"] },
+    { id:2,  code:"soul",   name:"魂の休息",    sweet:"バウムクーヘン 🍰",
+      one:"“やりたい”の層を重ねる補給が合いそう。",
+      hint:"自然・本・内省で価値観の層にうるおいを。",
+      care:["好きな本を5ページだけ読む","夕方に空を見る/緑を歩く","今日の“よかった”を1行メモ"] },
+    { id:3,  code:"create", name:"創造の休息",  sweet:"ミルフィーユ 🍰",
+      one:"遊び心の薄皮を重ねると、発想に風が入る。",
+      hint:"未体験の小さな刺激や即興の創作を。",
+      care:["未開の音楽/色を1つ試す","5分だけ“落書き/撮影”","完璧より“とりあえずアップ”"] },
+    { id:4,  code:"sense",  name:"感覚の休息",  sweet:"杏仁豆腐 🍮",
+      one:"五感を静かにクールダウン。刺激を一段下げよう。",
+      hint:"照明・音・香りを落として穏やかに。",
+      care:["部屋の光量を50%に","通知を30分ミュート","深呼吸4-4-6×3セット"] },
+    { id:5,  code:"social", name:"社会の休息",  sweet:"ドーナツ 🍩",
+      one:"“空白の穴”をやさしい交流で満たすと回復が早い。",
+      hint:"気楽な相手と短時間の会話や散歩を。",
+      care:["3行だけメッセージを送る","散歩10分で外の空気を吸う","“今日は無理しない”合図を決める"] },
+    { id:6,  code:"emotion",name:"感情の休息",  sweet:"プリン 🍮",
+      one:"評価せず、ただ感じて流す時間が効く。",
+      hint:"書く・話す・泣くでデトックス。",
+      care:["今日の気分を単語で3つ書く","信頼できる人に5分だけ話す","映画や音楽で“泣く許可”を出す"] },
+    { id:7,  code:"mental", name:"精神の休息",  sweet:"マカロン 🍬",
+      one:"情報をひとくちサイズに。思考の引き出しを整頓。",
+      hint:"予定を減らし、紙に出してから決める。",
+      care:["ToDoを3つに絞る","脳内の気がかりを全部書き出す","決断は“明日朝”に延期する"] }
+  ];
+  var CODE_ORDER = TYPES.map(t=>t.code); // 表示順
+
+  // ===== 設問（14） =====
+  var ITEMS = [
+    {id:"Q01", text:"朝起きても疲れが残っていることが多い",  key:"body"},
+    {id:"Q02", text:"体のコリや重だるさをよく感じる",        key:"body"},
+    {id:"Q03", text:"“やるべき”で一日が埋まりがちだ",            key:"soul"},
+    {id:"Q04", text:"自分の価値観や生きがいが薄くなっている気がする", key:"soul"},
+    {id:"Q05", text:"新しいアイデアが浮かびにくい/ワクワクが減った", key:"create"},
+    {id:"Q06", text:"完璧を求めすぎて手が止まることが多い",        key:"create"},
+    {id:"Q07", text:"人混みや音・光でぐったりしやすい",            key:"sense"},
+    {id:"Q08", text:"通知や情報の多さに圧倒される",                key:"sense"},
+    {id:"Q09", text:"気を使いすぎて、人と会うのがしんどいことがある", key:"social"},
+    {id:"Q10", text:"最近、気楽に話せる相手と会っていない",        key:"social"},
+    {id:"Q11", text:"感情を抑え込みがちで、うまく表現できない",      key:"emotion"},
+    {id:"Q12", text:"泣いたり怒ったりするのを我慢してしまう",        key:"emotion"},
+    {id:"Q13", text:"考えごとが多すぎて頭が休まらない",            key:"mental"},
+    {id:"Q14", text:"集中できず、思考の引き出しが散らかっている感じ",  key:"mental"}
+  ];
+  var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
+
+  // ===== 要素参照 =====
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroCopy = document.getElementById("heroCopy");
+  var heroHint = document.getElementById("heroHint");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumPct  = document.getElementById("sumPct");
+  var sumNote = document.getElementById("sumNote");
+  var bars    = document.getElementById("bars");
+  var resMemo = document.getElementById("resMemo");
+  var careList= document.getElementById("careList");
+  var shareRow= document.getElementById("shareRow");
+  var shareTw = document.getElementById("shareTw");
+  var shareLn = document.getElementById("shareLn");
+  var shareIg = document.getElementById("shareIg");
+  var back = document.getElementById("backLink");
+
+  // ===== 設問生成 =====
+  function buildQuestions(){
+    var html = "";
+    ITEMS.forEach(function(q, i){
+      html += '<fieldset class="q" id="fs-'+q.id+'">'+
+        '<legend>'+String(i+1).padStart(2,"0")+'. '+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0; v<=4; v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+q.id+'-'+v+'" type="radio" name="q'+q.id+'" value="'+v+'">'+
+          '<label for="q'+q.id+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
     });
+    qWrap.innerHTML = html;
 
-    // リセット
-    function resetForm(){
-      form.reset();
-      document.getElementById("result").style.display="none";
-      document.getElementById("types").innerHTML="";
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-
-    // 診断
-    function calculate(){
-  // 集計
-  const sums   = {body:0,soul:0,create:0,sense:0,social:0,emotion:0,mental:0};
-  const counts = {body:0,soul:0,create:0,sense:0,social:0,emotion:0,mental:0};
-
-  for (let i=0; i<QUESTIONS.length; i++){
-    const sel = document.querySelector(`input[name="q${i}"]:checked`);
-    if(!sel){
-      alert(`全ての質問に答えてください（Q${i+1}が未回答）`);
-      return;
-    }
-    const v = parseInt(sel.value,10);
-    const k = QUESTIONS[i].k;
-    sums[k]   += v;
-    counts[k] += 1;
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){
+      r.addEventListener('change', function(){ updateProgress(); }, false);
+    });
+    updateProgress();
   }
 
-  // 平均
-  const avgs = Object.keys(sums).map(k => ({ key:k, avg: sums[k]/counts[k] }));
+  function updateProgress(){
+    var total = ITEMS.length; // 14
+    var answered = 0;
+    ITEMS.forEach(function(q){
+      if(qWrap.querySelector('#fs-'+q.id+' input[type="radio"]:checked')) answered++;
+    });
+    var pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    var bar = prog.parentElement;
+    if(bar){
+      bar.setAttribute("aria-valuenow", answered);
+      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+    }
+  }
 
-  // 平均4.0以上を全部表示／なければ上位2因子
-  const THRESH = 4.0;
-  let picked = avgs.filter(x=>x.avg>=THRESH).sort((a,b)=>b.avg-a.avg);
-  if (picked.length === 0) picked = avgs.sort((a,b)=>b.avg-a.avg).slice(0,2);
+  // ===== 計算 =====
+  function heroPath(typeNo){ var id = String(typeNo).padStart(2,"0"); return IMG_BASE + "t" + id + ".webp"; }
+  function calc(){
+    // 回収
+    var missing = [];
+    var ans = {};
+    ITEMS.forEach(function(q){
+      var chk = qWrap.querySelector('#fs-'+q.id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(q.id); return; }
+      ans[q.id] = parseInt(chk.value,10);
+    });
+    if(missing.length){
+      alert("未回答があります。全14問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
 
-  // 描画
-  const container = document.getElementById("types");
-  container.innerHTML = picked.map(({key,avg})=>{
-    const t = TYPES[key];
-    const pct = Math.round((avg-1)/4*100); // 1〜5 → 0〜100%
-    return `<div class="type">
-      <h3>${t.sweet}｜${t.label}（平均 ${avg.toFixed(1)} / 5｜必要度 ${pct}%）</h3>
-      <small>${t.desc}</small>
-    </div>`;
-  }).join("");
+    // 因子集計（0-4→％）
+    var fScore = {}, fPct = {};
+    CODE_ORDER.forEach(function(code){ fScore[code]=0; fPct[code]=0; });
+    var counts = {};
+    CODE_ORDER.forEach(function(c){ counts[c]=0; });
+    ITEMS.forEach(function(q){
+      fScore[q.key] += ans[q.id];
+      counts[q.key] += 1;
+    });
+    CODE_ORDER.forEach(function(c){
+      var avg = fScore[c] / Math.max(1, counts[c]);
+      fScore[c] = avg;
+      fPct[c] = Math.round((avg/4)*100);
+    });
 
-  document.getElementById("result").style.display = "block";
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-}
-  </script>
+    var totalAvg = CODE_ORDER.reduce(function(s,k){ return s + fScore[k]; },0) / CODE_ORDER.length;
+    var totalPct = Math.round((totalAvg/4)*100);
 
-  <div style="max-width:900px;margin:12px auto 0;font-size:.9em;color:#666;line-height:1.6">
-    <p><strong>ご注意：</strong>このコンテンツは娯楽＋自己理解のための独自再構成です。医療的な診断・治療・助言を目的としません。</p>
-    <p><strong>枠組みについて：</strong>“7つの休息”の考え方にヒントを得ていますが、設問・配点・結果表現は当サイトのオリジナルです。</p>
-    <p><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバーへ送信されません。</p>
-  </div>
+    render({ fScore, fPct, totalAvg, totalPct });
+  }
+
+  // 主役＆相棒（差が8pt未満で相棒）
+  function pickType(p){
+    var order = CODE_ORDER.slice().sort(function(a,b){ return p[b]-p[a]; });
+    var top = order[0], second = order[1];
+    var main = TYPES.find(t=>t.code===top);
+    var ally = (p[top]-p[second] < 8) ? TYPES.find(t=>t.code===second) : null;
+    return {main, ally};
+  }
+
+  function drawBars(pct){
+    var html = "";
+    CODE_ORDER.forEach(function(code){
+      var def = TYPES.find(t=>t.code===code), val = pct[code]||0;
+      html += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = html;
+  }
+
+  function render(o){
+    var pair = pickType(o.fPct);
+    var t = pair.main, ally = pair.ally;
+
+    // タイトル行
+    typeLine.textContent = '今日の主役休息：' + t.name + '（' + t.sweet + '）';
+
+    // 画像・テキスト
+    heroImg.src = heroPath(t.id);
+    heroImg.alt = t.name + " のイメージ";
+    heroTitle.textContent = t.sweet + "｜" + t.name;
+    heroCopy.textContent  = t.one;
+    heroHint.textContent  = "ヒント：" + t.hint;
+
+    // 総合
+    sumAvg.textContent = o.totalAvg.toFixed(2);
+    sumPct.textContent = "= " + o.totalPct + "%";
+    var topKey = CODE_ORDER.slice().sort((a,b)=>o.fPct[b]-o.fPct[a])[0];
+    sumNote.textContent = "上位因子："+(TYPES.find(x=>x.code===topKey)||{}).name;
+
+    // 相棒
+    if(ally){
+      document.getElementById("allyName").textContent = ally.name + "（" + ally.sweet + "）";
+      document.getElementById("allyNote").textContent = "主役との差が小さいため相棒として表示しています。";
+    }else{
+      document.getElementById("allyName").textContent = "—";
+      document.getElementById("allyNote").textContent = "条件一致のとき表示";
+    }
+
+    // 因子バー
+    drawBars(o.fPct);
+
+    // ケア
+    if(careList){
+      careList.innerHTML = t.care.map(s=>"<li>"+s+"</li>").join("");
+    }
+
+    // 研究メモ（にごし表現）
+    var memo = [
+      "短時間でも“適した休み方”を挟むと、気分や集中が持ち直しやすいと報告されることがあります。",
+      "五感を落ち着ける/呼吸を整えると、過剰な覚醒が下がりやすいと言われます（個人差あり）。",
+      "やさしい交流や“言語化する時間”は、負担感の軽減と自己効力感の回復につながることがあります。"
+    ];
+    resMemo.innerHTML = memo.map(s=>"<li>"+s+"</li>").join("");
+
+    // 共有（X/LINE/Instagram/コピー）
+    var shareText = '『7つの休息×スイーツ診断』主役：'+t.name+'｜因子平均 '+o.totalAvg.toFixed(2)+' / 4';
+    var url = location.href.split('#')[0];
+    function openBlank(u){ window.open(u, '_blank', 'noopener'); }
+    shareTw.onclick = function(){ openBlank('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText)+'&url='+encodeURIComponent(url)); };
+    shareLn.onclick = function(){ openBlank('https://line.me/R/msg/text/?'+encodeURIComponent(shareText+' '+url)); };
+    shareIg.onclick = function(){
+      var cap = shareText+' '+url;
+      copyToClipboard(cap).then(function(){
+        openBlank('https://www.instagram.com/');
+        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+      });
+    };
+    var shareCp = document.getElementById('shareCp');
+    if(shareCp){
+      shareCp.onclick = function(){
+        copyToClipboard(shareText+' '+url).then(function(){ toast('リンクをコピーしました'); });
+      };
+    }
+    shareRow.hidden = false;
+    shareRow.style.display = 'flex';
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 最後に「結果が出た」合図→ みんなのLv +1 / 済マーク など（共通スニペットが拾う）
+    document.dispatchEvent(new Event('result:ready'));
+
+    // last 保存（一覧での復帰用）
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // 共有ヘルパー
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(text); }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)'; t.style.background='rgba(68,54,58,.92)';
+    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },1500);
+  }
+
+  // クリア
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });
+    updateProgress();
+    resEmpty.style.display=""; resArea.style.display="none";
+    var app=document.getElementById("app"); if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // 初期化
+  function init(){
+    buildQuestions();
+  }
+  if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+  document.getElementById("doScore").addEventListener("click", calc, false);
+  document.getElementById("doScore2").addEventListener("click", calc, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+})(); // IIFE
+</script>
+
+<!-- ▼▼ ここから下：各診断ページ共通スニペット（回答保存＋あなた/みんなのLv） ▼▼ -->
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ------------------------------------------------------------
+   ★置き場所：各診断HTMLの </body> の直前
+   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）
+============================================================ */
+(function(){
+  'use strict';
+
+  // 固定キー（index と合わせる）
+  var DONE_KEY   = 'specimens:open:byid';   // 診断ごとの「済」マップ
+  var TOTAL_KEY  = 'specimens:open:total';  // あなたのこころLv（合計）
+  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ
+
+  // このページのID
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // 回答保存ストレージ（この診断だけの箱）
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+
+  // みんなのLv（CountAPI設定）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){
+      try{ navigator.sendBeacon(url); }catch(_){}
+    }else{
+      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});
+    }
+  }
+
+  // 回答の保存/復元
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; } }
+  function saveState(obj){ try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){ } }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState();
+    var nm = el.name;
+
+    if(el.type === 'radio'){
+      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = {t:'r', v: chosen ? chosen.value : null};
+    }else if(el.type === 'checkbox'){
+      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+      var vals = []; all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });
+      st[nm] = {t:'c', v: vals};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){
+        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });
+        st[nm] = {t:'m', v: arr};
+      }else{
+        st[nm] = {t:'s', v: el.value};
+      }
+    }else{
+      st[nm] = {t:'t', v: el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState();
+    var names = Object.keys(st);
+    if(!names.length) return false;
+
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+        var set = new Set(info.v||[]); all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]');
+        if(sel){ var setm = new Set(info.v||[]); [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); }); }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]'); if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]'); if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    try{ document.dispatchEvent(new Event('change', {bubbles:true})); }catch(_){}
+    return true;
+  }
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  }, true);
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);
+  }, true);
+
+  (function restoreWhenReady(){
+    var TRY_MAX=12, tries=0;
+    function tick(){
+      tries++;
+      var hasAny = document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){ restoreOnce(); return; }
+      if(tries<TRY_MAX){ setTimeout(tick, 300); }
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }
+    else document.addEventListener('DOMContentLoaded', tick);
+  })();
+
+  function clearAnswers(){ try{ localStorage.removeItem(ANSWER_KEY); }catch(_){} }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.id==='btnReset' || t.matches('[data-role="reset"]')) clearAnswers();
+  }, true);
+
+  // 結果確定で「済」＋Lv加算
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      countapiHit();
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
+</script>
+<!-- ▲▲ 共通スニペットここまで ▲▲ -->
 </body>
 </html>
