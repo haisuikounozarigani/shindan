@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="7つの休息 × スイーツ診断">
 <meta property="og:description" content="14問・7タイプ％で主役の休息を判定。画像webp対応＆結果共有OK。">
-<meta property="og:image" content="/shindan/assets/results/sweets/t01.webp">
+<meta property="og:image" content="/shindan/assets/results/sweet/t01.webp">
 <style>
 :root{
   --accent:#b86b77; --accent2:#ffb6c1;
@@ -181,6 +181,12 @@ mark.need{animation:need 1.6s ease}
       </div>
 
       <div class="hr"></div>
+      <!-- ▼ 基準値を超えた休息：該当因子まとめ表示（初期は非表示） -->
+<section class="section" id="hiScoreSec" style="display:none">
+  <h3 style="margin:8px 0">基準値を超えた休息</h3>
+  <div id="hiWrap" class="factor-mini"></div>
+</section>
+<!-- ▲ 基準値を超えた休息 -->
       <!-- 今日のケア -->
       <details class="section" open id="careSec">
         <summary><strong>今日のケア</strong></summary>
@@ -213,8 +219,9 @@ mark.need{animation:need 1.6s ease}
   // ===== ページ情報 =====
   var SLUG = "sweetshin";
   var TITLE = "7つの休息 × スイーツ診断";
-  var IMG_BASE = "/shindan/assets/results/sweets/"; // t01.webp..t07.webp
-
+  var IMG_BASE = "/shindan/assets/results/sweet/"; // t01.webp..t07.webp
+// 70%以上を「基準値クリア」とみなす（必要なら数値だけ変えてOK）
+var HI_THRESH = 70;
   // ===== 因子定義（7） =====
   // code→表示名・スイーツ・1行コピー・ヒント・ケア
   var TYPES = [
@@ -289,6 +296,8 @@ mark.need{animation:need 1.6s ease}
   var shareLn = document.getElementById("shareLn");
   var shareIg = document.getElementById("shareIg");
   var back = document.getElementById("backLink");
+  var hiSec   = document.getElementById("hiScoreSec");
+var hiWrap  = document.getElementById("hiWrap");
 
   // ===== 設問生成 =====
   function buildQuestions(){
@@ -419,7 +428,34 @@ mark.need{animation:need 1.6s ease}
 
     // 因子バー
     drawBars(o.fPct);
+// 基準値を超えた因子をまとめ表示
+(function showHiScores(){
+  if(!hiSec || !hiWrap) return;
+  var hiList = CODE_ORDER.filter(function(c){ return (o.fPct[c] || 0) >= HI_THRESH; });
 
+  if(!hiList.length){
+    hiSec.style.display = "none";
+    hiWrap.innerHTML = "";
+    return;
+  }
+
+  hiSec.style.display = ""; // 表示
+  hiWrap.innerHTML = hiList.map(function(c){
+    var def = TYPES.find(function(t){ return t.code===c; });
+    var val = o.fPct[c] || 0;
+    var line = ''
+      + '<article class="bar" aria-label="'+def.name+'">'
+      +   '<div><strong>'+def.name+'</strong>'
+      +     '<span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span>'
+      +   '</div>'
+      +   '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'
+      +   '<div class="small" style="margin-top:6px">'
+      +     def.sweet+'｜'+def.one+'<br>ヒント：'+def.hint
+      +   '</div>'
+      + '</article>';
+    return line;
+  }).join("");
+})();
     // ケア
     if(careList){
       careList.innerHTML = t.care.map(s=>"<li>"+s+"</li>").join("");
