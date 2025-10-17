@@ -1,268 +1,765 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-<title>冷酷アイスクリーム・セルフチェック（独自再構成・20問）</title>
-<meta name="description" content="20問×5件法で“マキャヴェリズム傾向”の雰囲気を可視化。Mach-IVなどの研究知見にヒントを得た独自再構成のセルフチェックです（エンタメ＋自己理解向け／公式の心理検査ではありません／医療用途ではありません）。">
-  <style>
-    :root{ --brand:#b86b77; --chip:#f4f1ef; --bg:#fffaf6; --hl:#ffe7ee }
-    *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;background:var(--bg);color:#333;padding:20px;margin:0}
-    h1{text-align:center;color:var(--brand);margin:0 0 14px}
-    .legend{max-width:860px;margin:0 auto 16px;font-size:.95em;color:#555}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>冷酷アイス・マキャベリズム診断（エンタメ版）</title>
+<meta name="description" content="20問×5件法。4因子％＋総合バンド（冷酷アイス）で“駆け引き・規範・対人観・情報コントロール”をやさしく可視化。webp画像・回答保存・みんなのこころLv対応。">
+<meta name="theme-color" content="#f7f9ff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="冷酷アイス・マキャベリズム診断（エンタメ版）">
+<meta property="og:description" content="4因子％＋総合バンド。結果画像保存＆共有OK（エンタメ自己理解）。">
+<meta property="og:image" content="/shindan/assets/results/ice/softcream/01.webp">
+<style>
+:root{
+  --accent:#6b9bff; --accent2:#8bd3ff;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#f2fbff; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e6f0ff,#e9fffe);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(107,155,255,.45)}100%{box-shadow:0 0 0 0 rgba(107,155,255,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:22px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
 
-    .progress-wrap{max-width:860px;margin:0 auto 18px}
-    .progress{height:10px;background:#eee;border-radius:999px;overflow:hidden}
-    .bar{height:100%;width:0;background:var(--brand);transition:width .2s}
-    .count{margin-top:6px;color:#666;font-size:.9em;text-align:right}
+/* ヒーロー（画像→テキスト） */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
 
-    form{max-width:860px;margin:auto;background:#fff;padding:18px;border-radius:12px;box-shadow:0 0 12px #e5d4cf}
-    .question{margin:20px 0}
-    .qhead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:0 0 8px;font-weight:600}
-    .qstatus{font-weight:600;font-size:.85em;color:#888}
-    .qstatus.done{color:var(--brand)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
 
-    .scale{display:grid;grid-template-columns:1fr;gap:10px}
+/* 共有＋保存 */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"𝕏";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+.btn.save::before{content:"⬇️";margin-right:.25em}
 
-    /* ラジオ＋行ハイライト */
-    .chip{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:10px;background:var(--chip);
-          border:1.5px solid #e9e1de; cursor:pointer; user-select:none; transition:.12s ease}
-    .chip input{appearance:none; inline-size:1.05em; block-size:1.05em; border-radius:50%;
-                border:2px solid #9d7a83; display:inline-block; position:relative; flex:0 0 auto; background:#fff}
-    .chip input:checked{border-color:var(--brand)}
-    .chip input:checked::after{content:""; position:absolute; inset:3px; border-radius:50%; background:var(--brand)}
-    .chip.on{border-color:#e3bcc6; background:var(--hl); box-shadow:0 6px 18px rgba(184,107,119,.12)}
-    .chip:focus-within{outline:3px solid #ffd9e1; outline-offset:2px}
-
-    .btn{display:block;margin:22px auto 0;padding:12px 22px;font-size:1.05em;background:var(--brand);color:#fff;border:none;border-radius:10px;cursor:pointer}
-
-    #result{max-width:860px;margin:22px auto 0;background:#fff;border:1px solid #eadad6;padding:18px;border-radius:10px}
-    #result h2{margin:0 0 8px;color:#b16370}
-    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-    .tag{display:inline-block;background:#f6eef0;border:1px solid #e0cfd0;border-radius:999px;padding:6px 12px;font-size:.9em;color:#7b4d57}
-    .lead{margin:8px 0 10px;color:#555}
-    .img{width:100%;height:auto;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.08);margin:8px 0}
-
-    /* 二軸バー */
-    .kbars{margin-top:8px;display:grid;gap:8px}
-    .krow{display:flex;align-items:center;gap:10px}
-    .klabel{min-width:9em;color:#7b4d57;font-weight:700}
-    .kbar{flex:1;height:10px;background:#f1e7e5;border-radius:999px;overflow:hidden}
-    .kbar span{display:block;height:100%;width:0;background:var(--brand);transition:width .4s ease}
-    .knum{width:3.2em;text-align:right;color:#7b4d57;font-weight:700}
-
-    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-    .a-btn{flex:1;text-align:center;text-decoration:none;background:#f7f2f1;border:1px solid #e3d2cd;padding:10px;border-radius:10px;color:#7b4d57;font-weight:700}
-    .a-btn:hover{background:#f1e7e5}
-  </style>
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+</style>
 </head>
-<body>
-<h1>🍦 冷酷アイスクリーム・セルフチェック（独自再構成）</h1>
-  <div class="legend">5件法：1 まったく当てはまらない ／ 2 あまり当てはまらない ／ 3 どちらともいえない ／ 4 やや当てはまる ／ 5 とても当てはまる</div>
-<section id="legal-note" style="max-width:860px;margin:14px auto;background:#fff;border:1px solid #eadad6;border-radius:10px;padding:12px">
-  <h2 style="margin:4px 0 6px;font-size:1rem;color:#7b4d57">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#555">
-    <li><strong>非提携・非公式：</strong>本コンテンツは「Mach-IV」等の研究知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自再構成</strong>です。公式の質問項目・採点方法は使用しておらず、権利者の承認・提携・推奨を意味しません。</li>
-    <li><strong>医療・心理診断ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的な診断／治療／助言を目的としません。つらさや不調が続く場合は専門家へご相談ください。</li>
-    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
-    <li><strong>表現について：</strong>「冷酷」等は便宜上の比喩表現であり、特定の個人・団体に対する価値判断やラベリングの意図はありません。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用に伴う損失・損害について当サイトは責任を負いません。</li>
-  </ul>
-</section>
-  <div class="progress-wrap">
-    <div class="progress"><div id="bar" class="bar"></div></div>
-    <div id="count" class="count">0 / 20 回答</div>
+<body data-id="iceshin">
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🍦</div>
+    <div>
+      <h1>冷酷アイス・マキャベリズム診断（エンタメ版）</h1>
+      <p class="sub">20問（0〜4の5件法）。4因子の％と<b>総合バンド（5種のアイス）</b>を表示します。※エンタメ自己理解／因果は断定しません。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="20">
+      <span id="prog"></span>
+    </div>
+    <button class="btn primary" id="doScore">診断する</button>
   </div>
 
-  <form id="quizForm" aria-live="polite"></form>
-  <button class="btn" type="button" onclick="calculate()">診断する</button>
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：20</span>
+      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>
+      <span class="pill">出力：4因子％＋総合5段階（画像webp）</span>
+    </div>
+    <p class="small">“駆け引き・規範の柔らかさ・対人観・情報コントロール”のバランスを4因子で見える化。<b>今日のケア</b>も表示します（医療・採用には使えません）。</p>
+  </section>
 
-  <div id="result" style="display:none;"></div>
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（ぜんぜん／あまり／ときどき／よく／とても）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
 
-  <script>
-    // タイプ→画像フォルダ（01のみ）
-    const TYPE_TO_SLUG = {
-      "ソフトクリーム":"softcream",
-      "バニラアイス":"vanilla",
-      "ジェラート":"gelato",
-      "ソルベ":"sorbet",
-      "クリスタルアイス":"crystalice"
-    };
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全20問に回答して「診断する」を押してください。</p>
+    </div>
 
-    // 一言
-    const TAGLINE = {
-      "ソフトクリーム":"駆け引きゼロ、直球すぎて逆に最強",
-      "バニラアイス":"基本は正攻法、ときどき小ワザ",
-      "ジェラート":"甘さと冷静さのスイッチャー",
-      "ソルベ":"氷点下の冷静、勝ち筋直行",
-      "クリスタルアイス":"氷の策士、最適解を取りにいく"
-    };
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
 
-    // Mach-IV 20項目（rev:true は逆転）＋ facet: tactics/views（二軸）
-    const items = [
-      { text:"目的のためなら本音を隠すことも必要だと思う",           rev:false, facet:"tactics" },
-      { text:"道徳的に正しいと確信できないなら、行動すべきではない",   rev:true,  facet:"views"   },
-      { text:"出世する人の多くは、正直で潔白だと思う",               rev:true,  facet:"views"   },
-      { text:"重要人物にはお世辞を使うのが賢いやり方だ",             rev:false, facet:"tactics" },
-      { text:"たとえ不利でも、他人にうそをつくべきではない",         rev:true,  facet:"tactics" },
-      { text:"人を動かすには、相手が聞きたいことを言うのが一番だ",     rev:false, facet:"tactics" },
-      { text:"誰かを完全に信頼するのは危険だと思う",                 rev:false, facet:"views"   },
-      { text:"近道を使わず努力すれば、必ず報われるものだ",           rev:true,  facet:"views"   },
-      { text:"人は基本的に善良で、公正に振る舞うと思う",             rev:true,  facet:"views"   },
-      { text:"成功には、時にルールを曲げることが欠かせない",         rev:false, facet:"tactics" },
-      { text:"チャンスがあっても、不公平な利得は絶対に得ない",       rev:true,  facet:"tactics" },
-      { text:"うまく立ち回るには、多少の“操作”は必要だ",             rev:false, facet:"tactics" },
-      { text:"人前では、本心を見せない方が安全だと思う",             rev:false, facet:"tactics" },
-      { text:"たとえ損でも、正直さを最優先するべきだ",               rev:true,  facet:"tactics" },
-      { text:"多くの人は、見返りがなければ協力しないと思う",         rev:false, facet:"views"   },
-      { text:"人間関係では、誠意さえあれば十分うまくいく",           rev:true,  facet:"views"   },
-      { text:"交渉では“規範”より“結果”を重視するべきだ",           rev:false, facet:"tactics" },
-      { text:"人を利用するくらいなら、機会を逃してもよい",           rev:true,  facet:"tactics" },
-      { text:"重要な情報は、有利になるまで伏せておくべきだ",         rev:false, facet:"tactics" },
-      { text:"約束は状況が変わっても、必ず守るべきだ",               rev:true,  facet:"tactics" }
-    ];
+      <!-- 画像＋ミニ情報（正方形webp） -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/ice/softcream/01.webp" alt="結果イメージ" loading="lazy" width="1080" height="1080">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+          <div class="capmini" id="heroHint" style="margin-top:4px">—</div>
 
-    const scaleLabels = [
-      "1（まったく当てはまらない）","2（あまり当てはまらない）",
-      "3（どちらともいえない）","4（やや当てはまる）","5（とても当てはまる）"
-    ];
+          <div class="share-row" id="shareRow" hidden>
+            <button id="btnShot"  class="btn save" type="button">結果画像を保存</button>
+            <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>
+            <button id="shareLn"  class="btn line" type="button">LINEで送る</button>
+            <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>
+            <button id="shareCp"  class="btn"      type="button">リンクをコピー</button>
+          </div>
+          <canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
+        </figcaption>
+      </div>
 
-    const form   = document.getElementById("quizForm");
-    const bar    = document.getElementById("bar");
-    const count  = document.getElementById("count");
-    const result = document.getElementById("result");
+      <div class="grid2">
+        <article class="stat" aria-label="因子平均">
+          <div><strong>因子平均（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+        <article class="stat" aria-label="今日のひとこと">
+          <div><strong>今日のひとこと</strong></div>
+          <div class="small" id="allyNote">—</div>
+        </article>
+      </div>
 
-    // 質問描画
-    items.forEach((it, i) => {
-      const fs = document.createElement("fieldset");
-      fs.className = "question";
-      const qid = `q${i}`;
-      fs.innerHTML = `<legend class="qhead"><span>Q${i+1}. ${it.text}</span><span id="${qid}_status" class="qstatus">未選択</span></legend>`;
-      const scale = document.createElement("div");
-      scale.className = "scale";
-      for (let n=0;n<5;n++){
-        const id = `${qid}_${n+1}`;
-        scale.innerHTML += `
-          <label class="chip">
-            <input id="${id}" type="radio" name="${qid}" value="${n+1}">
-            <span>${scaleLabels[n]}</span>
-          </label>`;
+      <div class="hr"></div>
+      <!-- 因子バー（4） -->
+      <div class="section">
+        <h3 style="margin:8px 0">4因子（％）</h3>
+        <div id="bars" class="factor-mini"></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 長文（バンド別） -->
+      <div id="longCopy" class="small"></div>
+
+      <div class="hr"></div>
+      <!-- 今日のケア（上位因子に応じた3行） -->
+      <details class="section" open id="careSec">
+        <summary><strong>今日のケア</strong></summary>
+        <ul class="small" id="careList" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+      </details>
+
+      <div class="hr"></div>
+      <!-- 研究メモ -->
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差があります。医療・採用などの用途には使えません。</p>
+      </details>
+
+      <div class="back-area" style="display:flex;justify-content:center;margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="small">このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
+    データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "iceshin";
+  var TITLE = "冷酷アイス・マキャベリズム診断（エンタメ版）";
+  var ANS_KEY = "specimens:"+SLUG+":answers";
+  var IMG_BASE = "/shindan/assets/results/ice/"; // /{slug}/01.webp
+  window.SLUG = SLUG;
+
+  // ====== 因子・設問 ======
+  // 4因子×各5問（合計20）
+  var FACTORS = {
+    TAC:{ name:"計略タクティクス（駆け引き）",           items:["Q04","Q06","Q10","Q12","Q17"] },
+    NOR:{ name:"規範フレックス（規範の柔らかさ）",       items:["Q05","Q11","Q14","Q16","Q20"] },
+    VIE:{ name:"懐疑ビューズ（対人観）",                 items:["Q03","Q07","Q08","Q09","Q15"] },
+    HID:{ name:"情報コントロール（本音・秘匿）",         items:["Q01","Q02","Q13","Q18","Q19"] }
+  };
+  window.FACTORS = FACTORS;
+
+  // 20問（rev: 逆転＝同意が強いほど“傾向が弱い”内容）
+  var ITEMS = {
+    Q01:{ text:"目的のためなら本音を隠すことも必要だと思う。" },
+    Q02:{ text:"道徳的に正しいと確信できないなら、行動すべきではない。", rev:true },
+    Q03:{ text:"出世する人の多くは、正直で潔白だと思う。",                 rev:true },
+    Q04:{ text:"重要人物にはお世辞を使うのが賢いやり方だ。" },
+    Q05:{ text:"たとえ不利でも、他人にうそをつくべきではない。",           rev:true },
+    Q06:{ text:"人を動かすには、相手が聞きたいことを言うのが一番だ。" },
+    Q07:{ text:"誰かを完全に信頼するのは危険だと思う。" },
+    Q08:{ text:"近道を使わず努力すれば、必ず報われるものだ。",             rev:true },
+    Q09:{ text:"人は基本的に善良で、公正に振る舞うと思う。",                 rev:true },
+    Q10:{ text:"成功には、時にルールを曲げることが欠かせない。" },
+    Q11:{ text:"チャンスがあっても、不公平な利得は絶対に得ない。",         rev:true },
+    Q12:{ text:"うまく立ち回るには、多少の“操作”は必要だ。" },
+    Q13:{ text:"人前では、本心を見せない方が安全だと思う。" },
+    Q14:{ text:"たとえ損でも、正直さを最優先するべきだ。",                   rev:true },
+    Q15:{ text:"多くの人は、見返りがなければ協力しないと思う。" },
+    Q16:{ text:"人間関係では、誠意さえあれば十分うまくいく。",               rev:true },
+    Q17:{ text:"交渉では“規範”より“結果”を重視するべきだ。" },
+    Q18:{ text:"人を利用するくらいなら、機会を逃してもよい。",               rev:true },
+    Q19:{ text:"重要な情報は、有利になるまで伏せておくべきだ。" },
+    Q20:{ text:"約束は状況が変わっても、必ず守るべきだ。",                   rev:true }
+  };
+  var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
+
+  // 総合5バンド → 画像フォルダとテキスト
+  var BANDS = [
+    { id:1, slug:"softcream",  name:"ソフトクリーム",   one:"駆け引きは薄め。直球で誠実型。",         hint:"境界線を守りつつ休息を優先。" },
+    { id:2, slug:"vanilla",    name:"バニラアイス",     one:"基本は正攻法、ときどき小ワザ。",         hint:"相手の立場の一言を添える。" },
+    { id:3, slug:"gelato",     name:"ジェラート",       one:"甘さと冷静さのスイッチャー。",           hint:"速断前に“事実メモ”を3つ。" },
+    { id:4, slug:"sorbet",     name:"ソルベ",           one:"氷点下の冷静、勝ち筋直行。",             hint:"要求は“I”メッセージで簡潔に。" },
+    { id:5, slug:"crystalice", name:"クリスタルアイス", one:"氷の策士、最適解を取りにいく。",         hint:"配慮の一言で角を丸く。"}
+  ];
+  var BAND_LONG = {
+    softcream:"直進型の誠実さが魅力。無理に駆け引きはしない分、境界線と休息を大切にすると力が長持ちします。",
+    vanilla:"真っ直ぐさに少しのコツを混ぜて扱えるタイプ。配慮の言い回しを1つ常備すると安定感が増します。",
+    gelato:"状況に合わせて甘さと冷静さを切替できるバランス型。判断前の「事実3つ」でブレを減らせます。",
+    sorbet:"合理と冷静が武器。角を立てない伝え方をひとつ用意すると、周りがついてきやすくなります。",
+    crystalice:"目的直行の策士タイプ。配慮と安全マージンを“儀式化”すれば、強さが安心につながります。"
+  };
+
+  // 要素参照
+  var qWrap   = document.getElementById("qWrap");
+  var prog    = document.getElementById("prog");
+  var resEmpty= document.getElementById("resEmpty");
+  var resArea = document.getElementById("resArea");
+  var typeLine= document.getElementById("typeLine");
+  var heroImg = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var heroCopy = document.getElementById("heroCopy");
+  var heroHint = document.getElementById("heroHint");
+  var sumAvg  = document.getElementById("sumAvg");
+  var sumPct  = document.getElementById("sumPct");
+  var sumNote = document.getElementById("sumNote");
+  var bars    = document.getElementById("bars");
+  var longCopy= document.getElementById("longCopy");
+  var resMemo = document.getElementById("resMemo");
+  var shareRow= document.getElementById("shareRow");
+  var shareTw = document.getElementById("shareTw");
+  var shareLn = document.getElementById("shareLn");
+  var shareIg = document.getElementById("shareIg");
+  var shareCp = document.getElementById("shareCp");
+  var careList= document.getElementById("careList");
+  var shotCanvas = document.getElementById("shotCanvas");
+  var allyNote= document.getElementById("allyNote");
+  window.shotCanvas = shotCanvas;
+
+  // 設問生成
+  function buildQuestions(){
+    var html = "";
+    Object.keys(ITEMS).forEach(function(qid, i){
+      var q = ITEMS[qid];
+      html += '<fieldset class="q" id="fs-'+qid+'">'+
+        '<legend>'+String(i+1).padStart(2,"0")+'. '+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+qid+'-'+v+'" type="radio" name="q'+qid+'" value="'+v+'">'+
+          '<label for="q'+qid+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
       }
-      fs.appendChild(scale);
-      form.appendChild(fs);
+      html += '</div></fieldset>';
     });
+    qWrap.innerHTML = html;
 
-    // 行ハイライト＆進捗
-    document.addEventListener("change", (e) => {
-      if (!e.target.matches('input[type="radio"][name^="q"]')) return;
-      const name = e.target.name;
-      document.querySelectorAll(`input[name="${name}"]`).forEach(inp=>{
-        inp.closest('.chip').classList.toggle('on', inp.checked);
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){
+      r.addEventListener('change', function(){ saveAnswers(); updateProgress(); }, false);
+    });
+    restoreAnswers();
+    updateProgress();
+  }
+
+  // 保存/復元
+  function saveAnswers(){
+    try{
+      var out = {};
+      Object.keys(ITEMS).forEach(function(id){
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
       });
-      const st = document.getElementById(`${name}_status`);
-      if (st){ st.textContent = "選択済"; st.classList.add("done"); }
-      updateProgress();
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
+
+  function updateProgress(){
+    var total = Object.keys(ITEMS).length; // 20
+    var answered = 0;
+    Object.keys(ITEMS).forEach(function(id){
+      if(qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked')) answered++;
     });
-    function updateProgress(){
-      const answered = new Set([...document.querySelectorAll('input[type="radio"]:checked')].map(i=>i.name)).size;
-      const totalQ = items.length;
-      const pct = Math.round(answered/totalQ*100);
-      bar.style.width = pct + "%";
-      count.textContent = `${answered} / ${totalQ} 回答`;
+    var pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    var bar = prog.parentElement;
+    if(bar){
+      bar.setAttribute("aria-valuenow", answered);
+      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+    }
+  }
+
+  // スコア計算
+  function valOf(id, raw){ var v=Number(raw); return (ITEMS[id].rev? (4-v):v); }
+  function calc(){
+    var missing = [];
+    var ans = {};
+    Object.keys(ITEMS).forEach(function(id){
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); return; }
+      ans[id] = parseInt(chk.value,10);
+    });
+    if(missing.length){
+      alert("未回答があります。全20問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
     }
 
-    // 画像読込（01.png → だめなら 01.webp）
-    function setImage(imgEl, slug){
-      const base = `/shindan/assets/results/ice/${slug}/01`;
-      imgEl.onerror = null;
-      imgEl.src = `${base}.png`;
-      imgEl.onerror = ()=>{ if(imgEl.src.endsWith('.png')) imgEl.src = `${base}.webp`; };
+    var fScore = {}, fPct = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);
+      var avg = sum / ids.length; // 0-4
+      fScore[key] = avg;
+      fPct[key] = Math.round((avg/4)*100);
+    });
+
+    var keys = Object.keys(FACTORS);
+    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;
+    var totalPct = Math.round((totalAvg/4)*100);
+
+    render({ fScore, fPct, totalAvg, totalPct });
+  }
+
+  // 画像パス
+  function heroPath(slug){ return IMG_BASE + slug + "/01.webp"; }
+
+  function drawBars(pct){
+    var order = ["TAC","NOR","VIE","HID"];
+    var html = "";
+    order.forEach(function(key){
+      var def = FACTORS[key], val = pct[key]||0;
+      html += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = html;
+  }
+
+  // ケア（上位因子3行）
+  var CARE = {
+    TAC:["“事実1行→表現1行”に分けて書く。","誇張は脚注扱いにする。","不利情報ほど先に出す。"],
+    NOR:["目的→手段→例外の順で共有。","“7割OKデー”を週1で。","合意のメモを残す。"],
+    VIE:["結論に“仮説？”ラベル→短い確認を挟む。","別案を2つ並べる（忙しいだけかも等）。","確かめる一歩（質問1つ・DM1通）。"],
+    HID:["配る情報の範囲を事前に決める。","機密は時限ルールで解放日を設定。","“言わない理由”を一行で書いて透明性を確保。"]
+  };
+
+  function pickBand(totalPct){
+    if (totalPct<=20) return BANDS[0];
+    if (totalPct<=40) return BANDS[1];
+    if (totalPct<=60) return BANDS[2];
+    if (totalPct<=80) return BANDS[3];
+    return BANDS[4];
+  }
+
+  function render(o){
+    // 総合バンド
+    var band = pickBand(o.totalPct);
+
+    // 上位因子
+    var topKey = Object.keys(o.fPct).sort(function(a,b){ return o.fPct[b]-o.fPct[a]; })[0];
+
+    // タイトル行
+    typeLine.textContent = '冷酷アイスタイプ：' + band.name + '（'+o.totalPct+'%）';
+
+    // ヒーロー
+    heroImg.src = heroPath(band.slug);
+    heroImg.alt = band.name + " のイメージ";
+    heroTitle.textContent = band.name + "｜" + band.one;
+    heroCopy.textContent  = BAND_LONG[band.slug] || "";
+    heroHint.textContent  = "ヒント：" + band.hint;
+
+    // 総合
+    var avg = Object.keys(o.fScore).reduce(function(s,k){return s+o.fScore[k];},0)/Object.keys(o.fScore).length;
+    sumAvg.textContent = avg.toFixed(2);
+    sumPct.textContent = "= " + o.totalPct + "%";
+    sumNote.textContent = "上位因子："+FACTORS[topKey].name;
+    allyNote.textContent = "今日のポイント：上位因子（"+FACTORS[topKey].name+"）を1つだけ整える。";
+
+    // 因子バー
+    drawBars(o.fPct);
+
+    // 長文（バンド説明）
+    longCopy.innerHTML = '';
+
+    // ケア
+    if (careList && CARE[topKey]) {
+      careList.innerHTML = CARE[topKey].map(function(s){ return "<li>"+s+"</li>"; }).join("");
     }
 
-    function pct(sum, count){
-      const min = 1 * count, max = 5 * count;
-      return Math.round((sum - min) / (max - min) * 100);
+    // 研究メモ（「ある研究では、」で開始）
+    var memo = [
+      "ある研究では、対人の駆け引きが強い場面ほど“事実と評価の分離”が衝動的判断の抑制に役立つ示唆がある。",
+      "ある研究では、規範の柔軟性は交渉の成功に寄与する一方、合意プロセスの明確化が摩擦低減に有効とされる。",
+      "ある研究では、対人観の過度な懐疑は誤推測を増やし、短い確認行動が誤解低減に資する可能性がある。",
+      "ある研究では、情報の秘匿・統制のルール化が信頼の維持に寄与することがある（共有範囲の明示など）。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 共有
+    var shareText = '『冷酷アイス診断（マキャベリズム）』タイプ：'+band.name+'｜因子平均 '+avg.toFixed(2)+' / 4';
+    var url = location.href.split('#')[0];
+    function openBlank(u){ window.open(u, '_blank', 'noopener'); }
+    if(shareTw) shareTw.onclick = function(){ openBlank('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText)+'&url='+encodeURIComponent(url)); };
+    if(shareLn) shareLn.onclick = function(){ openBlank('https://line.me/R/msg/text/?'+encodeURIComponent(shareText+' '+url)); };
+    if(shareIg) shareIg.onclick = function(){
+      var cap = shareText+' '+url;
+      copyToClipboard(cap).then(function(){
+        openBlank('https://www.instagram.com/');
+        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+      });
+    };
+    if(shareCp){
+      shareCp.onclick = function(){
+        copyToClipboard(shareText+' '+url).then(function(){ toast('リンクをコピーしました'); });
+      };
     }
+    shareRow.hidden = false;
+    shareRow.style.display = 'flex';
 
-    function calculate(){
-      // 回答チェック
-      for (let i=0;i<items.length;i++){
-        if (!document.querySelector(`input[name="q${i}"]:checked`)){
-          alert(`未回答の設問があります（Q${i+1}）`);
-          return;
-        }
-      }
+    // 表示切替
+    resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
 
-      // 合計＆二軸集計
-      let sumAll = 0;
-      const facets = { tactics:0, views:0 };
-      const counts = { tactics:0, views:0 };
+    // 保存（直近）＆index側の「済」連携
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+      document.dispatchEvent(new Event('result:ready'));
+    }catch(e){}
+  }
 
-      for (let i=0;i<items.length;i++){
-        let v = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value,10);
-        if (items[i].rev) v = 6 - v;  // 逆転
-        sumAll += v;
-        const f = items[i].facet;
-        facets[f] += v;
-        counts[f] += 1;
-      }
+  // 共有ヘルパ
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){ return navigator.clipboard.writeText(text); }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';
+    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },1500);
+  }
 
-      // 0〜100% に変換
-      const machPct = Math.round((sumAll - 20) / 80 * 100); // 全体
-      const tacticsPct = pct(facets.tactics, counts.tactics);
-      const viewsPct   = pct(facets.views,   counts.views);
+  // スクショ保存（外部画像も描画する版）
+  var btnShot = document.getElementById('btnShot');
+  if(btnShot){ btnShot.addEventListener('click', async function(){
+    var avg = parseFloat(sumAvg.textContent)||0;
+    var band = pickBand(Math.round((avg/4)*100));
+    var blob = await buildShareImage({
+      heroSrc: heroImg.src,
+      title: document.getElementById('heroTitle').textContent,
+      one: document.getElementById('heroCopy').textContent,
+      hint: document.getElementById('heroHint').textContent.replace(/^ヒント：/, ''),
+      pct: (function(){
+        var order=["TAC","NOR","VIE","HID"], m={};
+        order.forEach(function(k, i){
+          var el = bars.querySelector('article:nth-child('+(i+1)+') .pill');
+          m[k]= el? parseInt(el.textContent,10):0;
+        }); return m;
+      })(),
+      avg: sumAvg.textContent
+    });
+    saveBlob(blob, "ice-result.png");
+  }, false); }
 
-      // タイプ判定（全体％で）
-      let type="";
-      if (machPct <= 20) type="ソフトクリーム";
-      else if (machPct <= 40) type="バニラアイス";
-      else if (machPct <= 60) type="ジェラート";
-      else if (machPct <= 80) type="ソルベ";
-      else type="クリスタルアイス";
+  // クリア
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });
+    wipeAnswers(); prog.style.width="0%";
+    resEmpty.style.display=""; resArea.style.display="none";
+    var app=document.getElementById("app"); if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
 
-      const slug = TYPE_TO_SLUG[type];
-      const tagline = TAGLINE[type] || "";
+  function init(){
+    buildQuestions();
+    resMemo.innerHTML = ["ある研究では、複数要素が重なって印象が形づくられる示唆。"].map(function(s){return "<li>"+s+"</li>";}).join("");
+  }
+  if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+  document.getElementById("doScore").addEventListener("click", calc, false);
+  document.getElementById("doScore2").addEventListener("click", calc, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
 
-      // 結果描画
-      result.style.display = "block";
-      result.innerHTML = `
-        <h2>結果</h2>
-        <div class="row">
-          <span class="tag">冷酷度：${machPct}%</span>
-          <span class="tag">${type}</span>
-        </div>
-        <p class="lead">一言まとめ：${tagline}</p>
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+})(); // IIFE
 
-        <div class="kbars" aria-label="二軸スコア">
-          <div class="krow">
-            <span class="klabel">計略（Tactics）</span>
-            <div class="kbar"><span id="barTac"></span></div>
-            <span id="pctTac" class="knum">${tacticsPct}%</span>
-          </div>
-          <div class="krow">
-            <span class="klabel">懐疑（Views）</span>
-            <div class="kbar"><span id="barView"></span></div>
-            <span id="pctView" class="knum">${viewsPct}%</span>
-          </div>
-        </div>
+// ====== 結果画像（1080x1350・4因子） ======
+async function buildShareImage(data){
+  var cvs = (window.shotCanvas || document.getElementById("shotCanvas"));
+  if(!cvs) throw new Error("shotCanvas not found");
+  var ctx = cvs.getContext("2d");
+  var W = cvs.width, H = cvs.height;
+  var FACT = (window.FACTORS || {});
 
-        <img id="ice-img" class="img" alt="${type} の結果画像" decoding="async">
+  // 背景
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,W,H);
 
-        <div class="actions">
-          <a class="a-btn" href="/shindan/">🔙 診断一覧へ戻る</a>
-          <a class="a-btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">🔁 もう一度やる</a>
-        </div>
-      `;
+  // ヒーロー画像
+  var heroW = W - 120, heroH = heroW;
+  var hx = Math.round((W - heroW)/2), hy = 60;
+  roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+  try{
+    var img = await loadImage(data.heroSrc);
+    ctx.drawImage(img, hx, hy, heroW, heroH);
+  }catch(_){
+    ctx.fillStyle = "#e6ecf7"; ctx.fillRect(hx, hy, heroW, heroH);
+    ctx.fillStyle = "#9aa3b2"; ctx.font = "600 24px 'Noto Sans JP',system-ui";
+    ctx.fillText("画像を表示できませんでした", hx + 24, hy + heroH/2);
+  }
 
-      // バーと画像
-      document.getElementById('barTac').style.width  = tacticsPct + '%';
-      document.getElementById('barView').style.width = viewsPct   + '%';
-      setImage(document.getElementById('ice-img'), slug);
+  // タイトル
+  var y = hy + heroH + 40;
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "800 40px 'Noto Sans JP',system-ui";
+  ctx.fillText("冷酷アイス診断（マキャベリズム）", 60, y);
+  ctx.font = "800 44px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.title, 60, y+54, W-120, 48);
 
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  // 一言・ヒント
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.one, 60, y+120, W-120, 36, "#667087");
+  ctx.font = "600 26px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, "ヒント："+data.hint, 60, y+176, W-120, 34, "#667087");
+
+  // 因子バー（4）
+  var baseY = y + 230;
+  var order = ["TAC","NOR","VIE","HID"];
+  for(var i=0;i<order.length;i++){
+    var key = order[i], val = data.pct[key]||0;
+    drawBar(ctx, 60, baseY + i*60, W-120, 16, val,
+      (FACT[key] ? FACT[key].name : key), "#6b9bff", "#8bd3ff");
+  }
+
+  // 平均
+  var ftY = baseY + order.length*60 + 36;
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#1f2732";
+  ctx.fillText("因子平均："+data.avg+" / 4（= "+Math.round((parseFloat(data.avg)/4)*100)+"%）", 60, ftY);
+
+  return await canvasToBlob(cvs, "image/png");
+}
+async function loadImage(src){
+  try{
+    const r = await fetch(src, {cache:'no-store'});
+    if(!r.ok) throw new Error('fetch failed');
+    const b = await r.blob();
+    const blobUrl = URL.createObjectURL(b);
+    const img = await new Promise((res, rej)=>{
+      const im = new Image();
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = blobUrl;
+    });
+    setTimeout(()=>URL.revokeObjectURL(blobUrl), 1000);
+    return img;
+  }catch(e){
+    return await new Promise((res, rej)=>{
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now();
+    });
+  }
+}
+function roundRect(ctx, x, y, w, h, r, fill, stroke){
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle = stroke; ctx.stroke(); }
+  ctx.restore();
+}
+function drawWrapText(ctx, text, x, y, maxW, lh, color){
+  ctx.fillStyle = color || "#1f2732";
+  var words = (text||"").split(/(\s+)/);
+  var line = "", cursor = y;
+  for(var i=0;i<words.length;i++){
+    var test = line + words[i];
+    if(ctx.measureText(test).width > maxW && i>0){
+      ctx.fillText(line, x, cursor);
+      line = words[i].trimStart();
+      cursor += lh;
+    }else{ line = test; }
+  }
+  if(line){ ctx.fillText(line, x, cursor); }
+}
+function drawBar(ctx, x, y, w, h, pct, label, c1, c2){
+  ctx.save();
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "700 20px 'Noto Sans JP',system-ui";
+  ctx.fillText(label, x, y-8);
+  var by = y+8;
+  roundRect(ctx, x, by, w, h, 10, "#edf2fb", "#e8eef9");
+  var ww = Math.max(0, Math.min(w, Math.round(w*pct/100)));
+  var grad = ctx.createLinearGradient(x,0,x+w,0);
+  grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+  roundRect(ctx, x, by, ww, h, 10, grad);
+  ctx.fillStyle = "#667087";
+  ctx.font = "600 16px 'Noto Sans JP',system-ui";
+  var txt = String(pct).padStart(2,"0")+"%";
+  ctx.fillText(txt, x + w - ctx.measureText(txt).width, by + h + 18);
+  ctx.restore();
+}
+function saveBlob(blob, filename){
+  var a = document.createElement("a");
+  var url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename || "result.png";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);
+}
+function canvasToBlob(cvs, type){
+  return new Promise(function(res){
+    if(cvs.toBlob){ cvs.toBlob(function(b){ res(b); }, type||"image/png"); }
+    else{ res(dataURLtoBlob(cvs.toDataURL(type||"image/png"))); }
+  });
+}
+function dataURLtoBlob(dataUrl){
+  var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], {type:mime});
+}
+</script>
+
+<!-- ===== 共通：済＋あなたLv＋みんなのLv ===== -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY   = 'specimens:open:byid';
+  var TOTAL_KEY  = 'specimens:open:total';
+  var GLOBAL_LAST= 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){
+      try{ navigator.sendBeacon(url); }catch(_){}
+    }else{
+      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});
     }
-  </script>
+  }
+
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      countapiHit();
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
+</script>
 </body>
 </html>
-```0
-
