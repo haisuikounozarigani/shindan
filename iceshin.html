@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="冷酷アイス・マキャベリズム診断（エンタメ版）">
 <meta property="og:description" content="4因子％＋総合バンド。結果画像保存＆共有OK（エンタメ自己理解）。">
-<meta property="og:image" content="/shindan/assets/results/ice/softcream/01.webp">
+<meta property="og:image" content="/shindan/assets/results/ice/t01.webp">
 <style>
 :root{
   --accent:#6b9bff; --accent2:#8bd3ff;
@@ -144,7 +144,7 @@ mark.need{animation:need 1.6s ease}
       <!-- 画像＋ミニ情報（正方形webp） -->
       <div class="hero-vert section" role="region" aria-label="タイプイメージ">
         <figure>
-          <img id="heroImg" src="/shindan/assets/results/ice/softcream/01.webp" alt="結果イメージ" loading="lazy" width="1080" height="1080">
+          <img id="heroImg" src="/shindan/assets/results/ice/t01.webp" alt="結果イメージ" loading="lazy" width="1080" height="1080">
         </figure>
         <figcaption>
           <div class="capline" id="heroTitle">—</div>
@@ -399,7 +399,7 @@ mark.need{animation:need 1.6s ease}
   }
 
   // 画像パス
-  function heroPath(slug){ return IMG_BASE + slug + "/01.webp"; }
+  function heroPath(n){ var id=String(n).padStart(2,"0"); return IMG_BASE+"t"+id+".webp"; }
 
   function drawBars(pct){
     var order = ["TAC","NOR","VIE","HID"];
@@ -441,7 +441,7 @@ mark.need{animation:need 1.6s ease}
     typeLine.textContent = '冷酷アイスタイプ：' + band.name + '（'+o.totalPct+'%）';
 
     // ヒーロー
-    heroImg.src = heroPath(band.slug);
+    heroImg.src = heroPath(band.id);
     heroImg.alt = band.name + " のイメージ";
     heroTitle.textContent = band.name + "｜" + band.one;
     heroCopy.textContent  = BAND_LONG[band.slug] || "";
