@@ -11,7 +11,7 @@
 <meta property="og:title" content="ストーカー背後霊診断">
 <meta property="og:description" content="15問で“見守りが近すぎるクセ”を可視化。距離感スキルをバーと％で表示します。">
 <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/stalker-ghost.html">
-<meta property="og:image" content="/shindan/assets/results/stalker-ghost/01.png">
+<meta property="og:image" content="/shindan/assets/results/stalker-ghost/t01.webp">
 <style>
 :root{
   --accent:#4aa8ff; --accent2:#a48bff;
@@ -105,7 +105,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
 }
 </style>
 </head>
-<body>
+<body data-id="stalker-ghost">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">👻</div>
@@ -159,7 +159,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
       <!-- ヒーロー（1:1・タイトル→画像→コメントの順をキャプションで表現） -->
       <div class="hero-vert section" role="region" aria-label="タイプイメージ">
         <figure>
-          <img id="heroImg" src="/shindan/assets/results/stalker-ghost/01.png" alt="結果イメージ" loading="lazy" width="1200" height="1200">
+          <img id="heroImg" src="/shindan/assets/results/stalker-ghost/t01.webp" alt="結果イメージ" loading="lazy" width="1200" height="1200">
         </figure>
         <figcaption>
           <div class="title-row">
@@ -255,7 +255,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
 
   // ====== タイプ定義（タイトル・コピー・1行ケア・研究メモ） ======
   var TYPES = {
-    OBS:{ key:"OBS", title:"まなざしピタ霊", img:"01.png", alt:"足あととレーダーの紋章",
+    OBS:{ key:"OBS", title:"まなざしピタ霊", img:"t01.webp", alt:"足あととレーダーの紋章",
       poem:"小さな変化を見逃さない、鋭いまなざし。",
       copy:"観察のアンテナが鋭いタイプ。小さな変化に気づける分、確認の回数が増えやすい傾向も。使いどころを選べば頼れる“見守り力”です。ヒント：通知を“まとめて見る時間”を決めるだけで、心の余白が戻ります。",
       long:"あなたの強みは「気づきの速さ」。相手の調子や状況を察しやすく、気配りに化ける資質です。一方で確認が続くと、注意が分散して疲れやすい面も。まずは“鳴ったら見る”を“時間を決めて見る”に置き換え、連続タップをブロック。曖昧なサインは一旦メモに停め、翌日もう一度だけ見返す——この二段階だけで、行動のキレと安心感が両立します。",
@@ -266,7 +266,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
         "メモ化→再評価が解釈の飛躍を抑える示唆。"
       ]
     },
-    BDY:{ key:"BDY", title:"境界ふわり霊", img:"02.png", alt:"点線サークルと小さな鍵の紋章",
+    BDY:{ key:"BDY", title:"境界ふわり霊", img:"t02.webp", alt:"点線サークルと小さな鍵の紋章",
       poem:"近さを大切にする、やわらかな輪郭。",
       copy:"近さを大切にするハートの持ち主。温かさの裏で、合図の確認が後回しになりやすいから、合意の一言を先に添えるだけで安心度UP。ヒント：「今この話しても大丈夫？」の定型文をお気に入り登録。",
       long:"あなたの“距離の近さ”は、安心感を育む素敵な資質。ただ、踏み込みの早さが相手の都合とズレると誤解や疲れにつながることも。効果的なのは合図の先出し——「今ちょっといい？」を最初に置くだけで許可・不許可が見え、関係の軽さが変わります。時間帯・頻度の目安を共通言語にするのも◎。小さな合意が積み重なると、近さは“やさしさ”として受け取られます。",
@@ -277,7 +277,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
         "社会的合図の明確化が安心感の土台に関連。"
       ]
     },
-    WAI:{ key:"WAI", title:"待機仙人霊", img:"03.png", alt:"砂時計と雲の紋章",
+    WAI:{ key:"WAI", title:"待機仙人霊", img:"t03.webp", alt:"砂時計と雲の紋章",
       poem:"待てる静けさ、戻れる切替。",
       copy:"“待つ力”が落ち着きを生むタイプ。未読でも自分の予定に戻れる切替上手。たまに“忘れすぎ”だけ注意して、要件は短く明るく。ヒント：返信が来たら「助かった！」の一言で好循環。",
       long:"あなたの待機耐性は大きな強み。相手の事情を想像でき、関係の圧を下げます。課題は、必要なときに“待ちっぱなし”にならないこと。要件は結論→期限→一言の順で短く送ると、相手も応答しやすく、あなたの落ち着きがさらに活きます。未読時は“自分の予定へ復帰”を合図に、タスクを一区切り進めると満足感が増します。",
@@ -288,7 +288,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
         "自律的注意転換が反すう減少に関連。"
       ]
     },
-    BRK:{ key:"BRK", title:"保留ナビ霊", img:"04.png", alt:"バブルと旗の紋章",
+    BRK:{ key:"BRK", title:"保留ナビ霊", img:"t04.webp", alt:"バブルと旗の紋章",
       poem:"拙速を避ける、やさしい保留。",
       copy:"“まだ分からない”を大事にできる理性的タイプ。決めつけない姿勢が安心を生みます。たまに優柔不断になったら、期限を切って再判断。ヒント：保留メモに日付を付けて“いつ再確認するか”を明確に。",
       long:"あなたは不確実さに耐える力が高く、早合点から距離を取れます。人間関係では誤解の火種を小さくできる希少な資質。ただ、判断を延ばしすぎると相手が迷うことも。保留→再判断の期日を先に決めるだけで、理性とスピードの両立が可能に。相手の“良い解釈”も一度置いておくバランス感覚が、長期的な信頼をつくります。",
@@ -299,7 +299,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
         "メタ認知メモが解釈の偏りを減らす示唆。"
       ]
     },
-    STP:{ key:"STP", title:"一拍賢者霊", img:"05.png", alt:"ポーズ（II）とランタンの紋章",
+    STP:{ key:"STP", title:"一拍賢者霊", img:"t05.webp", alt:"ポーズ（II）とランタンの紋章",
       poem:"感情の波に、灯をともす間合い。",
       copy:"感情が強い時ほど一拍おける“効くブレーキ”の持ち主。送信前の深呼吸や下書き保存が、あなたの魅力をもっと伝わりやすくします。ヒント：深夜は“下書きまで”のルールで翌朝に見直し。",
       long:"あなたは行動の“間”を作れる人。これは衝動から関係を守る最高のスキルです。とくに夜間や連投の場面では、下書き→翌朝チェック→送信の三段階が効果的。怒り・不安のピークは時間で必ず下がるので、感情の波と賢く付き合えます。小さな成功体験が積み重なると、自己効力感が上がり、相手にも安心が伝わります。",
@@ -512,6 +512,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
 
     try{
+      document.dispatchEvent(new Event('result:ready'));
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   }
@@ -564,10 +565,96 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   if(back){
     back.addEventListener("click", function(){
       try{
-        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+        document.dispatchEvent(new Event('result:ready'));
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
       }catch(e){}
     }, false);
   }
+})();
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（こころLv/済カウント＋回答保存の汎用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+============================================================ */
+(function(){
+  'use strict';
+  var DONE_KEY   = 'specimens:open:byid';
+  var TOTAL_KEY  = 'specimens:open:total';
+  var GLOBAL_LAST= 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+
+  // この診断だけの回答箱（name属性に自動対応）
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; } }
+  function saveState(o){ try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(o)); }catch(_){ } }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState(), nm = el.name;
+    if(el.type==='radio'){
+      var c=(el.form||document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm]=c?{t:'r',v:c.value}:{t:'r',v:null};
+    }else if(el.type==='checkbox'){
+      var arr=[]; (el.form||document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]').forEach(function(x){ if(x.checked) arr.push(x.value||'on'); });
+      st[nm]={t:'c',v:arr};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){ var mv=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) mv.push(o.value); }); st[nm]={t:'m',v:mv}; }
+      else{ st[nm]={t:'s',v:el.value}; }
+    }else{
+      st[nm]={t:'t',v:el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st=loadState(), names=Object.keys(st); if(!names.length) return false;
+    names.forEach(function(nm){
+      var info=st[nm]; if(!info) return;
+      if(info.t==='r'){
+        var r=document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked=true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var set=new Set(info.v||[]); document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]').forEach(function(c){ c.checked=set.has(c.value||'on'); });
+      }else if(info.t==='m'){
+        var sel=document.querySelector('select[name="'+nm+'"]'); if(sel){ var setm=new Set(info.v||[]); [].slice.call(sel.options).forEach(function(o){ o.selected=setm.has(o.value); } }
+      }else if(info.t==='s'){
+        var s=document.querySelector('select[name="'+nm+'"]'); if(s){ s.value=info.v; }
+      }else{
+        var t=document.querySelector('[name="'+nm+'"]'); if(t){ t.value=info.v==null?'':String(info.v); }
+      }
+    });
+    try{ document.dispatchEvent(new Event('change',{bubbles:true})); }catch(_){}
+    return true;
+  }
+  document.addEventListener('change', function(e){ var el=e.target; if(el && el.matches && el.matches('input[name], select[name], textarea[name]')) saveField(el); }, true);
+  document.addEventListener('input',  function(e){ var el=e.target; if(el && el.matches && el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el); }, true);
+  (function(){ var TRY=12,i=0; function tick(){ i++; if(document.querySelector('input[name],select[name],textarea[name]')){ restoreOnce(); return; } if(i<TRY) setTimeout(tick,300); } if(/complete|interactive/.test(document.readyState)) tick(); else document.addEventListener('DOMContentLoaded', tick); })();
+
+  // 結果描画の合図で一度だけ加算
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      countapiHit();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
 })();
 </script>
 </body>
