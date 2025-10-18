@@ -99,7 +99,7 @@ mark.need{animation:need 1.4s ease}
 #shareRow{display:flex !important; flex-wrap:wrap; gap:8px}
 </style>
 </head>
-<body>
+<body data-id="onigiri-workout">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">🍙</div>
@@ -582,6 +582,7 @@ resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
 
     // 一覧用保存
     try{
+      document.dispatchEvent(new Event('result:ready'));
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   }
@@ -783,6 +784,56 @@ function dataURLtoBlob(dataUrl){
   while(n--){ u8arr[n] = bstr.charCodeAt(n); }
   return new Blob([u8arr], {type:mime});
 }
+</script>
+<script>
+/* ===== 診断ページ共通：済＋あなたのLv＋みんなのLv（CountAPI） =====
+   - 結果が出たら一度だけ加算（result:ready 受信／2秒フォールバック）
+   - index 側は storage 監視で自動同期
+==================================================================== */
+(function(){
+  'use strict';
+  var DONE_KEY   = 'specimens:open:byid';     // 診断ごとの「済」マップ
+  var TOTAL_KEY  = 'specimens:open:total';    // あなたのこころLv 合計
+  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ
+
+  // このページのID（未設定なら onigiri-workout に）
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'onigiri-workout';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function hitGlobal(){
+    var url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ }
+    }else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+
+  var done=false;
+  function markOnce(){
+    if(done) return; done=true;
+    try{
+      // あなたのLv 合計 +1
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      // この診断の「済」を +1（他タブ即時反映のため _ts を同梱）
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      // みんなのLv +1（失敗は無視）
+      hitGlobal();
+      // 一時キャッシュも+1（index初期表示の見栄え向上）
+      try{
+        var last=(+localStorage.getItem(GLOBAL_LAST)||0)+1;
+        localStorage.setItem(GLOBAL_LAST,String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+
+  // 推奨：結果描画の合図
+  document.addEventListener('result:ready', markOnce);
+  // フォールバック（「戻る」押さなくても済が付く）
+  setTimeout(markOnce, 2000);
+})();
 </script>
 </body>
 </html>
