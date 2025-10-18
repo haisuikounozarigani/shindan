@@ -1355,5 +1355,33 @@ el.textContent = pool[Math.floor(Math.random()*pool.length)];
   }
 })();
 </script>
+<script>
+/* こころLvだけ加算（表示時に1回） */
+(function(){
+  'use strict';
+  var TOTAL_KEY   = 'specimens:open:total';        // あなたのこころLv（合計）
+  var GLOBAL_LAST = 'specimens:open:global:last';  // 一覧の初期表示キャッシュ
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+
+  function hitEveryone(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+  function addOnce(){
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY) || 0) + 1));
+      localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST) || 0) + 1));
+    }catch(_){}
+    hitEveryone();
+  }
+  if(document.readyState==='complete' || document.readyState==='interactive'){
+    setTimeout(addOnce, 0);
+  }else{
+    document.addEventListener('DOMContentLoaded', addOnce);
+  }
+})();
+</script>
 </body>
 </html>
