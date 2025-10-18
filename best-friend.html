@@ -11,7 +11,7 @@
 <meta property="og:title" content="ベストフレンド力診断（わたし／あの人）">
 <meta property="og:description" content="21問で「喜びの分かち合い・安心・自律尊重・挑戦支援・一貫性・修復・ユーモア」を％化。モード切替で『わたし／あの人』を評価。">
 <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/best-friend.html">
-<meta property="og:image" content="/shindan/assets/results/best-friend/01.png">
+<meta property="og:image" content="/shindan/assets/results/best-friend/t01.webp">
 <style>
 :root{
   --accent:#4aa8ff; --accent2:#a48bff;
@@ -110,7 +110,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
 }
 </style>
 </head>
-<body>
+<body data-id="best-friend">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">🤝</div>
@@ -167,7 +167,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
       <!-- ヒーロー（上位因子画像＋総合バッジ） -->
       <div class="hero-vert section" role="region" aria-label="タイプイメージ">
         <figure>
-          <img id="heroImg" src="/shindan/assets/results/best-friend/01.png" alt="結果イメージ" loading="lazy" width="1200" height="1200">
+          <img id="heroImg" src="/shindan/assets/results/best-friend/t01.webp" alt="結果イメージ" loading="lazy" width="1200" height="1200">
         </figure>
         <figcaption>
           <div class="title-row">
@@ -234,7 +234,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   var ANS_KEY = "specimens:"+SLUG+":answers";
   var MODE_KEY= "specimens:"+SLUG+":mode";
   var IMG_BASE_FACTOR = "/shindan/assets/results/best-friend/"; // 01..07
-  var IMG_BY_FACTOR = { ACR:"01.png", SEC:"02.png", AUT:"03.png", CHL:"04.png", REL:"05.png", REP:"06.png", FUN:"07.png" };
+  var IMG_BY_FACTOR = { ACR:"t01.webp", SEC:"t02.webp", AUT:"t03.webp", CHL:"t04.webp", REL:"t05.webp", REP:"t06.webp", FUN:"t07.webp" };
   var ALT_BY_FACTOR = {
     ACR:"喜びを分かち合う2人", SEC:"安心して話せる空気",
     AUT:"自律を尊重する2人", CHL:"背中を押す友", REL:"一貫性と予測可能性",
@@ -479,13 +479,14 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     typeLine.textContent = typeText;
 
     // ヒーロー（上位因子画像）
-    heroImg.src = IMG_BASE_FACTOR + IMG_BY_FACTOR[o.top];
+    heroImg.src = heroPathFromRank(rank.id);
     heroImg.alt = ALT_BY_FACTOR[o.top] || "結果イメージ";
     heroTitle.textContent = heroDef.title + "（" + topDef.name + "）";
     heroPoem.textContent  = heroDef.poem;
     heroCopy.textContent  = heroDef.copy;
     sizeBadgeEl.textContent = "総合 " + o.totalAvg.toFixed(2) + " / 4.00";
     rankBadgeEl.textContent = "ランク " + rank.id + "・" + rank.label;
+    
 
     // 総合
     sumAvg.textContent = o.totalAvg.toFixed(2);
@@ -542,6 +543,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
 
     try{
+      document.dispatchEvent(new Event('result:ready'));
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   }
@@ -622,6 +624,98 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     }, false);
   }
 })();
+
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+============================================================ */
+(function(){
+  'use strict';
+  var DONE_KEY   = 'specimens:open:byid';
+  var TOTAL_KEY  = 'specimens:open:total';
+  var GLOBAL_LAST= 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+
+  // 回答の保存箱（この診断だけ）
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; } }
+  function saveState(obj){ try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){} }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState(), nm = el.name;
+    if(el.type==='radio'){
+      var c = (el.form||document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = c ? {t:'r', v:c.value} : {t:'r', v:null};
+    }else if(el.type==='checkbox'){
+      var arr=[]; (el.form||document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]').forEach(function(x){ if(x.checked) arr.push(x.value||'on'); });
+      st[nm] = {t:'c', v:arr};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){ var mv=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) mv.push(o.value); }); st[nm]={t:'m',v:mv}; }
+      else{ st[nm]={t:'s',v:el.value}; }
+    }else{
+      st[nm]={t:'t',v:el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState(), names = Object.keys(st);
+    if(!names.length) return false;
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var set = new Set(info.v||[]); document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]').forEach(function(c){ c.checked = set.has(c.value||'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]'); if(sel){ var setm=new Set(info.v||[]); [].slice.call(sel.options).forEach(function(o){ o.selected=setm.has(o.value); }); }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]'); if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]'); if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    try{ document.dispatchEvent(new Event('change',{bubbles:true})); }catch(_){}
+    return true;
+  }
+  document.addEventListener('change', function(e){ var el=e.target; if(el && el.matches && el.matches('input[name], select[name], textarea[name]')) saveField(el); }, true);
+  document.addEventListener('input',  function(e){ var el=e.target; if(el && el.matches && el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el); }, true);
+  (function(){ var TRY_MAX=12, n=0; function tick(){ n++; if(document.querySelector('input[name], select[name], textarea[name]')){ restoreOnce(); return; } if(n<TRY_MAX) setTimeout(tick,300); } if(/complete|interactive/.test(document.readyState)) tick(); else document.addEventListener('DOMContentLoaded', tick); })();
+
+  // 「済」＋Lv加算（結果描画の合図で一度だけ）
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      var total=(+localStorage.getItem(TOTAL_KEY)||0)+1; localStorage.setItem(TOTAL_KEY,String(total));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1; localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      countapiHit();
+      try{ var last=(+localStorage.getItem(GLOBAL_LAST)||0)+1; localStorage.setItem(GLOBAL_LAST,String(last)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
+})();
+</script>
+<script>
+function heroPathFromRank(rankId){
+  var n = (rankId==='R1'?1:rankId==='R2'?2:rankId==='R3'?3:rankId==='R4'?4:5);
+  return "/shindan/assets/results/best-friend/" + "t" + String(n).padStart(2,"0") + ".webp";
+}
 </script>
 </body>
 </html>
