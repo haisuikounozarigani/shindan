@@ -12,7 +12,7 @@
 <meta property="og:title" content="HSPハート診断 ─ こころの繊細さをやさしく可視化">
 <meta property="og:description" content="18問で「深い処理・刺激オーバー・共鳴・五感・美感・回復」の6因子を数値化。結果はガラス／ベルベット／クォーツ／ステンレス／ダイヤモンドの5ハートで表示（エンタメ自己理解）。">
 <meta property="og:url" content="/shindan/hsp-heart.html">
-<meta property="og:image" content="/shindan/assets/results/hsp-heart/rank-01.png">
+<meta property="og:image" content="/shindan/assets/results/hsp-heart/t01.webp">
 
 <style>
 :root{
@@ -111,7 +111,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
 }
 </style>
 </head>
-<body>
+<body data-id="hsp-heart">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">💗</div>
@@ -163,14 +163,14 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
       <!-- ヒーロー：トップ因子画像＋ランクバッジ -->
       <div class="hero-vert section" role="region" aria-label="タイプイメージ">
         <figure>
-          <img id="heroImg" src="/shindan/assets/results/hsp-heart/01.png" alt="結果イメージ" loading="lazy" width="1200" height="1200">
+          <img id="heroImg" src="/shindan/assets/results/hsp-heart/t01.webp" alt="結果イメージ" loading="lazy" width="1200" height="1200">
         </figure>
         <figcaption>
           <div class="title-row">
             <div class="capline" id="heroTitle">—</div>
             <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
             <span class="rank-chip" id="rankChip" title="総合ランク" aria-label="総合ランク" hidden>
-              <img id="rankImg" src="/shindan/assets/results/hsp-heart/rank-01.png" alt="ランク画像" loading="lazy" width="24" height="24">
+              <img id="rankImg" src="/shindan/assets/results/hsp-heart/t01.webp" alt="ランク画像" loading="lazy" width="24" height="24">
               <span id="rankLabel" class="small">—</span>
             </span>
           </div>
@@ -508,13 +508,13 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     typeLine.textContent = typeText;
 
     // ヒーロー（トップ因子画像）＋ランク
-    heroImg.src = IMG_BASE + topDef.img;
+    heroImg.src = heroPathFromRank(o.rankKey);
     heroImg.alt = topDef.alt;
     heroTitle.textContent = topDef.name + (o.hybrid ? ' × '+FACTORS[o.second].name : '');
     heroPoem.textContent  = '繊細さの扱い方を、6因子でやさしく可視化。';
     heroCopy.textContent  = rank.one;
     sizeBadgeEl.textContent = "総合 " + o.totalAvg.toFixed(2) + " / 4.00";
-    rankImg.src = IMG_BASE + rank.img;
+    rankImg.src = heroPathFromRank(o.rankKey);
     rankLabel.textContent = rank.name + "（" + rank.label + "）";
     rankChip.hidden = false;
 
@@ -602,6 +602,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
 
     try{
+      document.dispatchEvent(new Event('result:ready'));
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   }
@@ -660,6 +661,52 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     }, false);
   }
 })();
+
+</script>
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY   = 'specimens:open:byid';
+  var TOTAL_KEY  = 'specimens:open:total';
+  var GLOBAL_LAST= 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){} }
+    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      countapiHit();
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
+</script>
+<script>
+function heroPathFromRank(rankKey){
+  var n = (rankKey==='R1'?1:rankKey==='R2'?2:rankKey==='R3'?3:rankKey==='R4'?4:5);
+  return "/shindan/assets/results/hsp-heart/" + "t" + String(n).padStart(2,"0") + ".webp";
+}
 </script>
 </body>
 </html>
