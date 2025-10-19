@@ -10,7 +10,7 @@
 <meta property="og:title" content="流れ星の手紙">
 <meta property="og:description" content="ボタンを押すと、流れ星が一通のことばを運んできます。">
 <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/star-guide.html">
-<meta property="og:image" content="/shindan/assets/results/star-guide/02.png">
+<meta property="og:image" content="/shindan/assets/results/star-guide/t01.webp">
 <style>
 :root{
   --ink:#121525; --paper:#fff; --muted:#8ea1c2; --line:#203055;
@@ -209,7 +209,7 @@ h1{margin:0;font-size:clamp(20px,4.4vw,28px);letter-spacing:.02em}
 .note a{color:#fff;text-decoration:underline}
 </style>
 </head>
-<body>
+<body data-id="star-guide">
 
 <main class="wrap" id="app">
   <header class="hd">
@@ -399,7 +399,7 @@ const morningSet = new Set(["01","02","05","06"]);
 
   function renderImage(letter){
     const {id, alt, cap} = pickImageFor(letter);
-    figImg.src = ASSETS + id + ".png";
+    figImg.src = ASSETS + "t" + id + ".webp";
     figImg.alt = alt || "";
     figCap.textContent = cap;
     figWrap.style.display = "";
@@ -443,6 +443,7 @@ const morningSet = new Set(["01","02","05","06"]);
     renderImage(l);
     letterBox.style.display = "";
     saveLast();
+    document.dispatchEvent(new Event('result:ready'));
   }
 
   // ドロー（先に抽選→“特別”なら流星の色だけ静かに変える）
@@ -1008,6 +1009,45 @@ draw.addEventListener("click", doDraw, { passive: true });
     init();
   }
 document.addEventListener("DOMContentLoaded", init, { once:true });
+})();
+</script>
+<script>
+/* こころLv/済カウント（結果描画の合図で一度だけ） */
+(function(){
+  'use strict';
+  var DONE_KEY    = 'specimens:open:byid';         // 済マップ
+  var TOTAL_KEY   = 'specimens:open:total';        // あなたのこころLv（合計）
+  var GLOBAL_LAST = 'specimens:open:global:last';  // 一覧の初期表示キャッシュ
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function hitEveryone(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      // あなたのこころLv +1
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY) || 0) + 1));
+      // この診断の「済」 +1（他タブ即時反映用タイムスタンプ）
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+      // みんなのこころLv +1 と見栄えキャッシュ +1
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST) || 0) + 1)); }catch(_){}
+    }catch(_){}
+  }
+
+  // 結果描画の合図で加算、保険で2秒後にも一度だけ
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
