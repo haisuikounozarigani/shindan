@@ -97,7 +97,7 @@ mark.need{animation:need 1.6s ease}
 a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
 </style>
 </head>
-<body>
+<body data-id="opener">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">🔑</div>
@@ -219,6 +219,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   const SLUG = "opener";
   const TITLE = "会話オープナー診断";
   const IMG_BASE = "/shindan/assets/results/opener/"; // 末尾/
+  const ANS_KEY  = "specimens:"+SLUG+":answers"; // ← ローカル保存キー
 
   // ====== 画像仕様（5段階＋詩的キャッチ） ======
   const LV_DEF = {
@@ -390,18 +391,60 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     `).join("");
 
     qWrap.querySelectorAll('input[type="radio"]').forEach(el=>{
-      el.addEventListener('change', updateProgress, {passive:true});
-    });
+  el.addEventListener('change', function(){
+    saveAnswers();       // ← 選ぶたび保存
+    updateProgress();
+  }, false);
+});
+restoreAnswers();        // ← ページ再訪で復元
+updateProgress();
   }
 
   function updateProgress(){
-    const total = ITEMS.length;
-    const answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
-    prog.style.width = Math.round(100*answered/total) + "%";
+  const total = ITEMS.length;
+  const answered = qWrap.querySelectorAll('input[type="radio"]:checked').length;
+  const pct = Math.round(100*answered/total);
+  prog.style.width = pct + "%";
+  const bar = prog.parentElement;
+  if(bar){
+    bar.setAttribute("aria-valuemin","0");
+    bar.setAttribute("aria-valuemax", String(total));
+    bar.setAttribute("aria-valuenow", String(answered));
+    bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
   }
+}
 
+// 回答の保存/復元 — kusemon互換 {ts, ans:{Q01:..}} 形式
+function saveAnswers(){
+  try{
+    const out = {};
+    for(const q of ITEMS){
+      const chk = qWrap.querySelector(`#fs-${q.id} input[type="radio"]:checked`);
+      if(chk){
+        const key = "Q"+String(q.id).padStart(2,"0");
+        out[key] = parseInt(chk.value,10);
+      }
+    }
+    localStorage.setItem(ANS_KEY, JSON.stringify({ts: Date.now(), ans: out}));
+  }catch(e){}
+}
+function restoreAnswers(){
+  try{
+    const raw = localStorage.getItem(ANS_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw), ans = (data && data.ans) || {};
+    Object.keys(ans).forEach((qk)=>{
+      const id = parseInt(qk.replace(/^Q/,""),10);
+      const v  = ans[qk];
+      const input = qWrap.querySelector(`#q${id}-${v}`);
+      if(input){ input.checked = true; }
+    });
+  }catch(e){}
+}
+function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
   // ====== 採点 ======
   function score(){
+  saveAnswers(); // ← 直前の入力も確実に保存
     const missing = [];
     const ans = new Map(); // id -> point(0-4 after reverse)
     for(const q of ITEMS){
@@ -501,24 +544,27 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
     keyTips.textContent = lowIds.map(i=>KEY_DICT[i]?.tip).filter(Boolean).join("／");
 
     // 表示切替
+    // 表示切替
     resEmpty.style.display = "none";
     resArea.style.display = "";
     document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
 
-    // 保存（一覧の「つづきから再開」）
+    // こころLv合図＋一覧の「つづきから再開」
     try{
+      document.dispatchEvent(new Event('result:ready')); // ← 合図
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   }
 
   // ====== クリア ======
   function clearAnswers(){
-    qWrap.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
-    prog.style.width = "0%";
-    resEmpty.style.display = "";
-    resArea.style.display = "none";
-    document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
-  }
+  qWrap.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
+  try{ localStorage.removeItem(ANS_KEY); }catch(e){} // ← 保存クリア
+  prog.style.width = "0%";
+  resEmpty.style.display = "";
+  resArea.style.display = "none";
+  document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
+}
 
   // ====== 初期化 ======
   buildQuestions();
@@ -530,6 +576,37 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   });
+})();
+</script>
+<script>
+/* こころLv/済カウント（結果描画の合図で一度だけ） */
+(function(){
+  'use strict';
+  var DONE_KEY    = 'specimens:open:byid';
+  var TOTAL_KEY   = 'specimens:open:total';
+  var GLOBAL_LAST = 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function hitEveryone(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ }
+    }else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
 })();
 </script>
 </body>
