@@ -22,11 +22,6 @@ a.back{font-size:.9em;color:#6b5560;text-decoration:none;border:1px solid var(--
 .muted{color:var(--muted)} .small{font-size:.92em}
 .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #efdff4;background:#fff;font-weight:700}
 
-/* 進捗 */
-.progressShell{display:flex;align-items:center;gap:10px;margin-top:6px}
-.progressBar{flex:1;height:10px;border-radius:999px;background:#efe7f4;overflow:hidden;border:1px solid #e6d9ef}
-.progressBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac2),var(--ac1))}
-.count{font-variant-numeric:tabular-nums}
 
 /* 質問 */
 .q{margin:10px 0;padding:10px;border:1px solid #f0e6f0;border-radius:12px;background:#fff}
@@ -92,32 +87,44 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
 .nearBody{padding:8px}
 .nearName{font-weight:800}
 .nearCatch{font-size:.9em;color:#6b5560;margin-top:2px}
+/* === くせもん風 ProgressBar === */
+.progressShell{ display:flex; align-items:center; gap:8px; margin:12px 0 16px; }
+.progressBar{ position:relative; flex:1; height:8px; border-radius:9999px; background:#e6e6e6; overflow:hidden; }
+.progressBar .bar{ position:absolute; inset:0 auto 0 0; width:0%; background:linear-gradient(90deg,#79c0ff,#b47cff); transition:width .25s ease; }
+#progCnt{ min-width:72px; text-align:right; font-variant-numeric:tabular-nums; font-size:12px; opacity:.8; }
+@media (prefers-reduced-motion: reduce){
+  .progressBar .bar{ transition:none; }
+}
+/* === sticky progress (kusemon-like) === */
+.progressShell.is-sticky{
+  position: sticky;
+  top: 0;              /* 画面の最上部に貼り付く */
+  z-index: 30;
+  padding: 8px 12px;
+  margin: 0 -12px 12px; /* .wrap の左右パディングを相殺して横いっぱいに */
+  background: linear-gradient(160deg,var(--bg1),var(--bg2));
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+@supports (top: env(safe-area-inset-top)){
+  .progressShell.is-sticky{ top: max(0px, env(safe-area-inset-top)); }
+}
 </style>
 </head>
-<body>
+<body data-id="adventure-shin">
 <div class="wrap">
   <header>
-  <h1>冒険者逆境力診断（CD-RISC／GRIT-Sに着想・独自版）</h1>
+  <h1>冒険者逆境力診断</h1>
     <a class="back" href="/shindan/">一覧へ</a>
   </header>
 
-  <section class="card" id="intro">
-  	<section id="legal-note" style="margin:8px 0 14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px">
-  <h2 style="margin:4px 0 6px;font-size:1rem;color:var(--fg)">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:var(--muted)">
-    <li><strong>非提携・非公式：</strong>本コンテンツは研究一般の知見（<span style="white-space:nowrap">CD-RISC／GRIT-S</span> など）に<strong>ヒントを得た独自制作</strong>です。これらの<strong>正式な項目・採点方法は使用しておらず</strong>、権利者の承認・提携・推奨を意味しません。</li>
-    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安としてのセルフチェックであり、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛や不調が続く場合は、医療機関や専門家へご相談ください。</li>
-    <li><strong>プライバシー：</strong>回答はブラウザ内（端末内）でのみ処理され、<strong>サーバー送信は行いません</strong>。結果カードの画像生成も端末内で行われます。</li>
-    <li><strong>表現について：</strong>本ページの「職業（戦士・騎士 等）」「等級」などは<strong>比喩・ゲーミフィケーション表現</strong>です。特定の個人・集団への価値判断や差別を意図せず、結果をもって他者を断定・ラベリングしないでください。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
-  </ul>
-</section>
     <p class="small muted">出るタイプ：<b>戦士・騎士・魔法使い・盗賊・狩人・格闘家・商人</b>（全体が高水準のときは<b>勇者</b>）。気楽に遊んでね。</p>
-    <div class="progressShell">
-      <div class="progressBar"><i id="prog"></i></div>
-      <span class="pill count" id="cnt">0 / 28</span>
+    <div id="progDock" class="progressShell is-sticky">
+      <div class="progressBar"><i id="progBar" class="bar"></i></div>
+      <span class="pill count" id="progCnt">0 / 28</span>
     </div>
-  </section>
+  
 
   <section id="stage" class="card" aria-live="polite"></section>
 
@@ -173,6 +180,17 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
     <canvas id="cardCanvas" width="1080" height="1620" style="display:none"></canvas>
   </section>
 </div>
+<section class="card" id="intro">
+  	<section id="legal-note" style="margin:8px 0 14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px">
+  <h2 style="margin:4px 0 6px;font-size:1rem;color:var(--fg)">ご利用にあたって</h2>
+  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:var(--muted)">
+    <li><strong>非提携・非公式：</strong>本コンテンツは研究一般の知見（<span style="white-space:nowrap">CD-RISC／GRIT-S</span> など）に<strong>ヒントを得た独自制作</strong>です。これらの<strong>正式な項目・採点方法は使用しておらず</strong>、権利者の承認・提携・推奨を意味しません。</li>
+    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解の目安としてのセルフチェックであり、医療的・心理的な<strong>診断／治療／助言を目的としません</strong>。強い苦痛や不調が続く場合は、医療機関や専門家へご相談ください。</li>
+    <li><strong>プライバシー：</strong>回答はブラウザ内（端末内）でのみ処理され、<strong>サーバー送信は行いません</strong>。結果カードの画像生成も端末内で行われます。</li>
+    <li><strong>表現について：</strong>本ページの「職業（戦士・騎士 等）」「等級」などは<strong>比喩・ゲーミフィケーション表現</strong>です。特定の個人・集団への価値判断や差別を意図せず、結果をもって他者を断定・ラベリングしないでください。</li>
+    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+  </ul>
+</section>
 
 <script>
 /* ====== しきい値（併記の条件） ====== */
@@ -317,10 +335,11 @@ const SECTIONS = [
 /* ====== レンダリング ====== */
 const stage = document.getElementById('stage');
 const btnSubmit = document.getElementById('btnSubmit');
-const progBar = document.getElementById('prog');
-const cnt = document.getElementById('cnt');
+const progBar = document.getElementById('progBar');
+const cnt = document.getElementById('progCnt');
 const actionRow = document.getElementById('actionRow');
 const answers = Object.create(null);
+const TITLE = '冒険者逆境力診断';
 
 function renderAll(){
   const items = SECTIONS.flatMap(s=>s.items);
@@ -338,7 +357,7 @@ function renderAll(){
               return `
                 <div>
                   <input id="${rid}" name="${it.id}" type="radio" value="${sc.v}">
-                  <label for="${rid}" title="${sc.v}: ${sc.t}">${sc.v}</label>
+                  <label for="${rid}" title="${sc.v}: ${sc.t}">${sc.t}</label>
                 </div>
               `;
             }).join('')}
@@ -352,24 +371,77 @@ function renderAll(){
   cnt.textContent = `0 / ${items.length}`;
 }
 renderAll();
+restoreAnswers();   // ← 復元
+updateProgress();   // ← バー/カウント反映
 
+// ---- 回答の保存/復元（kusemon互換） {ts, ans:{設問ID:値}} ----
+const SLUG   = 'adventure-shin';                   // 既にあるなら重複定義は不要
+const ANS_KEY= 'specimens:'+SLUG+':answers';
+
+function saveAnswers(){
+  try{
+    const out = {};
+    document.querySelectorAll('#stage input[type="radio"]:checked').forEach(i=>{
+      out[i.name] = parseInt(i.value,10);
+    });
+    localStorage.setItem(ANS_KEY, JSON.stringify({ts: Date.now(), ans: out}));
+  }catch(e){}
+}
+function restoreAnswers(){
+  try{
+    const raw = localStorage.getItem(ANS_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw), ans = (data && data.ans) || {};
+    Object.keys(ans).forEach(name=>{
+      const v = ans[name];
+      const input = document.getElementById(name + '_' + v);
+      if(input){ input.checked = true; }
+      // メモリ側にも反映（送信ボタン活性化のため）
+      if(typeof answers === 'object'){ answers[name] = v; }
+    });
+  }catch(e){}
+}
+function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
 /* 入力・進捗 */
 stage.addEventListener('change', (e)=>{
   if (e.target && e.target.type==='radio' && e.target.name){
     answers[e.target.name] = parseInt(e.target.value,10);
     const wrap = document.getElementById('wrap_'+e.target.name);
     if (wrap) wrap.classList.remove('miss');
+    saveAnswers();     // ← 追加：選ぶたび保存
     updateProgress();
   }
 });
 function updateProgress(){
-  const total = SECTIONS.reduce((n,s)=>n+s.items.length,0);
-  const filled = Object.keys(answers).length;
-  const pct = Math.round(filled/total*100);
-  progBar.style.width = pct+'%';
-  cnt.textContent = `${filled} / ${total}`;
-  if (filled===total) btnSubmit.classList.remove('fakeDisabled');
-  else btnSubmit.classList.add('fakeDisabled');
+  const total   = SECTIONS.reduce((n,s)=>n+s.items.length,0);
+  const filled  = Object.keys(answers).length;
+  const pct     = Math.round(filled/total*100);
+
+  // バーの見た目
+  var progBar = document.getElementById('progBar');
+  if(progBar){
+    progBar.style.width = pct + '%';
+  }
+
+  // 数値表示（例：12 / 20）
+  var cnt = document.getElementById('progCnt') || document.getElementById('cnt');
+  if(cnt){
+    cnt.textContent = filled + ' / ' + total;
+  }
+
+  // 送信ボタンの活性/非活性
+  if (filled === total) btnSubmit.classList.remove('fakeDisabled');
+  else                  btnSubmit.classList.add('fakeDisabled');
+
+  // ARIA（アクセシビリティ）
+  var shell = document.querySelector('.progressBar');
+  if(shell){
+    shell.setAttribute('role','progressbar');
+    shell.setAttribute('aria-valuemin','0');
+    shell.setAttribute('aria-valuemax', String(total));
+    shell.setAttribute('aria-valuenow', String(filled));
+    shell.setAttribute('aria-label', '回答進捗：' + filled + ' / ' + total);
+  }
 }
 
 /* 採点（項目数に自動対応） */
@@ -443,6 +515,7 @@ const nearWrap=document.getElementById('nearby');
 const nearList=document.getElementById('nearList');
 
 btnSubmit.addEventListener('click', ()=>{
+  saveAnswers(); // 念のため直前保存
   const total = SECTIONS.reduce((n,s)=>n+s.items.length,0);
   const filled = Object.keys(answers).length;
   if (filled!==total){
@@ -489,7 +562,7 @@ btnSubmit.addEventListener('click', ()=>{
     R.nearby.forEach(({job})=>{
       const card=document.createElement('div');
       card.className='nearCard';
-      const imgSrc = `/shindan/assets/results/adventurer/${job.dir}/${R.tier.code}.png`;
+      const imgSrc = `/shindan/assets/results/adventure/${job.dir}/${R.tier.code}.png`;
       card.innerHTML = `
         <div class="nearThumb">
           <img src="${imgSrc}" alt="${job.name} 画像" loading="lazy"
@@ -511,13 +584,18 @@ btnSubmit.addEventListener('click', ()=>{
   stage.style.display='none';
   actionRow.style.display='none';
   resultEl.style.display='';
+var dock=document.getElementById('progDock'); if(dock) dock.style.display='none';
+try{
+  document.dispatchEvent(new Event('result:ready')); // ← こころLv合図
+  localStorage.setItem('specimens:last', JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+}catch(e){}
   // ボタン
   document.getElementById('btnSave').onclick=()=>saveCard(R);
   document.getElementById('btnRetry').onclick=resetAll;
 });
 
 function renderArt(R){
-  const base = '/shindan/assets/results/adventurer/';
+  const base = '/shindan/assets/results/adventure/';
   const imgPath = R.heroOnly
     ? `${base}${HERO.dir}/00.png`
     : `${base}${R.job.dir}/${R.tier.code}.png`;
@@ -536,10 +614,12 @@ function renderArt(R){
 function resetAll(){
   for(const k in answers) delete answers[k];
   document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
+  wipeAnswers(); // ← ローカルも削除
   document.getElementById('intro').style.display='';
   stage.style.display='';
   actionRow.style.display='';
   resultEl.style.display='none';
+var dock=document.getElementById('progDock'); if(dock) dock.style.display='';
   updateProgress();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -603,12 +683,43 @@ function saveCard(R){
 
   const a=document.createElement('a');
   a.href=canvas.toDataURL('image/png');
-  a.download='adventurer_result.png';
+  a.download='adventure_result.png';
   a.click();
 }
 
 /* 初期 */
 updateProgress();
+</script>
+<script>
+/* こころLv/済カウント（結果描画の合図で一度だけ） */
+(function(){
+  'use strict';
+  var DONE_KEY    = 'specimens:open:byid';
+  var TOTAL_KEY   = 'specimens:open:total';
+  var GLOBAL_LAST = 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function hitEveryone(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ }
+    }else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
+})();
 </script>
 </body>
 </html>
