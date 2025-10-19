@@ -89,7 +89,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
 }
 </style>
 </head>
-<body>
+<body data-id="inu-neko">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">🐾</div>
@@ -224,6 +224,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   var SLUG = "inu-neko";
   var TITLE = "犬派？猫派？診断｜完全版";
   var IMG_BASE = "/shindan/assets/results/inu-neko/";
+  var ANS_KEY  = "specimens:"+SLUG+":answers";
 
   // ランク定義
   var RANKS = [
@@ -344,25 +345,63 @@ var LONG_COPY = {
     }
     qWrap.innerHTML = html;
 
-    var radios = qWrap.querySelectorAll('input[type="radio"]');
-    for(var r=0;r<radios.length;r++){
-      radios[r].addEventListener('change', updateProgress, false);
-    }
+  var radios = qWrap.querySelectorAll('input[type="radio"]');
+for(var r=0;r<radios.length;r++){
+  radios[r].addEventListener('change', function(){
+    saveAnswers();
     updateProgress();
-  }
+  }, false);
+}
+restoreAnswers();
+updateProgress();
+}
 
   function updateProgress(){
-    // ボーナスを進捗対象から除外
-    var requiredFs = qWrap.querySelectorAll('fieldset.q:not([data-bonus="1"])');
-    var total = requiredFs.length;
-    var answered = 0;
-    for(var i=0;i<requiredFs.length;i++){
-      if(requiredFs[i].querySelector('input[type="radio"]:checked')) answered++;
-    }
-    prog.style.width = Math.round(100*answered/total) + "%";
+  var requiredFs = qWrap.querySelectorAll('fieldset.q:not([data-bonus="1"])');
+  var total = requiredFs.length;
+  var answered = 0;
+  for(var i=0;i<requiredFs.length;i++){
+    if(requiredFs[i].querySelector('input[type="radio"]:checked')) answered++;
   }
+  var pct = Math.round(100*answered/total);
+  prog.style.width = pct + "%";
+  var bar = prog.parentElement;
+  if(bar){
+    bar.setAttribute("aria-valuemin","0");
+    bar.setAttribute("aria-valuemax", String(total));
+    bar.setAttribute("aria-valuenow", String(answered));
+    bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+  }
+}
+// 回答の保存/復元（Q01..Q14） — kusemon互換
+function saveAnswers(){
+  try{
+    var out = {};
+    // 本体12＋ボーナス2（存在するものだけ拾う）
+    for(var i=1;i<=14;i++){
+      var chk = qWrap.querySelector('#fs-'+i+' input[type="radio"]:checked');
+      if(chk){ out["Q"+String(i).padStart(2,"0")] = parseInt(chk.value,10); }
+    }
+    localStorage.setItem(ANS_KEY, JSON.stringify({ts: Date.now(), ans: out}));
+  }catch(e){}
+}
+function restoreAnswers(){
+  try{
+    var raw = localStorage.getItem(ANS_KEY);
+    if(!raw) return;
+    var data = JSON.parse(raw), ans = (data && data.ans) || {};
+    Object.keys(ans).forEach(function(qk){
+      var id = parseInt(qk.replace(/^Q/,""),10);
+      var v  = ans[qk];
+      var input = qWrap.querySelector('#q'+id+'-'+v);
+      if(input){ input.checked = true; }
+    });
+  }catch(e){}
+}
+function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
 
   function score(){
+  saveAnswers(); // 直前の入力も確実に保存
     var missing = [];
     var ans = {};
 
@@ -499,19 +538,21 @@ researchList.innerHTML = resItems.map(function(s){return "<li>"+s+"</li>";}).joi
 
     // 一覧「つづきから」
     try{
-      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
-    }catch(e){}
+  document.dispatchEvent(new Event('result:ready'));
+  localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+}catch(e){}
   }
 
   function clearAnswers(){
-    var radios = qWrap.querySelectorAll('input[type="radio"]');
-    for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
-    prog.style.width = "0%";
-    resEmpty.style.display = "";
-    resArea.style.display = "none";
-    var app = document.getElementById("app");
-    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
-  }
+  var radios = qWrap.querySelectorAll('input[type="radio"]');
+  for(var i=0;i<radios.length;i++){ radios[i].checked=false; }
+  try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  prog.style.width = "0%";
+  resEmpty.style.display = "";
+  resArea.style.display = "none";
+  var app = document.getElementById("app");
+  if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+}
 
   // 初期化
   if(document.readyState === "loading"){
@@ -530,6 +571,37 @@ researchList.innerHTML = resItems.map(function(s){return "<li>"+s+"</li>";}).joi
       }catch(e){}
     }, false);
   }
+})();
+</script>
+<script>
+/* こころLv/済カウント（結果描画の合図で一度だけ） */
+(function(){
+  'use strict';
+  var DONE_KEY    = 'specimens:open:byid';
+  var TOTAL_KEY   = 'specimens:open:total';
+  var GLOBAL_LAST = 'specimens:open:global:last';
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function hitEveryone(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ }
+    }else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
 })();
 </script>
 </body>
