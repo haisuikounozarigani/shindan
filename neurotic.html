@@ -102,7 +102,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
 }
 </style>
 </head>
-<body>
+<body data-id="neurotic">
 <main class="wrap" id="app">
   <header class="hd">
     <div class="logo">🌊</div>
@@ -563,6 +563,7 @@ var memo = [
 
     // 保存（一覧の「つづきから再開」）
     try{
+      document.dispatchEvent(new Event('result:ready'));
       localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
   }
@@ -591,10 +592,49 @@ var memo = [
   if(back){
     back.addEventListener("click", function(){
       try{
-        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+        document.dispatchEvent(new Event('result:ready'));
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
       }catch(e){}
     }, false);
   }
+})();
+</script>
+<script>
+/* こころLv/済カウント（結果描画の合図で一度だけ） */
+(function(){
+  'use strict';
+  var DONE_KEY    = 'specimens:open:byid';         // 済マップ
+  var TOTAL_KEY   = 'specimens:open:total';        // あなたのこころLv（合計）
+  var GLOBAL_LAST = 'specimens:open:global:last';  // 一覧の初期表示キャッシュ
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // みんなのLv（CountAPI）
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function hitEveryone(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      // あなたのこころLv +1
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY) || 0) + 1));
+      // 済 +1（他タブ即時反映用_ts）
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+      // みんなのLv +1 と見栄えキャッシュ +1
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST) || 0) + 1)); }catch(_){}
+    }catch(_){}
+  }
+
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
 })();
 </script>
 </body>
