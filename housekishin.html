@@ -82,9 +82,36 @@ summary::-webkit-details-marker{display:none}
 .footer{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
 .note-list{margin:6px 0 0 18px;padding-left:0}
 .note-list li{margin:4px 0}
+/* === kusemon-like scale === */
+.scale{display:grid;grid-template-columns:repeat(5,minmax(68px,1fr));gap:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #efdeea;border-radius:10px;padding:10px;cursor:pointer;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+@media (max-width:560px){ .scale{grid-template-columns:repeat(2,1fr)} }
+/* === kusemon-like progress === */
+.formbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
+.progressBar{position:relative;flex:1;height:8px;border-radius:9999px;background:#f2e9f6;border:1px solid #e7d7e5;overflow:hidden;min-width:160px}
+.progressBar .fill{position:absolute;inset:0 auto 0 0;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+#progCnt{min-width:72px;text-align:right;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){ .progressBar .fill{transition:none} }
+/* === sticky progress (kusemon-like) === */
+.formbar.is-sticky{
+  position: sticky;
+  top: 0;                 /* 画面の最上部に貼り付く */
+  z-index: 30;
+  padding: 8px 12px;
+  margin: 0 -12px 12px;   /* .wrap の左右パディングを相殺して横いっぱいに */
+  background: linear-gradient(160deg,var(--bg1),var(--bg2));
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+@supports (top: env(safe-area-inset-top)){
+  .formbar.is-sticky{ top: max(0px, env(safe-area-inset-top)); }
+}
 </style>
 </head>
-<body>
+<body data-id="housekishin">
 <div class="wrap">
   <h1>宝石タイプ恋愛診断 48問</h1>
   <p class="lead">恋愛スタイル6×愛着4を、イメージイラストと棒グラフで可視化。5件法×48問。未回答があると結果は出ません。</p>
@@ -99,15 +126,21 @@ summary::-webkit-details-marker{display:none}
   </div>
 
   <!-- ====== FORM ====== -->
-  <section id="form" class="card">
-    <div id="qList"></div>
-    <div class="formbar">
-      <button id="btnReset" class="btn" type="button">クリア</button>
-      <div class="progress" id="prog">0 / 48</div>
-      <button id="btnSubmit" class="btn primary" type="button">結果を見る</button>
-    </div>
-  </section>
+<!-- sticky progress（kusemon風） -->
+<div id="progDock" class="formbar is-sticky">
+  <div class="progressBar" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="48" aria-valuenow="0">
+    <div id="progBar" class="fill" style="width:0%"></div>
+  </div>
+  <div id="progCnt" class="progress">0 / 48</div>
+  <button id="btnSubmit" class="btn primary" type="button">結果を見る</button>
+</div>
 
+<section id="form" class="card">
+  <div id="qList"></div>
+  <div class="formbar">
+    <button id="btnReset" class="btn" type="button">クリア</button>
+  </div>
+</section>
   <!-- ====== RESULT（縦積み配置） ====== -->
   <section id="result" class="result">
     <div class="card">
@@ -194,28 +227,32 @@ summary::-webkit-details-marker{display:none}
     agape:  { secure:"ダイヤモンド",       avoidant:"ゴシェナイト",             anxious:"モルガナイト",       fearful:"ムーンストーン"       }
   };
   const STYLE_ORDER = ["eros","ludus","storge","pragma","mania","agape"];
-  const LS_KEY = "houseki48_answers_v1";
+  const SLUG   = "housekishin";
+const ANS_KEY= "specimens:"+SLUG+":answers";
+const img    = $("#resultImg"); // ← 追加
 
   function saveAnswers(){
+  try{
     const data = {};
     ITEMS.forEach(q=>{
       const inp = document.querySelector(`input[name="q${q.id}"]:checked`);
       if(inp) data[q.id] = Number(inp.value);
     });
-    try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch{}
-  }
-  function loadAnswers(){
-    try{
-      const raw = localStorage.getItem(LS_KEY);
-      if(!raw) return;
-      const data = JSON.parse(raw);
-      Object.entries(data).forEach(([id,val])=>{
-        const sel = document.querySelector(`input[name="q${id}"][value="${val}"]`);
-        if(sel) sel.checked = true;
-      });
-    }catch{}
-  }
-
+    localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:data}));
+  }catch{}
+}
+function restoreAnswers(){
+  try{
+    const raw = localStorage.getItem(ANS_KEY);
+    if(!raw) return;
+    const box = JSON.parse(raw);
+    const data = (box && box.ans) || {};
+    Object.entries(data).forEach(([id,val])=>{
+      const sel = document.querySelector(`input[name="q${id}"][value="${val}"]`);
+      if(sel) sel.checked = true;
+    });
+  }catch{}
+}
   // 質問（1..48 / r:true=逆転）
   const ITEMS = [
     {id:1,t:"恋愛中は気持ちが高まると行動が早くなる。",dom:"eros",sub:"ideal"},
@@ -527,27 +564,41 @@ summary::-webkit-details-marker{display:none}
     const scale=document.createElement("div");
     scale.className="scale";
     scale.setAttribute("aria-describedby","scaleHelp");
-    for(let v=1; v<=5; v++){
-      const lab=document.createElement("label");
-      const input=document.createElement("input");
-      input.type="radio"; input.name="q"+q.id; input.value=String(v);
-      input.setAttribute("aria-label", v+"");
-      lab.appendChild(input); lab.appendChild(document.createTextNode(String(v)));
-      scale.appendChild(lab);
-    }
+    const LABELS=["全く","あまり","どちらとも","わりと","とても"];
+for(let v=1; v<=5; v++){
+  const input=document.createElement("input");
+  const iid = "q"+q.id+"_"+v;
+  input.id = iid;
+  input.type="radio"; input.name="q"+q.id; input.value=String(v);
+  input.setAttribute("aria-label", LABELS[v-1]);
+  const lab=document.createElement("label");
+  lab.setAttribute("for", iid);
+  lab.appendChild(document.createTextNode(LABELS[v-1]));
+  scale.appendChild(input);
+  scale.appendChild(lab);
+}
     box.appendChild(scale);
     qList.appendChild(box);
   });
 
-  loadAnswers();
+  restoreAnswers();
 
   // 進捗
-  const prog=$("#prog"), btnSubmit=$("#btnSubmit"), btnReset=$("#btnReset");
+  const progBar=$("#progBar"), progCnt=$("#progCnt"), btnSubmit=$("#btnSubmit"), btnReset=$("#btnReset");
   const answered = ()=> $$("input:checked").length;
   const updateProg = ()=>{
-    prog.textContent = `${answered()} / ${ITEMS.length}`;
-    btnSubmit.disabled = answered() < ITEMS.length;
-  };
+  const a = answered(), total = ITEMS.length, pct = Math.round(a/total*100);
+  if(progBar){ progBar.style.width = pct+'%'; }
+  const shell = document.querySelector('.formbar .progressBar');
+  if(shell){
+    shell.setAttribute('aria-valuemin','0');
+    shell.setAttribute('aria-valuemax', String(total));
+    shell.setAttribute('aria-valuenow', String(a));
+    shell.setAttribute('aria-label','回答進捗：'+a+' / '+total);
+  }
+  if(progCnt){ progCnt.textContent = `${a} / ${total}`; }
+  btnSubmit.disabled = a < total;
+};
   document.addEventListener("change", e=>{
     if(e.target.matches("input[type=radio]")){
       updateProg();
@@ -557,7 +608,7 @@ summary::-webkit-details-marker{display:none}
   updateProg();
   btnReset.addEventListener("click", ()=>{
     $$("input:checked").forEach(i=>i.checked=false);
-    try{ localStorage.removeItem(LS_KEY); }catch{}
+    try{ localStorage.removeItem(ANS_KEY); }catch{}
     updateProg();
     window.scrollTo({top:0,behavior:"smooth"});
   });
@@ -646,14 +697,12 @@ summary::-webkit-details-marker{display:none}
     $("#kvStyle").textContent = STYLE_JP[style];
     $("#kvAttach").textContent = ATTACH_JP[attach];
 
-    const no = {secure:"01", avoidant:"02", anxious:"03", fearful:"04"}[attach];
-    const src = `/shindan/assets/results/houseki-bundle/${style}/${no}.png`;
-    const img = $("#resultImg"), ph=$("#imgPh");
-    ph.style.display="grid";
-    img.alt = `${GEM_NAME[style][attach]}（${STYLE_JP[style]} × ${ATTACH_JP[attach]}）のイメージイラスト`;
-    img.onload = ()=>{ ph.style.display="none"; };
-    img.onerror= ()=>{ ph.textContent="画像を読み込めませんでした。"; };
-    img.src = src;
+    const IMG_BASE = "/shindan/assets/results/houseki/";
+const styleOrder = ["eros","ludus","storge","pragma","mania","agape"];
+const attOrder   = ["secure","avoidant","anxious","fearful"];
+const idx = styleOrder.indexOf(style)*4 + attOrder.indexOf(attach) + 1; // 1..24
+const nn  = String(idx).padStart(2,"0");
+img.src   = IMG_BASE + "t" + nn + ".webp";
 
     const mainWrap=$("#barsMain"); mainWrap.innerHTML="";
     for(const k of STYLE_ORDER) mainWrap.appendChild(barRow(STYLE_JP[k], r.main[k]));
@@ -662,6 +711,7 @@ summary::-webkit-details-marker{display:none}
     for(const [dom,sub] of SUB_KEYS) subWrap.appendChild(barRow(`${STYLE_JP[dom]}：${({action:"行動",ideal:"理想観",free:"自由度",light:"軽さ"})[sub]||sub}`, r.subs[dom+":"+sub]));
 
     const d = DESC[style];
+    
 
     // 第二因子
     const sorted = Object.entries(r.main).sort((a,b)=>b[1]-a[1]);
@@ -734,12 +784,37 @@ summary::-webkit-details-marker{display:none}
     // 愛着スタイルの説明
     $("#descAttach").textContent = ATTACH_DESC[attach];
 
-    $("#form").style.display="none";
-    $("#result").classList.add("show");
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
+  $("#form").style.display="none";
+  $("#result").classList.add("show");
+  var dock=document.getElementById('progDock'); if(dock) dock.style.display='none';
+  try{
+    document.dispatchEvent(new Event('result:ready')); // 合図：済／あなたのLv／みんなのLv
+    localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: "宝石タイプ恋愛診断 48問", href: location.pathname }));
+  }catch(e){}
+  window.scrollTo({top:0,behavior:"smooth"});
+} // ← showResult をここで閉じる
 
-  $("#btnSubmit").addEventListener("click", ()=>{ if(ensureAll()) showResult(); });
+// 初期化後にボタンイベントを設定（外側）
+$("#btnSubmit").addEventListener("click", ()=>{ if(ensureAll()) showResult(); });
+
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'unknown';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hit(){ var u='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(u); }catch(_){}} else { fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); } }
+  var marked=false; function markOnce(){ if(marked) return; marked=true; try{
+    localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+    var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+    map[MY_ID]=(map[MY_ID]||0)+1; localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    hit(); try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+  }catch(_){} }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
