@@ -46,7 +46,7 @@
   .hidden{display:none !important}
 </style>
 </head>
-<body>
+<body data-id="forbidden-love">
 <header><div class="inner">
   <h1>forbidden love（分岐ノベル）</h1>
   <span class="crumb">0章 → 1〜7章 → 結果</span>
@@ -1151,6 +1151,10 @@
       Object.assign(State, {L:0,D:0,S:0,R:0,trail:[],ch4Branch:null,finalRoute:null});
       renderChapter(0);
     };
+    try{
+      document.dispatchEvent(new Event('result:ready'));
+      localStorage.setItem("specimens:last", JSON.stringify({ id: "forbidden-love", title: "forbidden love（分岐ノベル）", href: location.pathname }));
+    }catch(_){}
     window.scrollTo(0,0);
   }
 
@@ -1176,6 +1180,33 @@ document.head.appendChild(style);// ---- 起動：0章テンプレがあれば0�
   }
   if (document.getElementById('chapter-0')) { renderChapter(0); }
   else { splash(); renderChapter(1); }
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'unknown';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hit(){
+    var u='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(u); }catch(_){ } }
+    else { fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hit();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
 })();
 </script>
 <!-- ===== /GLUE PACK ===== -->
