@@ -35,7 +35,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 .opts input{position:absolute;opacity:0}
 .opts input:checked+span{outline:2px solid var(--accent);border-radius:10px;outline-offset:2px}
 .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
-.stickybar{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e8eefc;display:flex;align-items:center;gap:10px}
+.stickybar{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;background:#fff;border-bottom:1px solid #e8eefc;display:flex;align-items:center;gap:10px}
 .progress{height:8px;background:#e8eefc;border-radius:999px;flex:1;overflow:hidden}
 .progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#bfe3ff,#a48bff)}
 .btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
@@ -44,7 +44,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 
 /* 結果ヘッダ強化：画像大きめ */
 .res-header{display:grid;grid-template-columns:minmax(260px,clamp(360px,56vw,640px)) 1fr;gap:16px;align-items:center}
-.rank-large{display:contents}
+.rank-large{}
 .rank-large img{width:100%;height:auto;border-radius:18px;border:1px solid #e6ebff;background:#fff;object-fit:contain}
 
 /* タイトル等 */
@@ -66,9 +66,17 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 @media (max-width:720px){
   .opts{grid-template-columns:1fr}
 }
+/* ===== noh風：横メーター ===== */
+.factors{display:grid;gap:12px}
+.meter{display:grid;gap:8px}
+.meter .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meter .row .name{font-weight:700}
+.mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
+.mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pct{font-variant-numeric:tabular-nums;color:#4e4e6a}
 </style>
 </head>
-<body>
+<body data-id="persona-weather">
 <main class="wrap" id="app">
   <header class="header">
     <div class="logo">🌦️</div>
@@ -87,16 +95,8 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 
   <div class="cols">
     <section class="card section">
-      <h2>説明</h2>
-      <p>直感で選んでください（全問必須）。</p>
-      <div class="warn">
-        <strong>ご利用にあたって</strong><br>
-        ・このコンテンツは<strong>エンタメ目的</strong>の自己理解ツールです。医療・診断・治療・カウンセリング等には使えません。<br>
-        ・<strong>最終判断はご自身で</strong>お願いします。業務や進路など重要な決定の唯一の根拠にはしないでください。<br>
-        ・<strong>プライバシー</strong>：回答は端末内で処理し、サーバー送信は想定していません（ご利用環境によりアクセス解析が動作する場合があります）。<br>
-        ・<strong>データの扱い</strong>：入力内容は保存しません（ブラウザのローカル保存をクリアすれば消去されます）。<br>
-        ・<strong>表現について</strong>：名称や比喩は演出表現であり、宗教的・倫理的価値判断を意図しません。
-      </div>
+      <h2>直感で選んでください</h2>
+  
     </section>
 
     <!-- 設問：ここに生成 -->
@@ -136,8 +136,8 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
           <h2 style="margin:0 0 8px;font-size:1.05rem">グラフ</h2>
           <div class="small">上：空模様の傾き（4本）／下：元型の上位3（3本）</div>
           <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px">
-            <canvas id="chartWeather" width="640" height="120" aria-label="空模様スコア" role="img"></canvas>
-            <canvas id="chartTop3" width="640" height="120" aria-label="元型トップ3" role="img"></canvas>
+            <div id="meterWeather" class="factors" aria-label="空模様（％）"></div>
+            <div id="meterTypes" class="factors" aria-label="元型トップ3（％）"></div>
           </div>
         </div>
 
@@ -153,8 +153,6 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
     <ul>
       <li><strong>エンタメ用途：</strong>自己理解のきっかけ作りのためのコンテンツです。医療・診断・治療・カウンセリング等の目的では利用できません。</li>
       <li><strong>最終判断はご自身で：</strong>結果の解釈・活用はご自身の責任で行ってください。業務上の重要判断や進路決定の唯一の根拠にはしないでください。</li>
-      <li><strong>プライバシー：</strong>回答は<strong>端末内で処理</strong>し、サーバーへの送信は想定していません（ご利用環境によりアクセス解析が動作する場合があります）。</li>
-      <li><strong>データの扱い：</strong>入力内容は保存しません（ブラウザのローカル保存をクリアすれば消去されます）。</li>
       <li><strong>表現について：</strong>因子名・比喩は演出表現です。宗教的・倫理的価値判断を意図しません。</li>
     </ul>
   </section>
@@ -444,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     qContainer.innerHTML = html;
     document.querySelectorAll('#qContainer input[type="radio"]').forEach(el=>{
-      el.addEventListener('change', updateProgress, {passive:true});
+      el.addEventListener('change', ()=>{ saveLocal(); updateProgress(); }, {passive:true});
     });
     updateProgress();
   }
@@ -515,29 +513,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 横向きグラフ
   let chartWeather=null, chartTop3=null;
-  function drawCharts(r){
-    const wLabels = ["晴れ","雷","雪","風"];
-    const wData = [r.wCount.hare, r.wCount.kaminari, r.wCount.yuki, r.wCount.kaze];
-    const ctxW = document.getElementById('chartWeather').getContext('2d');
-    if(chartWeather) chartWeather.destroy();
-    chartWeather = new Chart(ctxW, {
-      type:'bar',
-      data:{ labels:wLabels, datasets:[{label:'選択数（全10問）', data:wData}] },
-      options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} },
-        scales:{ x:{ beginAtZero:true, max:10, ticks:{ stepSize:2 } } } }
-    });
+  function renderMeters(r){
+  // 空模様（4本 / 10問 → %）
+  const mw = document.getElementById('meterWeather');
+  const wList = [
+    {name:"晴れ",   pct: Math.round(100 * r.wCount.hare / 10)},
+    {name:"雷",     pct: Math.round(100 * r.wCount.kaminari / 10)},
+    {name:"雪",     pct: Math.round(100 * r.wCount.yuki / 10)},
+    {name:"風",     pct: Math.round(100 * r.wCount.kaze / 10)}
+  ];
+  mw.innerHTML = wList.map((e,i)=>{
+    const id = 'mw-'+i;
+    return '<div class="meter" role="group" aria-label="'+e.name+'">'+
+             '<div class="row"><div class="name">'+e.name+'</div><div class="pct" id="'+id+'-pct">'+e.pct+'%</div></div>'+
+             '<div class="mbar" aria-hidden="true"><span id="'+id+'" style="width:'+e.pct+'%"></span></div>'+
+           '</div>';
+  }).join('');
 
-    const tLabels = r.top3.map(([k])=>TYPES[k] ? TYPES[k].name : k);
-    const tData = r.top3.map(([,v])=>v);
-    const ctxT = document.getElementById('chartTop3').getContext('2d');
-    if(chartTop3) chartTop3.destroy();
-    chartTop3 = new Chart(ctxT, {
-      type:'bar',
-      data:{ labels:tLabels, datasets:[{label:'選択数（全10問）', data:tData}] },
-      options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} },
-        scales:{ x:{ beginAtZero:true, max:10, ticks:{ stepSize:2 } } } }
-    });
-  }
+  // 元型トップ3（3本 / 10問 → %）
+  const mt = document.getElementById('meterTypes');
+  const tList = r.top3.map(([k,v])=>({ name:(TYPES[k]?TYPES[k].name:k), pct: Math.round(100*v/10) }));
+  mt.innerHTML = tList.map((e,i)=>{
+    const id = 'mt-'+i;
+    return '<div class="meter" role="group" aria-label="'+e.name+'">'+
+             '<div class="row"><div class="name">'+e.name+'</div><div class="pct" id="'+id+'-pct">'+e.pct+'%</div></div>'+
+             '<div class="mbar" aria-hidden="true"><span id="'+id+'" style="width:'+e.pct+'%"></span></div>'+
+           '</div>';
+  }).join('');
+}
 
   // 結果コメント
   function buildNarrative(r){
@@ -577,10 +580,16 @@ document.addEventListener('DOMContentLoaded', () => {
     heroImg.alt = `${tMeta.name}のイラスト`;
 
     document.getElementById("moreText").innerHTML = buildNarrative(r);
-    drawCharts(r);
+    renderMeters(r);
 
     document.getElementById("resEmpty").classList.add("hidden");
     document.getElementById("resArea").classList.remove("hidden");
+
+    // みんなのこころLv通知＆last保存
+    try{
+      document.dispatchEvent(new Event('result:ready'));
+      localStorage.setItem('specimens:last', JSON.stringify({ id: 'persona-weather', title: 'ペルソナ天気人格診断', href: location.pathname }));
+    }catch{}
 
     try{
       const params = new URLSearchParams(); params.set("w", r.weather); params.set("t", r.type);
@@ -591,6 +600,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // 操作
   function compute(){
     const {missing, weatherAns, typeAns} = readAnswers();
+    function saveLocal(){
+  try{
+    const {weatherAns, typeAns} = readAnswers();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({weatherAns, typeAns}));
+  }catch{}
+}
     if(missing.length){
       alert(`未回答があります（${missing.slice(0,6).map(n=>"Q"+n).join(", ")}${missing.length>6?" ほか":""}）。すべての20問に回答してください。`);
       const first = missing[0];
@@ -645,6 +660,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }catch(_e){}
   }
 });
+window.addEventListener('beforeunload', saveLocal);
+window.addEventListener('pagehide', saveLocal);
+window.addEventListener('pageshow', restore);
+</script>
+<!-- みんなのこころLv（result:readyでカウント） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'unknown';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hitEveryone(){
+    var u='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(u); }catch(_){} }
+    else{ fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
 </script>
 </body>
 </html>
