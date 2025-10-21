@@ -3,389 +3,623 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>能面ヘラ度診断｜心の標本</title>
-<meta name="description" content="12問×5件法の総合スコアで、あなたの“能面ヘラ度”を6段階（小面→蛇般若）で判定します。">
+<title>能面ヘラ度診断</title>
+<meta name="description" content="20問×5件法の総合スコアで、あなたの“能面ヘラ度”を6段階（小面→蛇般若）で判定します。">
 <meta name="theme-color" content="#f6f4ff">
-<link rel="preload" as="image" href="/shindan/assets/results/noh-menhera/01.png">
+<link rel="preload" as="image" href="/shindan/assets/results/noh-menhera/t01.webp">
 <style>
 :root{
-  --bg1:#fffafe; --bg2:#f3f4ff; --card:#ffffff; --ink:#26263a;
-  --brand:#6b6bd9; --muted:#6f6f82; --line:#e7e6f2; --accent:#b96ad6;
+  --accent:#6b6bd9; --accent2:#b96ad6;
+  --ink:#26263a; --muted:#667087; --paper:#fff;
+  --bg1:#fffafe; --bg2:#f3f4ff; --line:#e7e6f2;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,
-  "Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
   color:var(--ink);
-  background:linear-gradient(var(--bg1),var(--bg2));
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
 }
-.wrap{max-width:920px;margin:0 auto;padding:24px 16px}
-header{text-align:center;margin:0 0 16px}
-h1{margin:0;color:var(--brand);font-size:clamp(20px,5.5vw,30px)}
-.sub{color:var(--muted);font-size:.92em;margin:.4rem 0 0}
-.badge{display:inline-block;margin-top:6px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fafaff;color:#5b5b73;font-size:.78em}
-.card{
-  background:var(--card); border:1px solid var(--line);
-  border-radius:16px; padding:14px 12px; margin:12px 0;
-  box-shadow:0 8px 22px rgba(30,40,90,.06);
-}
-.note{color:var(--muted);font-size:.92em;margin:.3rem 2px .6rem}
-.q{padding:10px 8px;border-top:1px dashed var(--line)}
-.q:first-child{border-top:none}
-.q legend{font-weight:700;margin-bottom:8px}
-.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-input[type=radio]{position:absolute;opacity:0;pointer-events:none}
-label.opt{
-  display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--line);border-radius:10px;padding:10px 0;
-  background:#fafaff;cursor:pointer;user-select:none;font-size:.95em
-}
-input[type=radio]:checked+label.opt{
-  outline:2px solid var(--accent); background:#f7efff;
-}
-.btn{
-  display:block;width:100%;margin:14px 0 0;padding:14px 12px;
-  background:linear-gradient(135deg,#7b6bd9,#b96ad6);
-  color:#fff;border:none;border-radius:12px;font-weight:800;font-size:1rem;
-  box-shadow:0 10px 18px rgba(125,90,210,.28);cursor:pointer;
-}
-.btn:active{transform:translateY(1px)}
-.err{outline:2px solid #ff6b8a !important; background:#fff0f4 !important}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#f0eaff,#e7f0ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em;color:#5a57ce}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.small{color:var(--muted);font-size:.92em}
 
-#result{display:none}
-.res-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.res-head img{width:124px;height:124px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
-.res-title{font-size:1.1rem;font-weight:900;color:#363661}
-.score{color:#5b5b73;margin-top:2px}
-.res-body{margin-top:8px;line-height:1.9}
-.res-body p{margin:.7em 0}
-.tagline{display:inline-block;margin:.2rem 0 .6rem;padding:4px 8px;border-radius:8px;background:#f0edff;color:#4b4b79;font-size:.85em;border:1px solid var(--line)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-a.back{
-  color:#fff;background:#6b6bd9;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700
-}
-.small{font-size:.85em;color:#6b6b7a}
-hr.sep{border:0;border-top:1px dashed var(--line);margin:10px 0}
-@media (min-width:760px){
- .opts{gap:10px}
- .res-head img{width:156px;height:156px}
+/* 📊 sticky progress（extra準拠） */
+.sticky{position:sticky;top:0;z-index:20;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+
+/* 設問（くせもん風5件法） */
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+/* 結果：正方形ヒーロー＋因子バー */
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-square figcaption{padding:10px;width:100%}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.sep{height:1px;background:var(--line);margin:10px 0}
+
+/* 因子バー（冒険者風％表記） */
+.factors{display:grid;gap:10px}
+.meter{display:grid;gap:6px}
+.meter .row{display:flex;align-items:center;justify-content:space-between}
+.meter .row .name{font-weight:700}
+.mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
+.mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pct{font-variant-numeric:tabular-nums;color:#4e4e6a}
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .card{padding:12px}
 }
 </style>
 </head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>能面ヘラ度診断</h1>
-    <p class="sub">12問×5件法の合計スコアで、あなたの“能面ヘラ度”を6段階（小面→蛇般若）で表示します。</p>
-    <div class="badge">（参考にした研究領域：神経症傾向／反芻傾向／感情調整の困難／愛着（不安・回避）／自己概念の明確さ／衝動性／対人過敏・依存　※非提携・非公式／正式な心理検査の文言・採点は使用していません）</div>
+<body data-id="noh-menhera">
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🎭</div>
+    <div>
+      <h1>能面ヘラ度診断</h1>
+      <p class="sub">20問×5件法の合計スコアで、あなたの“能面ヘラ度”を6段階（小面→蛇般若）で表示します。</p>
+    </div>
   </header>
 
-  <section id="form" class="card">
-    <p class="note">最近のあなたに最も近いものを選択（0=全くない / 1=まれにある / 2=ときどきある / 3=よくある / 4=いつもある）。※エンタメ＋自己理解向け</p>
+  <!-- 📊 sticky progress -->
+  <div class="sticky" aria-live="polite">
+    <span aria-hidden="true">📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
 
+  <!-- 説明 -->
+  <section class="card">
+    <div class="pill">質問数：20</div>
+    <div class="pill" style="margin-left:6px">形式：0–4（0=全くない / 4=いつもある）</div>
+    <p class="small" style="margin-top:8px">最近のあなたに最も近いものを選択してください（エンタメ＋自己理解向け）。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card" id="questions">
+    <h2 style="margin:4px 0 8px">設問（0=全くない／1=まれにある／2=ときどきある／3=よくある／4=いつもある）</h2>
     <form id="quiz" novalidate>
-      <!-- 12問：逆転 3,6,10（4−値） -->
-
-      <fieldset class="q">
+      <!-- 20問：逆転 3,6,10（4−値）／文言は元の12問＋追加8問 -->
+      <fieldset class="q" id="fs-1">
         <legend>1. 返信が遅いだけで、頭と心が同時にざわつく。</legend>
-        <div class="opts">
-          <input id="q1-0" name="q1" type="radio" value="0"><label class="opt" for="q1-0">0</label>
-          <input id="q1-1" name="q1" type="radio" value="1"><label class="opt" for="q1-1">1</label>
-          <input id="q1-2" name="q1" type="radio" value="2"><label class="opt" for="q1-2">2</label>
-          <input id="q1-3" name="q1" type="radio" value="3"><label class="opt" for="q1-3">3</label>
-          <input id="q1-4" name="q1" type="radio" value="4"><label class="opt" for="q1-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="1">
+          <input id="q1-0" type="radio" name="q1" value="0"><label for="q1-0">全くない</label>
+          <input id="q1-1" type="radio" name="q1" value="1"><label for="q1-1">まれにある</label>
+          <input id="q1-2" type="radio" name="q1" value="2"><label for="q1-2">ときどきある</label>
+          <input id="q1-3" type="radio" name="q1" value="3"><label for="q1-3">よくある</label>
+          <input id="q1-4" type="radio" name="q1" value="4"><label for="q1-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-2">
         <legend>2. 深夜、長文や通話ボタンに指が吸い寄せられる。</legend>
-        <div class="opts">
-          <input id="q2-0" name="q2" type="radio" value="0"><label class="opt" for="q2-0">0</label>
-          <input id="q2-1" name="q2" type="radio" value="1"><label class="opt" for="q2-1">1</label>
-          <input id="q2-2" name="q2" type="radio" value="2"><label class="opt" for="q2-2">2</label>
-          <input id="q2-3" name="q2" type="radio" value="3"><label class="opt" for="q2-3">3</label>
-          <input id="q2-4" name="q2" type="radio" value="4"><label class="opt" for="q2-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="2">
+          <input id="q2-0" type="radio" name="q2" value="0"><label for="q2-0">全くない</label>
+          <input id="q2-1" type="radio" name="q2" value="1"><label for="q2-1">まれにある</label>
+          <input id="q2-2" type="radio" name="q2" value="2"><label for="q2-2">ときどきある</label>
+          <input id="q2-3" type="radio" name="q2" value="3"><label for="q2-3">よくある</label>
+          <input id="q2-4" type="radio" name="q2" value="4"><label for="q2-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-3">
         <legend>3. SNSデトックス（半日〜1日）を意図的に実行できる。</legend>
-        <div class="opts">
-          <input id="q3-0" name="q3" type="radio" value="0"><label class="opt" for="q3-0">0</label>
-          <input id="q3-1" name="q3" type="radio" value="1"><label class="opt" for="q3-1">1</label>
-          <input id="q3-2" name="q3" type="radio" value="2"><label class="opt" for="q3-2">2</label>
-          <input id="q3-3" name="q3" type="radio" value="3"><label class="opt" for="q3-3">3</label>
-          <input id="q3-4" name="q3" type="radio" value="4"><label class="opt" for="q3-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="3">
+          <input id="q3-0" type="radio" name="q3" value="0"><label for="q3-0">全くない</label>
+          <input id="q3-1" type="radio" name="q3" value="1"><label for="q3-1">まれにある</label>
+          <input id="q3-2" type="radio" name="q3" value="2"><label for="q3-2">ときどきある</label>
+          <input id="q3-3" type="radio" name="q3" value="3"><label for="q3-3">よくある</label>
+          <input id="q3-4" type="radio" name="q3" value="4"><label for="q3-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-4">
         <legend>4. ストーリー既読や「いいね」1個を“事件”に昇格させがち。</legend>
-        <div class="opts">
-          <input id="q4-0" name="q4" type="radio" value="0"><label class="opt" for="q4-0">0</label>
-          <input id="q4-1" name="q4" type="radio" value="1"><label class="opt" for="q4-1">1</label>
-          <input id="q4-2" name="q4" type="radio" value="2"><label class="opt" for="q4-2">2</label>
-          <input id="q4-3" name="q4" type="radio" value="3"><label class="opt" for="q4-3">3</label>
-          <input id="q4-4" name="q4" type="radio" value="4"><label class="opt" for="q4-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="4">
+          <input id="q4-0" type="radio" name="q4" value="0"><label for="q4-0">全くない</label>
+          <input id="q4-1" type="radio" name="q4" value="1"><label for="q4-1">まれにある</label>
+          <input id="q4-2" type="radio" name="q4" value="2"><label for="q4-2">ときどきある</label>
+          <input id="q4-3" type="radio" name="q4" value="3"><label for="q4-3">よくある</label>
+          <input id="q4-4" type="radio" name="q4" value="4"><label for="q4-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-5">
         <legend>5. 不安で「試し行動」（既読放置・急な距離取りなど）をやりがち。</legend>
-        <div class="opts">
-          <input id="q5-0" name="q5" type="radio" value="0"><label class="opt" for="q5-0">0</label>
-          <input id="q5-1" name="q5" type="radio" value="1"><label class="opt" for="q5-1">1</label>
-          <input id="q5-2" name="q5" type="radio" value="2"><label class="opt" for="q5-2">2</label>
-          <input id="q5-3" name="q5" type="radio" value="3"><label class="opt" for="q5-3">3</label>
-          <input id="q5-4" name="q5" type="radio" value="4"><label class="opt" for="q5-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="5">
+          <input id="q5-0" type="radio" name="q5" value="0"><label for="q5-0">全くない</label>
+          <input id="q5-1" type="radio" name="q5" value="1"><label for="q5-1">まれにある</label>
+          <input id="q5-2" type="radio" name="q5" value="2"><label for="q5-2">ときどきある</label>
+          <input id="q5-3" type="radio" name="q5" value="3"><label for="q5-3">よくある</label>
+          <input id="q5-4" type="radio" name="q5" value="4"><label for="q5-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-6">
         <legend>6. 自分の気持ちを言葉にして、落ち着いて伝えられる。</legend>
-        <div class="opts">
-          <input id="q6-0" name="q6" type="radio" value="0"><label class="opt" for="q6-0">0</label>
-          <input id="q6-1" name="q6" type="radio" value="1"><label class="opt" for="q6-1">1</label>
-          <input id="q6-2" name="q6" type="radio" value="2"><label class="opt" for="q6-2">2</label>
-          <input id="q6-3" name="q6" type="radio" value="3"><label class="opt" for="q6-3">3</label>
-          <input id="q6-4" name="q6" type="radio" value="4"><label class="opt" for="q6-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="6">
+          <input id="q6-0" type="radio" name="q6" value="0"><label for="q6-0">全くない</label>
+          <input id="q6-1" type="radio" name="q6" value="1"><label for="q6-1">まれにある</label>
+          <input id="q6-2" type="radio" name="q6" value="2"><label for="q6-2">ときどきある</label>
+          <input id="q6-3" type="radio" name="q6" value="3"><label for="q6-3">よくある</label>
+          <input id="q6-4" type="radio" name="q6" value="4"><label for="q6-4">いつもある</label>
         </div>
       </fieldset>
-      <!-- ▼ ここから PART 2/3：設問7〜12を追加してから、送信ボタン＆結果枠へ -->
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-7">
         <legend>7. 比較スクロール（他人と自分）を止められない時がある。</legend>
-        <div class="opts">
-          <input id="q7-0" name="q7" type="radio" value="0"><label class="opt" for="q7-0">0</label>
-          <input id="q7-1" name="q7" type="radio" value="1"><label class="opt" for="q7-1">1</label>
-          <input id="q7-2" name="q7" type="radio" value="2"><label class="opt" for="q7-2">2</label>
-          <input id="q7-3" name="q7" type="radio" value="3"><label class="opt" for="q7-3">3</label>
-          <input id="q7-4" name="q7" type="radio" value="4"><label class="opt" for="q7-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="7">
+          <input id="q7-0" type="radio" name="q7" value="0"><label for="q7-0">全くない</label>
+          <input id="q7-1" type="radio" name="q7" value="1"><label for="q7-1">まれにある</label>
+          <input id="q7-2" type="radio" name="q7" value="2"><label for="q7-2">ときどきある</label>
+          <input id="q7-3" type="radio" name="q7" value="3"><label for="q7-3">よくある</label>
+          <input id="q7-4" type="radio" name="q7" value="4"><label for="q7-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-8">
         <legend>8. 相手の一言を深読みしすぎて、勝手に物語を作ってしまう。</legend>
-        <div class="opts">
-          <input id="q8-0" name="q8" type="radio" value="0"><label class="opt" for="q8-0">0</label>
-          <input id="q8-1" name="q8" type="radio" value="1"><label class="opt" for="q8-1">1</label>
-          <input id="q8-2" name="q8" type="radio" value="2"><label class="opt" for="q8-2">2</label>
-          <input id="q8-3" name="q8" type="radio" value="3"><label class="opt" for="q8-3">3</label>
-          <input id="q8-4" name="q8" type="radio" value="4"><label class="opt" for="q8-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="8">
+          <input id="q8-0" type="radio" name="q8" value="0"><label for="q8-0">全くない</label>
+          <input id="q8-1" type="radio" name="q8" value="1"><label for="q8-1">まれにある</label>
+          <input id="q8-2" type="radio" name="q8" value="2"><label for="q8-2">ときどきある</label>
+          <input id="q8-3" type="radio" name="q8" value="3"><label for="q8-3">よくある</label>
+          <input id="q8-4" type="radio" name="q8" value="4"><label for="q8-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-9">
         <legend>9. 緊張や不安で、睡眠や食事が乱れやすい。</legend>
-        <div class="opts">
-          <input id="q9-0" name="q9" type="radio" value="0"><label class="opt" for="q9-0">0</label>
-          <input id="q9-1" name="q9" type="radio" value="1"><label class="opt" for="q9-1">1</label>
-          <input id="q9-2" name="q9" type="radio" value="2"><label class="opt" for="q9-2">2</label>
-          <input id="q9-3" name="q9" type="radio" value="3"><label class="opt" for="q9-3">3</label>
-          <input id="q9-4" name="q9" type="radio" value="4"><label class="opt" for="q9-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="9">
+          <input id="q9-0" type="radio" name="q9" value="0"><label for="q9-0">全くない</label>
+          <input id="q9-1" type="radio" name="q9" value="1"><label for="q9-1">まれにある</label>
+          <input id="q9-2" type="radio" name="q9" value="2"><label for="q9-2">ときどきある</label>
+          <input id="q9-3" type="radio" name="q9" value="3"><label for="q9-3">よくある</label>
+          <input id="q9-4" type="radio" name="q9" value="4"><label for="q9-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-10">
         <legend>10. 問題が起きても、ひと晩寝ればだいたい切り替えられる。</legend>
-        <div class="opts">
-          <input id="q10-0" name="q10" type="radio" value="0"><label class="opt" for="q10-0">0</label>
-          <input id="q10-1" name="q10" type="radio" value="1"><label class="opt" for="q10-1">1</label>
-          <input id="q10-2" name="q10" type="radio" value="2"><label class="opt" for="q10-2">2</label>
-          <input id="q10-3" name="q10" type="radio" value="3"><label class="opt" for="q10-3">3</label>
-          <input id="q10-4" name="q10" type="radio" value="4"><label class="opt" for="q10-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="10">
+          <input id="q10-0" type="radio" name="q10" value="0"><label for="q10-0">全くない</label>
+          <input id="q10-1" type="radio" name="q10" value="1"><label for="q10-1">まれにある</label>
+          <input id="q10-2" type="radio" name="q10" value="2"><label for="q10-2">ときどきある</label>
+          <input id="q10-3" type="radio" name="q10" value="3"><label for="q10-3">よくある</label>
+          <input id="q10-4" type="radio" name="q10" value="4"><label for="q10-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-11">
         <legend>11. 鍵垢や下書きで本音を吐き出してしまうことが多い。</legend>
-        <div class="opts">
-          <input id="q11-0" name="q11" type="radio" value="0"><label class="opt" for="q11-0">0</label>
-          <input id="q11-1" name="q11" type="radio" value="1"><label class="opt" for="q11-1">1</label>
-          <input id="q11-2" name="q11" type="radio" value="2"><label class="opt" for="q11-2">2</label>
-          <input id="q11-3" name="q11" type="radio" value="3"><label class="opt" for="q11-3">3</label>
-          <input id="q11-4" name="q11" type="radio" value="4"><label class="opt" for="q11-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="11">
+          <input id="q11-0" type="radio" name="q11" value="0"><label for="q11-0">全くない</label>
+          <input id="q11-1" type="radio" name="q11" value="1"><label for="q11-1">まれにある</label>
+          <input id="q11-2" type="radio" name="q11" value="2"><label for="q11-2">ときどきある</label>
+          <input id="q11-3" type="radio" name="q11" value="3"><label for="q11-3">よくある</label>
+          <input id="q11-4" type="radio" name="q11" value="4"><label for="q11-4">いつもある</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-12">
         <legend>12. ブロ解・ミュートなど“距離の出し入れ”を衝動でやってしまう。</legend>
-        <div class="opts">
-          <input id="q12-0" name="q12" type="radio" value="0"><label class="opt" for="q12-0">0</label>
-          <input id="q12-1" name="q12" type="radio" value="1"><label class="opt" for="q12-1">1</label>
-          <input id="q12-2" name="q12" type="radio" value="2"><label class="opt" for="q12-2">2</label>
-          <input id="q12-3" name="q12" type="radio" value="3"><label class="opt" for="q12-3">3</label>
-          <input id="q12-4" name="q12" type="radio" value="4"><label class="opt" for="q12-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="12">
+          <input id="q12-0" type="radio" name="q12" value="0"><label for="q12-0">全くない</label>
+          <input id="q12-1" type="radio" name="q12" value="1"><label for="q12-1">まれにある</label>
+          <input id="q12-2" type="radio" name="q12" value="2"><label for="q12-2">ときどきある</label>
+          <input id="q12-3" type="radio" name="q12" value="3"><label for="q12-3">よくある</label>
+          <input id="q12-4" type="radio" name="q12" value="4"><label for="q12-4">いつもある</label>
         </div>
       </fieldset>
 
-      <!-- 送信ボタン＆注記 -->
-      <button type="button" class="btn" id="go">診断する</button>
-      <p class="note small">※合計0〜48点。カットオフ：0–7 小面 / 8–15 深井 / 16–23 増女 / 24–31 般若 / 32–39 黒般若 / 40–48 蛇般若。逆転項目：3,6,10。</p>
+      <!-- 追加の8問 -->
+      <fieldset class="q" id="fs-13">
+        <legend>13. 連絡が返ってこないと、最悪の展開を想像してしまう。</legend>
+        <div class="scale" role="radiogroup" aria-label="13">
+          <input id="q13-0" type="radio" name="q13" value="0"><label for="q13-0">全くない</label>
+          <input id="q13-1" type="radio" name="q13" value="1"><label for="q13-1">まれにある</label>
+          <input id="q13-2" type="radio" name="q13" value="2"><label for="q13-2">ときどきある</label>
+          <input id="q13-3" type="radio" name="q13" value="3"><label for="q13-3">よくある</label>
+          <input id="q13-4" type="radio" name="q13" value="4"><label for="q13-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-14">
+        <legend>14. 気分の波が強く、うまく扱いにくいと感じることがある。</legend>
+        <div class="scale" role="radiogroup" aria-label="14">
+          <input id="q14-0" type="radio" name="q14" value="0"><label for="q14-0">全くない</label>
+          <input id="q14-1" type="radio" name="q14" value="1"><label for="q14-1">まれにある</label>
+          <input id="q14-2" type="radio" name="q14" value="2"><label for="q14-2">ときどきある</label>
+          <input id="q14-3" type="radio" name="q14" value="3"><label for="q14-3">よくある</label>
+          <input id="q14-4" type="radio" name="q14" value="4"><label for="q14-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-15">
+        <legend>15. 相手の一挙一動をSNSで確認してしまう。</legend>
+        <div class="scale" role="radiogroup" aria-label="15">
+          <input id="q15-0" type="radio" name="q15" value="0"><label for="q15-0">全くない</label>
+          <input id="q15-1" type="radio" name="q15" value="1"><label for="q15-1">まれにある</label>
+          <input id="q15-2" type="radio" name="q15" value="2"><label for="q15-2">ときどきある</label>
+          <input id="q15-3" type="radio" name="q15" value="3"><label for="q15-3">よくある</label>
+          <input id="q15-4" type="radio" name="q15" value="4"><label for="q15-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-16">
+        <legend>16. 失敗や恥ずかしさを何度も思い返してしまう。</legend>
+        <div class="scale" role="radiogroup" aria-label="16">
+          <input id="q16-0" type="radio" name="q16" value="0"><label for="q16-0">全くない</label>
+          <input id="q16-1" type="radio" name="q16" value="1"><label for="q16-1">まれにある</label>
+          <input id="q16-2" type="radio" name="q16" value="2"><label for="q16-2">ときどきある</label>
+          <input id="q16-3" type="radio" name="q16" value="3"><label for="q16-3">よくある</label>
+          <input id="q16-4" type="radio" name="q16" value="4"><label for="q16-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-17">
+        <legend>17. 会っていない間も相手のことが気になって集中しづらい。</legend>
+        <div class="scale" role="radiogroup" aria-label="17">
+          <input id="q17-0" type="radio" name="q17" value="0"><label for="q17-0">全くない</label>
+          <input id="q17-1" type="radio" name="q17" value="1"><label for="q17-1">まれにある</label>
+          <input id="q17-2" type="radio" name="q17" value="2"><label for="q17-2">ときどきある</label>
+          <input id="q17-3" type="radio" name="q17" value="3"><label for="q17-3">よくある</label>
+          <input id="q17-4" type="radio" name="q17" value="4"><label for="q17-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-18">
+        <legend>18. 感情的になった時、SNSで発信してしまうことがある。</legend>
+        <div class="scale" role="radiogroup" aria-label="18">
+          <input id="q18-0" type="radio" name="q18" value="0"><label for="q18-0">全くない</label>
+          <input id="q18-1" type="radio" name="q18" value="1"><label for="q18-1">まれにある</label>
+          <input id="q18-2" type="radio" name="q18" value="2"><label for="q18-2">ときどきある</label>
+          <input id="q18-3" type="radio" name="q18" value="3"><label for="q18-3">よくある</label>
+          <input id="q18-4" type="radio" name="q18" value="4"><label for="q18-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-19">
+        <legend>19. 予定の変更や返信の間隔に、強い不安を感じる。</legend>
+        <div class="scale" role="radiogroup" aria-label="19">
+          <input id="q19-0" type="radio" name="q19" value="0"><label for="q19-0">全くない</label>
+          <input id="q19-1" type="radio" name="q19" value="1"><label for="q19-1">まれにある</label>
+          <input id="q19-2" type="radio" name="q19" value="2"><label for="q19-2">ときどきある</label>
+          <input id="q19-3" type="radio" name="q19" value="3"><label for="q19-3">よくある</label>
+          <input id="q19-4" type="radio" name="q19" value="4"><label for="q19-4">いつもある</label>
+        </div>
+      </fieldset>
+      <fieldset class="q" id="fs-20">
+        <legend>20. 一度気になると、切り替えるのに時間がかかる。</legend>
+        <div class="scale" role="radiogroup" aria-label="20">
+          <input id="q20-0" type="radio" name="q20" value="0"><label for="q20-0">全くない</label>
+          <input id="q20-1" type="radio" name="q20" value="1"><label for="q20-1">まれにある</label>
+          <input id="q20-2" type="radio" name="q20" value="2"><label for="q20-2">ときどきある</label>
+          <input id="q20-3" type="radio" name="q20" value="3"><label for="q20-3">よくある</label>
+          <input id="q20-4" type="radio" name="q20" value="4"><label for="q20-4">いつもある</label>
+        </div>
+      </fieldset>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button type="button" class="btn" id="clearAns">回答をクリア</button>
+        <button type="button" class="btn primary" id="doScore2">診断する</button>
+      </div>
+
+      <p class="small" style="margin-top:8px">※合計0〜48点。カットオフ：0–7 小面 / 8–15 深井 / 16–23 増女 / 24–31 般若 / 32–39 黒般若 / 40–48 蛇般若。逆転項目：3,6,10。</p>
     </form>
   </section>
 
-  <!-- 結果表示枠 -->
-  <section id="result" class="card">
-  	<section class="card small" id="legal-note" style="margin-top:12px">
-  <h2 style="margin:6px 0;font-size:1rem">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em; padding:0; line-height:1.8">
-    <li><strong>非提携・非公式：</strong>本コンテンツは心理学の研究領域に着想を得た<strong>独自制作</strong>です。公式の質問票（各種スケール）の文言・採点は使用しておらず、権利者の承認・推奨・提携を意味しません。</li>
-    <li><strong>医療用途ではありません：</strong>娯楽＋自己理解を目的としたセルフチェックであり、医療的な診断・治療・助言を目的としません。体調不良や強い苦痛が続く場合は、医療機関や専門家へご相談ください。</li>
-    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
-    <li><strong>表現について：</strong>本ページの「能面」「○○般若」等は創作上の比喩であり、<strong>実在の能面・能楽・関係団体とは無関係</strong>です。</li>
-    <li><strong>免責：</strong>本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
-  </ul>
-</section>
-    <div class="res-head">
-      <img id="resImg" src="" alt="">
-      <div>
-        <div class="res-title" id="resTitle"></div>
-        <div class="score" id="resScore"></div>
-        <div class="tagline" id="resTag"></div>
-      </div>
+  <!-- 結果 -->
+  <section class="card" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="pill">まだ結果はありません</span>
+      <p class="small">全20問に回答して「診断する」を押してください。</p>
     </div>
-    <hr class="sep">
-    <div class="res-body" id="resBody"></div>
-    <div class="actions">
-      <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧へ戻る</a>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="pill">結果</span>
+        <div class="small">あなたの総合スコア：<strong id="sumLine">0 / 48</strong></div>
+      </div>
+
+      <!-- 正方形ヒーロー -->
+      <div class="hero-square" role="region" aria-label="ランクのイメージ" style="margin:10px 0">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/noh-menhera/t01.webp" alt="—" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div id="heroTitle" style="font-weight:800">—</div>
+            <span class="badge-size" id="rangeBadge">—</span>
+          </div>
+          <div class="small" id="tagline" style="margin-top:4px">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 因子バー（冒険者風％表記） -->
+      <div class="factors" id="factorBox" aria-label="因子スコア（％）" style="margin:10px 0 6px"></div>
+
+      <div class="sep"></div>
+      <div id="longCopy" class="small"><!-- JS: 鑑定文（文言変更なし） --></div>
+
+      <div class="sep"></div>
+      <div style="display:flex;justify-content:center">
+        <a class="btn" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧へ戻る</a>
+      </div>
     </div>
   </section>
 
-  <!-- 注意書き -->
-  <p class="small note">※本診断は上記の研究領域の概念を参考にアレンジした<strong>娯楽＋自己理解</strong>向けコンテンツです（医療的診断ではありません）。しんどいときはまず睡眠と食事を。</p>
-  <script>
-(() => {
-  // 逆転項目（スコアは 4 − 値）
-  const reverse = new Set([3,6,10]);
+  <section class="card">
+    <h3 style="margin:4px 0 8px">ご利用にあたって</h3>
+    <ul class="small" style="margin:6px 0 0 1.2em; line-height:1.8">
+      <li><strong>非提携・非公式：</strong>本コンテンツは心理学の研究領域に着想を得た<strong>独自制作</strong>です。公式の質問票（各種スケール）の文言・採点は使用しておらず、権利者の承認・推奨・提携を意味しません。</li>
+      <li><strong>医療用途ではありません：</strong>娯楽＋自己理解を目的としたセルフチェックであり、医療的な診断・治療・助言を目的としません。体調不良や強い苦痛が続く場合は、医療機関や専門家へご相談ください。</li>
+      <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。</li>
+      <li><strong>表現について：</strong>本ページの「能面」「○○般若」等は創作上の比喩であり、<strong>実在の能面・能楽・関係団体とは無関係</strong>です。</li>
+      <li><strong>免責：</strong>本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+    </ul>
+  </section>
+</main>
 
-  // 6タイプ定義：鑑定テキスト（少し長め）
-  const defs = [
-    {
-      range:[0,7],
-      key:"小面（こおもて）",
-      tag:"無料おかわりの優しさ、請求先はあなた",
-      img:"01.png",
-      alt:"春の光の中、小面を抱えてほほえむ女性のイラスト",
-      body: `
-      <p><strong>鑑定：</strong>あなたは“人類に優しい自販機”。頼めば大体出てくる神対応で、場の角が勝手に丸くなり、人望ポイントは放置で貯まります。この安定感はチームの酸素みたいなもの。ただし無料配布が続くと<strong>いい人税</strong>の自動引き落としが始まり、断れない→予定パンパン→深夜だけ静かに爆ぜる<strong>無音噴火</strong>のループに。溜めたぶんだけ一言の破壊力が核融合級になり、周囲が「え、そこまで？」と凍る副作用も。優しさは資産なので、<em>使い切るより繰り越して利息を取る</em>運用に切り替えよう。まずは短く強く<em>「本日、閉店です」</em>を言う練習。理由は不要、短文が最強の護身。週1の休館日と通知オフ時間を作るだけで、やさしさは永続バフ化します。</p>`
-    },
-    {
-      range:[8,15],
-      key:"深井（ふかい）",
-      tag:"思考は深海、議長が帰らないブラック会議",
-      img:"02.png",
-      alt:"群青の静けさの中、深井の面を見つめる女性のイラスト",
-      body: `
-      <p><strong>鑑定：</strong>観察眼は顕微鏡級。小さな違和感や言葉の裏側まで拾って、結論は上品に着地——その冷静な優しさは人を救います。が、スイッチが入ると<strong>脳内会議が無限延長</strong>になりがち。自責の議事録は分厚いのに行動ページは白紙、気づけば午前2時で“反省だけプロ”。慎重さは美徳でも、チャンスは<strong>シュノーケル派</strong>。深追いすると見失い、先に行かれます。ここは儀式で制御を。<em>キッチンタイマー20分</em>で潜航し、ベルが鳴ったら浮上。続きは朝の光の下で。考えすぎの名人が“浮上の名人”になったとき、人生の酸素がぐっと増えます。</p>`
-    },
-    {
-      range:[16,23],
-      key:"増女（ぞうおんな）",
-      tag:"既読スナイパー、愛は厚め、監視も厚め",
-      img:"03.png",
-      alt:"金茶と濃緑の差し色、増女の面を手にした女性のイラスト",
-      body: `
-      <p><strong>鑑定：</strong>あなたは“愛の運営者”。記念日運用、体調の気づき、ささいな変化への即レス——どれもプロ級で、安心を定期配送できる希少種です。熱量と継続力は関係を育てる最強カード。ただし通知が鳴らない日は心拍が通知音で上がり、ストーリー閲覧者や「いいね」を<strong>監視アプリ</strong>のように見張る自分が顔を出す。スクショは証拠ではなく、ただの画像。手厚さが<strong>管理の手厚さ</strong>に見えた瞬間、相手はログアウトボタンを探し始めます。ここは条約で平和を。<em>「既読＝余裕ある時に返すね」</em>の合意を固定し、送信は<em>3分冷蔵</em>（下書き→深呼吸→送信）。愛の火力はそのままに、温度だけ下げれば甘さが出ます。</p>`
-    },
-    {
-      range:[24,31],
-      key:"般若（はんにゃ）",
-      tag:"正義のプラズマ砲、誤射は翌朝アーカイブ",
-      img:"04.png",
-      alt:"赤銅と鈍い金のコントラスト、般若面と女性のイラスト",
-      body: `
-      <p><strong>鑑定：</strong>あなたは<strong>火力</strong>。理不尽に一歩出る胆力、守るべき相手のために即<strong>最終形態</strong>に変身する速さ——その一撃は頼もしさの塊です。が、勢いのまま<strong>生配信返信</strong>すると、翌朝あなたが編集者になり<strong>反省アーカイブ</strong>を制作しがち。決め台詞が強すぎて、会話が<strong>その回で最終回</strong>になるのも“あるある”。火薬は芸術。点火と消火のタイミングが腕の見せ所です。<em>強い返信は24時間冷凍</em>、まず下書き（録画放送）→翌日に編集→公開。炎上は打ち上げ花火だけにして、日常は常温で大切に。</p>`
-    },
-    {
-      range:[32,39],
-      key:"黒般若（くろはんにゃ）",
-      tag:"脳内監査法人：利益＝正しさ、損失＝幸福",
-      img:"05.png",
-      alt:"闇に浮かぶ黒般若と一点の光、女性の横顔のイラスト",
-      body: `
-      <p><strong>鑑定：</strong>事実と感情を<strong>外科的に分離</strong>できる頭脳。境界線はシャープ、危ない橋は渡らない。大人の安全運転が最大の美点です。ただし監査が過剰になると世界の決算書が<strong>敵寄り</strong>に見え、ディベートでは勝っても<strong>睡眠と胃腸で負ける</strong>恩恵を授かります。正しさは金メダル、でも<em>楽しい</em>も表彰台に上げないと人生は赤字決算に。運用の見直しを：<em>重要判断は昼</em>、夜の議案は翌日に持ち越し。ニュースと炎上は<em>48時間断食</em>で視野を再起動。冷静さにユーモアをひとつまみ、それだけで世界の彩度が上がります。</p>`
-    },
-    {
-      range:[40,48],
-      key:"蛇般若（じゃはんにゃ）",
-      tag:"執念アルゴリズム、境界は溶ける、時間も溶ける",
-      img:"06.png",
-      alt:"翡翠と青白のグラデ、蛇般若を抱く女性のイラスト",
-      body: `
-      <p><strong>鑑定：</strong><strong>粘りと集中の化け物</strong>（最大級の褒め言葉）。長期戦を完走させる推進力、情報の掘削、巻き込み力——どれも神話級で、あなたがいれば企画は完走します。が、粘度が上がると境界が液状化し、相手が<strong>生活OSに常駐</strong>。睡眠と食事はバックグラウンド消費、“元カレ研究”という名の<strong>時間泥棒の採掘</strong>が始まりがち。推進力は方向さえ合えば芸術になる。<em>衝動スコアを0–10で採点</em>し、5以上は<strong>“人＋時間”の二重鍵</strong>（誰かに送って、明日決める）。<em>外部メンテ班</em>（連絡先3名）を手元に置けば、執念は作品へと昇華します。</p>`
-    }
+<script>
+(function(){
+  // ===== ページ定義 =====
+  var SLUG = "noh-menhera";
+  var TITLE = "能面ヘラ度診断";
+  var IMG_BASE = "/shindan/assets/results/noh-menhera/"; // t01.webp..t06.webp
+  var ANS_KEY = "specimens:"+SLUG+":answers";            // 開き直し保存キー
+
+  // 逆転項目（スコアは 4 − 値）
+  var REVERSE = new Set([3,6,10]);
+
+  // ランク定義（文言は変更なし／画像は tNN.webp 正方形）
+  var DEFS = [
+    {range:[0,7],   key:"小面（こおもて）", tag:"無料おかわりの優しさ、請求先はあなた", file:"t01.webp",
+     alt:"春の光の中、小面を抱えてほほえむ女性のイラスト",
+     body:'<p><strong>鑑定：</strong>あなたは“人類に優しい自販機”。頼めば大体出てくる神対応で、場の角が勝手に丸くなり、人望ポイントは放置で貯まります。この安定感はチームの酸素みたいなもの。ただし無料配布が続くと<strong>いい人税</strong>の自動引き落としが始まり、断れない→予定パンパン→深夜だけ静かに爆ぜる<strong>無音噴火</strong>のループに。溜めたぶんだけ一言の破壊力が核融合級になり、周囲が「え、そこまで？」と凍る副作用も。優しさは資産なので、<em>使い切るより繰り越して利息を取る</em>運用に切り替えよう。まずは短く強く<em>「本日、閉店です」</em>を言う練習。理由は不要、短文が最強の護身。週1の休館日と通知オフ時間を作るだけで、やさしさは永続バフ化します。</p>'},
+    {range:[8,15],  key:"深井（ふかい）", tag:"思考は深海、議長が帰らないブラック会議", file:"t02.webp",
+     alt:"群青の静けさの中、深井の面を見つめる女性のイラスト",
+     body:'<p><strong>鑑定：</strong>観察眼は顕微鏡級。小さな違和感や言葉の裏側まで拾って、結論は上品に着地——その冷静な優しさは人を救います。が、スイッチが入ると<strong>脳内会議が無限延長</strong>になりがち。自責の議事録は分厚いのに行動ページは白紙、気づけば午前2時で“反省だけプロ”。慎重さは美徳でも、チャンスは<strong>シュノーケル派</strong>。深追いすると見失い、先に行かれます。ここは儀式で制御を。<em>キッチンタイマー20分</em>で潜航し、ベルが鳴ったら浮上。続きは朝の光の下で。考えすぎの名人が“浮上の名人”になったとき、人生の酸素がぐっと増えます。</p>'},
+    {range:[16,23], key:"増女（ぞうおんな）", tag:"既読スナイパー、愛は厚め、監視も厚め", file:"t03.webp",
+     alt:"金茶と濃緑の差し色、増女の面を手にした女性のイラスト",
+     body:'<p><strong>鑑定：</strong>あなたは“愛の運営者”。記念日運用、体調の気づき、ささいな変化への即レス——どれもプロ級で、安心を定期配送できる希少種です。熱量と継続力は関係を育てる最強カード。ただし通知が鳴らない日は心拍が通知音で上がり、ストーリー閲覧者や「いいね」を<strong>監視アプリ</strong>のように見張る自分が顔を出す。スクショは証拠ではなく、ただの画像。手厚さが<strong>管理の手厚さ</strong>に見えた瞬間、相手はログアウトボタンを探し始めます。ここは条約で平和を。<em>「既読＝余裕ある時に返すね」</em>の合意を固定し、送信は<em>3分冷蔵</em>（下書き→深呼吸→送信）。愛の火力はそのままに、温度だけ下げれば甘さが出ます。</p>'},
+    {range:[24,31], key:"般若（はんにゃ）", tag:"正義のプラズマ砲、誤射は翌朝アーカイブ", file:"t04.webp",
+     alt:"赤銅と鈍い金のコントラスト、般若面と女性のイラスト",
+     body:'<p><strong>鑑定：</strong>あなたは<strong>火力</strong>。理不尽に一歩出る胆力、守るべき相手のために即<strong>最終形態</strong>に変身する速さ——その一撃は頼もしさの塊です。が、勢いのまま<strong>生配信返信</strong>すると、翌朝あなたが編集者になり<strong>反省アーカイブ</strong>を制作しがち。決め台詞が強すぎて、会話が<strong>その回で最終回</strong>になるのも“あるある”。火薬は芸術。点火と消火のタイミングが腕の見せ所です。<em>強い返信は24時間冷凍</em>、まず下書き（録画放送）→翌日に編集→公開。炎上は打ち上げ花火だけにして、日常は常温で大切に。</p>'},
+    {range:[32,39], key:"黒般若（くろはんにゃ）", tag:"脳内監査法人：利益＝正しさ、損失＝幸福", file:"t05.webp",
+     alt:"闇に浮かぶ黒般若と一点の光、女性の横顔のイラスト",
+     body:'<p><strong>鑑定：</strong>事実と感情を<strong>外科的に分離</strong>できる頭脳。境界線はシャープ、危ない橋は渡らない。大人の安全運転が最大の美点です。ただし監査が過剰になると世界の決算書が<strong>敵寄り</strong>に見え、ディベートでは勝っても<strong>睡眠と胃腸で負ける</strong>恩恵を授かります。正しさは金メダル、でも<em>楽しい</em>も表彰台に上げないと人生は赤字決算に。運用の見直しを：<em>重要判断は昼</em>、夜の議案は翌日に持ち越し。ニュースと炎上は<em>48時間断食</em>で視野を再起動。冷静さにユーモアをひとつまみ、それだけで世界の彩度が上がります。</p>'},
+    {range:[40,48], key:"蛇般若（じゃはんにゃ）", tag:"執念アルゴリズム、境界は溶ける、時間も溶ける", file:"t06.webp",
+     alt:"翡翠と青白のグラデ、蛇般若を抱く女性のイラスト",
+     body:'<p><strong>鑑定：</strong><strong>粘りと集中の化け物</strong>（最大級の褒め言葉）。長期戦を完走させる推進力、情報の掘削、巻き込み力——どれも神話級で、あなたがいれば企画は完走します。が、粘度が上がると境界が液状化し、相手が<strong>生活OSに常駐</strong>。睡眠と食事はバックグラウンド消費、“元カレ研究”という名の<strong>時間泥棒の採掘</strong>が始まりがち。推進力は方向さえ合えば芸術になる。<em>衝動スコアを0–10で採点</em>し、5以上は<strong>“人＋時間”の二重鍵</strong>（誰かに送って、明日決める）。<em>外部メンテ班</em>（連絡先3名）を手元に置けば、執念は作品へと昇華します。</p>'}
   ];
 
-  // DOM 取得
-  const byId = id => document.getElementById(id);
-  const form = byId('quiz');
-  const go = byId('go');
-  const resSec = byId('result');
+  // 因子構成（％表示）— 冒険者風の棒グラフ。文言は追加要素として表示（既存本文は変更しません）
+  var FACTORS = [
+    {name:"不安・執着", items:[1,2,5,7,13,15,17,19]},              // 8項目
+    {name:"深読み・監視", items:[4,8,11]},                         // 3項目
+    {name:"切替・反芻", items:[3,6,10,14,16,20]},                  // 6項目（3,6,10は逆転）
+    {name:"衝動・距離操作", items:[12,18,9]}                       // 3項目（9は生活影響）
+  ];
 
-  // 未回答チェック
+  var qWrap = document.getElementById("quiz");
+  var prog  = document.getElementById("prog");
+  var resEmpty = document.getElementById("resEmpty");
+  var resArea  = document.getElementById("resArea");
+  var heroImg  = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var rangeBadge= document.getElementById("rangeBadge");
+  var tagline  = document.getElementById("tagline");
+  var longCopy = document.getElementById("longCopy");
+  var sumLine  = document.getElementById("sumLine");
+
+  var TOTAL = document.querySelectorAll('fieldset.q').length;
+
+  // 保存
+  var ANS_STORE = ANS_KEY; // specimens:noh-menhera:answers
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=1;i<=TOTAL;i++){
+        var chk = qWrap.querySelector('input[name="q'+i+'"]:checked');
+        if(chk){ out[String(i)] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_STORE, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_STORE);
+      if(!raw) return;
+      var box = JSON.parse(raw)||{};
+      var ans = box.ans||{};
+      Object.keys(ans).forEach(function(k){
+        var v = ans[k];
+        var el = qWrap.querySelector('#q'+k+'-'+v);
+        if(el){ el.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_STORE); }catch(e){} }
+
+  // 進捗
+  function answeredCount(){
+    return qWrap.querySelectorAll('input[type="radio"]:checked').length;
+  }
+  function updateProgress(){
+    var a = answeredCount(), total=TOTAL;
+    prog.style.width = Math.round(100*a/total) + "%";
+    // ARIA
+    var shell = document.querySelector('.progress');
+    if(shell){
+      shell.setAttribute('role','progressbar');
+      shell.setAttribute('aria-valuemin','0');
+      shell.setAttribute('aria-valuemax', String(total));
+      shell.setAttribute('aria-valuenow', String(a));
+      shell.setAttribute('aria-label', '回答進捗：'+a+' / '+total);
+    }
+  }
+
+  // 未回答
   function firstUnanswered(){
-    for(let i=1;i<=12;i++){
-      const v = form['q'+i]?.value;
-      if(v === "" || v == null){ return i; }
+    for(var i=1;i<=TOTAL;i++){
+      if(!qWrap.querySelector('input[name="q'+i+'"]:checked')) return i;
     }
     return 0;
   }
-
-  // 合計スコア（0..48）
-  function calcScore(){
-    let sum = 0;
-    for(let i=1;i<=12;i++){
-      const raw = Number(form['q'+i].value);
-      const score = reverse.has(i) ? (4 - raw) : raw;
-      sum += score;
-    }
-    return sum;
-  }
-
-  // タイプ選択
-  function pickDef(total){
-    return defs.find(d => total >= d.range[0] && total <= d.range[1]) || defs[defs.length-1];
-  }
-
-  // スクロール＆ハイライト
-  function scrollToField(n){
-    const fs = form.querySelector(`input[name="q${n}"]`)?.closest('.q');
+  function needJump(n){
+    var fs = document.getElementById('fs-'+n);
     if(fs){
-      fs.classList.add('err');
-      fs.scrollIntoView({behavior:'smooth', block:'center'});
-      setTimeout(()=>fs.classList.remove('err'), 1600);
+      fs.classList.add('need');
+      fs.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(function(){ fs.classList.remove('need'); }, 1600);
     }
   }
 
-  // クリック処理
-  go.addEventListener('click', () => {
-    const miss = firstUnanswered();
+  // スコア（0–48へ正規化）
+  function calcTotalNorm(){
+    var sum=0;
+    for(var i=1;i<=TOTAL;i++){
+      var chk = qWrap.querySelector('input[name="q'+i+'"]:checked');
+      var raw = chk ? parseInt(chk.value,10) : 0;
+      sum += REVERSE.has(i) ? (4-raw) : raw;
+    }
+    var maxRaw = TOTAL * 4;
+    return Math.round(sum / maxRaw * 48); // 0..48
+  }
+
+  // 因子％（各因子：項目合計 / (項目数×4) ×100）
+  function calcFactorPercents(){
+    var res=[];
+    for(var f=0; f<FACTORS.length; f++){
+      var it = FACTORS[f].items, got=0;
+      for(var j=0;j<it.length;j++){
+        var i = it[j];
+        var chk = qWrap.querySelector('input[name="q'+i+'"]:checked');
+        var raw = chk ? parseInt(chk.value,10) : 0;
+        got += REVERSE.has(i) ? (4-raw) : raw;
+      }
+      var pct = Math.round( (got / (it.length*4)) * 100 );
+      res.push({name:FACTORS[f].name, pct: pct});
+    }
+    return res;
+  }
+
+  // 結果描画
+  function pickDef(total){
+    for(var i=0;i<DEFS.length;i++){
+      var d=DEFS[i]; if(total>=d.range[0] && total<=d.range[1]) return d;
+    }
+    return DEFS[DEFS.length-1];
+  }
+  function render(total){
+    var d = pickDef(total);
+    heroImg.src = IMG_BASE + d.file;
+    heroImg.alt = d.alt;
+    heroTitle.textContent = d.key;
+    rangeBadge.textContent = d.range[0]+"–"+d.range[1]+" 点帯";
+    tagline.textContent = d.tag;
+    longCopy.innerHTML = d.body;
+    sumLine.textContent = total+" / 48";
+
+    // 因子バー（％）— 冒険者風
+    var box = document.getElementById('factorBox');
+    var items = calcFactorPercents();
+    box.innerHTML = items.map(function(e,i){
+      var id='mbar-'+i;
+      return '<div class="meter" role="group" aria-label="'+e.name+'">'+
+               '<div class="row"><div class="name">'+e.name+'</div><div class="pct" id="'+id+'-pct">'+e.pct+'%</div></div>'+
+               '<div class="mbar" aria-hidden="true"><span id="'+id+'" style="width:'+e.pct+'%"></span></div>'+
+             '</div>';
+    }).join('');
+
+    resEmpty.style.display = 'none';
+    resArea.style.display  = 'block';
+    document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+
+    // こころLv & つづきから
+    try{
+      document.dispatchEvent(new Event('result:ready'));
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function score(){
+    var miss = firstUnanswered();
     if(miss){
-      alert(`未回答の項目があります（${miss}問目）。`);
-      scrollToField(miss);
+      alert("未回答があります。全20問にお答えください。");
+      needJump(miss);
       return;
     }
-    const total = calcScore();
-    const d = pickDef(total);
+    saveAnswers();
+    var total = calcTotalNorm();
+    render(total);
+  }
 
-    // 描画
-    const base = "/shindan/assets/results/noh-menhera/";
-    const imgEl = byId('resImg');
-    imgEl.src = base + d.img;
-    imgEl.alt = d.alt;
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked = false; }
+    wipeAnswers();
+    resArea.style.display = "none";
+    resEmpty.style.display = "";
+    updateProgress();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
 
-    byId('resTitle').textContent = `${d.key}（${d.range[0]}–${d.range[1]}点帯）`;
-    byId('resScore').textContent  = `あなたの総合スコア：${total} / 48`;
-    byId('resTag').textContent    = d.tag;
-    byId('resBody').innerHTML     = d.body;
+  // 監視・初期化
+  qWrap.addEventListener("change", function(e){
+    if(e.target && e.target.type==="radio"){ saveAnswers(); updateProgress(); }
+  }, true);
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
 
-    resSec.style.display = 'block';
-    resSec.scrollIntoView({behavior:'smooth', block:'start'});
-  });
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+
+  restoreAnswers();
+  updateProgress();
 })();
 </script>
-</div>
+
+<!-- みんなのこころLv（result:readyでカウント） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'unknown';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hitEveryone(){
+    var url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
+</script>
 </body>
 </html>
