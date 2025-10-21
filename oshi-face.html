@@ -1,1 +1,1096 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>推し顔診断（男性／女性）</title><meta name="description" content="24問で「明るさ・対比・質感・情報量・きちんと感・所作テンポ」を％化。男女切替で18タイプ＋隠しタイプ（クズチャーム）を判定します。"><meta name="theme-color" content="#f7f9ff"><!-- OGP（必要なら差し替え） --><meta property="og:type" content="website"><meta property="og:title" content="推し顔診断（男性／女性）"><meta property="og:description" content="24問・6因子％で“推し顔”タイプを判定。男女切替＆画像webp対応。"><meta property="og:image" content="/shindan/assets/results/oshi-face/male/t01.webp"><style>:root{  --accent:#ff7a6b; --accent2:#ffba7e;  --ink:#1f2732; --muted:#667087; --paper:#fff;  --bg1:#f7f9ff; --bg2:#fff6f3; --line:#e6ecf7;}*{box-sizing:border-box}html,body{height:100%}body{  margin:0; color:var(--ink);  background:linear-gradient(180deg,var(--bg1),var(--bg2));  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;}a{color:inherit}.wrap{max-width:980px;margin:18px auto;padding:0 14px}header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#ffe9e5,#fff3df);display:grid;place-items:center;font-size:28px}h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}.section{margin:14px 0}.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}.meta{display:flex;gap:8px;flex-wrap:wrap}.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}.progress>span{  display:block;height:100%;width:0;  background:linear-gradient(90deg,var(--accent),var(--accent2));  transition:width .25s ease;}.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}legend{font-weight:700}.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}.scale input{position:absolute;opacity:0;pointer-events:none}.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}mark.need{animation:need 1.6s ease}@keyframes need{0%{box-shadow:0 0 0 0 rgba(255,122,107,.45)}100%{box-shadow:0 0 0 0 rgba(255,122,107,0)}}.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}.total{font-size:22px;font-weight:800}.small{color:var(--muted);font-size:.92em}/* トグル（男女） */.mode-tabs{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.mode-tabs button{padding:8px 12px;border:0;background:#fff;cursor:pointer}.mode-tabs button.on{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}/* ヒーロー（画像→テキスト） */.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:3/4;border-bottom:1px solid var(--line);background:#f7f9ff}.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}.hero-vert figcaption{padding:10px;width:100%}.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.stat .big{font-size:22px;font-weight:800}.hr{height:1px;background:var(--line);margin:10px 0}.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}.note h4{margin:0 0 6px;font-size:16px}/* 共有ボタン */.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.btn.tw::before{content:"𝕏";margin-right:.25em}.btn.line::before{content:"💬";margin-right:.25em}.btn.ig::before{content:"📸";margin-right:.25em}.btn.save::before{content:"⬇️";margin-right:.25em}@media (max-width: 560px){  .wrap{padding:0 10px}  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}  .scale{grid-template-columns:repeat(2,1fr)}  .scale label{padding:12px 8px;font-size:14px}  .hero-vert figure{width:100%}  .grid2{grid-template-columns:1fr}  .card{padding:12px}  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}  .note h4{font-size:15px}}#shareRow{display:flex !important; flex-wrap:wrap; gap:8px}</style></head><body data-id="oshi-face"><main class="wrap" id="app">  <header class="hd">    <div class="logo">✨</div>    <div>      <h1>推し顔診断（男性／女性）</h1>      <p class="sub">24問（0〜4の5件法）。6因子の％とタイプを表示します。※エンタメ自己理解／因果は断定しません。</p>    </div>  </header>  <div class="sticky" aria-live="polite">    <div class="mode-tabs" role="tablist" aria-label="画像の性別切替">      <button id="modeMale"  class="on" role="tab" aria-selected="true">男性版</button>      <button id="modeFemale" role="tab" aria-selected="false">女性版</button>    </div>    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="24">      <span id="prog"></span>    </div>    <button class="btn primary" id="doScore">診断する</button>  </div>  <section class="card section" id="desc">    <h2 style="margin:4px 0 8px">説明</h2>    <div class="meta" style="margin-bottom:8px">      <span class="pill">質問数：24</span>      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>      <span class="pill">出力：6因子％→タイプ判定（18＋隠し）</span>    </div>    <p class="small">男女切替は<b>画像とテキスト（alt）</b>のみ変わります。判定ロジックは共通です。</p>  </section>  <!-- 設問 -->  <section class="card section" id="questions">    <h2 style="margin:4px 0 8px">設問（ぜんぜん／あまり／ときどき／よく／とても）</h2>    <div id="qWrap"></div>    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">      <button class="btn" id="clearAns">回答をクリア</button>      <button class="btn primary" id="doScore2">診断する</button>    </div>  </section>  <!-- 結果 -->  <section class="card section" id="result" aria-live="polite">    <div id="resEmpty">      <span class="badge">まだ結果はありません</span>      <p class="small">全24問に回答して「診断する」を押してください。</p>    </div>    <div id="resArea" style="display:none">      <div class="result-head">        <span class="badge">結果</span>        <div class="total" id="typeLine">—</div>      </div>      <!-- ヒーロー（タイプ画像＋ミニ情報） -->      <div class="hero-vert section" role="region" aria-label="タイプイメージ">        <figure>          <img id="heroImg" src="/shindan/assets/results/oshi-face/male/t01.webp" alt="結果イメージ" loading="lazy" width="960" height="1280">        </figure>        <figcaption>          <div class="capline" id="heroTitle">—</div>          <div class="capmini" id="heroCopy">—</div>          <div class="capmini" id="heroTaste" style="margin-top:4px">—</div>     <div class="share-row" id="shareRow" hidden>  <button id="btnShot"  class="btn save" type="button">結果画像を保存</button>  <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>  <button id="shareLn"  class="btn line" type="button">LINEで送る</button>  <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>  <button id="shareCp"  class="btn"      type="button">リンクをコピー</button></div><!-- まとめ画像を生成するためのキャンバス（非表示） --><canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>        </figcaption>      </div>      <div class="grid2">        <article class="stat" aria-label="総合スコア">          <div><strong>因子平均（0–4）</strong></div>          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>          <div class="small" id="sumNote">—</div>        </article>      </div>      <div class="hr"></div>      <!-- 因子バー -->      <div class="section">        <h3 style="margin:8px 0">6因子（％）</h3>        <div id="bars" class="factor-mini"></div>      </div>      <div class="hr"></div>      <!-- ランク/長文（任意） -->      <div id="longCopy" class="small"></div>      <div class="hr"></div>      <!-- 研究メモ -->      <details class="section" open>        <summary><strong>研究メモ</strong></summary>        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差が大きい性質があります。医療・採用などの用途には使えません。</p>      </details>      <div class="back-area" style="display:flex;justify-content:center;margin-top:12px">        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>      </div>    </div>  </section>  <section class="footer card">    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>    <p class="small">このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>    データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>  </section></main><script>(function(){  // ====== ページ情報 ======  var SLUG = "oshi-face";  var TITLE = "推し顔診断（男性／女性）";  var ANS_KEY = "specimens:"+SLUG+":answers";  var GENDER_KEY = "specimens:"+SLUG+":gender";  var IMG_BASE = "/shindan/assets/results/oshi-face/"; // {male|female}/t01.webp..t19.webp  // ====== 性別状態 ======  var CURRENT_GENDER = (localStorage.getItem(GENDER_KEY) || "male"); // "male" | "female"  var modeMaleBtn = document.getElementById("modeMale");  var modeFemaleBtn = document.getElementById("modeFemale");  function setGender(g){    CURRENT_GENDER = g;    try{ localStorage.setItem(GENDER_KEY,g); }catch(e){}    modeMaleBtn.classList.toggle("on", g==="male");    modeFemaleBtn.classList.toggle("on", g==="female");    modeMaleBtn.setAttribute("aria-selected", g==="male" ? "true":"false");    modeFemaleBtn.setAttribute("aria-selected", g==="female" ? "true":"false");    if(state.type){ renderType(); }  }  modeMaleBtn.addEventListener("click", function(){ setGender("male"); }, false);  modeFemaleBtn.addEventListener("click", function(){ setGender("female"); }, false);// ====== 因子・設問 ======// 6因子（LIGHT/CONTRAST/GLOSS/DENSITY/STRUCTURE/TEMPO）は既存のまま利用var FACTORS = {  LIGHT:     { name:"明るさ（LIGHT）",               items:["Q01","Q02","Q20"] },  CONTRAST:  { name:"対比（CONTRAST）",             items:["Q03","Q04","Q14","Q21"] },  GLOSS:     { name:"質感ツヤ（GLOSS）",             items:["Q05","Q06","Q13","Q22","Q19"] },  DENSITY:   { name:"情報量（DENSITY）",             items:["Q07","Q08","Q18","Q23","Q15"] },  STRUCTURE: { name:"きちんと感（STRUCTURE）",       items:["Q09","Q10","Q16","Q24"] },  TEMPO:     { name:"所作テンポ（TEMPO）",           items:["Q11","Q12","Q17"] }};window.FACTORS = FACTORS;// ▼新しい“好み中心”24問（0=ぜんぜん〜4=とても／revは逆転）var ITEMS = {  Q01:{ text:"明るい笑顔やキラッとした表情に惹かれる。" },  Q02:{ text:"薄暗く静かな空気のほうが色気を感じる。", rev:true },  Q03:{ text:"白黒の“くっきり効いた”対比に胸が高鳴る。" },  Q04:{ text:"やわらかな同系色・グラデーションが好き。", rev:true },  Q05:{ text:"髪・肌・アクセの“艶”があると一気に刺さる。" },  Q06:{ text:"マットで落ち着いた質感のほうが安心する。", rev:true },  Q07:{ text:"小物や柄が“少し多め”でもワクワクする。"},  Q08:{ text:"無地＆余白たっぷりのミニマルに惹かれる。", rev:true },  Q09:{ text:"直線的で端正なシルエットにグッとくる。"},  Q10:{ text:"ゆるい落ち感や丸みのあるラインが心地よい。", rev:true },  Q11:{ text:"明るくテンポの速い所作に惹かれがち。"},  Q12:{ text:"ゆっくり丁寧な所作に安心する。", rev:true },  Q13:{ text:"香りやラメなど“キラッ”と光る要素は歓迎。"},  Q14:{ text:"色数は少なく、コントラストではっきり決めたい。"},  Q15:{ text:"フィルム写真やレトロ喫茶の雰囲気が刺さる。"},  Q16:{ text:"機能的・実用的なディテールを見ると好印象。"},  Q17:{ text:"場の中心でも様になる“主役感”に惹かれる。"},  Q18:{ text:"装飾は少なめ、“素の良さ”がいちばん。", rev:true },  Q19:{ text:"夜景やネオン、イルミのきらめきに弱い。"},  Q20:{ text:"キャンドルや間接照明の落ち着きが似合う人が好き。", rev:true },  Q21:{ text:"淡い中間色やぼかしの繊細さが“綺麗”だと思う。", rev:true },  Q22:{ text:"ツヤより“マットの上品さ”を推したい。", rev:true },  Q23:{ text:"ロゴより素材・形の良さを重視する。"},  Q24:{ text:"少し崩した“抜け感”に惹かれる。", rev:true }};var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];  // ====== タイプ定義（18＋隠し19） ======  var TYPES = [    { id:1,  key:"t01", name:"爽やか清潔",         catch:"明るくクリーン。余白と清潔感。",           taste:"推し色：白・薄青／キー：白スニーカー" },    { id:2,  key:"t02", name:"ミニマル無地",       catch:"無地とサイズ感で魅せる。",                 taste:"推し色：白・黒・エクリュ／キー：素材の良さ" },    { id:3,  key:"t03", name:"淡色やわらか",       catch:"低コントラストでやさしい空気。",           taste:"推し色：くすみパステル／キー：揺れ素材" },    { id:4,  key:"t04", name:"オールブラック",     catch:"黒×直線で一気に締める。",                 taste:"推し色：黒／キー：レザー" },    { id:5,  key:"t05", name:"モノトーンきっぱり", catch:"白黒の対比で端正に。",                     taste:"推し色：白・黒／キー：余白" },    { id:6,  key:"t06", name:"ゆるストリート",     catch:"リラックス×今っぽさ。",                   taste:"推し色：差し色自由／キー：ワイド" },    { id:7,  key:"t07", name:"知的きれいめ",       catch:"静かな知性、端正さ。",                     taste:"推し色：ネイビー×白／キー：細フレーム" },    { id:8,  key:"t08", name:"清楚クラシック",     catch:"きちんと感と清楚。",                       taste:"推し色：紺・生成り／キー：膝下ライン" },    { id:9,  key:"t09", name:"スポーティ機能",     catch:"機能美＆ヘルシー。",                       taste:"推し色：白×ネイビー／キー：アスレジャー" },    { id:10, key:"t10", name:"ナチュラル",         catch:"力の抜けた心地よさ。",                     taste:"推し色：生成り・ベージュ／キー：リネン" },    { id:11, key:"t11", name:"ガーリー",           catch:"可憐で親しみ。",                           taste:"推し色：パステル／キー：小粒アクセ" },    { id:12, key:"t12", name:"カラフル",           catch:"高彩度で楽しい主役感。",                   taste:"推し色：ビビッド／キー：レイヤー" },    { id:13, key:"t13", name:"古着レトロ",         catch:"ぬくもりあるヴィンテージ。",               taste:"推し色：デニム×チェック／キー：古着MIX" },    { id:14, key:"t14", name:"韓国っぽ",           catch:"端正×いま感。",                           taste:"推し色：白黒／キー：ロング直線" },    { id:15, key:"t15", name:"キラキラ派手",       catch:"光沢と主役感で惹きつける。",               taste:"推し色：黒×シルバー／キー：ビジュー" },    { id:16, key:"t16", name:"地雷（黒×ピンク）",  catch:"黒主役の甘辛。",                           taste:"推し色：黒×ピンク／キー：チョーカー" },    { id:17, key:"t17", name:"理系クリーン",       catch:"無駄なく清潔・直線。",                     taste:"推し色：白×ネイビー／キー：最小小物" },    { id:18, key:"t18", name:"文系クラシック",     catch:"やわらか上品・読書感。",                   taste:"推し色：生成り×ブラウン／キー：革小物" },    { id:19, key:"t19", name:"クズチャーム（夜のカリスマ）", catch:"黒と艶、視線の間合い。危ういのに目を離せない。", taste:"推し色：黒×シルバー／キー：細チェーン", hidden:true }  ];  var ALT = {}; TYPES.forEach(function(t){ ALT[t.id] = { male: t.name+"（男性版）", female:t.name+"（女性版）" }; });// ====== 要素参照 ======var qWrap   = document.getElementById("qWrap");var prog    = document.getElementById("prog");var resEmpty= document.getElementById("resEmpty");var resArea = document.getElementById("resArea");var typeLine= document.getElementById("typeLine");var heroImg = document.getElementById("heroImg");var heroTitle= document.getElementById("heroTitle");var heroCopy = document.getElementById("heroCopy");var heroTaste= document.getElementById("heroTaste");var sumAvg  = document.getElementById("sumAvg");var sumPct  = document.getElementById("sumPct");var sumNote = document.getElementById("sumNote");var bars    = document.getElementById("bars");var longCopy= document.getElementById("longCopy");var resMemo = document.getElementById("resMemo");var shareRow= document.getElementById("shareRow");var shareTw = document.getElementById("shareTw");var shareLn = document.getElementById("shareLn");var shareIg = document.getElementById("shareIg");var btnShot = document.getElementById("btnShot");var shotCanvas = document.getElementById("shotCanvas");window.shotCanvas = shotCanvas;// 現在の判定があるとき、性別だけ反映して画像/altを更新function renderType(){  if(!state || !state.type) return;  var t = state.type;  heroImg.src = (function(){  var id = String(t.id).padStart(2,"0");  var g = (CURRENT_GENDER === "male" ? "female" : "male"); // 逆フォルダを使う  return IMG_BASE + g + "/t" + id + ".webp";})();  heroImg.alt = (ALT[t.id] && ALT[t.id][CURRENT_GENDER]) || "結果イメージ";}  // ====== 設問生成 ======  function buildQuestions(){    var html = "";    Object.keys(ITEMS).forEach(function(qid, i){      var q = ITEMS[qid];      html += '<fieldset class="q" id="fs-'+qid+'">'+        '<legend>'+String(i+1).padStart(2,"0")+'. '+q.text+'</legend>'+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';      for(var v=0;v<=4;v++){        html += '<div style="position:relative">'+          '<input id="q'+qid+'-'+v+'" type="radio" name="q'+qid+'" value="'+v+'">'+          '<label for="q'+qid+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+        '</div>';      }      html += '</div></fieldset>';    });    qWrap.innerHTML = html;    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){      r.addEventListener('change', function(){ saveAnswers(); updateProgress(); }, false);    });    restoreAnswers();    updateProgress();  }  // ====== 保存/復元 ======  function saveAnswers(){    try{      var out = {};      Object.keys(ITEMS).forEach(function(id){        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');        if(chk){ out[id] = parseInt(chk.value,10); }      });      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));    }catch(e){}  }  function restoreAnswers(){    try{      var raw = localStorage.getItem(ANS_KEY);      if(!raw) return;      var data = JSON.parse(raw);      var ans = (data && data.ans) || {};      Object.keys(ans).forEach(function(id){        var v = ans[id];        var input = qWrap.querySelector('#q'+id+'-'+v);        if(input){ input.checked = true; }      });    }catch(e){}  }  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }  function updateProgress(){    var total = Object.keys(ITEMS).length;    var answered = 0;    Object.keys(ITEMS).forEach(function(id){      if(qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked')) answered++;    });    var pct = Math.round(100*answered/total);    prog.style.width = pct + "%";    var bar = prog.parentElement;    if(bar){      bar.setAttribute("aria-valuenow", answered);      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);    }  }  // ====== スコア計算 ======  function valOf(id, raw){ var v=Number(raw); return (ITEMS[id].rev? (4-v):v); }  function calc(){    var missing = [];    var ans = {};    Object.keys(ITEMS).forEach(function(id){      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');      if(!chk){ missing.push(id); return; }      ans[id] = parseInt(chk.value,10);    });    if(missing.length){      alert("未回答があります。全24問にお答えください。");      var fs = document.getElementById('fs-'+missing[0]);      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }      return;    }    var fScore = {}, fPct = {};    Object.keys(FACTORS).forEach(function(key){      var ids = FACTORS[key].items;      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);      var avg = sum / ids.length; // 0-4      fScore[key] = avg;      fPct[key] = Math.round((avg/4)*100);    });    var keys = Object.keys(FACTORS);    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;    var totalPct = Math.round((totalAvg/4)*100);    render({ fScore, fPct, totalAvg, totalPct });  }  // ====== タイプ判定（隠し優先） ======  function pickType(p){    // 隠し19条件：CONTRAST≥70, GLOSS≥70, TEMPO≥60, DENSITY≥55    if(p["CONTRAST"]>=70 && p["GLOSS"]>=70 && p["TEMPO"]>=60 && p["DENSITY"]>=55){      return TYPES.find(function(t){ return t.id===19; });    }    // ルール    var rules = [      [1,  p.LIGHT>=60 && p.DENSITY<=45],      [2,  p.DENSITY<=40 && p.GLOSS<=50],      [3,  p.CONTRAST<=40 && p.STRUCTURE<=55],      [4,  p.LIGHT<=40 && p.CONTRAST>=70 && p.STRUCTURE>=60],      [5,  p.CONTRAST>=65 && p.STRUCTURE>=55],      [6,  p.STRUCTURE<=45 && p.TEMPO>=60],      [7,  p.STRUCTURE>=65 && p.TEMPO<=55 && p.GLOSS<=60],      [8,  p.STRUCTURE>=65 && p.CONTRAST<=55 && p.TEMPO<=55],      [9,  p.STRUCTURE>=60 && p.DENSITY<=50 && p.TEMPO>=55],      [10, p.STRUCTURE<=50 && p.DENSITY<=55 && p.LIGHT>=50],      [11, p.LIGHT>=60 && p.CONTRAST<=55 && p.GLOSS>=55],      [12, p.DENSITY>=65 && p.CONTRAST>=60 && p.TEMPO>=60],      [13, p.LIGHT<=45 && p.GLOSS<=50 && p.STRUCTURE<=50],      [14, p.STRUCTURE>=65 && p.CONTRAST>=60],      [15, p.GLOSS>=70 && p.DENSITY>=60 && p.TEMPO>=60 && p.CONTRAST>=60],      [16, p.CONTRAST>=70 && p.LIGHT<=45 && p.GLOSS>=60],      [17, p.STRUCTURE>=65 && p.DENSITY<=50 && p.LIGHT>=55 && p.GLOSS<=55],      [18, (p.STRUCTURE<=55) && (p.DENSITY>=45 && p.DENSITY<=65) && p.TEMPO<=50],    ];    for(var i=0;i<rules.length;i++){      var id=rules[i][0], cond=rules[i][1];      if(cond) return TYPES.find(function(t){ return t.id===id; });    }    // フォールバック：最上位因子で代表タイプ    var top = Object.keys(p).sort(function(a,b){ return p[b]-p[a]; })[0];    var map = { LIGHT:1, CONTRAST:5, GLOSS:15, DENSITY:2, STRUCTURE:7, TEMPO:6 };    return TYPES.find(function(t){ return t.id===map[top]; }) || TYPES[0];  }// ▼占い風コメント生成function buildFortune(pct, type){  // high/lowのしきい値  var H=60, L=40;  function pick(txtHigh, txtLow, key){    var v=pct[key]; return v>=H ? txtHigh : (v<=L ? txtLow : "");  }  // あなたはこんな人に惹かれやすい  var likes = [    pick("明るい笑顔と透明感のある人","落ち着いた照度で静かな色気の人","LIGHT"),    pick("白黒のメリハリが似合う端正な人","淡色の同系色が似合うやさしい人","CONTRAST"),    pick("艶のある髪やアクセが映える人","マットで素肌感のある人","GLOSS"),    pick("小物・柄で“情報多め”の主役感がある人","無地＆余白のミニマルが似合う人","DENSITY"),    pick("直線的で端正・きちんと感のある人","落ち感や曲線の“抜け”が上手な人","STRUCTURE"),    pick("テンポよく明るい所作の人","ゆっくり丁寧な所作の人","TEMPO")  ].filter(Boolean);  // あるある（上位2因子ベース）  var topKeys = Object.keys(pct).sort(function(a,b){return pct[b]-pct[a];}).slice(0,2);  var aaDict = {    LIGHT:["昼の写真を保存しがち","キャンドル写真に弱い"],    CONTRAST:["白黒コーデの画像に保存ボタンが暴発","淡色リンク集めがち"],    GLOSS:["“艶髪”と聞くと秒でタップ","マットリップ紹介は即チェック"],    DENSITY:["アクセ多めコーデに『わかる…』と呟く","無地×余白コーデをピン留めしがち"],    STRUCTURE:["直線シルエットで一目惚れ","落ち感シルエットに『抜けが神』と言いがち"],    TEMPO:["笑顔の連写にやられる","静かな横顔の動画を無限リピ"]  };  var alist=[];  topKeys.forEach(function(k){    var arr=aaDict[k]||[];    // 上位値で0番、低位なら1番    alist.push( pct[k]>=H ? arr[0] : (pct[k]<=L ? arr[1] : (arr[0]||"")) );  });  // 距離の縮め方（トップ因子で一言）  var tipMap = {    LIGHT:   {hi:"昼の写真＆爽やかな挨拶が近道。", lo:"落ち着いた照明の場で静かに話すと刺さる。"},    CONTRAST:{hi:"色数は絞って“白黒はっきり”で印象UP。", lo:"同系色でトーンを合わせると好感度UP。"},    GLOSS:   {hi:"髪や靴を“艶の面”で整えると一気に雰囲気が出る。", lo:"マットな質感と清潔感で『わかってる』を演出。"},    DENSITY: {hi:"小物や柄に一つ“盛り”を乗せると会話の糸口に。", lo:"無地＋余白で素材の良さを見せると刺さる。"},    STRUCTURE:{hi:"直線的で端正なシルエットを選ぶと信頼感が増す。", lo:"力の抜けた落ち感で“親しみやすさ”を。"},    TEMPO:   {hi:"テンポ良く笑顔多めで距離が縮まる。", lo:"間を大切に、ゆったり目の会話が合う。"}  };  var tk=topKeys[0], tip=(pct[tk]>=H?tipMap[tk].hi: (pct[tk]<=L?tipMap[tk].lo: tipMap[tk].hi));  // タイプ固有の一言（軽め）  var typeNote = (type.hidden)    ? "※レア枠『隠しタイプ』解放。黒×シルバーと“艶の面”が決め手。"    : "このタイプは写真の“面の作り”と色合わせが鍵。日によって寄せ替えも楽しんで。";  return {    likes: (likes.length? likes.join("／") : "状況に合わせて好みが変わりやすいタイプ"),    alist: alist,    tip: tip,    note: typeNote  };}  // ====== 表示 ======function heroPath(typeNo){  var id = String(typeNo).padStart(2,"0");  var g = (CURRENT_GENDER === "male" ? "female" : "male"); // 逆フォルダを使う  return IMG_BASE + g + "/t" + id + ".webp";}  function drawBars(pct){    var html = "";    Object.keys(FACTORS).forEach(function(key){      var def = FACTORS[key], val = pct[key];      html += '<article class="bar" aria-label="'+def.name+'">'+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span></div>'+        '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'+      '</article>';    });    bars.innerHTML = html;  }  function render(o){    // 判定    var t = pickType(o.fPct);    state.type = t;    state.pct  = o.fPct;    // タイトル行    typeLine.textContent = 'あなたの“推し顔”タイプ：' + t.name;    // ヒーロー    heroImg.src = heroPath(t.id);    heroImg.alt = (ALT[t.id] && ALT[t.id][CURRENT_GENDER]) || "結果イメージ";    heroTitle.textContent = t.name + (t.hidden ? "（隠しタイプ）" : "");    heroCopy.textContent  = t.catch;    heroTaste.textContent = t.taste;    // 総合（平均は因子平均）    var avg = Object.keys(o.fScore).reduce(function(s,k){return s+o.fScore[k];},0)/Object.keys(o.fScore).length;    sumAvg.textContent = avg.toFixed(2);    sumPct.textContent = "= " + o.totalPct + "%";    // 最上位因子をメモ    var topKey = Object.keys(o.fPct).sort(function(a,b){ return o.fPct[b]-o.fPct[a]; })[0];    sumNote.textContent = "上位因子："+FACTORS[topKey].name;    // 因子バー    drawBars(o.fPct);// ランク／長文（占い風）var fortune = buildFortune(o.fPct, t);longCopy.innerHTML =  '<div class="note"><h4>あなたはこんな人に惹かれがち</h4>'+  '<p>'+ fortune.likes +'</p>'+  '<h4 style="margin-top:10px">あるある</h4>'+  '<ul style="margin:6px 0 0 18px;line-height:1.9">'+    fortune.alist.map(function(s){return '<li>'+s+'</li>';}).join("")+  '</ul>'+  '<h4 style="margin-top:10px">距離の縮め方</h4>'+  '<p>'+ fortune.tip +'</p>'+  '<p class="small" style="margin-top:8px">'+ fortune.note +'</p>'+  (t.hidden?'<p class="small" style="margin-top:6px">※条件一致でレア枠（隠しタイプ）が解放されました。</p>':'')+  '</div>';    // 研究メモ（やさしい語彙）    var memo = [      "ある研究では、第一印象には「明るさ・コントラスト・質感」が大きく関わる示唆。",      "ある研究では、輪郭の直線／曲線は“きちんと感”や“やわらかさ”の印象と結びつくことがある。",      "ある研究では、情報量（無地／装飾）は清潔感や主役感の受け取り方に影響する可能性。",      "ある研究では、テンポ（所作の速さ・間）の違いが“活発／落ち着き”の印象に関連することがある。",      "ある研究では、好みの傾向は状況や組み合わせで変化し、単独要素より全体設計が大切という示唆。"    ];    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");    // 共有リンク// 共有リンク（buttonで確実に表示＆開く）var shareText = '『推し顔診断』タイプ：'+t.name+'｜因子平均 '+avg.toFixed(2)+' / 4';var url = location.href.split('#')[0];function openBlank(u){ window.open(u, '_blank', 'noopener'); }// X（旧Twitter）shareTw.onclick = function(){  openBlank('https://twitter.com/intent/tweet?text='    + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url));};// LINEshareLn.onclick = function(){  openBlank('https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url));};// Instagram（Webを開き、キャプションは自動コピー）shareIg.onclick = function(){  var caption = shareText + ' ' + url;  copyToClipboard(caption).then(function(){    openBlank('https://www.instagram.com/');    toast('キャプションをコピーしました。Instagramで貼り付けてください。');  });};// リンクをコピーvar shareCp = document.getElementById('shareCp');if(shareCp){  shareCp.onclick = function(){    copyToClipboard(shareText + ' ' + url).then(function(){      toast('リンクをコピーしました');    });  };}// 表示（hidden解除）shareRow.hidden = false;shareRow.removeAttribute('hidden');shareRow.style.display = 'flex';    // 表示切替    resEmpty.style.display = "none";    shareRow.hidden = false;// ▼ 結果画像を保存（まとめスクショ）if (btnShot && shotCanvas){  btnShot.onclick = async function(e){    e.preventDefault();    var original = btnShot.textContent;    btnShot.textContent = "画像を生成中…";    btnShot.disabled = true;    try{      var blob = await buildShareImage({        heroSrc: heroImg.src,        title: (t.hidden? t.name+"（隠し）" : t.name),        catch: t.catch,        taste: t.taste,        avg: avg.toFixed(2),        pct: o.fPct      });      saveBlob(blob, "oshi-face_"+t.key+".png");    }catch(err){      console.error(err);      alert("画像の生成に失敗しました。\n画像はプレースホルダで保存される場合があります（file://直開きだと外部画像は描けません）。");    }finally{      btnShot.textContent = original;      btnShot.disabled = false;    }  };}// 表示切替resEmpty.style.display = "none";    resArea.style.display  = "block";    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});    // 結果確定を他ページに通知document.dispatchEvent(new Event('result:ready'));// 最後に保存    try{      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));    }catch(e){}  }  // ====== 共有ヘルパー ======  function copyToClipboard(text){    if(navigator.clipboard && navigator.clipboard.writeText){      return navigator.clipboard.writeText(text);    }    return new Promise(function(res){      var ta=document.createElement('textarea'); ta.value=text;      document.body.appendChild(ta); ta.select();      try{ document.execCommand('copy'); }catch(_){}      document.body.removeChild(ta); res();    });  }  function toast(msg){    var t=document.createElement('div');    t.textContent=msg;    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';    t.style.zIndex=9999; t.style.fontSize='13px';    document.body.appendChild(t);    setTimeout(function(){ t.remove(); },1500);  }  // ====== クリア ======  function clearAnswers(){    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });    wipeAnswers(); prog.style.width="0%";    resEmpty.style.display=""; resArea.style.display="none";    var app=document.getElementById("app"); if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }  }  // ====== 初期化 ======  function init(){    setGender(CURRENT_GENDER);    buildQuestions();    // 研究メモ（初期プレースホルダ）    resMemo.innerHTML = ["ある研究では、第一印象には複数の要素が重なって効く示唆。"].map(function(s){return "<li>"+s+"</li>";}).join("");  }  if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }  document.getElementById("doScore").addEventListener("click", calc, false);  document.getElementById("doScore2").addEventListener("click", calc, false);  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);  var back = document.getElementById("backLink");  if(back){    back.addEventListener("click", function(){      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}    }, false);  }  // 状態  var state = { type:null, pct:null };})();// ====== まとめ画像生成（1080x1350） ======async function buildShareImage(data){  // グローバル（window）から安全に取得  var cvs = (window.shotCanvas || document.getElementById("shotCanvas"));  if(!cvs) throw new Error("shotCanvas not found");  var ctx = cvs.getContext("2d");  var W = cvs.width, H = cvs.height;  var FACT = (window.FACTORS || {}); // ←追加  // 背景  ctx.fillStyle = "#ffffff";  ctx.fillRect(0,0,W,H);// ヒーロー画像（上部 3:4 をだいたいで）var heroW = W - 120, heroH = Math.round(heroW * 4/3);if (heroH > 680){ heroH = 680; heroW = Math.round(heroH * 3/4); }var hx = Math.round((W - heroW)/2), hy = 60;// 角丸背景roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");try{  var img = await loadImage(data.heroSrc);  ctx.drawImage(img, hx, hy, heroW, heroH);}catch(_){  // 画像が取れない環境（file:// 直開き等）はプレースホルダ  ctx.fillStyle = "#e6ecf7";  ctx.fillRect(hx, hy, heroW, heroH);  ctx.fillStyle = "#9aa3b2";  ctx.font = "600 24px 'Noto Sans JP',system-ui";  ctx.fillText("画像を表示できませんでした", hx + 24, hy + heroH/2);}  // タイトル  var y = hy + heroH + 40;  ctx.fillStyle = "#1f2732";  ctx.font = "800 40px 'Noto Sans JP',system-ui";  ctx.fillText("推し顔診断", 60, y);  ctx.font = "800 44px 'Noto Sans JP',system-ui";  drawWrapText(ctx, "タイプ："+data.title, 60, y+54, W-120, 48);  // キャッチ＆テイスト  ctx.font = "700 28px 'Noto Sans JP',system-ui";  drawWrapText(ctx, data.catch, 60, y+120, W-120, 36, "#667087");  ctx.font = "600 26px 'Noto Sans JP',system-ui";  drawWrapText(ctx, data.taste, 60, y+176, W-120, 34, "#667087");  // 因子バー（6つ）  var baseY = y + 230;  var order = ["LIGHT","CONTRAST","GLOSS","DENSITY","STRUCTURE","TEMPO"];  for(var i=0;i<order.length;i++){    var key = order[i], val = data.pct[key]||0;    drawBar(ctx, 60, baseY + i*70, W-120, 18, val,      (FACT[key] ? FACT[key].name : key).replace("（"," ").replace("）",""), "#ff7a6b", "#ffba7e");  }  // 平均とフッター  var ftY = baseY + order.length*70 + 40;  ctx.font = "700 28px 'Noto Sans JP',system-ui";  ctx.fillStyle = "#1f2732";  ctx.fillText("因子平均："+data.avg+" / 4（= "+Math.round((parseFloat(data.avg)/4)*100)+"%）", 60, ftY);  ctx.font = "600 20px 'Noto Sans JP',system-ui";  ctx.fillStyle = "#9aa3b2";  return await canvasToBlob(cvs, "image/png");}// 画像読込（CORS考慮）async function loadImage(src){  // 1) fetch→blob→blobURL 経由（同一オリジン化）  try{    const r = await fetch(src, {cache:'no-store'});    if(!r.ok) throw new Error('fetch failed');    const b = await r.blob();    const blobUrl = URL.createObjectURL(b);    const img = await new Promise((res, rej)=>{      const im = new Image();      im.onload = ()=>res(im);      im.onerror = rej;      im.src = blobUrl;    });    // 使い終わったら解放    setTimeout(()=>URL.revokeObjectURL(blobUrl), 1000);    return img;  }catch(e){    // 2) 従来の anonymous 読み込み（CORS通ればOK）    return await new Promise((res, rej)=>{      const im = new Image();      im.crossOrigin = "anonymous";      im.onload = ()=>res(im);      im.onerror = rej;      im.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now();    });  }}// 角丸矩形function roundRect(ctx, x, y, w, h, r, fill, stroke){  ctx.save();  ctx.beginPath();  ctx.moveTo(x+r, y);  ctx.arcTo(x+w, y, x+w, y+h, r);  ctx.arcTo(x+w, y+h, x, y+h, r);  ctx.arcTo(x, y+h, x, y, r);  ctx.arcTo(x, y, x+w, y, r);  ctx.closePath();  if(fill){ ctx.fillStyle = fill; ctx.fill(); }  if(stroke){ ctx.strokeStyle = stroke; ctx.stroke(); }  ctx.restore();}// テキスト折返しfunction drawWrapText(ctx, text, x, y, maxW, lh, color){  ctx.fillStyle = color || "#1f2732";  var words = (text||"").split(/(\s+)/);  var line = "", cursor = y;  for(var i=0;i<words.length;i++){    var test = line + words[i];    if(ctx.measureText(test).width > maxW && i>0){      ctx.fillText(line, x, cursor);      line = words[i].trimStart();      cursor += lh;    }else{      line = test;    }  }  if(line){ ctx.fillText(line, x, cursor); }}// バーfunction drawBar(ctx, x, y, w, h, pct, label, c1, c2){  ctx.save();  // ラベル  ctx.fillStyle = "#1f2732";  ctx.font = "700 22px 'Noto Sans JP',system-ui";  ctx.fillText(label, x, y-10);  // 下地  var by = y+10;  roundRect(ctx, x, by, w, h, 10, "#edf2fb", "#e8eef9");  // 実バー  var ww = Math.max(0, Math.min(w, Math.round(w*pct/100)));  var grad = ctx.createLinearGradient(x,0,x+w,0);  grad.addColorStop(0, c1); grad.addColorStop(1, c2);  roundRect(ctx, x, by, ww, h, 10, grad);  // 数値  ctx.fillStyle = "#667087";  ctx.font = "600 18px 'Noto Sans JP',system-ui";  var txt = String(pct).padStart(2,"0")+"%";  ctx.fillText(txt, x + w - ctx.measureText(txt).width, by + h + 22);  ctx.restore();}// 保存function saveBlob(blob, filename){  var a = document.createElement("a");  var url = URL.createObjectURL(blob);  a.href = url; a.download = filename || "result.png";  document.body.appendChild(a); a.click();  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);}// toBlob（fallback）function canvasToBlob(cvs, type){  return new Promise(function(res){    if(cvs.toBlob){ cvs.toBlob(function(b){ res(b); }, type||"image/png"); }    else{ res(dataURLtoBlob(cvs.toDataURL(type||"image/png"))); }  });}function dataURLtoBlob(dataUrl){  var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);  while(n--){ u8arr[n] = bstr.charCodeAt(n); }  return new Blob([u8arr], {type:mime});}</script><script>/* ============================================================   診断ページ共通スニペット（コピペ用）   1) 回答の自動保存・自動復元（入力中も逐次保存）   2) 結果表示タイミングで「済」＋ あなたのLv +1   3) みんなのこころLv（CountAPI）に +1（失敗は無視）   ------------------------------------------------------------   ★置き場所：各診断HTMLの </body> の直前   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）============================================================ */(function(){  'use strict';  // ===== 固定キー：index.html と合わせてあります =====  var DONE_KEY   = 'specimens:open:byid';   // 診断ごとの「済」マップ  var TOTAL_KEY  = 'specimens:open:total';  // あなたのこころLv（合計）  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ  // ===== このページのID =====  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';  // ===== 回答保存ストレージ（この診断だけの箱） =====  var ANSWER_KEY = 'specimens:answers:' + MY_ID;  // ===== みんなのLv（CountAPI設定） =====  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';  var COUNTAPI_KEY = 'specimens_open_total';  function countapiHit(){    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;    if(navigator.sendBeacon){      try{ navigator.sendBeacon(url); }catch(_){}    }else{      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});    }  }  // ---------- 回答の保存/復元 ----------  function loadState(){    try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; }  }  function saveState(obj){    try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){}  }  function saveField(el){    if(!el || !el.name) return;    var st = loadState();    var nm = el.name;    if(el.type === 'radio'){      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');      st[nm] = {t:'r', v: chosen ? chosen.value : null};    }else if(el.type === 'checkbox'){      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');      var vals = [];      all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });      st[nm] = {t:'c', v: vals};    }else if(el.tagName==='SELECT'){      if(el.multiple){        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });        st[nm] = {t:'m', v: arr};      }else{        st[nm] = {t:'s', v: el.value};      }    }else{      st[nm] = {t:'t', v: el.value};    }    saveState(st);  }  function restoreOnce(){    var st = loadState();    var names = Object.keys(st);    if(!names.length) return false;    names.forEach(function(nm){      var info = st[nm]; if(!info) return;      if(info.t==='r'){        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }      }else if(info.t==='c'){        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');        var set = new Set(info.v||[]);        all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });      }else if(info.t==='m'){        var sel = document.querySelector('select[name="'+nm+'"]');        if(sel){          var setm = new Set(info.v||[]);          [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); });        }      }else if(info.t==='s'){        var s = document.querySelector('select[name="'+nm+'"]');        if(s){ s.value = info.v; }      }else{        var t = document.querySelector('[name="'+nm+'"]');        if(t){ t.value = info.v==null? '' : String(info.v); }      }    });    try{ document.dispatchEvent(new Event('change', {bubbles:true})); }catch(_){}    return true;  }  document.addEventListener('change', function(e){    var el = e.target;    if(!(el instanceof HTMLElement)) return;    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);  }, true);  document.addEventListener('input', function(e){    var el = e.target;    if(!(el instanceof HTMLElement)) return;    if(el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);  }, true);  (function restoreWhenReady(){    var TRY_MAX=12, tries=0;    function tick(){      tries++;      var hasAny = document.querySelector('input[name], select[name], textarea[name]');      if(hasAny){ restoreOnce(); return; }      if(tries<TRY_MAX){ setTimeout(tick, 300); }    }    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }    else document.addEventListener('DOMContentLoaded', tick);  })();  // リセット系ボタンがあれば保存も削除（#btnReset / data-role="reset"）  function clearAnswers(){ try{ localStorage.removeItem(ANSWER_KEY); }catch(_){ } }  document.addEventListener('click', function(e){    var t = e.target;    if(!(t instanceof HTMLElement)) return;    if(t.id==='btnReset' || t.matches('[data-role="reset"]')) clearAnswers();  }, true);  // ---------- 結果確定で「済」＋Lv加算 ----------  var marked = false;  function markOnce(){    if(marked) return; marked = true;    try{      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;      localStorage.setItem(TOTAL_KEY, String(total));      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}      map[MY_ID] = (map[MY_ID] || 0) + 1;      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));      countapiHit();      try{        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;        localStorage.setItem(GLOBAL_LAST, String(last));      }catch(_){}    }catch(_){}  }  document.addEventListener('result:ready', markOnce);  setTimeout(markOnce, 2000);})();</script></body></html>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>推し顔診断（男性／女性）</title>
+<meta name="description" content="24問で「明るさ・対比・質感・情報量・きちんと感・所作テンポ」を％化。男女切替で18タイプ＋隠しタイプ（クズチャーム）を判定します。">
+<meta name="theme-color" content="#f7f9ff">
+<!-- OGP（必要なら差し替え） -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="推し顔診断（男性／女性）">
+<meta property="og:description" content="24問・6因子％で“推し顔”タイプを判定。男女切替＆画像webp対応。">
+<meta property="og:image" content="/shindan/assets/results/oshi-face/male/t01.webp">
+<style>
+:root{
+  --accent:#ff7a6b; --accent2:#ffba7e;
+  --ink:#1f2732; --muted:#667087; --paper:#fff;
+  --bg1:#f7f9ff; --bg2:#fff6f3; --line:#e6ecf7;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#ffe9e5,#fff3df);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.section{margin:14px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .25s ease;
+}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(255,122,107,.45)}100%{box-shadow:0 0 0 0 rgba(255,122,107,0)}}
+.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.total{font-size:22px;font-weight:800}
+.small{color:var(--muted);font-size:.92em}
+
+/* トグル（男女） */
+.mode-tabs{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.mode-tabs button{padding:8px 12px;border:0;background:#fff;cursor:pointer}
+.mode-tabs button.on{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+
+/* ヒーロー（画像→テキスト） */
+.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:3/4;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-vert figcaption{padding:10px;width:100%}
+.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.stat .big{font-size:22px;font-weight:800}
+.hr{height:1px;background:var(--line);margin:10px 0}
+.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+.note h4{margin:0 0 6px;font-size:16px}
+
+/* 共有ボタン */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.tw::before{content:"𝕏";margin-right:.25em}
+.btn.line::before{content:"💬";margin-right:.25em}
+.btn.ig::before{content:"📸";margin-right:.25em}
+.btn.save::before{content:"⬇️";margin-right:.25em}
+
+@media (max-width: 560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .hero-vert figure{width:100%}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:12px}
+  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
+  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
+  .note h4{font-size:15px}
+}
+#shareRow{display:flex !important; flex-wrap:wrap; gap:8px}
+</style>
+</head>
+<body data-id="oshi-face">
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">✨</div>
+    <div>
+      <h1>推し顔診断（男性／女性）</h1>
+      <p class="sub">24問（0〜4の5件法）。6因子の％とタイプを表示します。※エンタメ自己理解／因果は断定しません。</p>
+    </div>
+  </header>
+
+  <div class="sticky" aria-live="polite">
+    <div class="mode-tabs" role="tablist" aria-label="画像の性別切替">
+      <button id="modeMale"  class="on" role="tab" aria-selected="true">男性版</button>
+      <button id="modeFemale" role="tab" aria-selected="false">女性版</button>
+    </div>
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="24">
+      <span id="prog"></span>
+    </div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <section class="card section" id="desc">
+    <h2 style="margin:4px 0 8px">説明</h2>
+    <div class="meta" style="margin-bottom:8px">
+      <span class="pill">質問数：24</span>
+      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>
+      <span class="pill">出力：6因子％→タイプ判定（18＋隠し）</span>
+    </div>
+    <p class="small">男女切替は<b>画像とテキスト（alt）</b>のみ変わります。判定ロジックは共通です。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card section" id="questions">
+    <h2 style="margin:4px 0 8px">設問（ぜんぜん／あまり／ときどき／よく／とても）</h2>
+    <div id="qWrap"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="clearAns">回答をクリア</button>
+      <button class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card section" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="badge">まだ結果はありません</span>
+      <p class="small">全24問に回答して「診断する」を押してください。</p>
+    </div>
+
+    <div id="resArea" style="display:none">
+      <div class="result-head">
+        <span class="badge">結果</span>
+        <div class="total" id="typeLine">—</div>
+      </div>
+
+      <!-- ヒーロー（タイプ画像＋ミニ情報） -->
+      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/oshi-face/male/t01.webp" alt="結果イメージ" loading="lazy" width="960" height="1280">
+        </figure>
+        <figcaption>
+          <div class="capline" id="heroTitle">—</div>
+          <div class="capmini" id="heroCopy">—</div>
+          <div class="capmini" id="heroTaste" style="margin-top:4px">—</div>
+     <div class="share-row" id="shareRow" hidden>
+  <button id="btnShot"  class="btn save" type="button">結果画像を保存</button>
+  <button id="shareTw"  class="btn tw"   type="button">Xで共有</button>
+  <button id="shareLn"  class="btn line" type="button">LINEで送る</button>
+  <button id="shareIg"  class="btn ig"   type="button" aria-label="Instagram（Web）">Instagram</button>
+  <button id="shareCp"  class="btn"      type="button">リンクをコピー</button>
+</div>
+<!-- まとめ画像を生成するためのキャンバス（非表示） -->
+<canvas id="shotCanvas" width="1080" height="1350" style="display:none"></canvas>
+        </figcaption>
+      </div>
+
+      <div class="grid2">
+        <article class="stat" aria-label="総合スコア">
+          <div><strong>因子平均（0–4）</strong></div>
+          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
+          <div class="small" id="sumNote">—</div>
+        </article>
+      </div>
+
+      <div class="hr"></div>
+      <!-- 因子バー -->
+      <div class="section">
+        <h3 style="margin:8px 0">6因子（％）</h3>
+        <div id="bars" class="factor-mini"></div>
+      </div>
+
+      <div class="hr"></div>
+      <!-- ランク/長文（任意） -->
+      <div id="longCopy" class="small"></div>
+
+      <div class="hr"></div>
+      <!-- 研究メモ -->
+      <details class="section" open>
+        <summary><strong>研究メモ</strong></summary>
+        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>
+        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差が大きい性質があります。医療・採用などの用途には使えません。</p>
+      </details>
+
+      <div class="back-area" style="display:flex;justify-content:center;margin-top:12px">
+        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="footer card">
+    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
+    <p class="small">このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
+    回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  // ====== ページ情報 ======
+  var SLUG = "oshi-face";
+  var TITLE = "推し顔診断（男性／女性）";
+  var ANS_KEY = "specimens:"+SLUG+":answers";
+  var GENDER_KEY = "specimens:"+SLUG+":gender";
+  var IMG_BASE = "/shindan/assets/results/oshi-face/"; // {male|female}/t01.webp..t19.webp
+
+  // ====== 性別状態 ======
+  var CURRENT_GENDER = (localStorage.getItem(GENDER_KEY) || "male"); // "male" | "female"
+  var modeMaleBtn = document.getElementById("modeMale");
+  var modeFemaleBtn = document.getElementById("modeFemale");
+  function setGender(g){
+    CURRENT_GENDER = g;
+    try{ localStorage.setItem(GENDER_KEY,g); }catch(e){}
+    modeMaleBtn.classList.toggle("on", g==="male");
+    modeFemaleBtn.classList.toggle("on", g==="female");
+    modeMaleBtn.setAttribute("aria-selected", g==="male" ? "true":"false");
+    modeFemaleBtn.setAttribute("aria-selected", g==="female" ? "true":"false");
+    if(state.type){ renderType(); }
+  }
+  modeMaleBtn.addEventListener("click", function(){ setGender("male"); }, false);
+  modeFemaleBtn.addEventListener("click", function(){ setGender("female"); }, false);
+
+// ====== 因子・設問 ======
+// 6因子（LIGHT/CONTRAST/GLOSS/DENSITY/STRUCTURE/TEMPO）は既存のまま利用
+var FACTORS = {
+  LIGHT:     { name:"明るさ（LIGHT）",               items:["Q01","Q02","Q20"] },
+  CONTRAST:  { name:"対比（CONTRAST）",             items:["Q03","Q04","Q14","Q21"] },
+  GLOSS:     { name:"質感ツヤ（GLOSS）",             items:["Q05","Q06","Q13","Q22","Q19"] },
+  DENSITY:   { name:"情報量（DENSITY）",             items:["Q07","Q08","Q18","Q23","Q15"] },
+  STRUCTURE: { name:"きちんと感（STRUCTURE）",       items:["Q09","Q10","Q16","Q24"] },
+  TEMPO:     { name:"所作テンポ（TEMPO）",           items:["Q11","Q12","Q17"] }
+};
+window.FACTORS = FACTORS;
+
+// ▼新しい“好み中心”24問（0=ぜんぜん〜4=とても／revは逆転）
+var ITEMS = {
+  Q01:{ text:"明るい笑顔やキラッとした表情に惹かれる。" },
+  Q02:{ text:"薄暗く静かな空気のほうが色気を感じる。", rev:true },
+
+  Q03:{ text:"白黒の“くっきり効いた”対比に胸が高鳴る。" },
+  Q04:{ text:"やわらかな同系色・グラデーションが好き。", rev:true },
+
+  Q05:{ text:"髪・肌・アクセの“艶”があると一気に刺さる。" },
+  Q06:{ text:"マットで落ち着いた質感のほうが安心する。", rev:true },
+
+  Q07:{ text:"小物や柄が“少し多め”でもワクワクする。"},
+  Q08:{ text:"無地＆余白たっぷりのミニマルに惹かれる。", rev:true },
+
+  Q09:{ text:"直線的で端正なシルエットにグッとくる。"},
+  Q10:{ text:"ゆるい落ち感や丸みのあるラインが心地よい。", rev:true },
+
+  Q11:{ text:"明るくテンポの速い所作に惹かれがち。"},
+  Q12:{ text:"ゆっくり丁寧な所作に安心する。", rev:true },
+
+  Q13:{ text:"香りやラメなど“キラッ”と光る要素は歓迎。"},
+  Q14:{ text:"色数は少なく、コントラストではっきり決めたい。"},
+
+  Q15:{ text:"フィルム写真やレトロ喫茶の雰囲気が刺さる。"},
+  Q16:{ text:"機能的・実用的なディテールを見ると好印象。"},
+
+  Q17:{ text:"場の中心でも様になる“主役感”に惹かれる。"},
+  Q18:{ text:"装飾は少なめ、“素の良さ”がいちばん。", rev:true },
+
+  Q19:{ text:"夜景やネオン、イルミのきらめきに弱い。"},
+  Q20:{ text:"キャンドルや間接照明の落ち着きが似合う人が好き。", rev:true },
+
+  Q21:{ text:"淡い中間色やぼかしの繊細さが“綺麗”だと思う。", rev:true },
+  Q22:{ text:"ツヤより“マットの上品さ”を推したい。", rev:true },
+
+  Q23:{ text:"ロゴより素材・形の良さを重視する。"},
+  Q24:{ text:"少し崩した“抜け感”に惹かれる。", rev:true }
+};
+var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
+
+  // ====== タイプ定義（18＋隠し19） ======
+  var TYPES = [
+    { id:1,  key:"t01", name:"爽やか清潔",         catch:"明るくクリーン。余白と清潔感。",           taste:"推し色：白・薄青／キー：白スニーカー" },
+    { id:2,  key:"t02", name:"ミニマル無地",       catch:"無地とサイズ感で魅せる。",                 taste:"推し色：白・黒・エクリュ／キー：素材の良さ" },
+    { id:3,  key:"t03", name:"淡色やわらか",       catch:"低コントラストでやさしい空気。",           taste:"推し色：くすみパステル／キー：揺れ素材" },
+    { id:4,  key:"t04", name:"オールブラック",     catch:"黒×直線で一気に締める。",                 taste:"推し色：黒／キー：レザー" },
+    { id:5,  key:"t05", name:"モノトーンきっぱり", catch:"白黒の対比で端正に。",                     taste:"推し色：白・黒／キー：余白" },
+    { id:6,  key:"t06", name:"ゆるストリート",     catch:"リラックス×今っぽさ。",                   taste:"推し色：差し色自由／キー：ワイド" },
+    { id:7,  key:"t07", name:"知的きれいめ",       catch:"静かな知性、端正さ。",                     taste:"推し色：ネイビー×白／キー：細フレーム" },
+    { id:8,  key:"t08", name:"清楚クラシック",     catch:"きちんと感と清楚。",                       taste:"推し色：紺・生成り／キー：膝下ライン" },
+    { id:9,  key:"t09", name:"スポーティ機能",     catch:"機能美＆ヘルシー。",                       taste:"推し色：白×ネイビー／キー：アスレジャー" },
+    { id:10, key:"t10", name:"ナチュラル",         catch:"力の抜けた心地よさ。",                     taste:"推し色：生成り・ベージュ／キー：リネン" },
+    { id:11, key:"t11", name:"ガーリー",           catch:"可憐で親しみ。",                           taste:"推し色：パステル／キー：小粒アクセ" },
+    { id:12, key:"t12", name:"カラフル",           catch:"高彩度で楽しい主役感。",                   taste:"推し色：ビビッド／キー：レイヤー" },
+    { id:13, key:"t13", name:"古着レトロ",         catch:"ぬくもりあるヴィンテージ。",               taste:"推し色：デニム×チェック／キー：古着MIX" },
+    { id:14, key:"t14", name:"韓国っぽ",           catch:"端正×いま感。",                           taste:"推し色：白黒／キー：ロング直線" },
+    { id:15, key:"t15", name:"キラキラ派手",       catch:"光沢と主役感で惹きつける。",               taste:"推し色：黒×シルバー／キー：ビジュー" },
+    { id:16, key:"t16", name:"地雷（黒×ピンク）",  catch:"黒主役の甘辛。",                           taste:"推し色：黒×ピンク／キー：チョーカー" },
+    { id:17, key:"t17", name:"理系クリーン",       catch:"無駄なく清潔・直線。",                     taste:"推し色：白×ネイビー／キー：最小小物" },
+    { id:18, key:"t18", name:"文系クラシック",     catch:"やわらか上品・読書感。",                   taste:"推し色：生成り×ブラウン／キー：革小物" },
+    { id:19, key:"t19", name:"クズチャーム（夜のカリスマ）", catch:"黒と艶、視線の間合い。危ういのに目を離せない。", taste:"推し色：黒×シルバー／キー：細チェーン", hidden:true }
+  ];
+  var ALT = {}; TYPES.forEach(function(t){ ALT[t.id] = { male: t.name+"（男性版）", female:t.name+"（女性版）" }; });
+
+// ====== 要素参照 ======
+var qWrap   = document.getElementById("qWrap");
+var prog    = document.getElementById("prog");
+var resEmpty= document.getElementById("resEmpty");
+var resArea = document.getElementById("resArea");
+var typeLine= document.getElementById("typeLine");
+var heroImg = document.getElementById("heroImg");
+var heroTitle= document.getElementById("heroTitle");
+var heroCopy = document.getElementById("heroCopy");
+var heroTaste= document.getElementById("heroTaste");
+var sumAvg  = document.getElementById("sumAvg");
+var sumPct  = document.getElementById("sumPct");
+var sumNote = document.getElementById("sumNote");
+var bars    = document.getElementById("bars");
+var longCopy= document.getElementById("longCopy");
+var resMemo = document.getElementById("resMemo");
+var shareRow= document.getElementById("shareRow");
+var shareTw = document.getElementById("shareTw");
+var shareLn = document.getElementById("shareLn");
+var shareIg = document.getElementById("shareIg");
+var btnShot = document.getElementById("btnShot");
+var shotCanvas = document.getElementById("shotCanvas");
+window.shotCanvas = shotCanvas;
+
+// 現在の判定があるとき、性別だけ反映して画像/altを更新
+function renderType(){
+  if(!state || !state.type) return;
+  var t = state.type;
+  heroImg.src = (function(){
+  var id = String(t.id).padStart(2,"0");
+  var g = (CURRENT_GENDER === "male" ? "female" : "male"); // 逆フォルダを使う
+  return IMG_BASE + g + "/t" + id + ".webp";
+})();
+  heroImg.alt = (ALT[t.id] && ALT[t.id][CURRENT_GENDER]) || "結果イメージ";
+}
+  // ====== 設問生成 ======
+  function buildQuestions(){
+    var html = "";
+    Object.keys(ITEMS).forEach(function(qid, i){
+      var q = ITEMS[qid];
+      html += '<fieldset class="q" id="fs-'+qid+'">'+
+        '<legend>'+String(i+1).padStart(2,"0")+'. '+q.text+'</legend>'+
+        '<div class="scale" role="radiogroup" aria-label="'+q.text+'">';
+      for(var v=0;v<=4;v++){
+        html += '<div style="position:relative">'+
+          '<input id="q'+qid+'-'+v+'" type="radio" name="q'+qid+'" value="'+v+'">'+
+          '<label for="q'+qid+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
+        '</div>';
+      }
+      html += '</div></fieldset>';
+    });
+    qWrap.innerHTML = html;
+
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){
+      r.addEventListener('change', function(){ saveAnswers(); updateProgress(); }, false);
+    });
+    restoreAnswers();
+    updateProgress();
+  }
+
+  // ====== 保存/復元 ======
+  function saveAnswers(){
+    try{
+      var out = {};
+      Object.keys(ITEMS).forEach(function(id){
+        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+        if(chk){ out[id] = parseInt(chk.value,10); }
+      });
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      var ans = (data && data.ans) || {};
+      Object.keys(ans).forEach(function(id){
+        var v = ans[id];
+        var input = qWrap.querySelector('#q'+id+'-'+v);
+        if(input){ input.checked = true; }
+      });
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
+
+  function updateProgress(){
+    var total = Object.keys(ITEMS).length;
+    var answered = 0;
+    Object.keys(ITEMS).forEach(function(id){
+      if(qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked')) answered++;
+    });
+    var pct = Math.round(100*answered/total);
+    prog.style.width = pct + "%";
+    var bar = prog.parentElement;
+    if(bar){
+      bar.setAttribute("aria-valuenow", answered);
+      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
+    }
+  }
+
+  // ====== スコア計算 ======
+  function valOf(id, raw){ var v=Number(raw); return (ITEMS[id].rev? (4-v):v); }
+  function calc(){
+    var missing = [];
+    var ans = {};
+    Object.keys(ITEMS).forEach(function(id){
+      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
+      if(!chk){ missing.push(id); return; }
+      ans[id] = parseInt(chk.value,10);
+    });
+    if(missing.length){
+      alert("未回答があります。全24問にお答えください。");
+      var fs = document.getElementById('fs-'+missing[0]);
+      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
+      return;
+    }
+
+    var fScore = {}, fPct = {};
+    Object.keys(FACTORS).forEach(function(key){
+      var ids = FACTORS[key].items;
+      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);
+      var avg = sum / ids.length; // 0-4
+      fScore[key] = avg;
+      fPct[key] = Math.round((avg/4)*100);
+    });
+
+    var keys = Object.keys(FACTORS);
+    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;
+    var totalPct = Math.round((totalAvg/4)*100);
+
+    render({ fScore, fPct, totalAvg, totalPct });
+  }
+
+  // ====== タイプ判定（隠し優先） ======
+  function pickType(p){
+    // 隠し19条件：CONTRAST≥70, GLOSS≥70, TEMPO≥60, DENSITY≥55
+    if(p["CONTRAST"]>=70 && p["GLOSS"]>=70 && p["TEMPO"]>=60 && p["DENSITY"]>=55){
+      return TYPES.find(function(t){ return t.id===19; });
+    }
+    // ルール
+    var rules = [
+      [1,  p.LIGHT>=60 && p.DENSITY<=45],
+      [2,  p.DENSITY<=40 && p.GLOSS<=50],
+      [3,  p.CONTRAST<=40 && p.STRUCTURE<=55],
+      [4,  p.LIGHT<=40 && p.CONTRAST>=70 && p.STRUCTURE>=60],
+      [5,  p.CONTRAST>=65 && p.STRUCTURE>=55],
+      [6,  p.STRUCTURE<=45 && p.TEMPO>=60],
+      [7,  p.STRUCTURE>=65 && p.TEMPO<=55 && p.GLOSS<=60],
+      [8,  p.STRUCTURE>=65 && p.CONTRAST<=55 && p.TEMPO<=55],
+      [9,  p.STRUCTURE>=60 && p.DENSITY<=50 && p.TEMPO>=55],
+      [10, p.STRUCTURE<=50 && p.DENSITY<=55 && p.LIGHT>=50],
+      [11, p.LIGHT>=60 && p.CONTRAST<=55 && p.GLOSS>=55],
+      [12, p.DENSITY>=65 && p.CONTRAST>=60 && p.TEMPO>=60],
+      [13, p.LIGHT<=45 && p.GLOSS<=50 && p.STRUCTURE<=50],
+      [14, p.STRUCTURE>=65 && p.CONTRAST>=60],
+      [15, p.GLOSS>=70 && p.DENSITY>=60 && p.TEMPO>=60 && p.CONTRAST>=60],
+      [16, p.CONTRAST>=70 && p.LIGHT<=45 && p.GLOSS>=60],
+      [17, p.STRUCTURE>=65 && p.DENSITY<=50 && p.LIGHT>=55 && p.GLOSS<=55],
+      [18, (p.STRUCTURE<=55) && (p.DENSITY>=45 && p.DENSITY<=65) && p.TEMPO<=50],
+    ];
+    for(var i=0;i<rules.length;i++){
+      var id=rules[i][0], cond=rules[i][1];
+      if(cond) return TYPES.find(function(t){ return t.id===id; });
+    }
+    // フォールバック：最上位因子で代表タイプ
+    var top = Object.keys(p).sort(function(a,b){ return p[b]-p[a]; })[0];
+    var map = { LIGHT:1, CONTRAST:5, GLOSS:15, DENSITY:2, STRUCTURE:7, TEMPO:6 };
+    return TYPES.find(function(t){ return t.id===map[top]; }) || TYPES[0];
+  }
+
+// ▼占い風コメント生成
+function buildFortune(pct, type){
+  // high/lowのしきい値
+  var H=60, L=40;
+
+  function pick(txtHigh, txtLow, key){
+    var v=pct[key]; return v>=H ? txtHigh : (v<=L ? txtLow : "");
+  }
+
+  // あなたはこんな人に惹かれやすい
+  var likes = [
+    pick("明るい笑顔と透明感のある人","落ち着いた照度で静かな色気の人","LIGHT"),
+    pick("白黒のメリハリが似合う端正な人","淡色の同系色が似合うやさしい人","CONTRAST"),
+    pick("艶のある髪やアクセが映える人","マットで素肌感のある人","GLOSS"),
+    pick("小物・柄で“情報多め”の主役感がある人","無地＆余白のミニマルが似合う人","DENSITY"),
+    pick("直線的で端正・きちんと感のある人","落ち感や曲線の“抜け”が上手な人","STRUCTURE"),
+    pick("テンポよく明るい所作の人","ゆっくり丁寧な所作の人","TEMPO")
+  ].filter(Boolean);
+
+  // あるある（上位2因子ベース）
+  var topKeys = Object.keys(pct).sort(function(a,b){return pct[b]-pct[a];}).slice(0,2);
+  var aaDict = {
+    LIGHT:["昼の写真を保存しがち","キャンドル写真に弱い"],
+    CONTRAST:["白黒コーデの画像に保存ボタンが暴発","淡色リンク集めがち"],
+    GLOSS:["“艶髪”と聞くと秒でタップ","マットリップ紹介は即チェック"],
+    DENSITY:["アクセ多めコーデに『わかる…』と呟く","無地×余白コーデをピン留めしがち"],
+    STRUCTURE:["直線シルエットで一目惚れ","落ち感シルエットに『抜けが神』と言いがち"],
+    TEMPO:["笑顔の連写にやられる","静かな横顔の動画を無限リピ"]
+  };
+  var alist=[];
+  topKeys.forEach(function(k){
+    var arr=aaDict[k]||[];
+    // 上位値で0番、低位なら1番
+    alist.push( pct[k]>=H ? arr[0] : (pct[k]<=L ? arr[1] : (arr[0]||"")) );
+  });
+
+  // 距離の縮め方（トップ因子で一言）
+  var tipMap = {
+    LIGHT:   {hi:"昼の写真＆爽やかな挨拶が近道。", lo:"落ち着いた照明の場で静かに話すと刺さる。"},
+    CONTRAST:{hi:"色数は絞って“白黒はっきり”で印象UP。", lo:"同系色でトーンを合わせると好感度UP。"},
+    GLOSS:   {hi:"髪や靴を“艶の面”で整えると一気に雰囲気が出る。", lo:"マットな質感と清潔感で『わかってる』を演出。"},
+    DENSITY: {hi:"小物や柄に一つ“盛り”を乗せると会話の糸口に。", lo:"無地＋余白で素材の良さを見せると刺さる。"},
+    STRUCTURE:{hi:"直線的で端正なシルエットを選ぶと信頼感が増す。", lo:"力の抜けた落ち感で“親しみやすさ”を。"},
+    TEMPO:   {hi:"テンポ良く笑顔多めで距離が縮まる。", lo:"間を大切に、ゆったり目の会話が合う。"}
+  };
+  var tk=topKeys[0], tip=(pct[tk]>=H?tipMap[tk].hi: (pct[tk]<=L?tipMap[tk].lo: tipMap[tk].hi));
+
+  // タイプ固有の一言（軽め）
+  var typeNote = (type.hidden)
+    ? "※レア枠『隠しタイプ』解放。黒×シルバーと“艶の面”が決め手。"
+    : "このタイプは写真の“面の作り”と色合わせが鍵。日によって寄せ替えも楽しんで。";
+
+  return {
+    likes: (likes.length? likes.join("／") : "状況に合わせて好みが変わりやすいタイプ"),
+    alist: alist,
+    tip: tip,
+    note: typeNote
+  };
+}
+  // ====== 表示 ======
+function heroPath(typeNo){
+  var id = String(typeNo).padStart(2,"0");
+  var g = (CURRENT_GENDER === "male" ? "female" : "male"); // 逆フォルダを使う
+  return IMG_BASE + g + "/t" + id + ".webp";
+}
+  function drawBars(pct){
+    var html = "";
+    Object.keys(FACTORS).forEach(function(key){
+      var def = FACTORS[key], val = pct[key];
+      html += '<article class="bar" aria-label="'+def.name+'">'+
+        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+String(val).padStart(2,"0")+'%</span></div>'+
+        '<div class="row" aria-hidden="true"><span style="width:'+val+'%"></span></div>'+
+      '</article>';
+    });
+    bars.innerHTML = html;
+  }
+  function render(o){
+    // 判定
+    var t = pickType(o.fPct);
+    state.type = t;
+    state.pct  = o.fPct;
+
+    // タイトル行
+    typeLine.textContent = 'あなたの“推し顔”タイプ：' + t.name;
+
+    // ヒーロー
+    heroImg.src = heroPath(t.id);
+    heroImg.alt = (ALT[t.id] && ALT[t.id][CURRENT_GENDER]) || "結果イメージ";
+    heroTitle.textContent = t.name + (t.hidden ? "（隠しタイプ）" : "");
+    heroCopy.textContent  = t.catch;
+    heroTaste.textContent = t.taste;
+
+    // 総合（平均は因子平均）
+    var avg = Object.keys(o.fScore).reduce(function(s,k){return s+o.fScore[k];},0)/Object.keys(o.fScore).length;
+    sumAvg.textContent = avg.toFixed(2);
+    sumPct.textContent = "= " + o.totalPct + "%";
+    // 最上位因子をメモ
+    var topKey = Object.keys(o.fPct).sort(function(a,b){ return o.fPct[b]-o.fPct[a]; })[0];
+    sumNote.textContent = "上位因子："+FACTORS[topKey].name;
+
+    // 因子バー
+    drawBars(o.fPct);
+
+// ランク／長文（占い風）
+var fortune = buildFortune(o.fPct, t);
+longCopy.innerHTML =
+  '<div class="note"><h4>あなたはこんな人に惹かれがち</h4>'+
+  '<p>'+ fortune.likes +'</p>'+
+  '<h4 style="margin-top:10px">あるある</h4>'+
+  '<ul style="margin:6px 0 0 18px;line-height:1.9">'+
+    fortune.alist.map(function(s){return '<li>'+s+'</li>';}).join("")+
+  '</ul>'+
+  '<h4 style="margin-top:10px">距離の縮め方</h4>'+
+  '<p>'+ fortune.tip +'</p>'+
+  '<p class="small" style="margin-top:8px">'+ fortune.note +'</p>'+
+  (t.hidden?'<p class="small" style="margin-top:6px">※条件一致でレア枠（隠しタイプ）が解放されました。</p>':'')+
+  '</div>';
+
+    // 研究メモ（やさしい語彙）
+    var memo = [
+      "ある研究では、第一印象には「明るさ・コントラスト・質感」が大きく関わる示唆。",
+      "ある研究では、輪郭の直線／曲線は“きちんと感”や“やわらかさ”の印象と結びつくことがある。",
+      "ある研究では、情報量（無地／装飾）は清潔感や主役感の受け取り方に影響する可能性。",
+      "ある研究では、テンポ（所作の速さ・間）の違いが“活発／落ち着き”の印象に関連することがある。",
+      "ある研究では、好みの傾向は状況や組み合わせで変化し、単独要素より全体設計が大切という示唆。"
+    ];
+    resMemo.innerHTML = memo.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+
+    // 共有リンク
+// 共有リンク（buttonで確実に表示＆開く）
+var shareText = '『推し顔診断』タイプ：'+t.name+'｜因子平均 '+avg.toFixed(2)+' / 4';
+var url = location.href.split('#')[0];
+
+function openBlank(u){ window.open(u, '_blank', 'noopener'); }
+
+// X（旧Twitter）
+shareTw.onclick = function(){
+  openBlank('https://twitter.com/intent/tweet?text='
+    + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url));
+};
+
+// LINE
+shareLn.onclick = function(){
+  openBlank('https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url));
+};
+
+// Instagram（Webを開き、キャプションは自動コピー）
+shareIg.onclick = function(){
+  var caption = shareText + ' ' + url;
+  copyToClipboard(caption).then(function(){
+    openBlank('https://www.instagram.com/');
+    toast('キャプションをコピーしました。Instagramで貼り付けてください。');
+  });
+};
+
+// リンクをコピー
+var shareCp = document.getElementById('shareCp');
+if(shareCp){
+  shareCp.onclick = function(){
+    copyToClipboard(shareText + ' ' + url).then(function(){
+      toast('リンクをコピーしました');
+    });
+  };
+}
+
+// 表示（hidden解除）
+shareRow.hidden = false;
+shareRow.removeAttribute('hidden');
+shareRow.style.display = 'flex';
+
+    // 表示切替
+    resEmpty.style.display = "none";
+    shareRow.hidden = false;
+
+// ▼ 結果画像を保存（まとめスクショ）
+if (btnShot && shotCanvas){
+  btnShot.onclick = async function(e){
+    e.preventDefault();
+    var original = btnShot.textContent;
+    btnShot.textContent = "画像を生成中…";
+    btnShot.disabled = true;
+
+    try{
+      var blob = await buildShareImage({
+        heroSrc: heroImg.src,
+        title: (t.hidden? t.name+"（隠し）" : t.name),
+        catch: t.catch,
+        taste: t.taste,
+        avg: avg.toFixed(2),
+        pct: o.fPct
+      });
+      saveBlob(blob, "oshi-face_"+t.key+".png");
+    }catch(err){
+      console.error(err);
+      alert("画像の生成に失敗しました。\n画像はプレースホルダで保存される場合があります（file://直開きだと外部画像は描けません）。");
+    }finally{
+      btnShot.textContent = original;
+      btnShot.disabled = false;
+    }
+  };
+}
+
+// 表示切替
+resEmpty.style.display = "none";
+    resArea.style.display  = "block";
+    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+
+    // 結果確定を他ページに通知
+document.dispatchEvent(new Event('result:ready'));
+
+// 最後に保存
+    try{
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  // ====== 共有ヘルパー ======
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(res){
+      var ta=document.createElement('textarea'); ta.value=text;
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); res();
+    });
+  }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
+    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';
+    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
+    t.style.zIndex=9999; t.style.fontSize='13px';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },1500);
+  }
+
+  // ====== クリア ======
+  function clearAnswers(){
+    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });
+    wipeAnswers(); prog.style.width="0%";
+    resEmpty.style.display=""; resArea.style.display="none";
+    var app=document.getElementById("app"); if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  // ====== 初期化 ======
+  function init(){
+    setGender(CURRENT_GENDER);
+    buildQuestions();
+    // 研究メモ（初期プレースホルダ）
+    resMemo.innerHTML = ["ある研究では、第一印象には複数の要素が重なって効く示唆。"].map(function(s){return "<li>"+s+"</li>";}).join("");
+  }
+
+  if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+  document.getElementById("doScore").addEventListener("click", calc, false);
+  document.getElementById("doScore2").addEventListener("click", calc, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
+
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+
+  // 状態
+  var state = { type:null, pct:null };
+})();
+
+// ====== まとめ画像生成（1080x1350） ======
+async function buildShareImage(data){
+  // グローバル（window）から安全に取得
+  var cvs = (window.shotCanvas || document.getElementById("shotCanvas"));
+  if(!cvs) throw new Error("shotCanvas not found");
+  var ctx = cvs.getContext("2d");
+  var W = cvs.width, H = cvs.height;
+  var FACT = (window.FACTORS || {}); // ←追加
+
+  // 背景
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,W,H);
+
+// ヒーロー画像（上部 3:4 をだいたいで）
+var heroW = W - 120, heroH = Math.round(heroW * 4/3);
+if (heroH > 680){ heroH = 680; heroW = Math.round(heroH * 3/4); }
+var hx = Math.round((W - heroW)/2), hy = 60;
+
+// 角丸背景
+roundRect(ctx, hx-4, hy-4, heroW+8, heroH+8, 18, "#f7f9ff", "#e6ecf7");
+
+try{
+  var img = await loadImage(data.heroSrc);
+  ctx.drawImage(img, hx, hy, heroW, heroH);
+}catch(_){
+  // 画像が取れない環境（file:// 直開き等）はプレースホルダ
+  ctx.fillStyle = "#e6ecf7";
+  ctx.fillRect(hx, hy, heroW, heroH);
+  ctx.fillStyle = "#9aa3b2";
+  ctx.font = "600 24px 'Noto Sans JP',system-ui";
+  ctx.fillText("画像を表示できませんでした", hx + 24, hy + heroH/2);
+}
+
+  // タイトル
+  var y = hy + heroH + 40;
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "800 40px 'Noto Sans JP',system-ui";
+  ctx.fillText("推し顔診断", 60, y);
+  ctx.font = "800 44px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, "タイプ："+data.title, 60, y+54, W-120, 48);
+
+  // キャッチ＆テイスト
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.catch, 60, y+120, W-120, 36, "#667087");
+  ctx.font = "600 26px 'Noto Sans JP',system-ui";
+  drawWrapText(ctx, data.taste, 60, y+176, W-120, 34, "#667087");
+
+  // 因子バー（6つ）
+  var baseY = y + 230;
+  var order = ["LIGHT","CONTRAST","GLOSS","DENSITY","STRUCTURE","TEMPO"];
+  for(var i=0;i<order.length;i++){
+    var key = order[i], val = data.pct[key]||0;
+    drawBar(ctx, 60, baseY + i*70, W-120, 18, val,
+      (FACT[key] ? FACT[key].name : key).replace("（"," ").replace("）",""), "#ff7a6b", "#ffba7e");
+  }
+
+  // 平均とフッター
+  var ftY = baseY + order.length*70 + 40;
+  ctx.font = "700 28px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#1f2732";
+  ctx.fillText("因子平均："+data.avg+" / 4（= "+Math.round((parseFloat(data.avg)/4)*100)+"%）", 60, ftY);
+
+  ctx.font = "600 20px 'Noto Sans JP',system-ui";
+  ctx.fillStyle = "#9aa3b2";
+
+  return await canvasToBlob(cvs, "image/png");
+}
+
+// 画像読込（CORS考慮）
+async function loadImage(src){
+  // 1) fetch→blob→blobURL 経由（同一オリジン化）
+  try{
+    const r = await fetch(src, {cache:'no-store'});
+    if(!r.ok) throw new Error('fetch failed');
+    const b = await r.blob();
+    const blobUrl = URL.createObjectURL(b);
+    const img = await new Promise((res, rej)=>{
+      const im = new Image();
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = blobUrl;
+    });
+    // 使い終わったら解放
+    setTimeout(()=>URL.revokeObjectURL(blobUrl), 1000);
+    return img;
+  }catch(e){
+    // 2) 従来の anonymous 読み込み（CORS通ればOK）
+    return await new Promise((res, rej)=>{
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = ()=>res(im);
+      im.onerror = rej;
+      im.src = src + (src.indexOf("?")>-1 ? "&" : "?") + "t=" + Date.now();
+    });
+  }
+}
+
+// 角丸矩形
+function roundRect(ctx, x, y, w, h, r, fill, stroke){
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle = stroke; ctx.stroke(); }
+  ctx.restore();
+}
+
+// テキスト折返し
+function drawWrapText(ctx, text, x, y, maxW, lh, color){
+  ctx.fillStyle = color || "#1f2732";
+  var words = (text||"").split(/(\s+)/);
+  var line = "", cursor = y;
+  for(var i=0;i<words.length;i++){
+    var test = line + words[i];
+    if(ctx.measureText(test).width > maxW && i>0){
+      ctx.fillText(line, x, cursor);
+      line = words[i].trimStart();
+      cursor += lh;
+    }else{
+      line = test;
+    }
+  }
+  if(line){ ctx.fillText(line, x, cursor); }
+}
+
+// バー
+function drawBar(ctx, x, y, w, h, pct, label, c1, c2){
+  ctx.save();
+  // ラベル
+  ctx.fillStyle = "#1f2732";
+  ctx.font = "700 22px 'Noto Sans JP',system-ui";
+  ctx.fillText(label, x, y-10);
+
+  // 下地
+  var by = y+10;
+  roundRect(ctx, x, by, w, h, 10, "#edf2fb", "#e8eef9");
+
+  // 実バー
+  var ww = Math.max(0, Math.min(w, Math.round(w*pct/100)));
+  var grad = ctx.createLinearGradient(x,0,x+w,0);
+  grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+  roundRect(ctx, x, by, ww, h, 10, grad);
+
+  // 数値
+  ctx.fillStyle = "#667087";
+  ctx.font = "600 18px 'Noto Sans JP',system-ui";
+  var txt = String(pct).padStart(2,"0")+"%";
+  ctx.fillText(txt, x + w - ctx.measureText(txt).width, by + h + 22);
+  ctx.restore();
+}
+
+// 保存
+function saveBlob(blob, filename){
+  var a = document.createElement("a");
+  var url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename || "result.png";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 400);
+}
+
+// toBlob（fallback）
+function canvasToBlob(cvs, type){
+  return new Promise(function(res){
+    if(cvs.toBlob){ cvs.toBlob(function(b){ res(b); }, type||"image/png"); }
+    else{ res(dataURLtoBlob(cvs.toDataURL(type||"image/png"))); }
+  });
+}
+function dataURLtoBlob(dataUrl){
+  var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], {type:mime});
+}
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ------------------------------------------------------------
+   ★置き場所：各診断HTMLの </body> の直前
+   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）
+============================================================ */
+(function(){
+  'use strict';
+
+  // ===== 固定キー：index.html と合わせてあります =====
+  var DONE_KEY   = 'specimens:open:byid';   // 診断ごとの「済」マップ
+  var TOTAL_KEY  = 'specimens:open:total';  // あなたのこころLv（合計）
+  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ
+
+  // ===== このページのID =====
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // ===== 回答保存ストレージ（この診断だけの箱） =====
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+
+  // ===== みんなのLv（CountAPI設定） =====
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){
+      try{ navigator.sendBeacon(url); }catch(_){}
+    }else{
+      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});
+    }
+  }
+
+  // ---------- 回答の保存/復元 ----------
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; }
+  }
+  function saveState(obj){
+    try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){}
+  }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState();
+    var nm = el.name;
+
+    if(el.type === 'radio'){
+      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = {t:'r', v: chosen ? chosen.value : null};
+    }else if(el.type === 'checkbox'){
+      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+      var vals = [];
+      all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });
+      st[nm] = {t:'c', v: vals};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){
+        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });
+        st[nm] = {t:'m', v: arr};
+      }else{
+        st[nm] = {t:'s', v: el.value};
+      }
+    }else{
+      st[nm] = {t:'t', v: el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState();
+    var names = Object.keys(st);
+    if(!names.length) return false;
+
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+        var set = new Set(info.v||[]);
+        all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]');
+        if(sel){
+          var setm = new Set(info.v||[]);
+          [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); });
+        }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]');
+        if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]');
+        if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    try{ document.dispatchEvent(new Event('change', {bubbles:true})); }catch(_){}
+    return true;
+  }
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  }, true);
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);
+  }, true);
+  (function restoreWhenReady(){
+    var TRY_MAX=12, tries=0;
+    function tick(){
+      tries++;
+      var hasAny = document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){ restoreOnce(); return; }
+      if(tries<TRY_MAX){ setTimeout(tick, 300); }
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }
+    else document.addEventListener('DOMContentLoaded', tick);
+  })();
+
+  // リセット系ボタンがあれば保存も削除（#btnReset / data-role="reset"）
+  function clearAnswers(){ try{ localStorage.removeItem(ANSWER_KEY); }catch(_){ } }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.id==='btnReset' || t.matches('[data-role="reset"]')) clearAnswers();
+  }, true);
+
+  // ---------- 結果確定で「済」＋Lv加算 ----------
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      countapiHit();
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
+</script>
+</body>
+</html>
