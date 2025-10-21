@@ -575,7 +575,7 @@ btnSubmit.addEventListener('click', ()=>{
     R.nearby.forEach(({job})=>{
       const card=document.createElement('div');
       card.className='nearCard';
-      const imgSrc = `shindan/assets/results/adventure/${job.dir}/${R.tier.code}.png`;
+      const imgSrc = `shindan/assets/results/adventurer/${job.dir}/${R.tier.code}.png`;
       card.innerHTML = `
         <div class="nearThumb">
           <img src="${imgSrc}" alt="${job.name} 画像" loading="lazy"
@@ -608,7 +608,7 @@ try{
 });
 
 function renderArt(R){
-  const base = 'shindan/assets/results/adventure/';
+  const base = 'shindan/assets/results/adventurer/';
   const imgPath = R.heroOnly
     ? `${base}${HERO.dir}/00.png`
     : `${base}${R.job.dir}/${R.tier.code}.png`;
