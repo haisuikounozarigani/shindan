@@ -28,7 +28,7 @@ h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em;color:#5a57ce}
 .sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
 .pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
-.small{color:var(--muted);font-size:.92em}
+.small{color:var(--muted);font-size:.96em;line-height:1.9}
 
 /* 📊 sticky progress（extra準拠） */
 .sticky{position:sticky;top:0;z-index:20;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
@@ -52,15 +52,15 @@ mark.need{animation:need 1.6s ease}
 .hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
 .hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
 .hero-square img{width:100%;height:100%;object-fit:cover;display:block}
-.hero-square figcaption{padding:10px;width:100%}
+.hero-square figcaption{padding:14px 12px;width:100%;line-height:1.7}
 .title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
-.sep{height:1px;background:var(--line);margin:10px 0}
+.sep{height:1px;background:var(--line);margin:16px 0}
 
 /* 因子バー（冒険者風％表記） */
-.factors{display:grid;gap:10px}
-.meter{display:grid;gap:6px}
-.meter .row{display:flex;align-items:center;justify-content:space-between}
+.factors{display:grid;gap:12px}
+.meter{display:grid;gap:8px}
+.meter .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .meter .row .name{font-weight:700}
 .mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
 .mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
@@ -72,6 +72,17 @@ mark.need{animation:need 1.6s ease}
   .scale label{padding:12px 8px;font-size:14px}
   .card{padding:12px}
 }
+/* 結果テキストの読みやすさ向上（本文は変更なし） */
+#longCopy{max-width:68ch;margin:12px auto;line-height:1.9}
+#longCopy p{margin:0 0 .95em}
+
+/* 因子メーターの横幅を抑えて視線移動を短くする */
+#factorBox{max-width:720px;margin-inline:auto}
+
+/* タイトル行とタグラインの間に少し空きを追加（既存inlineは上書きしない） */
+#tagline{display:block;margin-top:.5em !important}
+/* 因子の簡易説明（小さめで行間広め） */
+.meter .desc{color:#606a85;line-height:1.7;margin-top:-2px}
 </style>
 </head>
 <body data-id="noh-menhera">
@@ -402,10 +413,10 @@ mark.need{animation:need 1.6s ease}
 
   // 因子構成（％表示）— 冒険者風の棒グラフ。文言は追加要素として表示（既存本文は変更しません）
   var FACTORS = [
-    {name:"不安・執着", items:[1,2,5,7,13,15,17,19]},              // 8項目
-    {name:"深読み・監視", items:[4,8,11]},                         // 3項目
-    {name:"切替・反芻", items:[3,6,10,14,16,20]},                  // 6項目（3,6,10は逆転）
-    {name:"衝動・距離操作", items:[12,18,9]}                       // 3項目（9は生活影響）
+    {name:"不安・執着", desc:"相手や出来事への気がかりの強さ・手放しづらさ", items:[1,2,5,7,13,15,17,19]},              
+    {name:"深読み・監視", desc:"情報の拾いすぎ・SNSや反応のチェック傾向", items:[4,8,11]},                         
+    {name:"切替・反芻", desc:"気持ちの切り替えや考えの反すうのしやすさ", items:[3,6,10,14,16,20]},                  
+    {name:"衝動・距離操作", desc:"感情的な行動や距離の出し入れの傾向", items:[12,18,9]}                       
   ];
 
   var qWrap = document.getElementById("quiz");
@@ -507,7 +518,7 @@ mark.need{animation:need 1.6s ease}
         got += REVERSE.has(i) ? (4-raw) : raw;
       }
       var pct = Math.round( (got / (it.length*4)) * 100 );
-      res.push({name:FACTORS[f].name, pct: pct});
+      res.push({name:FACTORS[f].name, desc:(FACTORS[f].desc||""), pct:pct});
     }
     return res;
   }
@@ -536,6 +547,7 @@ mark.need{animation:need 1.6s ease}
       var id='mbar-'+i;
       return '<div class="meter" role="group" aria-label="'+e.name+'">'+
                '<div class="row"><div class="name">'+e.name+'</div><div class="pct" id="'+id+'-pct">'+e.pct+'%</div></div>'+
+               (e.desc ? '<div class="desc small">'+e.desc+'</div>' : '')+
                '<div class="mbar" aria-hidden="true"><span id="'+id+'" style="width:'+e.pct+'%"></span></div>'+
              '</div>';
     }).join('');
