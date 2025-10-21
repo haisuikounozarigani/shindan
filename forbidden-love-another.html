@@ -35,7 +35,7 @@
   small.hint{display:block;color:var(--muted);margin-top:.25rem}
 </style>
 </head>
-<body>
+<body data-id="forbidden-love-another">
 <header><div class="in">
   <h1>forbidden-love-another</h1>
   <span class="crumb">0章（Prologue）→ 1〜12章 → 結果</span>
@@ -1154,7 +1154,11 @@
         // 遷移
         const next = (btn.dataset.next || '').replace('#','');
         State.trail.push({at:id, choice:btn.textContent.trim()});
-        if (next === 'ending'){ showEnding(); return; }
+        if (next === 'ending'){ 
+  showEnding(); 
+  try{ document.dispatchEvent(new Event('result:ready')); }catch(_){}
+  return; 
+}
         renderChapter(next);
         window.scrollTo(0,0);
       });
@@ -1283,6 +1287,40 @@
     mo.observe(app, { childList: true, subtree: true });
     inject();
   }
+</script>
+<!-- みんなのこころLv（result:ready で加算） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'unknown';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+
+  function hitEveryone(){
+    var u='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(u); }catch(_){} }
+    else{ fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      // ローカル加算（総数とID別）※回答保存ではありません
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      // 全体カウント
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+
+  document.addEventListener('result:ready', markOnce);
+  // フォールバック：2秒後に一度だけ実行（イベント取り逃し対策）
+  setTimeout(markOnce, 2000);
+})();
 </script>
 </body>
 </html>
