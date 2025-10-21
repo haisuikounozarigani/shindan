@@ -110,6 +110,12 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
 @supports (top: env(safe-area-inset-top)){
   .progressShell.is-sticky{ top: max(0px, env(safe-area-inset-top)); }
 }
+/* 画像の下敷きにならない＆既定は非表示 */
+.art{position:relative}
+.art img{display:block;max-width:100%;height:auto;position:relative;z-index:1}
+#fallbackIcon{position:absolute;inset:0;display:none;place-items:center;font-size:56px}
+/* 画像エラー時だけ表示したいときに使うクラス */
+.art.error #fallbackIcon{display:grid}
 </style>
 </head>
 <body data-id="adventure-shin">
@@ -191,7 +197,11 @@ button.fakeDisabled{opacity:.55} /* 押せるけど薄く見せる */
     <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
   </ul>
 </section>
-
+<script>
+window.addEventListener('beforeunload', saveAnswers);
+window.addEventListener('pagehide', saveAnswers);
+window.addEventListener('pageshow', restoreAnswers);
+</script>
 <script>
 /* ====== しきい値（併記の条件） ====== */
 const NEAR_DELTA = 4;        // トップとの差が4点以内
@@ -371,12 +381,15 @@ function renderAll(){
   cnt.textContent = `0 / ${items.length}`;
 }
 renderAll();
-restoreAnswers();   // ← 復元
-updateProgress();   // ← バー/カウント反映
+// 復元と進捗は定数定義の後に呼ぶ
 
 // ---- 回答の保存/復元（kusemon互換） {ts, ans:{設問ID:値}} ----
 const SLUG   = 'adventure-shin';                   // 既にあるなら重複定義は不要
 const ANS_KEY= 'specimens:'+SLUG+':answers';
+restoreAnswers();   // ← ここなら ANS_KEY が定義済み
+updateProgress();
+
+
 
 function saveAnswers(){
   try{
