@@ -64,9 +64,28 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px);letter-spacing:.02em}
 .savebox{display:flex;gap:10px;flex-wrap:wrap}
 .rf-note{padding:10px;border-left:4px solid var(--bad);background:#fff3f3;border-radius:10px}
 .footer{color:var(--muted);font-size:.92em;margin-top:14px}
+/* ===== NOH風 選択肢ピル（汎用・親要素依存なし） ===== */
+label.qopt{
+  display:inline-flex; align-items:center; justify-content:center;
+  border:1px solid #e5e8f3; border-radius:999px; padding:10px 12px;
+  background:#fff; color:#3b3b52; font-weight:600; font-size:.95rem;
+  cursor:pointer; user-select:none; margin:6px 6px 0 0; transition:.15s box-shadow, .15s background;
+}
+label.qopt:hover{ box-shadow:0 2px 10px rgba(34,34,52,.07) }
+label.qopt input{ position:absolute; opacity:0; pointer-events:none; width:0; height:0 }
+label.qopt .t{ line-height:1.2 }
+label.qopt.active{ background:linear-gradient(90deg,var(--accent,#6b6bd9),var(--accent2,#b96ad6)); color:#fff; border-color:transparent }
+label.qopt.active .t{ color:#fff }
+/* ==== 進捗バー用の最小グロー ==== */
+@keyframes glowPulse{
+  0%{ box-shadow:0 0 0 rgba(107,107,217,0); }
+  50%{ box-shadow:0 0 16px rgba(107,107,217,.45); }
+  100%{ box-shadow:0 0 0 rgba(107,107,217,0); }
+}
+.glow{ animation:glowPulse 2.2s ease-in-out infinite; }
 </style>
 </head>
-<body>
+<body data-id="sleep-sheep">
 <main class="wrap" id="app">
   <header class="header">
     <div class="logo">🐑</div>
@@ -156,7 +175,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px);letter-spacing:.02em}
     <ul>
       <li><strong>非提携・非公式：</strong>学術の一般知見を参考にした<strong>独自制作</strong>で、特定尺度の原文・採点は使用していません。</li>
       <li><strong>医療用途ではありません：</strong>自己理解・生活改善の目安です。強い不調やレッドフラグがある場合は医療機関へ。</li>
-      <li><strong>プライバシー：</strong>回答は<strong>端末内のみで処理</strong>し、サーバー送信は行いません。</li>
+      <li><strong>プライバシー：</strong>回答は端末内で<strong>処理・保存</strong>され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に<strong>匿名の件数カウントのみ</strong>送信する場合があります。</li>
       <li><strong>免責：</strong>法令上許される範囲で損害等の責任を負いません。</li>
     </ul>
   </section>
@@ -165,8 +184,8 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px);letter-spacing:.02em}
 <script>
 (() => {
   // ====== 設定 ======
-  const RANK_BADGE_BASE = "/shindan/assets/results/sleep-sheep/"; // 01.png〜05.png
-  const RANK_IMAGES = { S:"01", A:"02", B:"03", C:"04", D:"05" };
+  const RANK_BADGE_BASE = "/shindan/assets/results/sleep-sheep/"; // t01.webp〜t05.webp
+const RANK_IMAGES = { S:"t01", A:"t02", B:"t03", C:"t04", D:"t05" };
   const STORAGE_KEY = "sleep-sheep:v1:answers";
 
   // ====== データ：設問（因子名はUIに出さない） ======
@@ -323,6 +342,14 @@ const ACTION_BANK = {
   ],
 };
 
+// 選択中のラベルに .active を付ける（どこでもOK／関数の外）
+function syncActiveAll(){
+  document.querySelectorAll('input[type="radio"]').forEach(function(r){
+    const lbl = r.closest('label');
+    if (lbl) lbl.classList.toggle('active', r.checked);
+  });
+}
+
 function pickActions(fkey, pct){
   const base = ACTION_BANK[fkey] || [];
   if (pct < 50)   return { today: base.slice(0,2), week: base.slice(2,4), keep: base.slice(4,6) };
@@ -349,43 +376,71 @@ function topWeak(pcts){
   const factorsArea = document.getElementById("factorsArea");
 
   // ====== ビルド：設問UI（因子見出しは表示しない） ======
-  function buildQuestions(){
-    let html = "";
-    for (const key of Object.keys(DATA)){
-      const sec = DATA[key];
-      sec.items.forEach((it)=>{
-        const name = it.id;
-        html += `
-          <div class="qrow" data-factor="${key}">
-            <div class="ttl">${it.t}</div>
-            <div class="scale" role="radiogroup" aria-label="${it.t}">
-              ${[1,2,3,4,5].map(v => `
-                <label><input type="radio" name="${name}" value="${v}">${v}</label>
-              `).join("")}
-            </div>
+function buildQuestions(){
+  // 設問（5件法ピルUI）
+  let html = "";
+  for (const key of Object.keys(DATA)){
+    const sec = DATA[key];
+    sec.items.forEach((it)=>{
+      const name = it.id;
+      html += `
+        <div class="qrow" data-factor="${key}">
+          <div class="ttl">${it.t}</div>
+          <div class="scale" role="radiogroup" aria-label="${it.t}">
+            ${[1,2,3,4,5].map(v => {
+              const TEXT = {
+                1:"まったくあてはまらない",
+                2:"あまりあてはまらない",
+                3:"どちらともいえない",
+                4:"ややあてはまる",
+                5:"とてもあてはまる"
+              };
+              return `<label class="qopt">
+                        <input type="radio" name="${name}" value="${v}">
+                        <span class="t">${TEXT[v]}</span>
+                      </label>`;
+            }).join("")}
           </div>
-        `;
-      });
-    }
-    qContainer.innerHTML = html;
-
-    // レッドフラグ
-    rfContainer.innerHTML = `${RED_FLAGS.map((t,i)=>`
-  <div class="qrow">
-    <div class="ttl">RF${i+1}. ${t}</div>
-    <div class="scale">
-      <label><input type="radio" name="RF${i+1}" value="0">当てはまらない</label>
-      <label><input type="radio" name="RF${i+1}" value="1">やや当てはまる</label>
-      <label><input type="radio" name="RF${i+1}" value="2">強く当てはまる</label>
-    </div>
-  </div>
-`).join("")}`;
-
-    // 進捗監視
-    document.querySelectorAll('input[type="radio"]').forEach(el=>{
-      el.addEventListener('change', updateProgress, {passive:true});
+        </div>
+      `;
     });
   }
+  qContainer.innerHTML = html;
+
+  // レッドフラグ
+  rfContainer.innerHTML = `${RED_FLAGS.map((t,i)=>`
+    <div class="qrow">
+      <div class="ttl">RF${i+1}. ${t}</div>
+      <div class="scale">
+        <label class="qopt"><input type="radio" name="RF${i+1}" value="0"><span class="t">当てはまらない</span></label>
+        <label class="qopt"><input type="radio" name="RF${i+1}" value="1"><span class="t">やや当てはまる</span></label>
+        <label class="qopt"><input type="radio" name="RF${i+1}" value="2"><span class="t">強く当てはまる</span></label>
+      </div>
+    </div>
+  `).join("")}`;
+
+  // —— 変更点：個別に全inputへaddEventListenerするのをやめ、委譲で一括 —— //
+  function handleChange(e){
+    const el = e.target;
+    if (!el || el.type !== 'radio') return;
+
+    // 同グループの .active を更新
+    const name = el.name;
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r=>{
+      const lbl = r.closest('label');
+      if (lbl) lbl.classList.toggle('active', r.checked);
+    });
+
+    // ローカル保存（開き直し復元）
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(readAnswers())); }catch{}
+
+    // 進捗更新
+    if (typeof updateProgress === 'function') updateProgress();
+  }
+
+  qContainer.addEventListener('change', handleChange, {passive:true});
+  rfContainer.addEventListener('change', handleChange, {passive:true});
+}
 
   // ====== 進捗 ======
   function updateProgress(){
@@ -630,7 +685,7 @@ ensureCoachArea().innerHTML = renderCoach(pcts, chrono, (ans.rf||[]).filter(v=>v
     rankName.textContent = rk.title + `（ランク${rk.grade}）`;
     chronoText.textContent = `クロノタイプ：${chrono.type}｜${chrono.note}`;
     const imgCode = RANK_IMAGES[rk.grade] || "05";
-    rankImg.src = `${RANK_BADGE_BASE}${imgCode}.png`;
+    rankImg.src = `${RANK_BADGE_BASE}${imgCode}.webp`;
     rankImg.alt = `ベッドバッジ ${rk.grade}`;
 
     drawRadar(pcts);
@@ -639,8 +694,13 @@ ensureCoachArea().innerHTML = renderCoach(pcts, chrono, (ans.rf||[]).filter(v=>v
     factorsArea.innerHTML = order.map(k=>makeFactorCard(k, pcts[k])).join("");
 
     resEmpty.classList.add("hidden");
-    resArea.classList.remove("hidden");
-    try{ document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"}); }catch{}
+resArea.classList.remove("hidden");
+try{ document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"}); }catch{}
+
+try{
+  document.dispatchEvent(new Event('result:ready'));
+  localStorage.setItem('specimens:last', JSON.stringify({ id: 'sleep-sheep', title: '眠りの羊診断', href: location.pathname }));
+}catch{}
 
     try{
       const params = new URLSearchParams();
@@ -652,25 +712,48 @@ ensureCoachArea().innerHTML = renderCoach(pcts, chrono, (ans.rf||[]).filter(v=>v
 
   // ====== 回復・保存・イベント ======
   function restore(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return;
-      const ans = JSON.parse(raw);
-      for (const k of Object.keys(DATA)){
-        ans.main[k].forEach(o=>{
-          if (o.v!=null){
-            const el = document.querySelector(`input[name="${o.id}"][value="${o.v}"]`);
-            if (el) el.checked = true;
-          }
-        });
-      }
-      (ans.rf||[]).forEach((v,i)=>{
-        const el = document.querySelector(`input[name="RF${i+1}"][value="${v}"]`);
-        if (el) el.checked = true;
+  try{
+    const FALLBACK_KEYS = [
+      "sleep-sheep:v1:answers",           // 現行
+      "specimens:sleep-sheep:answers",    // 旧
+      "sleep-sheep:answers"               // さらに旧の可能性
+    ];
+    let raw = null, usedKey = null;
+
+    // 1) 現行キー→旧キーの順で探索
+    for (const k of FALLBACK_KEYS){
+      raw = localStorage.getItem(k);
+      if (raw){ usedKey = k; break; }
+    }
+    if(!raw) return;
+
+    // 2) パース
+    const ans = JSON.parse(raw);
+
+    // 3) 復元
+    for (const k of Object.keys(DATA)){
+      (ans.main && ans.main[k] ? ans.main[k] : []).forEach(o=>{
+        if (o && o.v != null){
+          const el = document.querySelector(`input[name="${o.id}"][value="${o.v}"]`);
+          if (el) el.checked = true;
+        }
       });
-      updateProgress();
-    }catch{}
-  }
+    }
+    (ans.rf || []).forEach((v,i)=>{
+      const el = document.querySelector(`input[name="RF${i+1}"][value="${v}"]`);
+      if (el) el.checked = true;
+    });
+
+    // 4) 進捗＆見た目同期
+    updateProgress();
+    syncActiveAll();
+
+    // 5) 旧キーで読んだ場合は現行キーへマイグレーション保存
+    if (usedKey !== "sleep-sheep:v1:answers"){
+      try{ localStorage.setItem("sleep-sheep:v1:answers", raw); }catch(_){}
+    }
+  }catch(_){}
+}
 
   async function saveCard(){
     const node = document.getElementById("result-card");
@@ -692,7 +775,9 @@ ensureCoachArea().innerHTML = renderCoach(pcts, chrono, (ans.rf||[]).filter(v=>v
   }
 
   buildQuestions();
-  restore();
+restore();
+syncActiveAll();
+try{ /* (old) restored glow flag disabled */}catch(_){}
   document.getElementById("btn-score").addEventListener("click", computeAndRender);
   document.getElementById("btn-score2").addEventListener("click", computeAndRender);
   document.getElementById("btn-save").addEventListener("click", saveCard);
@@ -706,6 +791,88 @@ ensureCoachArea().innerHTML = renderCoach(pcts, chrono, (ans.rf||[]).filter(v=>v
     resArea.classList.add("hidden");
     document.getElementById("app").scrollIntoView({behavior:"smooth", block:"start"});
   });
+})();
+</script>
+<!-- みんなのこころLv（result:ready で匿名件数のみカウント） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'sleep-sheep';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+
+  function hitEveryone(){
+    var u='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(u); }catch(_){} }
+    else{ fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      // 端末内カウント（総数＆ID別）
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      // 匿名の件数のみ送信
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // 念のためのフォールバック
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+
+  // 1) 進捗バーを見つける（sleep-sheep / NOH / 共通系をカバー）
+  function queryBars(){
+    return Array.from(document.querySelectorAll(
+  '.progress>span, #prog, .progress .bar>span, .pbar>span, .mbar>span, .meterbar>span'
+));
+  }
+  // 2) 付け外し
+  function setGlow(on){
+    queryBars().forEach(function(el){ el.classList.toggle('glow', !!on); });
+  }
+
+  // 3) 回答が保存されていれば「復元扱い」と判断
+  var KEY = (typeof STORAGE_KEY==='string' && STORAGE_KEY) ? STORAGE_KEY : 'specimens:sleep-sheep:answers';
+  function hasAnswers(){
+  try{
+    var raw = localStorage.getItem(KEY); if(!raw) return false;
+    var obj = JSON.parse(raw||'{}');
+    if (obj && obj.main){
+      // { main: {AL:[{v:..}], ...}, rf:[...] } 形式
+      return Object.keys(obj.main).some(function(fk){
+        return (obj.main[fk]||[]).some(function(o){ return o && o.v != null; });
+      });
+    }
+    // 旧：フラット(q1..)にも一応対応
+    return Object.keys(obj).some(function(k){ return /^q\d+/.test(k) && obj[k]; });
+  }catch(_){ return false; }
+}
+
+  // 4) 初期＆復帰時：復元ありなら点灯
+  function initGlow(){
+    setTimeout(function(){ setGlow(hasAnswers()); }, 50); // DOM/restore後に
+  }
+  document.addEventListener('DOMContentLoaded', initGlow);
+  window.addEventListener('pageshow', initGlow); // bfcache復帰も拾う
+
+  // 5) クリックしたら消灯（＝「復元の合図」を終える）
+  document.addEventListener('change', function(e){
+  if(e.target && e.target.matches('input[type="radio"])){
+    setGlow(true);
+    setTimeout(function(){ setGlow(false); }, 900);
+  }
+}, {passive:true});
+initGlow();
 })();
 </script>
 </body>
