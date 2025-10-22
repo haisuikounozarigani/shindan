@@ -90,6 +90,9 @@
 .omikuji-card .sep{height:1px;background:#eee; margin:12px 0}
 .omikuji-card .tips{display:grid; gap:8px; margin-top:8px}
 .omikuji-card .tips li{padding-left:.4em}
+/* おみくじ結果画像（正方形・角丸） */
+.omikuji-hero{margin:10px 0 12px;border:1px solid #ece8f2;border-radius:14px;overflow:hidden;background:#fafbff}
+.omikuji-hero img{display:block;width:100%;max-width:460px;aspect-ratio:1/1;object-fit:cover;margin-inline:auto}
 </style>
 </head>
 <body data-id="cbt-omikuji">
@@ -672,6 +675,75 @@
 
   // 万一イベントが無い・取りこぼした場合の保険（4秒後に一度実行）
   setTimeout(prettifyOmikuji, 4000);
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  // 画像ベースパス & 変換表（必要な枚数だけフォルダに置いてね）
+  var IMG_BASE = '/shindan/assets/results/cbt-omikuji/';
+  var OMI2FILE = {
+    daikichi:'t01.webp',
+    chukichi:'t02.webp',
+    shokichi:'t03.webp',
+    suekichi:'t04.webp',
+    kichi:'t05.webp',
+    kyo:'t06.webp',
+    daikyo:'t07.webp' // 使わないなら置かなくてOK
+  };
+
+  // 既存の結果DOMから「大吉/中吉…」を拾って key を返す
+  function detectFortuneKey(root){
+    var txt = (root && root.textContent) ? root.textContent : document.body.textContent || '';
+    var hit = (txt.match(/大吉|中吉|小吉|末吉|吉|大凶|凶/)||[])[0] || '';
+    return {
+      '大吉':'daikichi','中吉':'chukichi','小吉':'shokichi','末吉':'suekichi',
+      '吉':'kichi','凶':'kyo','大凶':'daikyo'
+    }[hit] || '';
+  }
+
+  // 結果ブロック（推測）を取得
+  function pickResultNode(){
+    return document.querySelector('#omikujiResult, .omikuji-result, .result, .result-area, #result, [data-role="result"], [data-result]')
+        || document.querySelector('main .card, main section, body');
+  }
+
+  // 画像を差し込む（無ければ作る／あれば差し替え）
+  function ensureHeroImage(root, src, alt){
+    var host = root.querySelector('.omikuji-hero');
+    if(!host){
+      host = document.createElement('div');
+      host.className = 'omikuji-hero';
+      // 先頭か見出し直後に置く
+      var h = root.querySelector('h2,h3') || root.firstElementChild;
+      if(h && h.nextSibling){ root.insertBefore(host, h.nextSibling); }
+      else { root.prepend(host); }
+    }
+    var img = host.querySelector('img#omikujiHero');
+    if(!img){
+      img = document.createElement('img');
+      img.id = 'omikujiHero';
+      host.appendChild(img);
+    }
+    img.alt = alt || 'omikuji result';
+    img.src = src;
+  }
+
+  // 結果合図（result:ready）で適用
+  function applyOmikujiImage(){
+    var root = pickResultNode();
+    var key  = detectFortuneKey(root);
+    var file = OMI2FILE[key] || OMI2FILE.kichi || 't01.webp'; // 予備
+    ensureHeroImage(root, IMG_BASE + file, key||'omikuji');
+  }
+
+  document.addEventListener('result:ready', function(){
+    // レイアウト更新を少し待ってから
+    setTimeout(applyOmikujiImage, 60);
+  });
+
+  // 念のための保険（数秒後に一度だけ適用）
+  setTimeout(applyOmikujiImage, 4000);
 })();
 </script>
 </body>
