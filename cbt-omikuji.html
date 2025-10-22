@@ -158,10 +158,11 @@
 <script>
 (()=>{
   // ===== 画像の置き場所（必要なら変更） =====
-  const IMG_BASE = '/shindan/assets/results/cbt-omikuji/'; // 01.png〜07.png を配置
+  // 置き換え：PNG用だった定義をWebP用に
+const IMG_BASE = '/shindan/assets/results/cbt-omikuji/';
+const RANK_IMG = { '大吉':'t01', '吉':'t02', '中吉':'t03', '小吉':'t04', '末吉':'t05', '半吉':'t06', '凶':'t07' };
 
-  // ===== 画像ファイル番号（運勢→画像） =====
-  const RANK_IMG = { '大吉':'01', '吉':'02', '中吉':'03', '小吉':'04', '末吉':'05', '半吉':'06', '凶':'07' };
+
 
   // ===== おみくじ本文（占い風・性格記述なし） =====
   const DATA = [
@@ -300,9 +301,11 @@
       li.textContent = p.replace(/^・/,'').trim();
       cbtSteps.appendChild(li);
     });
-
-    const num = RANK_IMG[item.rank] || '03';
-    rankImg.src = IMG_BASE + num + '.png';
+    
+// render(item) の末尾に追加
+document.dispatchEvent(new Event('result:ready'));
+    const num = RANK_IMG[item.rank] || 't03';
+    rankImg.src = IMG_BASE + num + '.webp';
     rankImg.alt = item.rank + 'のイメージ';
 
     resBox.style.display = 'block';
