@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="現代ストレス八寒地獄（悲しみベース）">
 <meta property="og:description" content="頞部陀・尼剌部陀・頞哳吒・臛臛婆・虎虎婆・嗢鉢羅・鉢特摩・摩訶鉢特摩の8因子で“寒さ指数”を可視化。">
-<meta property="og:image" content="/shindan/assets/results/eight-cold-hells/01.png">
+<meta property="og:image" content="/shindan/assets/results/eight-cold-hells/t01.webp">
 <meta property="og:url" content="/shindan/eight-cold-hells.html">
 
 <style>
@@ -22,7 +22,12 @@
   *{box-sizing:border-box} html,body{height:100%}
   body{margin:0;color:var(--ink);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));line-height:1.85;letter-spacing:.02em}
   header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
-  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
+  header .in{max-width:980px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+/* header progress (nohスタイル) */
+.header-progress{flex:1 1 100%; display:flex; align-items:center; gap:8px; margin-top:6px}
+.header-progress .progress{flex:1; height:6px; background:#eaf2ff; border-radius:999px; overflow:hidden}
+.header-progress .progress>span{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .25s ease}
+.header-progress .ptext{font-size:12px; color:var(--muted)}
   h1{font-size:18px;margin:0;font-weight:800}
   .crumb{margin-left:auto;color:var(--muted);font-size:12px}
 
@@ -66,10 +71,16 @@
   summary{cursor:pointer;color:#1d4ed8;font-weight:700}
 </style>
 </head>
-<body>
+<body data-id="eight-cold-hells">
 <header><div class="in">
   <h1>現代ストレス八寒地獄（悲しみベース）</h1>
   <span class="crumb">24項目・1〜5 → 8因子％＋総合“寒さ指数”</span>
+<div class="header-progress" aria-live="polite">
+    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0">
+      <span id="prog"></span>
+    </div>
+    <div id="ptext" class="ptext">0 / 24</div>
+  </div>
 </div></header>
 
 <main>
@@ -77,20 +88,12 @@
     <div>
       <div class="ttl"><strong>八寒地獄モチーフを現代のストレス文脈に再構成</strong>。8因子×各3項目・5件法で“寒さ指数”を可視化します。</div>
       <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
-      <!-- 法的注意書き（固定文） -->
-      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
-データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
-宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+      
     </div>
 
     <!-- 質問（因子名は非表示・毎回ランダム） -->
     <div id="qbox"></div>
 
-    <!-- 進捗 -->
-    <div class="progress" aria-live="polite">
-      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
-      <div id="ptext" class="muted">0 / 24</div>
-    </div>
 
     <!-- 操作 -->
     <div class="actions">
@@ -99,6 +102,16 @@
       <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
     </div>
 
+  </section>
+<section class="panel warn">
+  <h3 style="margin:4px 0 8px">ご利用にあたって（免責）</h3>
+  <ul class="small" style="margin:6px 0 0 1.2em; line-height:1.8">
+    <li><strong>エンタメ＋自己理解：</strong>本ページは娯楽目的のセルフチェックです。医療的な診断・治療・助言を目的としません。</li>
+    <li><strong>非公式コンテンツ：</strong>心理学領域に着想を得た<strong>独自制作</strong>であり、既存の質問票の権利者による承認・推奨・提携を意味しません。</li>
+    <li><strong>プライバシー：</strong>回答は端末内で処理され、サーバー送信は行いません（みんなのLvは匿名の総数のみ集計）。</li>
+    <li><strong>体調優先：</strong>強い苦痛や体調不良が続く場合は、医療機関や専門家にご相談ください。</li>
+  </ul>
+</section>
     <!-- 結果 -->
     <div id="result" class="panel" aria-live="polite">
       <h2 class="section-title" style="font-size:18px">結果</h2>
@@ -130,17 +143,17 @@
 
 <script>
 (()=> {
-  // ===== 画像パス（頞部陀=01.png … 摩訶鉢特摩=08.png）=====
+  // ===== 画像パス（頞部陀=01.webp … 摩訶鉢特摩=08.webp）=====
   const IMG_BASE = '/shindan/assets/results/eight-cold-hells/';
   const IMAGE_BY_KEY = {
-    ABD:'01.png', // 頞部陀〈ガス欠〉 Arbuda
-    NRB:'02.png', // 尼剌部陀〈しみる〉 Nirarbuda
-    ATT:'03.png', // 頞哳吒〈ふるえ〉 Atata
-    HKB:'04.png', // 臛臛婆〈反すう〉 Hahava
-    KKB:'05.png', // 虎虎婆〈自己つっこみ〉 Huhuva
-    UBR:'06.png', // 嗢鉢羅〈ひとり傾向〉 Utpala
-    HDM:'07.png', // 鉢特摩〈喪失敏感〉 Padma
-    MKH:'08.png', // 摩訶鉢特摩〈空白感〉 Mahāpadma
+    ABD:'t01.webp', // 頞部陀〈ガス欠〉 Arbuda
+    NRB:'t02.webp', // 尼剌部陀〈しみる〉 Nirarbuda
+    ATT:'t03.webp', // 頞哳吒〈ふるえ〉 Atata
+    HKB:'t04.webp', // 臛臛婆〈反すう〉 Hahava
+    KKB:'t05.webp', // 虎虎婆〈自己つっこみ〉 Huhuva
+    UBR:'t06.webp', // 嗢鉢羅〈ひとり傾向〉 Utpala
+    HDM:'t07.webp', // 鉢特摩〈喪失敏感〉 Padma
+    MKH:'t08.webp', // 摩訶鉢特摩〈空白感〉 Mahāpadma
   };
 
   // ===== 因子キーと表示名 =====
@@ -270,7 +283,8 @@
   // ===== DOM =====
   const $  = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  const qbox = $('#qbox'), prog = $('#prog'), ptext = $('#ptext');
+const shell = document.querySelector('.progress[role="progressbar"]');
   const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
   const res = $('#result'), head = $('#head'), allBox = $('#all');
   const heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
@@ -305,8 +319,9 @@
   function updateProgress(){
     const n=answeredCount();
     ptext.textContent = `${n} / ${TOTAL}`;
-    pbar.style.width = Math.round(n/TOTAL*100)+'%';
-    btnCalc.disabled = n!==TOTAL;
+    prog.style.width = Math.round(n/TOTAL*100)+'%';
+if (shell) shell.setAttribute('aria-valuenow', String(n));
+btnCalc.disabled = (n < TOTAL);
   }
   document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
   updateProgress();
@@ -362,8 +377,8 @@
       <span class="badge">${ob.text}</span>
     `;
 
-    // ヒーロー画像＆コピー（トップ因子に対応した01〜08.png）
-    const imgFile = IMAGE_BY_KEY[top.key] || '01.png';
+    // ヒーロー画像＆コピー（トップ因子に対応した01〜08.webp）
+    const imgFile = IMAGE_BY_KEY[top.key] || 't01.webp';
     heroImg.src = IMG_BASE + imgFile;
     heroImg.alt = top.name + 'のイメージ';
     const bc = BAND_COMMENTS[top.key];
@@ -393,8 +408,9 @@
       allBox.appendChild(card);
     });
 
-    res.style.display='block';
-    res.scrollIntoView({behavior:'smooth',block:'start'});
+res.style.display='block';
+res.scrollIntoView({behavior:'smooth',block:'start'});
+try{ document.dispatchEvent(new Event('result:ready')); }catch(_){}
   }
 
   // イベント
@@ -415,6 +431,118 @@
     heroCopy.textContent='';
     btnCalc.disabled = true;
   });
+})();
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ------------------------------------------------------------
+   ★置き場所：各診断HTMLの </body> の直前
+   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）
+============================================================ */
+(function(){
+  'use strict';
+  var DONE_KEY   = 'specimens:open:byid';
+  var TOTAL_KEY  = 'specimens:open:total';
+  var GLOBAL_LAST= 'specimens:open:global:last';
+
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){}
+    }else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
+  }
+
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; } }
+  function saveState(obj){ try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){} }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState(), nm = el.name;
+    if(el.type === 'radio'){
+      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = {t:'r', v: chosen ? chosen.value : null};
+    }else if(el.type === 'checkbox'){
+      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+      var vals = []; all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });
+      st[nm] = {t:'c', v: vals};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){
+        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });
+        st[nm] = {t:'m', v: arr};
+      }else{ st[nm] = {t:'s', v: el.value}; }
+    }else{ st[nm] = {t:'t', v: el.value}; }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState(), names = Object.keys(st);
+    if(!names.length) return false;
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+        var set = new Set(info.v||[]); all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]');
+        if(sel){ var setm = new Set(info.v||[]); [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); }); }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]'); if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]'); if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    try{ document.dispatchEvent(new Event('change', {bubbles:true})); }catch(_){}
+    return true;
+  }
+  document.addEventListener('change', function(e){ var el=e.target;
+    if(el && el.matches && el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  }, true);
+  document.addEventListener('input', function(e){ var el=e.target;
+    if(el && el.matches && el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);
+  }, true);
+  (function restoreWhenReady(){
+    var TRY_MAX=12, tries=0;
+    function tick(){
+      tries++;
+      var hasAny = document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){ restoreOnce(); return; }
+      if(tries<TRY_MAX){ setTimeout(tick, 300); }
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }
+    else document.addEventListener('DOMContentLoaded', tick);
+  })();
+  function clearAnswers(){ try{ localStorage.removeItem(ANSWER_KEY); }catch(_){} }
+  document.addEventListener('click', function(e){ var t=e.target;
+    if(t && (t.id==='btnReset' || (t.matches && t.matches('[data-role="reset"]')))) clearAnswers();
+  }, true);
+
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      var total=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+      countapiHit();
+      try{
+        var last=(+localStorage.getItem(GLOBAL_LAST)||0)+1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
