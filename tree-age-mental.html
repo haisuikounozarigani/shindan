@@ -68,34 +68,42 @@
   .small{font-size:.95em}
   details{margin-top:8px}
   summary{cursor:pointer;color:#365493;font-weight:700}
+  /* ▶ sticky progress（noh準拠） */
+.sticky{position:sticky;top:0;z-index:20;margin:0 -16px 12px;
+  padding:8px 16px;background:rgba(255,255,255,.9);
+  backdrop-filter:blur(6px) saturate(1.05);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px}
+.sticky .progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.sticky .progress>span{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
 </style>
 </head>
-<body>
+<body data-id="tree-age-mental">
 <header><div class="in">
   <h1>メンタル樹齢診断</h1>
   <span class="crumb">5因子×各3問（逆転各1）・5件法 → 0–100＋樹齢ランク</span>
 </div></header>
 
 <main>
+
+  <!-- 📊 sticky progress -->
+  <div class="sticky" aria-live="polite">
+    <span aria-hidden="true">📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <div class="muted" id="ptext">0 / 15</div>
+  </div>
+
   <section class="panel" id="quiz">
     <div>
       <div class="ttl"><strong>5因子</strong>で“メンタルの年輪”を推定。全15問・5件法でスコア化します。</div>
       <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
 
-      <!-- 法的注意書き（固定文：文言改変せず） -->
-      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
-      データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
-      宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
-    </div>
-
+</div>
     <!-- 質問（毎回ランダム） -->
     <div id="qbox"></div>
 
-    <!-- 進捗 -->
-    <div class="progress" aria-live="polite">
-      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
-      <div id="ptext" class="muted">0 / 15</div>
-    </div>
+    
 
     <!-- 操作 -->
     <div class="actions">
@@ -130,6 +138,17 @@
       </div>
     </div>
   </section>
+  <section class="panel small" style="max-width:980px;margin:16px auto;">
+  <h2 class="section-title" style="margin-top:0">ご利用上の注意</h2>
+  <p class="muted" style="margin:.3em 0">
+    本コンテンツは<b>エンタメ用セルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。
+    結果の解釈・利用はご自身の判断と責任にてお願いします。
+  </p>
+  <p class="muted" style="margin:.3em 0">
+    回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。
+    因子名・比喩は<b>演出表現</b>です。
+  </p>
+</section>
 </main>
 
 <script>
@@ -193,9 +212,38 @@
   ];
 
   // DOM
+// 回答保存（開き直し復元）
+  var SLUG = 'tree-age-mental';
+  var ANS_KEY = 'specimens:'+SLUG+':answers';
+
+  function saveAnswers(){
+    try{
+      var out = {};
+      for (var i=1; i<=TOTAL; i++){
+        var chk = document.querySelector('input[name="q'+i+'"]:checked');
+        if (chk) out[String(i)] = parseInt(chk.value, 10);
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ ts: Date.now(), ans: out }));
+    }catch(e){}
+  }
+
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY); if (!raw) return;
+      var box = JSON.parse(raw)||{}, ans = box.ans||{};
+      Object.keys(ans).forEach(function(k){
+        var v = ans[k], el = document.querySelector('#q'+k+'-'+v);
+        if (el) el.checked = true;
+      });
+    }catch(e){}
+  }
+
+  function wipeAnswers(){
+    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
+  }
   function $(q,root){ return (root||document).querySelector(q); }
   function $$(q,root){ return Array.prototype.slice.call((root||document).querySelectorAll(q)); }
-  var qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  var qbox = $('#qbox'), prog = $('#prog'), ptext = $('#ptext');
   var btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
   var res = $('#result'), head = $('#head'), allBox = $('#all');
   var heroImg = $('#heroImg'), heroCopy = $('#heroCopy');
@@ -230,7 +278,8 @@
       '<div class="scale" role="group" aria-label="質問 '+(i+1)+'">'+radios+'</div>';
     qbox.appendChild(s);
   });
-
+restoreAnswers();
+updateProgress();
   // 進捗
   function answeredCount(){
     var n=0; for(var i=1;i<=TOTAL;i++){ if($('input[name="q'+i+'"]:checked')) n++; } return n;
@@ -238,14 +287,55 @@
   function updateProgress(){
     var n=answeredCount();
     ptext.textContent = n + ' / ' + TOTAL;
-    pbar.style.width = Math.round(n/TOTAL*100)+'%';
+    prog.style.width = Math.round(n/TOTAL*100)+'%';
     btnCalc.disabled = n!==TOTAL;
   }
   document.addEventListener('change', function(e){
-    var n = e && e.target ? e.target.name : '';
-    if(n && n.indexOf('q') === 0) updateProgress();
-  });
-  updateProgress();
+  var n = e && e.target ? e.target.name : '';
+  if(n && n.indexOf('q') === 0){ saveAnswers(); updateProgress(); }
+});
+  var shell = document.querySelector('.sticky .progress');
+if(shell){
+  shell.setAttribute('role','progressbar');
+  shell.setAttribute('aria-valuemin','0');
+  shell.setAttribute('aria-valuemax', String(TOTAL));
+  var n0 = answeredCount();
+  shell.setAttribute('aria-valuenow', String(n0));
+  shell.setAttribute('aria-label', '回答進捗：'+n0+' / '+TOTAL);
+}
+  
+
+　
+// ==== 回答を集める（関数を外に定義）====
+function collect(){
+  var vals={};
+  for(var i=1;i<=TOTAL;i++){
+    var el=document.querySelector('input[name="q'+i+'"]:checked');
+    if(!el) return null;
+    vals[i]=+el.value;
+  }
+  return vals;
+}
+
+// ==== クリックで計算・表示 ====
+btnCalc.addEventListener('click', function(){
+  var vals = collect(); if(!vals) return;
+  render(vals);
+});
+
+// ==== リセット ====
+btnReset.addEventListener('click', function(){
+  wipeAnswers();
+  $$('input[type="radio"]').forEach(function(i){ i.checked=false; });
+  prog.style.width='0%';                      // ← pbar ではなく prog
+  ptext.textContent='0 / '+TOTAL;
+  res.style.display='none';
+  head.innerHTML='';
+  allBox.innerHTML='';
+  heroImg.removeAttribute('src'); heroImg.alt='';
+  heroCopy.textContent='';
+  btnCalc.disabled=true;
+});
 
   function rankLabel(p){
     if(p<=14) return '赤ちゃん／芽';
@@ -405,9 +495,12 @@
     });
 
     res.style.display='block';
-    res.scrollIntoView({behavior:'smooth',block:'start'});
-  }
-
+res.scrollIntoView({behavior:'smooth',block:'start'});
+try{
+  document.dispatchEvent(new Event('result:ready')); // みんなのこころLv 用
+  localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: "メンタル樹齢診断", href: location.pathname }));
+}catch(e){}
+}
   // 進行
   btnCalc.addEventListener('click', function(){
     var vals = collect(); if(!vals) return;
@@ -425,9 +518,10 @@
   }
 
   btnReset.addEventListener('click', function(){
+  wipeAnswers();
     $$('input[type="radio"]').forEach(function(i){ i.checked=false; });
-    pbar.style.width='0%';
-    ptext.textContent='0 / 15';
+    prog.style.width='0%';
+    ptext.textContent='0 / ' + TOTAL;
     res.style.display='none';
     head.innerHTML='';
     allBox.innerHTML='';
@@ -436,6 +530,34 @@
     heroCopy.textContent='';
     btnCalc.disabled = true;
   });
+})();
+</script>
+<!-- みんなのこころLv（CountAPI） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'tree-age-mental';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hitEveryone(){
+    var url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000); // フォールバック
 })();
 </script>
 </body>
