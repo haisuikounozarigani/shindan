@@ -68,9 +68,30 @@
   .small{font-size:.95em}
   details{margin-top:8px}
   summary{cursor:pointer;color:#365493;font-weight:700}
+  /* === sticky progress（noh準拠・パネル幅いっぱい） === */
+.sticky {
+  position: sticky;
+  top: 0; z-index: 10;
+  /* パネル内の余白ぶん左右を広げて“端まで”見せる */
+  margin: -6px -16px 12px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: saturate(1.05) blur(8px);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 10px;
+}
+.sticky .bar {
+  flex: 1; height: 8px; background: #eaf2ff;
+  border-radius: 999px; overflow: hidden;
+}
+.sticky .bar > i {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg,var(--accent),var(--accent2));
+  transition: width .25s ease;
+}
 </style>
 </head>
-<body>
+<body data-id="great-minds">
 <header><div class="in">
   <h1>仕事DNA×偉人タイプ診断</h1>
   <span class="crumb">36項目・1〜5 → 12タイプ判定＋近い候補</span>
@@ -81,20 +102,18 @@
     <div>
       <div class="ttl"><strong>12の偉人アーキタイプで“働き方の骨格”を推定</strong>。各タイプ3問・5件法であなたのトップタイプを表示します。</div>
       <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
-      <!-- 法的注意書き（固定文：文言改変せず） -->
-      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
-      データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
-      宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
-    </div>
+     </div>
 
-    <!-- 質問（毎回ランダム） -->
-    <div id="qbox"></div>
+    <!-- 進捗（上部固定） -->
+<div class="sticky" aria-live="polite">
+  <span aria-hidden="true">📊</span>
+  <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+  <div id="ptext" class="muted">0 / 36</div>
+</div>
 
-    <!-- 進捗 -->
-    <div class="progress" aria-live="polite">
-      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
-      <div id="ptext" class="muted">0 / 36</div>
-    </div>
+<!-- 質問（毎回ランダム） -->
+<div id="qbox"></div>
+  
 
     <!-- 操作 -->
     <div class="actions">
@@ -128,6 +147,11 @@
       </div>
     </div>
   </section>
+  <!-- 法的注意書き（固定文：文言改変せず） -->
+      <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
+      回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。<br>
+      宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
+    </div>
 </main>
 
 <script>
@@ -496,14 +520,16 @@ const ITEMS = [
 
   // イベント
   btnCalc.addEventListener('click', ()=>{
-    const vals = collect(); if(!vals) return;
-    render(vals);
-  });
+  const vals = collect(); if(!vals) return;
+  render(vals);
+  // 結果描画が完了した合図（済バッジ・あなたのLv・みんなのこころ を確実に+1）
+  try{ document.dispatchEvent(new Event('result:ready')); }catch(_){}
+});
 
   btnReset.addEventListener('click', ()=>{
     $$('input[type="radio"]').forEach(i=>i.checked=false);
     pbar.style.width='0%';
-    ptext.textContent='0 / 24';
+    ptext.textContent='0 / ' + TOTAL;
     res.style.display='none';
     head.innerHTML='';
     allBox.innerHTML='';
@@ -512,6 +538,182 @@ const ITEMS = [
     heroCopy.textContent='';
     btnCalc.disabled = true;
   });
+})();
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ------------------------------------------------------------
+   ★置き場所：各診断HTMLの </body> の直前
+   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）
+============================================================ */
+(function(){
+  'use strict';
+
+  // ===== 固定キー：index.html と合わせてあります =====
+  var DONE_KEY   = 'specimens:open:byid';   // 診断ごとの「済」マップ
+  var TOTAL_KEY  = 'specimens:open:total';  // あなたのこころLv（合計）
+  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ
+
+  // ===== このページのID =====
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // ===== 回答保存ストレージ（この診断だけの箱） =====
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+
+  // ===== みんなのLv（CountAPI設定） =====
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){
+      try{ navigator.sendBeacon(url); }catch(_){}
+    }else{
+      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});
+    }
+  }
+
+  // ---------- 回答の保存/復元 ----------
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; }
+  }
+  function saveState(obj){
+    try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){}
+  }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState();
+    var nm = el.name;
+
+    if(el.type === 'radio'){
+      // ラジオは選ばれた value を保存
+      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = chosen ? {t:'r', v: chosen.value} : {t:'r', v:null};
+    }else if(el.type === 'checkbox'){
+      // チェックボックスは同名グループのチェック済み value 配列
+      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+      var vals = [];
+      all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });
+      st[nm] = {t:'c', v: vals};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){
+        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });
+        st[nm] = {t:'m', v: arr};
+      }else{
+        st[nm] = {t:'s', v: el.value};
+      }
+    }else{
+      // text / number / textarea など
+      st[nm] = {t:'t', v: el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState();
+    var names = Object.keys(st);
+    if(!names.length) return false;
+
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+        var set = new Set(info.v||[]);
+        all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]');
+        if(sel){
+          var setm = new Set(info.v||[]);
+          [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); });
+        }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]');
+        if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]');
+        if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    // プログレス等を更新したいUIのため、軽く change を投げる
+    try{
+      document.dispatchEvent(new Event('change', {bubbles:true}));
+    }catch(_){}
+    return true;
+  }
+  // 入力監視（保存）
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  }, true);
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);
+  }, true);
+
+  // 復元は「入力が描画されてから」一度だけ試みる（動的生成にも対応）
+  (function restoreWhenReady(){
+    var TRY_MAX=12, tries=0;
+    function tick(){
+      tries++;
+      // 入力が一つでも見つかってから復元
+      var hasAny = document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){
+        restoreOnce(); return;
+      }
+      if(tries<TRY_MAX){ setTimeout(tick, 300); }
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }
+    else document.addEventListener('DOMContentLoaded', tick);
+  })();
+
+  // リセット系ボタンがあれば保存も削除（#btnReset / data-role="reset" を想定）
+  function clearAnswers(){
+    try{ localStorage.removeItem(ANSWER_KEY); }catch(_){}
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.id==='btnReset' || t.matches('[data-role="reset"]')) clearAnswers();
+  }, true);
+
+  // ---------- 結果確定で「済」＋Lv加算 ----------
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      // 1) あなたのこころLv 合計 +1
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      // 2) この診断の「済」を +1（他タブ即時反映用にタイムスタンプ混ぜる）
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      // 3) みんなのこころLv +1（表示は index 側で取得／ここでは送るだけ）
+      countapiHit();
+      // ついでに前回キャッシュも+1（index初期表示の見栄え改善）
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+
+  // A) 結果が描画された合図（推奨：各ページの集計完了時に dispatch してください）
+  //   例）document.dispatchEvent(new Event('result:ready'));
+  document.addEventListener('result:ready', markOnce);
+
+  // B) フォールバック：結果UIが見えてから2秒後に一度だけ実行（戻る無しでも確実に「済」）
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
