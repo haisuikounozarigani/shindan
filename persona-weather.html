@@ -474,6 +474,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return { missing, weatherAns, typeAns };
   }
+  function saveLocal(){
+  try{
+    const {weatherAns, typeAns} = readAnswers();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({weatherAns, typeAns}));
+  }catch{}
+}
 
   // 勝者決定
   function resolveWinner(counts, lastIdxMap, priority){
@@ -600,13 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 操作
   function compute(){
-    const {missing, weatherAns, typeAns} = readAnswers();
-    function saveLocal(){
-  try{
-    const {weatherAns, typeAns} = readAnswers();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({weatherAns, typeAns}));
-  }catch{}
-}
+  const {missing, weatherAns, typeAns} = readAnswers();
     if(missing.length){
       alert(`未回答があります（${missing.slice(0,6).map(n=>"Q"+n).join(", ")}${missing.length>6?" ほか":""}）。すべての20問に回答してください。`);
       const first = missing[0];
@@ -661,9 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }catch(_e){}
   }
 });
-window.addEventListener('beforeunload', saveLocal);
-window.addEventListener('pagehide', saveLocal);
-window.addEventListener('pageshow', restore);
+
 </script>
 <!-- みんなのこころLv（result:readyでカウント） -->
 <script>
