@@ -4,411 +4,600 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>抑制・加速・刺激の鉄道診断｜心の標本</title>
-<meta name="description" content="12問×5件法の合計スコアで、あなたの運行テンポ（各駅停車→新幹線）を表示。">
+<meta name="description" content="12問×5件法で“運行テンポ”を判定（各駅停車→新幹線）。あるある＆コツ付き。">
 <meta name="theme-color" content="#f6f4ff">
-<link rel="preload" as="image" href="/shindan/assets/results/rail-traits/01.png">
+<link rel="preload" as="image" href="/shindan/assets/results/rail-traits/t01.webp">
 <style>
 :root{
-  --bg1:#fffafe; --bg2:#f3f4ff; --card:#ffffff; --ink:#26263a;
-  --brand:#6b6bd9; --muted:#6f6f82; --line:#e7e6f2; --accent:#b96ad6;
+  --accent:#6b6bd9; --accent2:#b96ad6;
+  --ink:#26263a; --muted:#667087; --paper:#fff;
+  --bg1:#fffafe; --bg2:#f3f4ff; --line:#e7e6f2;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,
-  "Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
   color:var(--ink);
-  background:linear-gradient(var(--bg1),var(--bg2));
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
 }
-.wrap{max-width:920px;margin:0 auto;padding:24px 16px}
-header{text-align:center;margin:0 0 16px}
-h1{margin:0;color:var(--brand);font-size:clamp(20px,5.5vw,30px)}
-.sub{color:var(--muted);font-size:.92em;margin:.4rem 0 0}
-.badge{display:inline-block;margin-top:6px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fafaff;color:#5b5b73;font-size:.78em}
-.card{
-  background:var(--card); border:1px solid var(--line);
-  border-radius:16px; padding:14px 12px; margin:12px 0;
-  box-shadow:0 8px 22px rgba(30,40,90,.06);
-}
-.note{color:var(--muted);font-size:.92em;margin:.3rem 2px .6rem}
-.q{padding:10px 8px;border-top:1px dashed var(--line)}
-.q:first-child{border-top:none}
-.q legend{font-weight:700;margin-bottom:8px}
-.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-input[type=radio]{position:absolute;opacity:0;pointer-events:none}
-label.opt{
-  display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--line);border-radius:10px;padding:10px 0;
-  background:#fafaff;cursor:pointer;user-select:none;font-size:.95em
-}
-input[type=radio]:checked+label.opt{
-  outline:2px solid var(--accent); background:#f7efff;
-}
-.btn{
-  display:block;width:100%;margin:14px 0 0;padding:14px 12px;
-  background:linear-gradient(135deg,#7b6bd9,#b96ad6);
-  color:#fff;border:none;border-radius:12px;font-weight:800;font-size:1rem;
-  box-shadow:0 10px 18px rgba(125,90,210,.28);cursor:pointer;
-}
-.btn:active{transform:translateY(1px)}
-.err{outline:2px solid #ff6b8a !important; background:#fff0f4 !important}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#f0eaff,#e7f0ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em;color:#5a57ce}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.small{color:var(--muted);font-size:.96em;line-height:1.9}
 
-#result{display:none}
-.res-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.res-head img{width:124px;height:124px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
-.res-title{font-size:1.1rem;font-weight:900;color:#363661}
-.score{color:#5b5b73;margin-top:2px}
-.res-body{margin-top:8px;line-height:1.9}
-.res-body p{margin:.7em 0}
-.tagline{display:inline-block;margin:.2rem 0 .6rem;padding:4px 8px;border-radius:8px;background:#f0edff;color:#4b4b79;font-size:.85em;border:1px solid var(--line)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-a.back{
-  color:#fff;background:#6b6bd9;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700
+/* 📊 sticky progress（noh準拠） */
+.sticky{position:sticky;top:0;z-index:20;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+.btn:active{transform:translateY(1px)}
+
+/* 設問（5件法） */
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
+
+/* 結果：正方形ヒーロー */
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-square figcaption{padding:14px 12px;width:100%;line-height:1.7}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.sep{height:1px;background:var(--line);margin:16px 0}
+
+/* あるある＆コツ（読みやすく） */
+#longCopy{max-width:68ch;margin:12px auto;line-height:1.9}
+#longCopy ul{margin:.4em 0 .9em 1.2em}
+#longCopy li{margin:.2em 0}
+
+/* レスポンシブ */
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .card{padding:12px}
 }
-.small{font-size:.85em;color:#6b6b7a}
-hr.sep{border:0;border-top:1px dashed var(--line);margin:10px 0}
-@media (min-width:760px){
- .opts{gap:10px}
- .res-head img{width:156px;height:156px}
-}
+/* 因子バー（％表示） */
+.factors{display:grid;gap:12px}
+.meter{display:grid;gap:8px}
+.meter .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meter .row .name{font-weight:700}
+.mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
+.mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.pct{font-variant-numeric:tabular-nums;color:#4e4e6a}
+#factorBox{max-width:720px;margin-inline:auto}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>抑制・加速・刺激の鉄道診断</h1>
-    <p class="sub">12問×5件法の総合スコアで、あなたの“運行テンポ”を6段階（各駅停車→新幹線）で表示します。</p>
-    <div class="badge">（軸の目安：行動の抑制／加速／刺激への引かれやすさをライトに測定）</div>
+<body data-id="rail-traits">
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🚆</div>
+    <div>
+      <h1>抑制・加速・刺激の鉄道診断</h1>
+      <p class="sub">12問×5件法の合計スコアで、あなたの“運行テンポ”を6段階（各駅停車→新幹線）で表示します。</p>
+    </div>
   </header>
 
-  <section id="form" class="card">
-    <p class="note">最近のあなたに最も近いものを選択（0=全くない / 1=まれにある / 2=ときどきある / 3=よくある / 4=いつもある）。※エンタメ＋自己理解向け</p>
+  <!-- 📊 sticky progress -->
+  <div class="sticky" aria-live="polite">
+    <span aria-hidden="true">📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
 
+  <!-- 説明 -->
+  <section class="card">
+    <div class="pill">質問数：12</div>
+    <div class="pill" style="margin-left:6px">形式：0–4（0=全くない / 4=いつもある）</div>
+    <p class="small" style="margin-top:8px">最近のあなたに最も近いものを選択してください（娯楽＋自己理解向け）。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card" id="questions">
+    <h2 style="margin:4px 0 8px">設問（全くない／まれにある／ときどき／よくある／いつもある）</h2>
     <form id="quiz" novalidate>
-      <!-- 12問（逆転：3,6,9,12 は抑制） -->
-      <fieldset class="q">
+      <!-- 12問：逆転 3,6,9,12 -->
+      <fieldset class="q" id="fs-1">
         <legend>1. 朝に予定が詰まっていても、勢いよく取りかかれる。</legend>
-        <div class="opts">
-          <input id="q1-0" name="q1" type="radio" value="0"><label class="opt" for="q1-0">0</label>
-          <input id="q1-1" name="q1" type="radio" value="1"><label class="opt" for="q1-1">1</label>
-          <input id="q1-2" name="q1" type="radio" value="2"><label class="opt" for="q1-2">2</label>
-          <input id="q1-3" name="q1" type="radio" value="3"><label class="opt" for="q1-3">3</label>
-          <input id="q1-4" name="q1" type="radio" value="4"><label class="opt" for="q1-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="1">
+          <input id="q1-0" type="radio" name="q1" value="0"><label for="q1-0">0</label>
+          <input id="q1-1" type="radio" name="q1" value="1"><label for="q1-1">1</label>
+          <input id="q1-2" type="radio" name="q1" value="2"><label for="q1-2">2</label>
+          <input id="q1-3" type="radio" name="q1" value="3"><label for="q1-3">3</label>
+          <input id="q1-4" type="radio" name="q1" value="4"><label for="q1-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-2">
         <legend>2. 予定外の誘いに、ワクワクしてすぐ予定を切り替えられる。</legend>
-        <div class="opts">
-          <input id="q2-0" name="q2" type="radio" value="0"><label class="opt" for="q2-0">0</label>
-          <input id="q2-1" name="q2" type="radio" value="1"><label class="opt" for="q2-1">1</label>
-          <input id="q2-2" name="q2" type="radio" value="2"><label class="opt" for="q2-2">2</label>
-          <input id="q2-3" name="q2" type="radio" value="3"><label class="opt" for="q2-3">3</label>
-          <input id="q2-4" name="q2" type="radio" value="4"><label class="opt" for="q2-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="2">
+          <input id="q2-0" type="radio" name="q2" value="0"><label for="q2-0">0</label>
+          <input id="q2-1" type="radio" name="q2" value="1"><label for="q2-1">1</label>
+          <input id="q2-2" type="radio" name="q2" value="2"><label for="q2-2">2</label>
+          <input id="q2-3" type="radio" name="q2" value="3"><label for="q2-3">3</label>
+          <input id="q2-4" type="radio" name="q2" value="4"><label for="q2-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-3">
         <legend>3. 大きな決断は、必ず一度立ち止まって確認してから動く。</legend>
-        <div class="opts">
-          <input id="q3-0" name="q3" type="radio" value="0"><label class="opt" for="q3-0">0</label>
-          <input id="q3-1" name="q3" type="radio" value="1"><label class="opt" for="q3-1">1</label>
-          <input id="q3-2" name="q3" type="radio" value="2"><label class="opt" for="q3-2">2</label>
-          <input id="q3-3" name="q3" type="radio" value="3"><label class="opt" for="q3-3">3</label>
-          <input id="q3-4" name="q3" type="radio" value="4"><label class="opt" for="q3-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="3">
+          <input id="q3-0" type="radio" name="q3" value="0"><label for="q3-0">0</label>
+          <input id="q3-1" type="radio" name="q3" value="1"><label for="q3-1">1</label>
+          <input id="q3-2" type="radio" name="q3" value="2"><label for="q3-2">2</label>
+          <input id="q3-3" type="radio" name="q3" value="3"><label for="q3-3">3</label>
+          <input id="q3-4" type="radio" name="q3" value="4"><label for="q3-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-4">
         <legend>4. 締切が近づくと、ペースを上げて一気に巻き返せる。</legend>
-        <div class="opts">
-          <input id="q4-0" name="q4" type="radio" value="0"><label class="opt" for="q4-0">0</label>
-          <input id="q4-1" name="q4" type="radio" value="1"><label class="opt" for="q4-1">1</label>
-          <input id="q4-2" name="q4" type="radio" value="2"><label class="opt" for="q4-2">2</label>
-          <input id="q4-3" name="q4" type="radio" value="3"><label class="opt" for="q4-3">3</label>
-          <input id="q4-4" name="q4" type="radio" value="4"><label class="opt" for="q4-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="4">
+          <input id="q4-0" type="radio" name="q4" value="0"><label for="q4-0">0</label>
+          <input id="q4-1" type="radio" name="q4" value="1"><label for="q4-1">1</label>
+          <input id="q4-2" type="radio" name="q4" value="2"><label for="q4-2">2</label>
+          <input id="q4-3" type="radio" name="q4" value="3"><label for="q4-3">3</label>
+          <input id="q4-4" type="radio" name="q4" value="4"><label for="q4-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-5">
         <legend>5. 新しいスポットや店を見ると、つい途中下車したくなる。</legend>
-        <div class="opts">
-          <input id="q5-0" name="q5" type="radio" value="0"><label class="opt" for="q5-0">0</label>
-          <input id="q5-1" name="q5" type="radio" value="1"><label class="opt" for="q5-1">1</label>
-          <input id="q5-2" name="q5" type="radio" value="2"><label class="opt" for="q5-2">2</label>
-          <input id="q5-3" name="q5" type="radio" value="3"><label class="opt" for="q5-3">3</label>
-          <input id="q5-4" name="q5" type="radio" value="4"><label class="opt" for="q5-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="5">
+          <input id="q5-0" type="radio" name="q5" value="0"><label for="q5-0">0</label>
+          <input id="q5-1" type="radio" name="q5" value="1"><label for="q5-1">1</label>
+          <input id="q5-2" type="radio" name="q5" value="2"><label for="q5-2">2</label>
+          <input id="q5-3" type="radio" name="q5" value="3"><label for="q5-3">3</label>
+          <input id="q5-4" type="radio" name="q5" value="4"><label for="q5-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-6">
         <legend>6. 迷ったらその日は保留して、翌日に回すことが多い。</legend>
-        <div class="opts">
-          <input id="q6-0" name="q6" type="radio" value="0"><label class="opt" for="q6-0">0</label>
-          <input id="q6-1" name="q6" type="radio" value="1"><label class="opt" for="q6-1">1</label>
-          <input id="q6-2" name="q6" type="radio" value="2"><label class="opt" for="q6-2">2</label>
-          <input id="q6-3" name="q6" type="radio" value="3"><label class="opt" for="q6-3">3</label>
-          <input id="q6-4" name="q6" type="radio" value="4"><label class="opt" for="q6-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="6">
+          <input id="q6-0" type="radio" name="q6" value="0"><label for="q6-0">0</label>
+          <input id="q6-1" type="radio" name="q6" value="1"><label for="q6-1">1</label>
+          <input id="q6-2" type="radio" name="q6" value="2"><label for="q6-2">2</label>
+          <input id="q6-3" type="radio" name="q6" value="3"><label for="q6-3">3</label>
+          <input id="q6-4" type="radio" name="q6" value="4"><label for="q6-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
-        <legend>7. 思いついたアイデアは、詳細な計画より先にまず試してみる。</legend>
-        <div class="opts">
-          <input id="q7-0" name="q7" type="radio" value="0"><label class="opt" for="q7-0">0</label>
-          <input id="q7-1" name="q7" type="radio" value="1"><label class="opt" for="q7-1">1</label>
-          <input id="q7-2" name="q7" type="radio" value="2"><label class="opt" for="q7-2">2</label>
-          <input id="q7-3" name="q7" type="radio" value="3"><label class="opt" for="q7-3">3</label>
-          <input id="q7-4" name="q7" type="radio" value="4"><label class="opt" for="q7-4">4</label>
+      <fieldset class="q" id="fs-7">
+        <legend>7. 思いついたアイデアは、計画より先にまず試してみる。</legend>
+        <div class="scale" role="radiogroup" aria-label="7">
+          <input id="q7-0" type="radio" name="q7" value="0"><label for="q7-0">0</label>
+          <input id="q7-1" type="radio" name="q7" value="1"><label for="q7-1">1</label>
+          <input id="q7-2" type="radio" name="q7" value="2"><label for="q7-2">2</label>
+          <input id="q7-3" type="radio" name="q7" value="3"><label for="q7-3">3</label>
+          <input id="q7-4" type="radio" name="q7" value="4"><label for="q7-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-8">
         <legend>8. 強い刺激（買い物・夜更かし）に、ついブレーキが効きにくい。</legend>
-        <div class="opts">
-          <input id="q8-0" name="q8" type="radio" value="0"><label class="opt" for="q8-0">0</label>
-          <input id="q8-1" name="q8" type="radio" value="1"><label class="opt" for="q8-1">1</label>
-          <input id="q8-2" name="q8" type="radio" value="2"><label class="opt" for="q8-2">2</label>
-          <input id="q8-3" name="q8" type="radio" value="3"><label class="opt" for="q8-3">3</label>
-          <input id="q8-4" name="q8" type="radio" value="4"><label class="opt" for="q8-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="8">
+          <input id="q8-0" type="radio" name="q8" value="0"><label for="q8-0">0</label>
+          <input id="q8-1" type="radio" name="q8" value="1"><label for="q8-1">1</label>
+          <input id="q8-2" type="radio" name="q8" value="2"><label for="q8-2">2</label>
+          <input id="q8-3" type="radio" name="q8" value="3"><label for="q8-3">3</label>
+          <input id="q8-4" type="radio" name="q8" value="4"><label for="q8-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-9">
         <legend>9. 予定が重なると、計画を立てて順番に処理できる。</legend>
-        <div class="opts">
-          <input id="q9-0" name="q9" type="radio" value="0"><label class="opt" for="q9-0">0</label>
-          <input id="q9-1" name="q9" type="radio" value="1"><label class="opt" for="q9-1">1</label>
-          <input id="q9-2" name="q9" type="radio" value="2"><label class="opt" for="q9-2">2</label>
-          <input id="q9-3" name="q9" type="radio" value="3"><label class="opt" for="q9-3">3</label>
-          <input id="q9-4" name="q9" type="radio" value="4"><label class="opt" for="q9-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="9">
+          <input id="q9-0" type="radio" name="q9" value="0"><label for="q9-0">0</label>
+          <input id="q9-1" type="radio" name="q9" value="1"><label for="q9-1">1</label>
+          <input id="q9-2" type="radio" name="q9" value="2"><label for="q9-2">2</label>
+          <input id="q9-3" type="radio" name="q9" value="3"><label for="q9-3">3</label>
+          <input id="q9-4" type="radio" name="q9" value="4"><label for="q9-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-10">
         <legend>10. 空き時間ができると、つい新しいことに手を出したくなる。</legend>
-        <div class="opts">
-          <input id="q10-0" name="q10" type="radio" value="0"><label class="opt" for="q10-0">0</label>
-          <input id="q10-1" name="q10" type="radio" value="1"><label class="opt" for="q10-1">1</label>
-          <input id="q10-2" name="q10" type="radio" value="2"><label class="opt" for="q10-2">2</label>
-          <input id="q10-3" name="q10" type="radio" value="3"><label class="opt" for="q10-3">3</label>
-          <input id="q10-4" name="q10" type="radio" value="4"><label class="opt" for="q10-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="10">
+          <input id="q10-0" type="radio" name="q10" value="0"><label for="q10-0">0</label>
+          <input id="q10-1" type="radio" name="q10" value="1"><label for="q10-1">1</label>
+          <input id="q10-2" type="radio" name="q10" value="2"><label for="q10-2">2</label>
+          <input id="q10-3" type="radio" name="q10" value="3"><label for="q10-3">3</label>
+          <input id="q10-4" type="radio" name="q10" value="4"><label for="q10-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-11">
         <legend>11. 返事や購入ボタンは、考える前に先に押してしまいがち。</legend>
-        <div class="opts">
-          <input id="q11-0" name="q11" type="radio" value="0"><label class="opt" for="q11-0">0</label>
-          <input id="q11-1" name="q11" type="radio" value="1"><label class="opt" for="q11-1">1</label>
-          <input id="q11-2" name="q11" type="radio" value="2"><label class="opt" for="q11-2">2</label>
-          <input id="q11-3" name="q11" type="radio" value="3"><label class="opt" for="q11-3">3</label>
-          <input id="q11-4" name="q11" type="radio" value="4"><label class="opt" for="q11-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="11">
+          <input id="q11-0" type="radio" name="q11" value="0"><label for="q11-0">0</label>
+          <input id="q11-1" type="radio" name="q11" value="1"><label for="q11-1">1</label>
+          <input id="q11-2" type="radio" name="q11" value="2"><label for="q11-2">2</label>
+          <input id="q11-3" type="radio" name="q11" value="3"><label for="q11-3">3</label>
+          <input id="q11-4" type="radio" name="q11" value="4"><label for="q11-4">4</label>
         </div>
       </fieldset>
-
-      <fieldset class="q">
+      <fieldset class="q" id="fs-12">
         <legend>12. 予想外のトラブルでも、落ち着いて計画を立て直せる。</legend>
-        <div class="opts">
-          <input id="q12-0" name="q12" type="radio" value="0"><label class="opt" for="q12-0">0</label>
-          <input id="q12-1" name="q12" type="radio" value="1"><label class="opt" for="q12-1">1</label>
-          <input id="q12-2" name="q12" type="radio" value="2"><label class="opt" for="q12-2">2</label>
-          <input id="q12-3" name="q12" type="radio" value="3"><label class="opt" for="q12-3">3</label>
-          <input id="q12-4" name="q12" type="radio" value="4"><label class="opt" for="q12-4">4</label>
+        <div class="scale" role="radiogroup" aria-label="12">
+          <input id="q12-0" type="radio" name="q12" value="0"><label for="q12-0">0</label>
+          <input id="q12-1" type="radio" name="q12" value="1"><label for="q12-1">1</label>
+          <input id="q12-2" type="radio" name="q12" value="2"><label for="q12-2">2</label>
+          <input id="q12-3" type="radio" name="q12" value="3"><label for="q12-3">3</label>
+          <input id="q12-4" type="radio" name="q12" value="4"><label for="q12-4">4</label>
         </div>
       </fieldset>
 
-      <button type="button" class="btn" id="go">診断する</button>
-      <p class="note small">※合計0〜48点。カットオフ：0–7 各駅停車 / 8–15 準急 / 16–23 快速 / 24–31 急行 / 32–39 特急 / 40–48 新幹線。逆転項目：3,6,9,12。</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button type="button" class="btn" id="clearAns">回答をクリア</button>
+        <button type="button" class="btn primary" id="doScore2">診断する</button>
+      </div>
+
+      <p class="small" style="margin-top:8px">※合計0〜48点。カットオフ：0–7 各駅停車 / 8–15 準急 / 16–23 快速 / 24–31 急行 / 32–39 特急 / 40–48 新幹線。逆転項目：3,6,9,12。</p>
     </form>
   </section>
 
-  <!-- 結果表示枠 -->
-  <section id="result" class="card">
-    <div class="res-head">
-      <img id="resImg" src="" alt="">
-      <div>
-        <div class="res-title" id="resTitle"></div>
-        <div class="score" id="resScore"></div>
-        <div class="tagline" id="resTag"></div>
-      </div>
+  <!-- 結果 -->
+  <section class="card" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="pill">まだ結果はありません</span>
+      <p class="small">全12問に回答して「診断する」を押してください。</p>
     </div>
-    <hr class="sep">
-    <div class="res-body" id="resBody"></div>
-    <div class="actions">
-      <a class="back" href="/shindan/">診断一覧へ戻る</a>
+
+    <div id="resArea" style="display:none">
+      <!-- 正方形ヒーロー -->
+      <div class="hero-square" role="region" aria-label="ランクのイメージ" style="margin:10px 0">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/rail-traits/t01.webp" alt="—" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div id="heroTitle" style="font-weight:800">—</div>
+            <span class="badge-size" id="rangeBadge">—</span>
+          </div>
+          <div class="small" id="tagline" style="margin-top:4px">—</div>
+          <div class="small" id="sumLine" style="margin-top:6px;color:#6b6a77">—</div>
+        </figcaption>
+      </div>
+
+      <!-- 因子バー（％） -->
+      <div class="factors" id="factorBox" aria-label="因子スコア（％）" style="margin:10px 0 6px"></div>
+
+      <div class="sep"></div>
+      <div id="longCopy" class="small"><!-- JS: あるある＆コツ --></div>
+
+      <div class="sep"></div>
+      <div style="display:flex;justify-content:center">
+        <a class="btn" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧へ戻る</a>
+      </div>
     </div>
   </section>
 
-  <p class="small note">※本診断は日常の行動傾向をライトに示す<strong>娯楽＋自己理解</strong>向けコンテンツです（医療的診断ではありません）。</p>
+  <section class="card">
+    <h3 style="margin:4px 0 8px">ご利用にあたって</h3>
+    <ul class="small" style="margin:6px 0 0 1.2em; line-height:1.8">
+      <li><strong>非公式／独自制作：</strong>研究知見に着想を得た創作コンテンツです（公式尺度の採点ではありません）。</li>
+      <li><strong>医療用途ではありません：</strong>娯楽＋自己理解向けのセルフチェックです。体調不良が続く場合は専門家へご相談ください。</li>
+      <li><strong>プライバシー：</strong>回答は端末内のみで保存・処理されます。</li>
+    </ul>
+  </section>
+</main>
 
 <script>
-(() => {
-  // 逆転（抑制）項目
-  const reverse = new Set([3,6,9,12]);
+(function(){
+  // ===== ページ定義 =====
+  var SLUG = "rail-traits";
+  var TITLE = "抑制・加速・刺激の鉄道診断";
+  var IMG_BASE = "/shindan/assets/results/rail-traits/"; // t01.webp..t06.webp
+  var ANS_KEY = "specimens:"+SLUG+":answers";            // 開き直し保存キー
 
-  // 6タイプ定義（画像: /shindan/assets/results/rail-traits/01.png..06.png）
-  const defs = [
-    {
-      range:[0,7],
-      key:"各駅停車ベーシック",
-      tag:"安全第一、景色も積み立てる堅実派",
-      img:"01.png",
-      alt:"のんびり各駅停車のイラスト",
-      body: `
-      <p><strong>車掌アナウンス：</strong>「あわてずご乗車ください。次の“決断”には各駅に停まります。」</p>
-      <p><strong>こんなあなた：</strong>段取りはきれい。約束は時刻表どおり、周りの安心担当。</p>
-      <p><strong>あるある：</strong>“チャンス列車”を3本見送ってから乗る／マンネリで車内広告ばかり眺めがち。</p>
-      <p><strong>運行のコツ：</strong><br>
-      ・1日1本だけ“快速運転”（優先3つを一気に片づけ）<br>
-      ・週2回“新駅スタンプ”（小さな初挑戦）<br>
-      ・90分ごとに「終点」を設置（達成感の停車駅を増やす）</p>`
-    },
-    {
-      range:[8,15],
-      key:"準急マイペース",
-      tag:"慎重だけど、合図があればちゃんと速い",
-      img:"02.png",
-      alt:"準急列車が落ち着いて走るイラスト",
-      body: `
-      <p><strong>車掌アナウンス：</strong>「ただいま安全確認中。笛が鳴ったらスッと発車します。」</p>
-      <p><strong>こんなあなた：</strong>点検は抜かりなく、刺激も“予約制”でほどよく取り込める。</p>
-      <p><strong>あるある：</strong>発車位置で悩みすぎて時刻だけ過ぎる／準備ばっちりなのに本番がショート。</p>
-      <p><strong>運行のコツ：</strong><br>
-      ・“試運転15分×週2”（まず一駅だけ動く）<br>
-      ・刺激は土曜午前に“試乗会”1枠だけ（平日のダイヤを守る）<br>
-      ・発車ベルは他人に鳴らしてもらう（声かけ役）</p>`
-    },
-    {
-      range:[16,23],
-      key:"快速バランサー",
-      tag:"乗り換え妙手、最短も寄り道も使い分け",
-      img:"03.png",
-      alt:"快速列車が軽快に走るイラスト",
-      body: `
-      <p><strong>車掌アナウンス：</strong>「本日は“切り替え上手線”をご利用ありがとうございます。」</p>
-      <p><strong>こんなあなた：</strong>状況を読むのが速く、いい感じのスピード感で前へ。</p>
-      <p><strong>あるある：</strong>乗り換えが楽しくなって“目的地”を忘れかける／寄り道で本線の時間が削られる。</p>
-      <p><strong>運行のコツ：</strong><br>
-      ・「今日の終点」を1つだけ放送（紙に書く）<br>
-      ・途中下車は“1日2回まで”の乗り換え制限<br>
-      ・月末は“廃線レビュー”（やめること決めてレール軽量化）</p>`
-    },
-    {
-      range:[24,31],
-      key:"急行スプリンター",
-      tag:"思い立ったら発車、追い風を逃さない",
-      img:"04.png",
-      alt:"急行列車が力強く走るイラスト",
-      body: `
-      <p><strong>車掌アナウンス：</strong>「勢いに乗って快走中。確認駅は1つだけ停まります。」</p>
-      <p><strong>こんなあなた：</strong>初動の強さが武器。新企画や新環境でグイっと牽引。</p>
-      <p><strong>あるある：</strong>確認駅を通過して後から折り返し／買い物・発言が“見切り発車”。</p>
-      <p><strong>運行のコツ：</strong><br>
-      ・強い送信・購入は“発車ベル1回待ち”（30秒）<br>
-      ・まず“下書き側線”に回送→翌朝に本線へ<br>
-      ・寄り道は“デイリー2回”の上限シール</p>`
-    },
-    {
-      range:[32,39],
-      key:"特急チャレンジャー",
-      tag:"スピードと刺激で突破、先頭車両の景色担当",
-      img:"05.png",
-      alt:"特急列車が速く走るイラスト",
-      body: `
-      <p><strong>車掌アナウンス：</strong>「ただいま快調にオーバーラン寸前です。非常ボタンの位置をご確認ください。」</p>
-      <p><strong>こんなあなた：</strong>未知の区間に強く、勢いで道を開く。</p>
-      <p><strong>あるある：</strong>やり過ぎ・買い過ぎ・言い過ぎ→後処理で減速／燃料切れに気づくのが遅い。</p>
-      <p><strong>運行のコツ：</strong><br>
-      ・“24時間冷凍”ルール（強い返信・大きな買い物は翌日決裁）<br>
-      ・“非常停止ボタン”を友だちに預ける（相談→GO）<br>
-      ・週1の“車両基地day”（ノルマ0・整備と睡眠）</p>`
-    },
-    {
-      range:[40,48],
-      key:"新幹線ダイヤ",
-      tag:"速いのに静か、誤差±1分のプロ運行",
-      img:"06.png",
-      alt:"新幹線が滑らかに走るイラスト",
-      body: `
-      <p><strong>車掌アナウンス：</strong>「この列車、速達かつ正確。たまに清掃のため全員一度降ります。」</p>
-      <p><strong>こんなあなた：</strong>推進力と責任感の両立。大きな案件を定時で着地。</p>
-      <p><strong>あるある：</strong>過密ダイヤで整備が後回し→ある日まとめて疲れが来る。</p>
-      <p><strong>運行のコツ：</strong><br>
-      ・“50分走／10分停車”で計画整備（アラーム推奨）<br>
-      ・予定表に“予備ダイヤ”を最初から確保（<em>余裕時間は正義</em>）<br>
-      ・刺激は“月1試乗会”に集約（飽き対策は計画的に）</p>`
+  // 逆転項目（スコアは 4 − 値）
+  var REVERSE = new Set([3,6,9,12]);
+
+var DEFS = [
+  {
+    range:[0,7],
+    key:"各駅停車",
+    tag:"慎重で計画的。発車ベル🛎️が鳴るまで動かない日もあるけど、走り出したら遅延ゼロの職人列車。",
+    file:"t01.webp",
+    alt:"各駅停車イメージ",
+    body:'<ul>'
+       +'<li><b>向いている場面：</b>手順が決まった作業／点検・品質管理／チェックリスト運用</li>'
+       +'<li><b>困りやすい点：</b>着手まで路線図を眺めがち→締切前に“詰め将棋”</li>'
+       +'<li><b>今日のコツ：</b>タイマー20分で<strong>最初の1駅</strong>だけ（ファイルを開く／1行書く）。「発車」の付箋で自分に合図</li>'
+       +'</ul>'
+  },
+  {
+    range:[8,15],
+    key:"準急",
+    tag:"基本は慎重、合図があればスッと加速。緊急ではないけれど毎日頼れる“通勤の星”🚃",
+    file:"t02.webp",
+    alt:"準急イメージ",
+    body:'<ul>'
+       +'<li><b>向いている場面：</b>期限と仕様が明確なタスク／定常運用</li>'
+       +'<li><b>困りやすい点：</b>ウォームアップが長くて本編ショートになりがち</li>'
+       +'<li><b>今日のコツ：</b><strong>5分プロトタイプ→10分清書→5分見直し</strong>。笛がなくても出発進行</li>'
+       +'</ul>'
+  },
+  {
+    range:[16,23],
+    key:"快速",
+    tag:"切り替えが速く現場に強い。寄り道も景色も楽しめる“フィールドワーク系”🚦",
+    file:"t03.webp",
+    alt:"快速イメージ",
+    body:'<ul>'
+       +'<li><b>向いている場面：</b>並行作業／当日変更が多い現場／臨機応変な調整</li>'
+       +'<li><b>困りやすい点：</b>駅スタンプ集めすぎ＝寄り道で終点を見失う</li>'
+       +'<li><b>今日のコツ：</b>モニタに<strong>「今日の終点」1行</strong>を固定。寄り道は“2駅まで”ルール</li>'
+       +'</ul>'
+  },
+  {
+    range:[24,31],
+    key:"急行",
+    tag:"初動ロケット。『やってみる？』『今やった』タイプの突破担当🚀",
+    file:"t04.webp",
+    alt:"急行イメージ",
+    body:'<ul>'
+       +'<li><b>向いている場面：</b>短期の立ち上げ／ゼロ→イチ／勢いが要る突破戦</li>'
+       +'<li><b>困りやすい点：</b>加速しすぎてブレーキ焼け（誤送信・衝動買い・盛りすぎ約束）</li>'
+       +'<li><b>今日のコツ：</b>確定操作は<strong>30秒だけ保留</strong>→深呼吸→もう一度クリック。勢いに安全装置</li>'
+       +'</ul>'
+  },
+  {
+    range:[32,39],
+    key:"特急",
+    tag:"スピードと突破力を両立。未知の路線でも時間通りに着地できる主砲🛤️",
+    file:"t05.webp",
+    alt:"特急イメージ",
+    body:'<ul>'
+       +'<li><b>向いている場面：</b>新規開拓／短納期課題の火消し／クリティカル修正</li>'
+       +'<li><b>困りやすい点：</b>停車を忘れて燃料切れ。予定詰め込みで見えない疲労が蓄積</li>'
+       +'<li><b>今日のコツ：</b><strong>50分走る＋10分停車</strong>を厳守。大きな決定は一旦“寝台車”に乗せ翌朝レビュー</li>'
+       +'</ul>'
+  },
+  {
+    range:[40,48],
+    key:"新幹線",
+    tag:"静かに速い。揺れない・ぶれない・高精度。気づけば皆を運んでいるフラッグシップ🚄",
+    file:"t06.webp",
+    alt:"新幹線イメージ",
+    body:'<ul>'
+       +'<li><b>向いている場面：</b>重要案件のドライブ／全体統括／品質担保が要る工程</li>'
+       +'<li><b>困りやすい点：</b>他路線の遅延まで背負いがち→セルフメンテ後回し</li>'
+       +'<li><b>今日のコツ：</b>カレンダーに<strong>余白時間を先取り</strong>。未完は<strong>3件だけ</strong>翌日に車庫入れ</li>'
+       +'</ul>'
+  }
+];
+// 因子（％表示）：※合計ロジックは既存のまま。ここは“性質”を素直に出すために逆転なしで集計
+var FACTORS = [
+  {name:"抑制・計画", desc:"落ち着いて段取りを組む／慎重さ", items:[3,6,9,12]},                 // 計画・保留・段取り系
+  {name:"加速・行動", desc:"初動の速さ／勢い／切り替え力", items:[1,2,4,7,10,11]},                 // スタート＆ドライブ系
+  {name:"刺激・寄り道", desc:"新しい刺激への吸引／寄り道の多さ", items:[5,8]}                      // 物珍しさ・寄り道
+];
+
+  var qWrap = document.getElementById("quiz");
+  var prog  = document.getElementById("prog");
+  var resEmpty = document.getElementById("resEmpty");
+  var resArea  = document.getElementById("resArea");
+  var heroImg  = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var rangeBadge= document.getElementById("rangeBadge");
+  var tagline  = document.getElementById("tagline");
+  var longCopy = document.getElementById("longCopy");
+  var sumLine  = document.getElementById("sumLine");
+
+  var TOTAL = document.querySelectorAll('fieldset.q').length;
+
+  // 保存
+  function saveAnswers(){
+    try{
+      var out = {};
+      for(var i=1;i<=TOTAL;i++){
+        var chk = qWrap.querySelector('input[name="q'+i+'"]:checked');
+        if(chk){ out[String(i)] = parseInt(chk.value,10); }
+      }
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY);
+      if(!raw) return;
+      var box = JSON.parse(raw)||{}; var ans = box.ans||{};
+      Object.keys(ans).forEach(function(k){
+        var v = ans[k];
+        var el = qWrap.querySelector('#q'+k+'-'+v);
+        if(el){ el.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
+
+  // 進捗
+  function answeredCount(){ return qWrap.querySelectorAll('input[type="radio"]:checked').length; }
+  function updateProgress(){
+    var a = answeredCount(), total=TOTAL;
+    prog.style.width = Math.round(100*a/total) + "%";
+    // ARIA
+    var shell = document.querySelector('.progress');
+    if(shell){
+      shell.setAttribute('role','progressbar');
+      shell.setAttribute('aria-valuemin','0');
+      shell.setAttribute('aria-valuemax', String(total));
+      shell.setAttribute('aria-valuenow', String(a));
+      shell.setAttribute('aria-label', '回答進捗：'+a+' / '+total);
     }
-  ];
+  }
 
-  // DOM 取得
-  const byId = id => document.getElementById(id);
-  const form = byId('quiz');
-  const go = byId('go');
-  const resSec = byId('result');
-
-  // 未回答チェック
+  // 未回答ジャンプ
   function firstUnanswered(){
-    for(let i=1;i<=12;i++){
-      const v = form['q'+i]?.value;
-      if(v === "" || v == null){ return i; }
+    for(var i=1;i<=TOTAL;i++){
+      if(!qWrap.querySelector('input[name="q'+i+'"]:checked')) return i;
     }
     return 0;
   }
-
-  // 合計スコア（0..48）: 抑制項目は (4 - 値)
-  function calcScore(){
-    let sum = 0;
-    for(let i=1;i<=12;i++){
-      const raw = Number(form['q'+i].value);
-      const score = reverse.has(i) ? (4 - raw) : raw;
-      sum += score;
-    }
-    return sum;
-  }
-
-  // タイプ選択
-  function pickDef(total){
-    return defs.find(d => total >= d.range[0] && total <= d.range[1]) || defs[defs.length-1];
-  }
-
-  // スクロール＆ハイライト
-  function scrollToField(n){
-    const fs = form.querySelector(`input[name="q${n}"]`)?.closest('.q');
+  function needJump(n){
+    var fs = document.getElementById('fs-'+n);
     if(fs){
-      fs.classList.add('err');
-      fs.scrollIntoView({behavior:'smooth', block:'center'});
-      setTimeout(()=>fs.classList.remove('err'), 1600);
+      fs.classList.add('need');
+      fs.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(function(){ fs.classList.remove('need'); }, 1600);
     }
   }
 
-  // クリック処理
-  go.addEventListener('click', () => {
-    const miss = firstUnanswered();
+  // 合計スコア（0–48へ正規化）
+  function calcTotalNorm(){
+    var sum=0;
+    for(var i=1;i<=TOTAL;i++){
+      var chk = qWrap.querySelector('input[name="q'+i+'"]:checked');
+      var raw = chk ? parseInt(chk.value,10) : 0;
+      sum += REVERSE.has(i) ? (4-raw) : raw;
+    }
+    var maxRaw = TOTAL * 4;
+    return Math.round(sum / maxRaw * 48); // 0..48
+  }
+  
+  // 因子％（各因子：項目合計 / (項目数×4) ×100）※ここは逆転なしで素直に集計
+function calcFactorPercentsRaw(){
+  var res=[];
+  for(var f=0; f<FACTORS.length; f++){
+    var it = FACTORS[f].items, got=0;
+    for(var j=0;j<it.length;j++){
+      var i = it[j];
+      var chk = qWrap.querySelector('input[name="q'+i+'"]:checked');
+      var raw = chk ? parseInt(chk.value,10) : 0;
+      got += raw;
+    }
+    var pct = Math.round( (got / (it.length*4)) * 100 );
+    res.push({name:FACTORS[f].name, desc:(FACTORS[f].desc||""), pct:pct});
+  }
+  return res;
+}
+
+  function pickDef(total){
+    for(var i=0;i<DEFS.length;i++){
+      var d=DEFS[i]; if(total>=d.range[0] && total<=d.range[1]) return d;
+    }
+    return DEFS[DEFS.length-1];
+  }
+
+  // 結果描画
+  function render(total){
+    var d = pickDef(total);
+    heroImg.src = IMG_BASE + d.file;
+    heroImg.alt = d.alt;
+    heroTitle.textContent = d.key;
+    rangeBadge.textContent = d.range[0]+"–"+d.range[1]+" 点帯";
+    tagline.textContent = d.tag;
+    sumLine.textContent = "あなたの総合スコア："+total+" / 48";
+    longCopy.innerHTML = d.body;
+// 因子バー描画
+var box = document.getElementById('factorBox');
+if(box){
+  var items = calcFactorPercentsRaw();
+  box.innerHTML = items.map(function(e,i){
+    var id='mbar-'+i;
+    return '<div class="meter" role="group" aria-label="'+e.name+'">'
+         +   '<div class="row"><div class="name">'+e.name+'</div><div class="pct" id="'+id+'-pct">'+e.pct+'%</div></div>'
+         +   (e.desc ? '<div class="desc small">'+e.desc+'</div>' : '')
+         +   '<div class="mbar" aria-hidden="true"><span id="'+id+'" style="width:'+e.pct+'%"></span></div>'
+         + '</div>';
+  }).join('');
+}
+    resEmpty.style.display = 'none';
+    resArea.style.display  = 'block';
+    document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+
+    try{
+      document.dispatchEvent(new Event('result:ready'));
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
+    }catch(e){}
+  }
+
+  function score(){
+    var miss = firstUnanswered();
     if(miss){
-      alert(`未回答の項目があります（${miss}問目）。`);
-      scrollToField(miss);
+      alert("未回答があります。全12問にお答えください。");
+      needJump(miss);
       return;
     }
-    const total = calcScore();
-    const d = pickDef(total);
+    saveAnswers();
+    var total = calcTotalNorm();
+    render(total);
+  }
 
-    // 描画
-    const base = "/shindan/assets/results/rail-traits/";
-    const imgEl = byId('resImg');
-    imgEl.src = base + d.img;
-    imgEl.alt = d.alt;
+  function clearAnswers(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked = false; }
+    wipeAnswers();
+    resArea.style.display = "none";
+    resEmpty.style.display = "";
+    updateProgress();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
 
-    byId('resTitle').textContent = `${d.key}（${d.range[0]}–${d.range[1]}点帯）`;
-    byId('resScore').textContent  = `あなたの総合スコア：${total} / 48`;
-    byId('resTag').textContent    = d.tag;
-    byId('resBody').innerHTML     = d.body;
+  // 監視・初期化
+  qWrap.addEventListener("change", function(e){
+    if(e.target && e.target.type==="radio"){ saveAnswers(); updateProgress(); }
+  }, true);
+  document.getElementById("doScore").addEventListener("click", score, false);
+  document.getElementById("doScore2").addEventListener("click", score, false);
+  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
 
-    resSec.style.display = 'block';
-    resSec.scrollIntoView({behavior:'smooth', block:'start'});
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+// ★ ラベル文言を「数字→語句」に置き換え（kusemon風）//
+(function(){
+  var MAP = ["ぜんぜんない","あまりない","ときどきある","よくある","いつもある"];
+  document.querySelectorAll('.scale').forEach(function(sc){
+    sc.querySelectorAll('input[type="radio"]').forEach(function(inp){
+      var lab = sc.querySelector('label[for="'+inp.id+'"]');
+      if(lab){
+        // 値は 0..4 のまま保持し、見た目だけ差し替え
+        lab.textContent = MAP[parseInt(inp.value,10)] || lab.textContent;
+      }
+    });
   });
 })();
+  restoreAnswers();
+  updateProgress();
+})();
 </script>
-</div>
+
+<!-- みんなのこころLv（result:readyでカウント＋フォールバック） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'rail-traits';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hitEveryone(){
+    var url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
+})();
+</script>
 </body>
 </html>
