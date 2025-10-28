@@ -5,154 +5,170 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>気球エスケープ診断 — どれだけ現実から“離陸”しやすいか</title>
 <meta name="description" content="25項目・5件法。逃避/気晴らし/上の空/着地力から“離陸しやすさ”を％表示。">
-<meta name="theme-color" content="#f7f4ff">
+<meta name="theme-color" content="#f6f4ff">
+<link rel="preload" as="image" href="/shindan/assets/results/balloon-escape/t01.webp">
 <style>
-  :root{
-    --bg1:#f7f3ff; --bg2:#fff9fd; --paper:#fff; --ink:#14131a; --muted:#6b6a77;
-    --line:#eae6f5; --accent:#7b5cff; --accent2:#ff88c9;
-  }
-  *{box-sizing:border-box} html,body{height:100%}
-  body{
-    margin:0; color:var(--ink);
-    font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI","YuGothic",Meiryo,sans-serif;
-    background:linear-gradient(160deg,var(--bg1),var(--bg2));
-    line-height:1.9; letter-spacing:.02em;
-  }
-  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.86);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line)}
-  header .in{max-width:960px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
-  h1{font-size:18px;margin:0;font-weight:700}
-  .crumb{margin-left:auto;color:var(--muted);font-size:12px}
+:root{
+  --accent:#6b6bd9; --accent2:#b96ad6;
+  --ink:#26263a; --muted:#667087; --paper:#fff;
+  --bg1:#fffafe; --bg2:#f3f4ff; --line:#e7e6f2;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+  line-height:1.9;
+}
+.wrap{max-width:980px;margin:18px auto;padding:0 14px}
+header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#f0eaff,#e7f0ff);display:grid;place-items:center;font-size:28px}
+h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em;color:#5a57ce}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
+.small{color:var(--muted);font-size:.96em}
 
-  main{max-width:960px;margin:0 auto;padding:22px 16px 120px}
-  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
-  .lead{color:var(--muted);margin-top:6px}
-  .q{border-top:1px solid var(--line);padding:12px 0}
-  .q:first-child{border-top:0}
-  .q .ttl{font-weight:700}
-  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .opt{flex:1 1 140px;min-width:140px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;background:#fff;cursor:pointer}
-  .opt input{accent-color:var(--accent)}
-  .muted{color:var(--muted)}
-  .progress{display:flex;align-items:center;gap:10px;margin-top:12px}
-  .bar{flex:1;height:8px;background:#f2effa;border-radius:999px;overflow:hidden}
-  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
-  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f7fb);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
-  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-  .btn[disabled]{opacity:.5;cursor:not-allowed}
+/* 📊 sticky progress（rail準拠） */
+.sticky{position:sticky;top:0;z-index:20;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
+.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
+.btn:active{transform:translateY(1px)}
 
-  /* Results */
-  #result{margin-top:18px;display:none}
-  .pct{font-size:42px;font-weight:800;letter-spacing:.02em}
-  .badge{display:inline-block;margin-left:8px;padding:4px 10px;border-radius:999px;font-weight:700;border:1px solid var(--line);background:#fff}
-  .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
-  .card{flex:1 1 240px;min-width:240px;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
-  .meter{height:8px;background:#f2effa;border-radius:999px;overflow:hidden;margin-top:8px}
-  .meter > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .result-figure{margin:12px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f6f8fb}
-  .result-figure img{display:block;width:100%;height:auto}
+/* 設問（5件法） */
+fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
+legend{font-weight:700}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
+mark.need{animation:need 1.6s ease}
+@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
 
-  /* Footer bar */
-  .footerbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-top:1px solid var(--line);padding:10px}
-  .footerbar .in{max-width:960px;margin:auto;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .footerbar a,.footerbar button{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#1c1a22;text-decoration:none;cursor:pointer}
+/* 結果：正方形ヒーロー */
+.hero-square{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-square figcaption{padding:14px 12px;width:100%;line-height:1.7}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
+.sep{height:1px;background:var(--line);margin:16px 0}
 
-  @media (max-width:380px){ .opt{min-width:unset} .pct{font-size:36px} }
+/* 因子バー（％表示） */
+#factorBox{max-width:720px;margin-inline:auto}
+.factors{display:grid;gap:12px}
+.meter{display:grid;gap:8px}
+.meter .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meter .row .name{font-weight:700}
+.mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
+.mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+/* フッター操作 */
+.actions-bottom{display:flex;justify-content:center}
+@media (max-width:560px){
+  .wrap{padding:0 10px}
+  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
+  .scale{grid-template-columns:repeat(2,1fr)}
+  .scale label{padding:12px 8px;font-size:14px}
+  .card{padding:12px}
+}
 </style>
 </head>
-<body>
-<header><div class="in">
-  <h1>気球エスケープ診断</h1>
-  <span class="crumb">25項目・5件法 → % とバンド</span>
-</div></header>
-
-<main>
-  <section class="panel" id="quiz">
+<body data-id="balloon-escape">
+<main class="wrap" id="app">
+  <header class="hd">
+    <div class="logo">🎈</div>
     <div>
-      <div class="ttl"><strong>どれだけ現実から“離陸”しやすいか</strong> を測ります。</div>
-      <p class="lead">5件法でお答えください（左＝低、右＝高）。※個人の傾向把握が目的です。</p>
+      <h1>気球エスケープ診断</h1>
+      <p class="sub">25項目・5件法で「どれだけ現実から“離陸”しやすいか」を可視化します（逃避/気晴らし/上の空/着地力）。</p>
+    </div>
+  </header>
+
+  <!-- 📊 sticky progress -->
+  <div class="sticky" aria-live="polite">
+    <span aria-hidden="true">📊</span>
+    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0"><span id="prog"></span></div>
+    <button class="btn primary" id="doScore">診断する</button>
+  </div>
+
+  <!-- 説明 -->
+  <section class="card">
+    <div class="pill">質問数：25</div>
+    <div class="pill" style="margin-left:6px">形式：1–5（1 まったく当てはまらない／5 とても当てはまる）</div>
+    <p class="small" style="margin-top:8px">個人の傾向把握が目的の娯楽コンテンツです。素直に近いものを選んでください。</p>
+  </section>
+
+  <!-- 設問 -->
+  <section class="card" id="questions">
+    <h2 style="margin:4px 0 8px">設問（5件法）</h2>
+    <form id="quiz" novalidate></form>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button type="button" class="btn" id="clearAns">回答をクリア</button>
+      <button type="button" class="btn primary" id="doScore2">診断する</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="card" id="result" aria-live="polite">
+    <div id="resEmpty">
+      <span class="pill">まだ結果はありません</span>
+      <p class="small">全25問に回答して「診断する」を押してください。</p>
     </div>
 
-    <div id="qbox"></div>
-
-    <div class="progress" aria-live="polite">
-      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
-      <div id="ptext" class="muted">0 / 25</div>
-    </div>
-
-    <div class="actions">
-      <button id="btnCalc" class="btn primary" disabled>スコアを見る</button>
-      <button id="btnReset" class="btn">リセット</button>
-    </div>
-
-    <div id="result" class="panel">
-    	<section id="legal-note-balloon" style="margin:8px 0 14px;background:#fff;border:1px solid #e7d9d9;border-radius:10px;padding:10px 12px">
-  <h2 style="margin:4px 0 6px;font-size:1rem;color:#533">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#666">
-    <li><strong>非提携・非公式：</strong>本コンテンツは研究一般の知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自制作</strong>です。公式尺度（例：COPE／Mind-Wandering 関連尺度／BRS 等）の原文や採点方法を使用しておらず、権利者の承認・提携・推奨を意味しません。</li>
-    <li><strong>医療・選抜用途ではありません：</strong>自己理解のためのセルフチェックであり、医療・心理・法的助言や診断／治療、就学・採用等の選抜や適性判断の目的には使用しないでください。</li>
-    <li><strong>「診断」という呼称について：</strong>サイト内の「診断」は一般的な名称であり、医学的・心理学的な診断行為を意味しません。結果は傾向の目安です。</li>
-    <li><strong>プライバシー：</strong>回答は端末内でのみ処理され、サーバー送信は行いません。共有ボタンは端末の共有機能／クリップボードを利用します。</li>
-    <li><strong>表現の配慮：</strong>結果をもって他者を断定・ラベリングしたり、価値判断・差別に用いないでください。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用により生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
-  </ul>
-</section>
-      <div><span class="pct" id="pctText">—%</span>
-        <span class="badge" id="bandName"></span>
+    <div id="resArea" style="display:none">
+      <!-- 正方形ヒーロー（t01.webp〜t06.webp） -->
+      <div class="hero-square" role="region" aria-label="ランクのイメージ" style="margin:10px 0">
+        <figure>
+          <img id="heroImg" src="/shindan/assets/results/balloon-escape/t01.webp" alt="—" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <div class="title-row">
+            <div id="heroTitle" style="font-weight:800">—</div>
+            <span class="badge-size" id="rangeBadge">—</span>
+          </div>
+          <div class="small" id="tagline" style="margin-top:4px">—</div>
+          <div class="small" id="sumLine" style="margin-top:6px;color:#6b6a77">—</div>
+        </figcaption>
       </div>
 
-      <!-- 結果イメージ -->
-      <figure class="result-figure" aria-hidden="true">
-        <img id="bandImg" src="" alt="結果イメージ">
-      </figure>
+      <!-- 因子バー（％） -->
+      <div class="factors" id="factorBox" aria-label="因子スコア（％）" style="margin:10px 0 6px"></div>
 
-      <p id="bandMsg" class="lead"></p>
+      <div class="sep"></div>
+      <p class="small" id="bandMsg" style="max-width:68ch;margin:0 auto"></p>
 
-      <div class="row">
-        <div class="card">
-          <div><strong>総合（離陸しやすさ）</strong></div>
-          <div class="meter"><i id="mH"></i></div>
-        </div>
-        <div class="card">
-          <div><strong>回避（EA）</strong> <span class="muted">避ける・先送り</span></div>
-          <div class="meter"><i id="mEA"></i></div>
-        </div>
-        <div class="card">
-          <div><strong>回避方略（COPE）</strong> <span class="muted">気晴らし・脱落</span></div>
-          <div class="meter"><i id="mCOPE"></i></div>
-        </div>
-        <div class="card">
-          <div><strong>上の空（MW）</strong> <span class="muted">意識の離陸</span></div>
-          <div class="meter"><i id="mMW"></i></div>
-        </div>
-        <div class="card">
-          <div><strong>着地力（BRS）</strong> <span class="muted">戻る・立て直す</span></div>
-          <div class="meter"><i id="mBRS"></i></div>
-        </div>
+      <div class="sep"></div>
+      <div class="actions-bottom">
+        <a class="btn" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
       </div>
-
-      <p class="muted" style="margin-top:10px">
-        参考概念：回避傾向／対処方略／マインドワンダリング／レジリエンス（概念参照）。結果は傾向の目安であり、診断や治療を目的としません。
-      </p>
     </div>
+  </section>
+
+  <section class="card">
+    <h3 style="margin:4px 0 8px">ご利用にあたって</h3>
+    <ul class="small" style="margin:6px 0 0 1.2em; line-height:1.8">
+      <li><strong>非公式／独自制作：</strong>研究一般の知見にヒントを得た創作コンテンツです（公式尺度の採点ではありません）。</li>
+      <li><strong>医療・選抜用途ではありません：</strong>娯楽＋自己理解向けのセルフチェックです。</li>
+      <li><strong>プライバシー：</strong>回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。</li>
+      <li><strong>表現の配慮：</strong>結果をもって他者を断定・ラベリングしないでください。</li>
+      <li><strong>免責：</strong>本コンテンツ利用により生じたいかなる損失・損害も当サイトは責任を負いません。</li>
+    </ul>
   </section>
 </main>
 
-<!-- 診断一覧に戻る -->
-<nav class="footerbar">
-  <div class="in">
-    <a id="backList" href="/shindan/">診断一覧に戻る</a>
-    <button id="btnShare" type="button">結果を共有</button>
-  </div>
-</nav>
-
 <script>
-(()=> {
-  // ===== 画像の置き場所（必要なら変更） =====
-  const IMG_BASE = '/shindan/assets/results/balloon-escape/'; // 例）.../01.png〜06.png
+(function(){
+  // ===== ページ定義 =====
+  var SLUG = "balloon-escape";
+  var TITLE = "気球エスケープ診断";
+  var IMG_BASE = "/shindan/assets/results/balloon-escape/"; // t01.webp..t06.webp
+  var ANS_KEY = "specimens:"+SLUG+":answers";                // 開き直し保存キー
 
-  // ===== 設問 =====
-  const ITEMS = [
+  // ===== 質問セット（文言は変更せず） =====
+  var ITEMS = [
     {k:1,  t:'嫌な気持ちが来そうだと、先に用事を作って避ける。',                   cat:'EA'},
     {k:2,  t:'不安を感じたら、人や場所ごと距離を取る。',                             cat:'EA'},
     {k:3,  t:'つらい記憶を思い出しそうな映画や音楽は避けがち。',                     cat:'EA'},
@@ -180,86 +196,119 @@
     {k:22, t:'（R）一度つまずくと、しばらく何も手につかない。',                         cat:'BRS', rev:true},
     {k:23, t:'気持ちが乱れても、呼吸を整えると立ち上がれる。',                         cat:'BRS'},
     {k:24, t:'（R）問題が続くと、投げ出したくなる。',                                   cat:'BRS', rev:true},
-    {k:25, t:'自分なりの「戻るルーティン」（例：人に連絡／寝る／食事／歩く など）を持っている。',             cat:'BRS'}
+    {k:25, t:'自分なりの「戻るルーティン」（例：人に連絡／寝る／食事／歩く など）を持っている。', cat:'BRS'}
   ];
-  const LABELS = ['まったく当てはまらない','あまり当てはまらない','どちらともいえない','やや当てはまる','とても当てはまる'];
+  var LABELS = ['1 まったく当てはまらない','2 あまり当てはまらない','3 どちらともいえない','4 やや当てはまる','5 とても当てはまる'];
 
-  // ===== DOM =====
-  const $ = (q,root=document)=>root.querySelector(q);
-  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-  const qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
-  const btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
-  const res = $('#result'), pctText = $('#pctText'), bandName = $('#bandName'), bandMsg = $('#bandMsg');
-  const meters = {H:$('#mH'), EA:$('#mEA'), COPE:$('#mCOPE'), MW:$('#mMW'), BRS:$('#mBRS')};
-  const backList = $('#backList'), btnShare = $('#btnShare');
-  const bandImg = $('#bandImg');
+  // ===== DOM参照 =====
+  var qWrap = document.getElementById("quiz");
+  var prog  = document.getElementById("prog");
+  var resEmpty = document.getElementById("resEmpty");
+  var resArea  = document.getElementById("resArea");
+  var heroImg  = document.getElementById("heroImg");
+  var heroTitle= document.getElementById("heroTitle");
+  var rangeBadge= document.getElementById("rangeBadge");
+  var tagline  = document.getElementById("tagline");
+  var bandMsg  = document.getElementById("bandMsg");
+  var sumLine  = document.getElementById("sumLine");
+  var factorBox= document.getElementById("factorBox");
 
-  // 戻り先
-  const DEFAULT_BACK = '/shindan/';
-  const src = new URLSearchParams(location.search).get('src');
-  backList.href = src === 'specimens' ? DEFAULT_BACK : DEFAULT_BACK;
+  // 設問をrail風 fieldsetで描画
+  function renderQuestions(){
+    var html = ITEMS.map(function(it){
+      var opts = LABELS.map(function(lbl, i){
+        var v=i+1, id='q'+it.k+'-'+v;
+        return '<input id="'+id+'" type="radio" name="q'+it.k+'" value="'+v+'"><label for="'+id+'">'+lbl+'</label>';
+      }).join('');
+      return '<fieldset class="q" id="fs-'+it.k+'">'
+           +   '<legend>'+it.k+'. '+it.t.replace('（R）','')+'</legend>'
+           +   '<div class="scale" role="radiogroup" aria-label="'+it.k+'">'+opts+'</div>'
+           + '</fieldset>';
+    }).join('');
+    qWrap.innerHTML = html;
+  }
 
-  // 質問描画
-  ITEMS.forEach(item=>{
-    const s = document.createElement('section');
-    s.className = 'q';
-    s.innerHTML = `
-      <div class="ttl">Q${item.k}. ${item.t.replace('（R）','')}</div>
-      <div class="scale" role="group" aria-label="Q${item.k}">
-        ${LABELS.map((lab,i)=>{
-          const v=i+1, id=`q${item.k}-${v}`;
-          return `<label class="opt" for="${id}">
-              <input type="radio" name="q${item.k}" id="${id}" value="${v}">
-              <span>${v}. ${lab}</span>
-            </label>`;
-        }).join('')}
-      </div>
-    `;
-    qbox.appendChild(s);
-  });
+  // 保存/復元
+  function saveAnswers(){
+    try{
+      var out = {};
+      ITEMS.forEach(function(it){
+        var chk = qWrap.querySelector('input[name="q'+it.k+'"]:checked');
+        if(chk){ out[String(it.k)] = parseInt(chk.value,10); }
+      });
+      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
+    }catch(e){}
+  }
+  function restoreAnswers(){
+    try{
+      var raw = localStorage.getItem(ANS_KEY); if(!raw) return;
+      var box = JSON.parse(raw)||{}; var ans=box.ans||{};
+      Object.keys(ans).forEach(function(k){
+        var v = ans[k];
+        var el = qWrap.querySelector('#q'+k+'-'+v);
+        if(el){ el.checked = true; }
+      });
+      updateProgress();
+    }catch(e){}
+  }
+  function wipeAnswers(){ try{ localStorage.removeItem(ANS_KEY); }catch(e){} }
 
   // 進捗
-  function answeredCount(){ return ITEMS.filter(it => $('input[name="q'+it.k+'"]:checked')).length; }
+  function answeredCount(){ return qWrap.querySelectorAll('input[type="radio"]:checked').length; }
   function updateProgress(){
-    const n=answeredCount(), total=ITEMS.length;
-    ptext.textContent = `${n} / ${total}`;
-    pbar.style.width = Math.round(n/total*100)+'%';
-    btnCalc.disabled = n!==total;
+    var a = answeredCount(), total=ITEMS.length;
+    prog.style.width = Math.round(100*a/total) + "%";
+    var shell = document.querySelector('.progress');
+    if(shell){
+      shell.setAttribute('aria-valuenow', String(a));
+      shell.setAttribute('aria-label','回答進捗：'+a+' / '+total);
+    }
   }
-  document.addEventListener('change', e=>{ if(e.target.name?.startsWith('q')) updateProgress(); });
-  updateProgress();
 
-  // math
-  const rev5 = v => 6 - v;
-  const mean = arr => arr.reduce((a,b)=>a+b,0) / arr.length;
+  // 未回答ジャンプ
+  function firstUnanswered(){
+    for(var i=1;i<=ITEMS.length;i++){
+      if(!qWrap.querySelector('input[name="q'+i+'"]:checked')) return i;
+    }
+    return 0;
+  }
+  function needJump(n){
+    var fs = document.getElementById('fs-'+n);
+    if(fs){
+      fs.classList.add('need');
+      fs.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(function(){ fs.classList.remove('need'); }, 1600);
+    }
+  }
+
+  // math util
+  var rev5 = function(v){ return 6 - v; };
+  var mean = function(arr){ return arr.reduce(function(a,b){return a+b;},0) / arr.length; };
   function erf(x){const s=Math.sign(x);x=Math.abs(x);const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const t=1/(1+p*x);const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);return s*y;}
-  const cdf = z => 0.5*(1+erf(z/Math.SQRT2));
+  var cdf = function(z){ return 0.5*(1+erf(z/Math.SQRT2)); };
 
-  // 採点
+  // スコア集計
   function collect(){
-    const vals={};
-    for(const it of ITEMS){
-      const el = $('input[name="q'+it.k+'"]:checked'); if(!el) return null;
-      vals[it.k] = +el.value;
+    var vals={};
+    for(var i=1;i<=ITEMS.length;i++){
+      var el = qWrap.querySelector('input[name="q'+i+'"]:checked'); if(!el) return null;
+      vals[i] = parseInt(el.value,10);
     }
     return vals;
   }
-  function score(vals){
-    const EA   = mean([ vals[1],vals[2],vals[3],vals[4],vals[5],vals[6], rev5(vals[7]),rev5(vals[8]), vals[9],vals[10] ]);
-    const COPE = mean([ vals[11],vals[12],vals[13],vals[14] ]);
-    const MW   = mean([ vals[15],vals[16],vals[17], rev5(vals[18]), vals[19] ]);
-    const BRS  = mean([ vals[20],vals[21], rev5(vals[22]), vals[23], rev5(vals[24]), vals[25] ]);
+  function calcScore(vals){
+    var EA   = mean([ vals[1],vals[2],vals[3],vals[4],vals[5],vals[6], rev5(vals[7]),rev5(vals[8]), vals[9],vals[10] ]);
+    var COPE = mean([ vals[11],vals[12],vals[13],vals[14] ]);
+    var MW   = mean([ vals[15],vals[16],vals[17], rev5(vals[18]), vals[19] ]);
+    var BRS  = mean([ vals[20],vals[21], rev5(vals[22]), vals[23], rev5(vals[24]), vals[25] ]);
 
-    const zEA   = (EA   - 3);
-    const zCOPE = (COPE - 3);
-    const zMW   = (MW   - 3);
-    const zBRS  = (BRS  - 3);
-    const zH = (zEA + zCOPE + zMW - zBRS) / 2; // 近似標準化
-
-    const pct = Math.round(cdf(zH) * 100);
-    return {EA,COPE,MW,BRS,z:{H:zH},pct};
+    // 中心3.0を基準に近似標準化（BRSは逆符号）
+    var zH = ((EA-3)+(COPE-3)+(MW-3)-(BRS-3)) / 2;
+    var pct = Math.round(cdf(zH) * 100);
+    return {EA:EA, COPE:COPE, MW:MW, BRS:BRS, z:{H:zH}, pct:pct};
   }
 
+  // ランク → 画像/文言（文言変更なし）
   function band(zH){
     if(zH<=-1.0) return {name:'地上係留（ロープ二重結び）', key:'A'};
     if(zH<=-0.33) return {name:'低空さんぽ', key:'B'};
@@ -268,73 +317,127 @@
     if(zH<=+1.64) return {name:'成層圏ランナー', key:'E'};
     return {name:'宇宙まで気球（通信途絶注意）', key:'F'};
   }
-  const bandMsgMap = {
-  A: '大地派。逃げすぎず現実にちゃんと足が着いてるタイプ。たまに“雲見休憩”を入れると創造力が育ちます。おすすめは「5分だけ空想→窓際で深呼吸→戻る」のミニ往復。無理はせず、楽しめる範囲で◎',
-  B: '必要な時だけふわっと上がる低空フライト。気晴らしは「短時間×場所指定」にすると罪悪感が減って効果長持ち。例：ベッドでは見ない／台所でだけ動画5分。最後は自分の戻るルーティン（タイマー・一杯の水など）で帰還を。',
-  C: '中間タイプ。頑張るもサボるもバランス上手。疲れた日は「5分雲上→10分タスク→5分帰還」のミニ往復が相性◎。戻る合図はタイマーでも、席を立って水を飲むでもOK。“自分の戻り方”をひとつ決めておくとラクだよ。',
-  D: '没入がやや強めで、上がるのは得意。だからこそ降りるきっかけを先に用意しよう。「通知OFF＋タイマーON」「終わったら人に一言送る」など戻るルーティンを固定すると安定。好きな没入は活かしつつ、帰路だけ確保！',
-  E: '上昇気流が強い帯域。楽しくても酸素（睡眠・ごはん・会話）が切れると一気にしんどくなる。1日のどこかに“帰還ポイント”を固定して、戻るルーティンを短いメモで見える化→目に入る所へ。補給を途切れさせないのがコツ。',
-  F: 'MAX上昇タイプ。気づくと地球圏外まで飛べる人。戻る練習は小さく・毎日同じタイミングで：①姿勢を直す ②水を飲む ③誰かに一言 ④短い用事で体を動かす。反復で帰還がどんどんラクに。推進力はそのまま、安全索だけ太く！'
-};
-  const IMG_MAP = {A:'01', B:'02', C:'03', D:'04', E:'05', F:'06'};
+  var IMG_MAP = {A:'t01.webp', B:'t02.webp', C:'t03.webp', D:'t04.webp', E:'t05.webp', F:'t06.webp'};
+  var bandMsgMap = {
+    A:'地面派。離陸しすぎず、日常のやることを「ちゃんと回せる」実務の鬼。たまに5分だけ“雲見休憩”を入れると発想がやわらかくなります。窓際で深呼吸→一杯の水→帰還、のミニ往復が相性◎。',
+    B:'ふわっと低空。気晴らしは上手だけど、ちゃんと戻ってくる律儀さもあり。気晴らしは「場所か時間を限定」すると罪悪感ゼロで効果長持ち（例：台所で動画5分だけ）。最後はタイマーで帰還合図を。',
+    C:'ほどよい中間。頑張るもサボるもバランス派。疲れた日は「5分雲上→10分タスク→5分帰還」のループを。戻りの儀式は“椅子から立って水を飲む”でもOK。自分なりの帰り道を1つ決めると強い。',
+    D:'上がるのは得意。だからこそ降りる仕掛けを先に用意しよう。「通知OFF＋タイマーON」「終わったら誰かに一言」など帰還ルーティンを固定すると最強。没入は武器、帰路は保険。両方持つと無敵です。',
+    E:'上昇気流つよめ。楽しいほど酸素（睡眠・ごはん・会話）が足りなくなりがち。1日のどこかに“帰還ポイント”を固定して、メモを見える所に。推進力はそのまま、燃料だけ切らさない運用へ。',
+    F:'MAX上昇タイプ。気づくと成層圏どころか宇宙旅行。帰還訓練は「小さく毎日同時刻」で：①姿勢を直す ②水を飲む ③人に一言 ④短い用事で体を動かす。安全索が太くなるほど、冒険は自由になります。'
+  };
 
-  const pctToWidth = p => Math.max(2, Math.min(100, p));
-  const meanToPct = m => Math.round((m-1)/4*100);
+  function pct(v){ return Math.max(2, Math.min(100, v)); }
+  function meanToPct(m){ return Math.round((m-1)/4*100); }
 
-  function renderResult(sc){
-    const b = band(sc.z.H);
-    pctText.textContent = `${sc.pct}%`;
-    bandName.textContent = b.name;
-    bandMsg.textContent = bandMsgMap[b.key];
-
-    // 画像切り替え（01=地上 … 06=宇宙）
-    const num = IMG_MAP[b.key] || '03';
-    bandImg.src = IMG_BASE + num + '.png';
-    bandImg.alt = `${b.name} のイメージ`;
-
-    // メーター
-    meters.H.style.width   = pctToWidth(sc.pct) + '%';
-    meters.EA.style.width  = meanToPct(sc.EA) + '%';
-    meters.COPE.style.width= meanToPct(sc.COPE) + '%';
-    meters.MW.style.width  = meanToPct(sc.MW) + '%';
-    meters.BRS.style.width = meanToPct(sc.BRS) + '%';
-
-    res.style.display = 'block';
-    try{
-      localStorage.setItem('balloon-escape:last', JSON.stringify({pct:sc.pct, band:b.name, when:Date.now()}));
-    }catch{}
+  // 因子バー描画
+  function renderFactors(sc){
+    var items = [
+      {name:'総合（離陸しやすさ）', val:sc.pct,    kind:'H'},
+      {name:'回避（EA）',           val:meanToPct(sc.EA)},
+      {name:'回避方略（COPE）',     val:meanToPct(sc.COPE)},
+      {name:'上の空（MW）',         val:meanToPct(sc.MW)},
+      {name:'着地力（BRS）',        val:meanToPct(sc.BRS)}
+    ];
+    factorBox.innerHTML = items.map(function(e,i){
+      var id='mbar-'+i;
+      return '<div class="meter" role="group" aria-label="'+e.name+'">'
+           +   '<div class="row"><div class="name">'+e.name+'</div><div class="pct" id="'+id+'-pct">'+e.val+'%</div></div>'
+           +   '<div class="mbar" aria-hidden="true"><span id="'+id+'" style="width:'+e.val+'%"></span></div>'
+           + '</div>';
+    }).join('');
   }
 
-  btnCalc.addEventListener('click', ()=>{
-    const vals = collect(); if(!vals) return;
-    const sc = score(vals);
-    renderResult(sc);
-    res.scrollIntoView({behavior:'smooth',block:'start'});
-  });
+  // 結果描画
+  function render(sc){
+    var b = band(sc.z.H);
+    heroImg.src = IMG_BASE + (IMG_MAP[b.key] || 't03.webp');
+    heroImg.alt = b.name+' のイメージ';
+    heroTitle.textContent = b.name;
+    rangeBadge.textContent = 'あなたの位置：'+sc.pct+'%';
+    tagline.textContent = '離陸傾向パーセンタイル';
+    sumLine.textContent  = '総合：'+sc.pct+'% ／ EA '+meanToPct(sc.EA)+'% ／ COPE '+meanToPct(sc.COPE)+'% ／ MW '+meanToPct(sc.MW)+'% ／ BRS '+meanToPct(sc.BRS)+'%';
+    bandMsg.textContent  = bandMsgMap[b.key];
 
-  btnReset.addEventListener('click', ()=>{
-    $$('input[type="radio"]').forEach(i=>i.checked=false);
-    updateProgress();
-    res.style.display='none';
-    bandImg.removeAttribute('src');
-  });
+    renderFactors(sc);
+    resEmpty.style.display = 'none';
+    resArea.style.display  = 'block';
+    document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
 
-  btnShare.addEventListener('click', async ()=>{
-    const pct = pctText.textContent || '';
-    const band = bandName.textContent || '';
-    const shareData = {
-      title: document.title,
-      text: `気球エスケープ診断｜あなたの離陸傾向：${pct}（${band}）`,
-      url: location.href.split('#')[0]
-    };
     try{
-      if(navigator.share){ await navigator.share(shareData); }
-      else{
-        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
-        alert('結果テキストをコピーしました');
-      }
+      document.dispatchEvent(new Event('result:ready')); // みんなのこころLv 用
+      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
     }catch(e){}
-  });
+  }
+
+
+  // 診断ボタンから呼ぶ本体
+  function doScore(){
+    var miss = firstUnanswered();
+    if(miss){ alert("未回答があります。全25問にお答えください。"); needJump(miss); return; }
+    saveAnswers();
+    var vals = collect();
+    var sc   = calcScore(vals);
+    render(sc);
+  }
+
+  // 初期化
+  renderQuestions();
+  restoreAnswers();
+  updateProgress();
+
+  // 監視・操作
+  qWrap.addEventListener("change", function(e){
+    if(e.target && e.target.type==="radio"){ saveAnswers(); updateProgress(); }
+  }, true);
+  document.getElementById("doScore").addEventListener("click", doScore, false);
+  document.getElementById("doScore2").addEventListener("click", doScore, false);
+  document.getElementById("clearAns").addEventListener("click", function(){
+    var radios = qWrap.querySelectorAll('input[type="radio"]');
+    for(var i=0;i<radios.length;i++){ radios[i].checked = false; }
+    wipeAnswers();
+    resArea.style.display = "none";
+    resEmpty.style.display = "";
+    updateProgress();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }, false);
+
+  // 戻るリンクのlast保存
+  var back = document.getElementById("backLink");
+  if(back){
+    back.addEventListener("click", function(){
+      try{ localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname })); }catch(e){}
+    }, false);
+  }
+})();
+</script>
+
+<!-- みんなのこころLv（result:readyで +1 ／フォールバック付） -->
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'balloon-escape';
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function hitEveryone(){
+    var url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      hitEveryone();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
