@@ -53,11 +53,18 @@
   .tips li{margin:.12em 0}
   .savebar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
   .footnote{color:#806b5d;margin-top:14px}
+  /* 📊 sticky progress（rail準拠） */
+.sticky{position:sticky;top:0;z-index:20;margin:-6px -16px 12px;padding:8px 16px;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(6px) saturate(1.05);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.sticky .progress{height:8px;background:#ffe8d6;border-radius:999px;flex:1;overflow:hidden}
+.sticky .progress>span{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
 </style>
 <!-- 結果カード保存（任意）。オフラインでも動作するようCDNを使用、失敗時は印刷にフォールバック -->
 <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
-<body>
+<body data-id="ramen-health">
 <header><div class="in">
   <h1>ラーメン健康診断</h1>
   <span class="crumb">20項目×5因子・5件法 → 0–100＋6ラベル</span>
@@ -68,23 +75,31 @@
     <div>
       <div class="ttl"><strong>5因子</strong>（スープ/麺/チャーシュー/ネギ/海苔）で“いまの整い度”をチェック。20項目・5件法でスコア化します。</div>
       <p class="lead">答え方（1〜5）：1 まったく当てはまらない／2 あまり当てはまらない／3 どちらとも言えない／4 やや当てはまる／5 とても当てはまる</p>
-      <p class="warn"><strong>注意：</strong>本コンテンツは<b>娯楽＋自己理解の目安</b>を目的としたセルフチェックです。医療的な診断・治療・助言を目的としません。強い不調が続く場合は医療機関や専門家へ。<br>表示ラベル（塩/醤油/…）は<b>比喩</b>であり、実在商品・業態の優劣や関連を意味しません。回答は端末内で処理され、個人情報の送信は行いません。</p>
     </div>
 
-    <!-- 質問 -->
+    
+    <!-- 📊 sticky progress（rail準拠） -->
+<div class="sticky" aria-live="polite">
+  <span aria-hidden="true">📊</span>
+  <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+    <span id="prog"></span>
+  </div>
+  <!-- ボタンはここに出す：idは既存と同じ #btnCalc -->
+  <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
+</div>
+
+<!-- 質問 -->
     <div id="qbox"></div>
-
-    <!-- 進捗 -->
-    <div class="progress" aria-live="polite">
-      <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
-      <div id="ptext" class="muted">0 / 20</div>
-    </div>
-
     <!-- 操作 -->
     <div class="actions">
-      <button id="btnCalc" class="btn primary" disabled>結果を見る</button>
       <button id="btnReset" class="btn">リセット</button>
       <a href="/shindan/" class="btn linklike" role="button">診断一覧に戻る</a>
+      
+      <p class="warn"><strong>注意：</strong>本コンテンツは<b>娯楽＋自己理解の目安</b>を目的としたセルフチェックです。
+<br>医療的な診断・治療・助言を目的としません。強い不調が続く場合は医療機関や専門家へ。
+<br>表示ラベル（塩/醤油/…）は<b>比喩</b>であり、実在商品・業態の優劣や関連を意味しません。</br>
+回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。
+<br>結果表示時に匿名の件数カウントのみ送信する場合があります。
     </div>
 
     <!-- 結果 -->
@@ -188,7 +203,7 @@
   // DOM
   function $(q,root){return (root||document).querySelector(q)}
   function $$(q,root){return Array.prototype.slice.call((root||document).querySelectorAll(q))}
-  var qbox = $('#qbox'), pbar = $('#pbar'), ptext = $('#ptext');
+  var qbox = $('#qbox'), prog = $('#prog');
   var btnCalc = $('#btnCalc'), btnReset = $('#btnReset');
   var res = $('#result'), head = $('#head'), allBox = $('#all');
   var heroImg = $('#heroImg'), heroCopy = $('#heroCopy'), quick = $('#quick');
@@ -200,16 +215,16 @@
   var HERO_IMG_BASE = '/shindan/assets/results/ramen-health/';
 
   // 総合スコア→画像ファイル名（01=塩 … 06=二郎系）
-  function heroImageFor(p){
-    var idx;
-    if(p>=90) idx=1;      // 塩
-    else if(p>=75) idx=2; // 醤油
-    else if(p>=60) idx=3; // 鶏白湯
-    else if(p>=45) idx=4; // 味噌
-    else if(p>=30) idx=5; // 家系
-    else idx=6;           // 二郎系
-    return ('0'+idx).slice(-2)+'.png';
-  }
+function heroImageFor(p){
+  var idx;
+  if(p>=90) idx=1;
+  else if(p>=75) idx=2;
+  else if(p>=60) idx=3;
+  else if(p>=45) idx=4;
+  else if(p>=30) idx=5;
+  else idx=6;
+  return ('0'+idx).slice(-2)+'.png';
+}
   // ラベル
   function overallLabel(p){
     if(p>=90) return '塩（仕込み完璧）';
@@ -273,13 +288,31 @@
   });
 
   // 進捗
-  function answeredCount(){ var n=0; for(var i=1;i<=TOTAL;i++){ if(document.querySelector('input[name="q'+i+'"]:checked')) n++; } return n; }
-  function updateProgress(){
-    var n=answeredCount();
-    ptext.textContent = n+' / '+TOTAL;
-    pbar.style.width = Math.round(n/TOTAL*100)+'%';
-    btnCalc.disabled = n!==TOTAL;
+  // いくつ回答済みか数える
+function answeredCount(){
+  var c = 0;
+  for(var i=1;i<=TOTAL;i++){
+    if(document.querySelector('input[name="q'+i+'"]:checked')) c++;
   }
+  return c;
+}
+
+  function updateProgress(){
+  var n = answeredCount();
+  // rail 風の太いバーに幅だけ反映（テキストは出さない）
+  if (prog) prog.style.width = Math.round(n/TOTAL*100)+'%';
+
+  // ARIA（アクセシビリティ）
+  var sh = document.querySelector('.sticky .progress');
+  if (sh){
+    sh.setAttribute('aria-valuemin','0');
+    sh.setAttribute('aria-valuemax', String(TOTAL));
+    sh.setAttribute('aria-valuenow', String(n));
+  }
+
+  // 全問回答で「結果を見る」を有効化
+  btnCalc.disabled = (n !== TOTAL);
+}
   document.addEventListener('change', function(e){
     var nm = e && e.target ? e.target.name : '';
     if(nm && nm.indexOf('q')===0) updateProgress();
@@ -392,6 +425,182 @@ heroCopy.innerHTML =
     }catch(e){ window.print(); }
   });
   $('#btnPrint').addEventListener('click', function(){ window.print(); });
+})();
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ------------------------------------------------------------
+   ★置き場所：各診断HTMLの </body> の直前
+   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）
+============================================================ */
+(function(){
+  'use strict';
+
+  // ===== 固定キー：index.html と合わせてあります =====
+  var DONE_KEY   = 'specimens:open:byid';   // 診断ごとの「済」マップ
+  var TOTAL_KEY  = 'specimens:open:total';  // あなたのこころLv（合計）
+  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ
+
+  // ===== このページのID =====
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // ===== 回答保存ストレージ（この診断だけの箱） =====
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+
+  // ===== みんなのLv（CountAPI設定） =====
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){
+      try{ navigator.sendBeacon(url); }catch(_){}
+    }else{
+      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});
+    }
+  }
+
+  // ---------- 回答の保存/復元 ----------
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; }
+  }
+  function saveState(obj){
+    try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){}
+  }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState();
+    var nm = el.name;
+
+    if(el.type === 'radio'){
+      // ラジオは選ばれた value を保存
+      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = chosen ? {t:'r', v: chosen.value} : {t:'r', v:null};
+    }else if(el.type === 'checkbox'){
+      // チェックボックスは同名グループのチェック済み value 配列
+      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+      var vals = [];
+      all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });
+      st[nm] = {t:'c', v: vals};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){
+        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });
+        st[nm] = {t:'m', v: arr};
+      }else{
+        st[nm] = {t:'s', v: el.value};
+      }
+    }else{
+      // text / number / textarea など
+      st[nm] = {t:'t', v: el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState();
+    var names = Object.keys(st);
+    if(!names.length) return false;
+
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+        var set = new Set(info.v||[]);
+        all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]');
+        if(sel){
+          var setm = new Set(info.v||[]);
+          [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); });
+        }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]');
+        if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]');
+        if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    // プログレス等を更新したいUIのため、軽く change を投げる
+    try{
+      document.dispatchEvent(new Event('change', {bubbles:true}));
+    }catch(_){}
+    return true;
+  }
+  // 入力監視（保存）
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  }, true);
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);
+  }, true);
+
+  // 復元は「入力が描画されてから」一度だけ試みる（動的生成にも対応）
+  (function restoreWhenReady(){
+    var TRY_MAX=12, tries=0;
+    function tick(){
+      tries++;
+      // 入力が一つでも見つかってから復元
+      var hasAny = document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){
+        restoreOnce(); return;
+      }
+      if(tries<TRY_MAX){ setTimeout(tick, 300); }
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }
+    else document.addEventListener('DOMContentLoaded', tick);
+  })();
+
+  // リセット系ボタンがあれば保存も削除（#btnReset / data-role="reset" を想定）
+  function clearAnswers(){
+    try{ localStorage.removeItem(ANSWER_KEY); }catch(_){}
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.id==='btnReset' || t.matches('[data-role="reset"]')) clearAnswers();
+  }, true);
+
+  // ---------- 結果確定で「済」＋Lv加算 ----------
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      // 1) あなたのこころLv 合計 +1
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      // 2) この診断の「済」を +1（他タブ即時反映用にタイムスタンプ混ぜる）
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      // 3) みんなのこころLv +1（表示は index 側で取得／ここでは送るだけ）
+      countapiHit();
+      // ついでに前回キャッシュも+1（index初期表示の見栄え改善）
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+
+  // A) 結果が描画された合図（推奨：各ページの集計完了時に dispatch してください）
+  //   例）document.dispatchEvent(new Event('result:ready'));
+  document.addEventListener('result:ready', markOnce);
+
+  // B) フォールバック：結果UIが見えてから2秒後に一度だけ実行（戻る無しでも確実に「済」）
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
