@@ -1,4 +1,3 @@
-<!-- okikae01.html -->
 <!doctype html>
 <html lang="ja">
 <head>
@@ -9,65 +8,97 @@
 <meta property="og:title" content="関係の切れやすさ・セルフチェック（独自再構成）">
 <meta property="og:description" content="20問で“切れやすさ”の傾向を可視化。結果は「鎖→糸」の5段階。恋人・友人どちらにも。※独自再構成／非医療・非公式">
 <meta name="theme-color" content="#faf7ff">
+<link rel="preload" as="image" href="/shindan/assets/results/kizuna-rope/t01.webp">
 <style>
-  :root{--bg:#f7f8ff;--ink:#1b2030;--muted:#677088;--panel:#fff;--line:#e5e8f2;--accent:#6b4cff}
+  :root{
+    --bg:#f7f8ff;--ink:#1b2030;--muted:#677088;--panel:#fff;--line:#e5e8f2;--accent:#6b4cff;
+    --accent2:#8f7bff;
+  }
   html,body{height:100%}
   body{margin:0;background:linear-gradient(180deg,#fbfcff,#f2f4fb);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif}
-  header{position:sticky;top:0;background:rgba(255,255,255,.8);backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line);z-index:10}
-  header .in{max-width:960px;margin:auto;padding:14px 16px}
-  h1{margin:0;font-size:clamp(18px,3vw,22px)}
-  .lead{color:var(--muted);margin:6px 0 4px}
+
+body{ padding-top:56px; } /* 固定バーの高さぶん余白を足す */
+
+  /* sticky progress（noh/rail準拠） */
+/* sticky progress (上部固定版) */
+.sticky{
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  margin:0; padding:10px 14px;
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(6px) saturate(1.05);
+  border-bottom:1px solid #e9edf7;
+  display:flex; align-items:center; gap:10px
+}
+.progress{height:8px; background:#edf2fb; border-radius:999px; flex:1; overflow:hidden}
+.progress>span{display:block; height:100%; width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .25s ease}
+  .progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
+  .progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+  .btn{appearance:none;border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;font-weight:700}
+
+  header .in{max-width:960px;margin:auto;padding:12px 16px}
+  h1{margin:0 0 4px;font-size:clamp(18px,3.6vw,24px)}
+  .lead{color:var(--muted);margin:4px 0 0}
   .note{color:var(--muted);font-size:.92em;margin:0}
-  main{max-width:960px;margin:0 auto;padding:20px 16px 120px}
+  main{max-width:960px;margin:0 auto;padding:14px 16px 120px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 26px rgba(0,0,0,.06);padding:16px;margin:14px 0}
+
   .qs{list-style:none;margin:0;padding:0;display:grid;gap:12px}
   .q{border:1px dashed #e9ecf5;border-radius:12px;padding:12px}
   .q .t{margin:0 0 8px}
   .scale{display:flex;gap:8px;flex-wrap:wrap}
+  .scale input{position:absolute;opacity:0}
   .scale label{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;cursor:pointer}
-  .scale input{appearance:none;position:absolute;opacity:0}
   .scale input:checked+span{outline:2px solid var(--accent);outline-offset:1px}
+
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-  .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f5f6fb);padding:10px 14px;border-radius:12px;cursor:pointer}
-  .btn.primary{background:linear-gradient(90deg,#6b4cff,#8f7bff);color:#fff;border-color:transparent}
   .result{margin-top:18px}
-  .result figure{margin:10px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f7f8ff}
-  .result img{display:block;width:100%;height:auto}
-  .r-ttl{font-weight:700}
   .muted{color:var(--muted)}
   #r-text{white-space:pre-line}
-  /* ↓ 診断一覧へ戻る（固定フッター） */
-  .backbar{
-    position:fixed;left:0;right:0;bottom:0;
-    background:rgba(255,255,255,.9);backdrop-filter:saturate(1.1) blur(8px);
-    border-top:1px solid var(--line);padding:10px 16px;z-index:20
-  }
+
+  /* 正方形ヒーロー */
+  .hero{display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f7f8ff}
+  .hero figure{margin:0;width:min(560px,100%);aspect-ratio:1/1;border-bottom:1px solid var(--line)}
+  .hero img{width:100%;height:100%;object-fit:cover;display:block}
+  .hero figcaption{padding:12px}
+
+  /* 因子バー */
+  .factors{display:grid;gap:12px;max-width:720px;margin-inline:auto}
+  .meter{display:grid;gap:6px}
+  .meter .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .meter .name{font-weight:700}
+  .mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
+  .mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .pct{font-variant-numeric:tabular-nums;color:#4e4e6a}
+
+  /* 診断一覧へ戻る（固定フッター） */
+  .backbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.1) blur(8px);
+    border-top:1px solid var(--line);padding:10px 16px;z-index:30}
   .backbar .in{max-width:960px;margin:0 auto;display:flex;justify-content:flex-end}
   .to-index{font-weight:600;text-decoration:none}
 </style>
 </head>
-<body>
+<body data-id="kizuna-rope">
+  <!-- 📊 sticky progress -->
+  <div class="sticky" aria-live="polite">
+    <span aria-hidden="true">📊</span>
+    <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
+    <button class="btn primary" id="btn-calc-top">判定する</button>
+  </div>
+
 <header><div class="in">
-  <h1>関係の切れやすさ診断（四騎士/ファビング/拒絶/愛着/TAS20・DERS簡易）</h1>
+  <h1>関係の切れやすさ診断</h1>
   <p class="lead">対象：最近よく関わる「特定の相手」を一人思い浮かべてお答えください。（恋人／友人どちらでもOK）</p>
   <p class="note">※ この診断は参考情報です。断定やラベリングは行いません。</p>
 </div></header>
-<section class="card" id="legal-note" style="margin:14px 0">
-  <h2 style="margin:6px 0;font-size:1rem">ご利用にあたって</h2>
-  <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#677088">
-    <li><strong>非提携・非公式：</strong>本コンテンツは「四騎士」「ファビング」「愛着」「TAS-20」「DERS」等の研究知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自再構成</strong>です。各種公式質問票・項目・採点方法は使用しておらず、権利者による承認・提携・推奨を意味しません。</li>
-    <li><strong>医療・カウンセリングの代替ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的な診断/治療/助言を目的としません。つらさや不調が続く場合は、医療機関や専門家へご相談ください。</li>
-    <li><strong>法的助言ではありません：</strong>安全確保や距離の取り方などの記述は一般的情報であり、法的助言ではありません。緊急時は地域の緊急通報窓口へ。</li>
-    <li><strong>プライバシー：</strong>回答は端末内でのみ処理し、サーバー送信は行いません。直近プレイの<span style="white-space:nowrap">メタ情報（タイトル・URL）</span>のみ端末のローカルストレージに保存します（設定から削除可）。</li>
-    <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用に関連して生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
-  </ul>
-</section>
 
 <main>
   <!-- 質問カード -->
-  <section class="card">
+  <section class="card" id="qcard">
     <h2 style="margin:0 0 10px">質問（20問・5段階）</h2>
     <ul id="qs" class="qs">
+      <!-- 1〜20（※ data-rev="1" は保護的項目：集計時は反転） -->
       <li class="q"><p class="t">1) 話している最中に、どちらかがついスマホや画面を見てしまう。</p><div class="scale" data-i="1">
         <label><input type="radio" name="q1" value="1"><span>ほとんどない</span></label>
         <label><input type="radio" name="q1" value="2"><span>たまにある</span></label>
@@ -234,11 +265,33 @@
       <button id="btn-clear" class="btn">未回答をリセット</button>
     </div>
 
+    <section class="card" id="legal-note" style="margin:14px 0">
+      <h2 style="margin:6px 0;font-size:1rem">ご利用にあたって</h2>
+      <ul style="margin:6px 0 0 1.2em;line-height:1.8;color:#677088">
+        <li><strong>非提携・非公式：</strong>本コンテンツは「四騎士」「ファビング」「愛着」「TAS-20」「DERS」等の研究知見に<span style="white-space:nowrap">ヒントを得た</span><strong>独自再構成</strong>です。各種公式質問票・項目・採点方法は使用しておらず、権利者による承認・提携・推奨を意味しません。</li>
+        <li><strong>医療・カウンセリングの代替ではありません：</strong>娯楽＋自己理解のためのセルフチェックであり、医療的・心理的な診断/治療/助言を目的としません。つらさや不調が続く場合は、医療機関や専門家へご相談ください。</li>
+        <li><strong>法的助言ではありません：</strong>安全確保や距離の取り方などの記述は一般的情報であり、法的助言ではありません。緊急時は地域の緊急通報窓口へ。</li>
+        <li><strong>プライバシー：</strong>回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。</li>
+        <li><strong>免責：</strong>法令で認められる範囲で、本コンテンツの利用に関連して生じたいかなる損失・損害についても、当サイトは責任を負いません。</li>
+      </ul>
+    </section>
+
     <div id="result" class="result card" style="display:none">
-      <p class="r-ttl" id="r-ttl">—</p>
-      <figure><img id="r-img" alt="結果画像"></figure>
-      <div id="r-text" class="muted">—</div>
-      <p class="muted" id="r-foot">平均スコア：<span id="r-avg">—</span>（1=鎖に近い／5=糸に近い）</p>
+      <div class="hero" role="region" aria-label="イメージ">
+        <figure>
+          <img id="r-img" alt="結果画像" loading="lazy" width="600" height="600">
+        </figure>
+        <figcaption>
+          <p class="r-ttl" id="r-ttl" style="font-weight:800;margin:6px 0">—</p>
+          <p class="muted" id="r-avgline" style="margin:6px 0 0">—</p>
+<p id="r-summary" style="margin:6px 0 0; font-weight:600">—</p>
+        </figcaption>
+      </div>
+
+      <!-- 因子バー（％） -->
+      <div class="factors" id="factorBox" aria-label="因子スコア（％）" style="margin:10px 0 6px"></div>
+
+      <div id="r-text" class="muted" style="margin-top:8px">—</div>
     </div>
   </section>
 </main>
@@ -252,177 +305,39 @@
 
 <script>
 (function(){
-  // 画像マップ（01=鎖 … 05=糸）
+  // 画像（tNN.webp）
   const IMG = {
-    1: '/shindan/assets/results/kizuna-rope/01.png', // 鎖
-    2: '/shindan/assets/results/kizuna-rope/02.png', // 登山用ロープ
-    3: '/shindan/assets/results/kizuna-rope/03.png', // 麻縄
-    4: '/shindan/assets/results/kizuna-rope/04.png', // 荷造り紐
-    5: '/shindan/assets/results/kizuna-rope/05.png'  // 糸
+    1: '/shindan/assets/results/kizuna-rope/t01.webp', // 鎖（とても強い）
+    2: '/shindan/assets/results/kizuna-rope/t02.webp', // 登山用ロープ
+    3: '/shindan/assets/results/kizuna-rope/t03.webp', // 麻縄
+    4: '/shindan/assets/results/kizuna-rope/t04.webp', // 荷造り紐
+    5: '/shindan/assets/results/kizuna-rope/t05.webp'  // 糸（切れかけ）
   };
 
-  // 短めの結果タイトル
   const R_TITLE = {
-    1: '鎖：とても強い・安定',
-    2: '登山用ロープ：強いが負荷大',
-    3: '麻縄：ほつれ始め',
-    4: '荷造り紐：切れやすい',
-    5: '糸：切れかけ'
+    1:'鎖：とても強い・安定',
+    2:'登山用ロープ：強いが負荷大',
+    3:'麻縄：ほつれ始め',
+    4:'荷造り紐：切れやすい',
+    5:'糸：切れかけ'
   };
 
-  // 結果テキスト（長文）
   const R_TEXT = {
-    1: `どんな状態？
-信頼が厚く、少しのトラブルでは壊れない段階。ただし油断するとサビのように不満がたまりやすいので、こまめなケアが必要。
+  1: '【今日の一手】①感謝2：不満1で伝える ②寝る前に「今日よかった」を1つ交換 ③中断→再開の合図を紙で共有',
+  2: '【今日の一手】①役割を1つ入れ替える ②スマホは画面伏せ ③ねぎらいを名前付きで言う（先回りありがとう等）',
+  3: '【今日の一手】①非難語を出来事語に置換 ②追う↔逃げるは“再開時刻”で調整 ③不満は相談箱に入れて週1で話す',
+  4: '【今日の一手】①荒れたら即停止→翌日再開 ②合図カードを決める ③食卓・寝室にスマホを持ち込まない',
+  5: '【今日の一手】①安全最優先で距離を確保 ②連絡は短文・記録に残す ③期限を区切って見直す（3週間）'
+};
 
-■ 今日できること
-・感謝：不満＝2：1  
-不満を言う前に、感謝や労いを2つ伝える。  
-例：「今日送ってくれて助かった。昨日もありがとう。…で、1つ直したいことがあるんだ」  
-・1分点検（寝る前）  
-「今日よかったこと」を1つずつ口に出す。  
-・スマホのルール  
-一緒の時間はスマホを箱に入れる。急ぎの連絡だけ「ひと声」でOK。  
-
-■ 1週間の整え方
-・ゆる会議（30分／週1）  
-「よかった」「直したい」「来週ためす」を各1つ話す。  
-・合図を決めておく  
-中断＝手でT、再開＝「○:○○に続き」。紙に書いておく。  
-・不公平チェック  
-家事・連絡・移動などを0〜10点で採点。差が大きい1つを入れ替える。  
-
-■ 伝え方の型
-事実 → 気持ち → お願い  
-「昨日の約束が延びた（事実）。少し残念だった（気持ち）。次は所要時間を先に決めよう（お願い）。」  
-
-■ NG行動
-・「どうせいつも〜」などの決めつけ  
-・既読確認の詰問  
-
-■ 例
-恋人版：「デートの段取りありがとう。駅で待っててくれて助かった。…次は会計を割り勘にしてもいい？」  
-友人版：「予約ありがとう。道案内も助かった。…次から集合時間を5分早めにしない？」`,
-    2: `どんな状態？
-関係は強いけれど、疲れや摩耗がたまってきている。放置すると切れてしまう危険がある。
-
-■ 今日できること
-・担当を交換する  
-交通／予約／連絡／会計／片付けなどを見える化し、1つ役目を入れ替える。  
-・停戦タイマー（15分）  
-口調が荒くなったら中断→再開時間を決めて必ず戻る。  
-・スマホは下向きルール  
-会話中は画面を伏せる。長文は後で読む。  
-
-■ 1週間の整え方
-・不公平を数値化  
-負担を0〜10点で採点。差が大きい項目を1つ改善。  
-・ねぎらい貯金  
-相手の行動に名前をつけて感謝（例：「先回りありがとうメダル」）。  
-
-■ 伝え方の型
-「○○のとき（事実）、私は△△に感じた（気持ち）。次は□□できる？」  
-例：「連絡が夜中になると置いていかれた気がする。次は『遅れます・到着時間・代案』をひと言で伝えてほしい。」  
-
-■ NG行動
-・改善を一度に3つ以上求める  
-・「友だちのAは〜」など他人比較  
-
-■ 例
-恋人版：予約役と会計役を交換  
-友人版：幹事役を交代、連絡テンプレ（集合場所・時間・費用）を固定`,
-    3: `どんな状態？
-小さな傷みがたまって、ほつれが出てきた段階。今なら手直しが間に合う。
-
-■ 今日できること
-・悪い癖を止める（4つ）
-1. 非難（人格攻撃）→ 出来事だけを言う  
-2. 皮肉・見下し → 素直な言葉に置き換える  
-3. 言い訳合戦 → まず「なるほど」と受け取る  
-4. 黙り込み → 中断と再開時刻をはっきり伝える  
-・追う↔逃げるの調整  
-追う側は質問を1つに絞る／逃げる側は再開時刻を自分から言う。  
-・相談箱に入れる  
-不満はメモにため、話すのは週1だけにする。  
-
-■ 1週間の整え方
-・遅刻・変更の型を固定  
-「到着予定＋理由＋代案」の3点セット。  
-・週30分のふり返り  
-「よかった3／直したい1／来週ためす1」を1行で記録。  
-
-■ 伝え方の型
-短く一度だけ、お願いは1つ  
-例：「今夜の電話はあと10分で切りたい。明日は21時からにできる？」  
-
-■ NG行動
-・既読スルーに連投する  
-・その場で結論を迫る  
-
-■ 例
-恋人版：「連絡が重なると息切れ。再開は22時でいい？」  
-友人版：「急な誘いは難しい。前日までに言ってくれたら行けることが増えるよ。」`,
-    4: `どんな状態？
-小さな力でも切れやすい段階。まずは安全を確保し、応急処置と動線の見直しが必要。
-
-■ 今日できること
-・危ない言い合いは即停止  
-大声や威圧、物に当たる兆しが出たらその場で終了。再開は翌日昼など安全な時間に。  
-・合図カードを紙で用意  
-😮‍💨＝中断／🔁＝再開／🕊＝今回はやめる（議題から外す）。  
-・スマホの扱いを固定  
-食卓・寝室へは持ち込まない。通知はタイマーで一時停止。  
-
-■ 1週間の整え方
-・不満の下にある“望み”を言葉にする  
-例：「連絡が遅い」→ 本当は「安心したい」。  
-・第三者の視点を入れる  
-事実だけを書き出して見てもらい、話す順番（1→2→3）を整える。  
-
-■ 伝え方（謝る型）
-「驚かせたね（相手への影響）。ごめん（謝罪）。次は○○をやめて□□にする（具体）。」  
-
-■ NG行動
-・昔の失敗を持ち出す  
-・探りや詮索、位置の詮索で不安を増やす  
-
-■ 例
-恋人版：「声が強くなった。ごめん。次は水を飲んでから続きにする。」  
-友人版：「メッセを連投した。悪かった。次から要件ひとつで送る。」`,
-    5: `どんな状態？
-関係は限界に近い。まずは身の安全と心の回復を最優先に考える段階。続けるか離れるかの分岐点。
-
-■ 今日できること
-・安全を確保する  
-暴言・威圧・物に当たる・無断で位置を把握されるなどがあれば、すぐに距離を取る。会うなら必ず人目のある場所で。  
-・連絡は最小限にする  
-急ぎ以外は短い文章に。感情が高ぶる話題は翌日に持ち越し、やり取りは記録に残す。  
-・期限を決める  
-「3週間だけ取り組む → 改善がなければ関係を見直す」と具体的に区切る。  
-
-■ 1週間の整え方
-・最小限のルールを紙に書く  
-例：面会時間／話題の範囲／第三者同席の可否。破られたらその日のやり取りは終了。  
-・離れる準備も並行して進める  
-共同の物・費用・合鍵・SNSの扱いをリスト化して整理する。  
-
-■ 続ける場合（柱は3つ）
-1. 中断と再開の時刻を必ず守る  
-2. 感謝2：不満1で伝える  
-3. スマホの線引きを守る  
-
-■ 離れる場合（静かな手順で）
-・やり取りは日程と手順だけに限定。  
-・荷物・鍵・費用のことから順に整理し、感情的な押し合いを減らす。  
-
-■ NG行動
-・一人で密室や深夜に会う  
-・「話せばわかる」と長時間押し合いを続ける  
-
-■ 例
-恋人版：「今月末までに“中断→再開”“スマホの線引き”を試す。守れない日が続いたら距離を取る準備に入ります。」  
-友人版：「深夜の呼び出しは受けない。会うなら昼、1時間、店内だけにする。」`,
-  };
+// ▼ ランク別の“総評”を追加（短く一言＋状況説明）
+const R_SUMMARY = {
+  1: 'ベースは安定。良い習慣をキープしつつ、油断の積み重ねにだけ注意。',
+  2: '概ね良好。忙しさで雑になる瞬間を整えると、もっとラクになる。',
+  3: 'ゆるい凸凹あり。噛み合う日と噛み合わない日が混在、合図作りが鍵。',
+  4: '摩擦がたまりやすい局面。ルール・言い方・休憩の仕組み化で脱出を。',
+  5: 'まず安全と距離。感情が落ち着く場を確保し、短文・記録ベースで再構築を。'
+};
 
   // しきい値（avg<=1.8→1, <=2.6→2, <=3.4→3, <=4.2→4, それ以外→5）
   const TH = [1.8, 2.6, 3.4, 4.2];
@@ -430,31 +345,39 @@
   const $ = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
 
-  // ▼ 一覧に戻る用：直近プレイ記録を保存
-  function rememberLast() {
-    try{
-      const payload = {
-        id: 'kizuna-rope',
-        title: document.title,
-        href: location.href
-      };
-      localStorage.setItem('specimens:last', JSON.stringify(payload));
-    }catch(e){}
+  // 進捗
+  const TOTAL = 20;
+  const prog = $('#prog');
+  function answeredCount(){ return document.querySelectorAll('input[type="radio"]:checked').length; }
+  function updateProgress(){
+    const a = answeredCount();
+    if(prog) prog.style.width = Math.round(100*a/TOTAL) + '%';
+    const shell = document.querySelector('.progress');
+    if(shell){
+      shell.setAttribute('role','progressbar');
+      shell.setAttribute('aria-valuemin','0');
+      shell.setAttribute('aria-valuemax', String(TOTAL));
+      shell.setAttribute('aria-valuenow', String(a));
+      shell.setAttribute('aria-label', '回答進捗：'+a+' / '+TOTAL);
+    }
   }
+  document.addEventListener('change', e=>{
+    if(e.target && e.target.matches('input[type="radio"]')) updateProgress();
+  }, true);
+  document.addEventListener('DOMContentLoaded', updateProgress);
 
+  // 平均（リスク側）計算：data-rev="1"は反転
   function calcAvg(){
     const vals=[];
     for(let i=1;i<=20;i++){
       const v=document.querySelector(`input[name="q${i}"]:checked`)?.value;
       if(!v) continue;
-      // 逆採点（data-rev="1" の設問は 1<->5, 2<->4 を反転）
-      { const val=parseInt(v,10);
-        const rev=document.querySelector('.scale[data-i="'+i+'"]')?.dataset.rev==='1';
-        vals.push(rev ? (6 - val) : val);
-      }
+      const raw=parseInt(v,10);
+      const rev=document.querySelector('.scale[data-i="'+i+'"]')?.dataset.rev==='1';
+      vals.push(rev ? (6 - raw) : raw); // 1..5
     }
     if(!vals.length) return null;
-    return vals.reduce((a,b)=>a+b,0)/vals.length;
+    return vals.reduce((a,b)=>a+b,0)/vals.length; // 1..5
   }
   function avgToRank(avg){
     if(avg<=TH[0]) return 1;
@@ -464,7 +387,50 @@
     return 5;
   }
 
-  $('#btn-calc').addEventListener('click', ()=>{
+  // 因子（保護的％：高いほど良い）※raw=1..5 → (raw-1)/4×100、revまたはextraRevは反転
+  const EXTRA_REV = new Set([10]); // 10はネガ項目だが保護%では反転して扱う
+  const FACTORS = [
+    {name:'対話の整流', desc:'落ち着いて話し切る・合図・決め方', items:[6,7,11,18]},
+    {name:'感謝と日常', desc:'感謝の言語化・短い近況・ねぎらい', items:[8,9,17]},
+    {name:'公平と安心', desc:'負担の公平・安全な言い合い', items:[10,19]},
+    {name:'ルールと見通し', desc:'連絡や誘いの線引き・先の予定', items:[13,20]}
+  ];
+  function calcProtectivePct(){
+    const out=[];
+    for(const f of FACTORS){
+      let got=0, n=f.items.length;
+      for(const i of f.items){
+        const chk = document.querySelector(`input[name="q${i}"]:checked`);
+        const raw = chk ? parseInt(chk.value,10) : 0; // 1..5 or 0
+        let v = raw ? (raw-1) : 0; // 0..4
+        const rev = document.querySelector('.scale[data-i="'+i+'"]')?.dataset.rev==='1';
+        if(rev || EXTRA_REV.has(i)) v = 4 - v; // 反転
+        got += v;
+      }
+      const pct = Math.round((got / (n*4)) * 100);
+      out.push({name:f.name, desc:f.desc, pct});
+    }
+    return out;
+  }
+  function renderFactors(){
+    const list = calcProtectivePct();
+    const box = $('#factorBox');
+    if(!box) return;
+    box.innerHTML = list.map((e,idx)=>{
+      const id='mbar-'+idx;
+      return `
+        <div class="meter" role="group" aria-label="${e.name}">
+          <div class="row">
+            <div class="name">${e.name}</div>
+            <div class="pct" id="${id}-pct">${e.pct}%</div>
+          </div>
+          <div class="mbar" aria-hidden="true"><span id="${id}" style="width:${e.pct}%"></span></div>
+          ${e.desc ? `<div class="muted" style="font-size:.92em">${e.desc}</div>` : ``}
+        </div>`;
+    }).join('');
+  }
+
+  function onCalc(){
     const avg=calcAvg();
     if(avg===null){ alert('未回答があります。できる範囲で選んでください。'); return; }
     const rank=avgToRank(avg);
@@ -472,19 +438,114 @@
     $('#r-ttl').textContent = R_TITLE[rank];
     $('#r-img').src = IMG[rank];
     $('#r-img').alt = R_TITLE[rank];
+    $('#r-avgline').textContent = `平均スコア：${avg.toFixed(2)}（1=鎖に近い／5=糸に近い）`;
+$('#r-summary').textContent = R_SUMMARY[rank] || '';
     $('#r-text').textContent = R_TEXT[rank];
-    $('#r-avg').textContent = avg.toFixed(2);
-    rememberLast(); // 判定時にも保存
+    renderFactors();
+
+    try{
+      document.dispatchEvent(new Event('result:ready')); // みんなのこころLv用
+      localStorage.setItem('specimens:last', JSON.stringify({ id:'kizuna-rope', title:document.title, href: location.pathname }));
+    }catch(e){}
     window.scrollTo({top: $('#result').offsetTop-10, behavior:'smooth'});
-  });
+  }
 
+  // ボタン紐付け（上・下どちらからでも）
+  $('#btn-calc').addEventListener('click', onCalc);
+  $('#btn-calc-top').addEventListener('click', onCalc);
+
+  // クリア（保存は共通スニペット側でも削除されます）
   $('#btn-clear').addEventListener('click', ()=>{
-    $$('input[type="radio"]:checked').forEach(el=>{ el.checked=false; });
+    $$('input[type="radio"]:checked').forEach(el=>el.checked=false);
     $('#result').style.display='none';
+    updateProgress();
   });
 
-  // 「診断一覧へ戻る」クリック時にも保存
-  $('#to-index').addEventListener('click', rememberLast);
+  // 一覧戻る保存
+  $('#to-index').addEventListener('click', ()=>{
+    try{ localStorage.setItem('specimens:last', JSON.stringify({ id:'kizuna-rope', title:document.title, href: location.pathname })); }catch(e){}
+  });
+})();
+</script>
+
+<!-- ▼ 共通スニペット（回答の保存/復元＋みんなのこころLv） -->
+<script>
+/* ============================================================
+   診断ページ共通スニペット
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ※ <body data-id="kizuna-rope"> 必須
+============================================================ */
+(function(){
+  'use strict';
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total', GLOBAL_LAST='specimens:open:global:last';
+  var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'unknown';
+  var ANSWER_KEY='specimens:answers:'+MY_ID;
+
+  var COUNTAPI_NS='haisuikounozarigani_shindan', COUNTAPI_KEY='specimens_open_total';
+  function countapiHit(){
+    var url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+    else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+  }
+
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(ANSWER_KEY)||'{}'); }catch(_){ return {}; } }
+  function saveState(obj){ try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){ } }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st=loadState(), nm=el.name;
+    if(el.type==='radio'){
+      var chosen=(el.form||document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm]={t:'r',v: chosen? chosen.value : null};
+    }else{ st[nm]={t:'t',v: el.value}; }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st=loadState(), names=Object.keys(st); if(!names.length) return false;
+    names.forEach(function(nm){
+      var info=st[nm]; if(!info) return;
+      if(info.t==='r'){
+        var r=document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked=true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else{
+        var t=document.querySelector('[name="'+nm+'"]');
+        if(t){ t.value=info.v==null? '' : String(info.v); }
+      }
+    });
+    try{ document.dispatchEvent(new Event('change',{bubbles:true})); }catch(_){}
+    return true;
+  }
+  document.addEventListener('change',function(e){
+    var el=e.target; if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  },true);
+
+  (function restoreWhenReady(){
+    var tries=0; function tick(){
+      tries++;
+      var hasAny=document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){ restoreOnce(); return; }
+      if(tries<12) setTimeout(tick,300);
+    }
+    if(document.readyState!=='loading') tick(); else document.addEventListener('DOMContentLoaded',tick);
+  })();
+
+  // 結果が出たら一度だけ加算
+  var marked=false;
+  function markOnce(){
+    if(marked) return; marked=true;
+    try{
+      localStorage.setItem(TOTAL_KEY, String((+localStorage.getItem(TOTAL_KEY)||0)+1));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      countapiHit();
+      try{ localStorage.setItem(GLOBAL_LAST, String((+localStorage.getItem(GLOBAL_LAST)||0)+1)); }catch(_){}
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', markOnce);
+  setTimeout(markOnce, 2000);
 })();
 </script>
 </body>
