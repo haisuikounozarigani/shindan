@@ -11,8 +11,7 @@
 <meta property="og:description" content="5軸×15問で“時間フォーカス指数”を可視化。各軸の傾向バーも表示。">
 <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/time-money.html">
 
-<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/chart.js">
-<script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 <style>
 .small ul{ margin:8px 0 0 18px; padding:0; }
@@ -36,13 +35,16 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 .qrow .ttl{font-weight:700}
 .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
 .scale label{display:block;border:1px solid #e6ebff;border-radius:10px;background:#fff;cursor:pointer;padding:10px;text-align:center}
-.scale input{position:absolute;opacity:0}
-.scale input:checked+span{outline:2px solid var(--accent);border-radius:8px;outline-offset:2px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent;outline-offset:2px}
 .scale .hint{grid-column:1/-1;display:flex;justify-content:space-between;color:#7a8694;font-size:.88em;margin-top:6px}
 .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
-.stickybar{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e8eefc;display:flex;align-items:center;gap:10px}
+/* 📊 sticky progress（rail/NOH準拠） */
+.sticky{position:sticky;top:0;z-index:30;margin:-6px -14px 10px;padding:8px 14px;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(6px) saturate(1.05);
+  border-bottom:1px solid #e8eefc;display:flex;align-items:center;gap:10px}
 .progress{height:8px;background:#e8eefc;border-radius:999px;flex:1;overflow:hidden}
-.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#bfe3ff,#a48bff)}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#bfe3ff,#a48bff);transition:width .25s ease}
 .btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
 .small{color:var(--muted);font-size:.92em}
@@ -50,6 +52,24 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 
 /* 結果 */
 .res-head{display:grid;grid-template-columns:1fr;gap:10px;align-items:center}
+
+/* ── NOH風：正方形ヒーロー ───────────────── */
+.hero-square{display:grid;place-items:center;border:1px solid #dfe7ff;border-radius:16px;background:#fff;overflow:hidden}
+.hero-square figure{margin:0;width:min(560px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid #eef2ff;background:#f7f9ff}
+.hero-square img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-square figcaption{padding:14px 12px;width:100%;line-height:1.7}
+.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid #e6ebff;font-size:.85em;margin-left:6px}
+
+/* ── NOH風：因子バー（％） ───────────────── */
+.factors{display:grid;gap:12px}
+.meter{display:grid;gap:8px}
+.meter .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meter .row .name{font-weight:700}
+.mbar{height:10px;border:1px solid #e5e9f3;border-radius:999px;overflow:hidden;background:#f7f8fc}
+.mbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#bfe3ff,#a48bff)}
+.pct{font-variant-numeric:tabular-nums;color:#4e4e6a}
+#factorBox{max-width:720px;margin-inline:auto}
 .ttl-big{font-weight:800;font-size:clamp(20px,3.4vw,28px)}
 .pills{display:flex;gap:8px;flex-wrap:wrap;color:#54607a}
 .pill{padding:6px 10px;border:1px solid #e6ebff;border-radius:999px;background:#fff}
@@ -68,7 +88,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 }
 </style>
 </head>
-<body>
+<body data-id="time-money">
 <main class="wrap" id="app">
   <header class="header">
     <div class="logo">⏳</div>
@@ -78,7 +98,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
     </div>
   </header>
 
-  <div class="stickybar card" aria-live="polite">
+  <div class="sticky card" aria-live="polite">
     <span>🧭</span>
     <div class="progress" aria-label="回答進捗"><span id="prog"></span></div>
     <span class="small" id="progText">0/15</span>
@@ -88,13 +108,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
   <section class="card section">
     <h2>説明</h2>
     <p>直感で選んでください（全問必須・1〜5）。</p>
-    <div class="warn">
-      <strong>ご利用にあたって</strong><br>
-      ・このコンテンツは<strong>エンタメ目的</strong>の自己理解ツールです。医療・診断・治療・助言には使えません。<br>
-      ・<strong>最終判断はご自身で</strong>お願いします。重要な意思決定の唯一の根拠にはしないでください。<br>
-      ・<strong>プライバシー</strong>：回答は端末内で処理し、サーバー送信は想定していません。<br>
-      ・<strong>データ</strong>：入力は保存しません（ブラウザのローカル保存をクリアすれば消えます）。
-    </div>
+    
   </section>
 
   <section id="formArea" class="card section" aria-label="設問エリア">
@@ -104,6 +118,13 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
       <button class="btn" id="btn-clear">回答をクリア</button>
       <button class="btn primary" id="btn-score2">結果を見る</button>
       <a class="btn" href="/shindan/" id="btnBack" role="button">診断一覧に戻る</a>
+    </div>
+    <div class="warn">
+      <strong>ご利用にあたって</strong><br>
+      このコンテンツは<strong>エンタメ目的</strong>の自己理解ツールです。医療・診断・治療・助言には使えません。<br>
+      <strong>最終判断はご自身で</strong>お願いします。重要な意思決定の唯一の根拠にはしないでください。<br>
+      <strong>プライバシー</strong>：回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。
+      
     </div>
   </section>
 
@@ -122,12 +143,31 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
         </div>
       </div>
 
-      <div class="section" id="oneLine"></div>
+      
 
-      <div class="section grid2 chartbox">
-        <div class="small">各軸（0–100）</div>
-        <canvas id="chartAxes" width="640" height="140" aria-label="各軸スコア" role="img"></canvas>
+      <!-- 正方形ヒーロー（tNN.webp） -->
+<div class="section">
+  <div class="hero-square" role="region" aria-label="結果イメージ">
+    <figure>
+      <img id="heroImg" src="" alt="結果イメージ" loading="lazy" width="600" height="600">
+    </figure>
+    <figcaption>
+      <div class="title-row">
+        <div id="heroTitle" style="font-weight:800">—</div>
+        <span class="badge-size" id="rangeBadge">—</span>
       </div>
+      <div class="small" id="heroTag" style="margin-top:4px">—</div>
+    </figcaption>
+  </div>
+  <!-- 結果コメント（画像の下に表示） -->
+<div class="section" id="oneLine"></div>
+</div>
+
+<!-- 因子バー（NOH風） -->
+<div class="section">
+  <div class="small">各軸（0–100）</div>
+  <div class="factors" id="factorBox" aria-label="各軸スコア（％）"></div>
+</div>
 
       <div class="footer">
         <p class="small">※TFIは5軸（TA/DG/EX/MV/FT）の平均です。逆転項目は自動で反転採点しています。</p>
@@ -142,9 +182,10 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const STORAGE_KEY = "time-money:v1:answers";
+  const STORAGE_KEY = "specimens:answers:time-money";
 
   // 軸ラベル
+  const IMG_BASE = "/shindan/assets/results/time-money/"; // t01.webp..t05.webp
   const AXIS = {
     TA:{name:"余白感"},
     DG:{name:"手放し力"},
@@ -182,41 +223,21 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
 const TYPES = [
-  {name:"時間最優先", range:[80,100], one: `
-    <div class="small">自由時間と心の余裕を第一に置く傾向。外注や予約で「待つ」を減らし、体験に投資しやすい。</div>
-    <ul class="small">
-      <li>月1で「フルオフ日」を確保してリズムを守る</li>
-      <li>移動は最短ルート＋事前予約を基本にする</li>
-      <li>サブスク/外注の棚卸しを四半期に1回</li>
-    </ul>`},
-  {name:"やや時間", range:[65,79], one: `
-    <div class="small">基本は時間重視。必要な場面では節約も織り交ぜ、外注・自動化をバランス良く使う。</div>
-    <ul class="small">
-      <li>待ち時間30分超は「代替案」を常に用意</li>
-      <li>配送料の上限を自分ルールで決めておく</li>
-      <li>家事は「面倒トップ3」だけ外注候補に</li>
-    </ul>`},
-  {name:"バランス", range:[45,64], one: `
-    <div class="small">状況で切り替える現実派。忙しい時期は時間を買い、余裕がある時期は自分で手を動かす。</div>
-    <ul class="small">
-      <li>繁忙期/閑散期の「切替基準」を事前に決める</li>
-      <li>並ぶ店はモバイルオーダーの有無で選ぶ</li>
-      <li>モノ購入は「使用時間」で割って判断</li>
-    </ul>`},
-  {name:"やや金銭", range:[30,44], one: `
-    <div class="small">費用対効果に敏感。配送料や手数料は控えめで、モノ購買の優先がやや強い。</div>
-    <ul class="small">
-      <li>時給換算を一度だけ試して上限額を決める</li>
-      <li>無料の道でも渋滞30分超なら別ルート検討</li>
-      <li>クーポン待ちは「締切」を決めて長引かせない</li>
-    </ul>`},
-  {name:"金銭最優先", range:[0,29], one: `
-    <div class="small">貯蓄・収入を最重視。長時間の自己対応や並びも許容しやすい一方、ゆとりは後回しになりがち。</div>
-    <ul class="small">
-      <li>週1回の「余白30分」を先にカレンダー確保</li>
-      <li>時短家電は中古/レンタルで試してから判断</li>
-      <li>待ち時間は「学び/運動」に置き換えて消耗を減らす</li>
-    </ul>`}
+  {name:"時間最優先", range:[80,100], file:"t05.webp", alt:"時間最優先", tag:"自由時間と心の余裕を第一に置くタイプ。",
+   one:`<div class="small">自由時間と心の余裕を第一に置く傾向。外注や予約で「待つ」を減らし、体験に投資しやすい。</div>
+   <ul class="small"><li>月1で「フルオフ日」を確保</li><li>移動は最短＋事前予約</li><li>サブスクの棚卸しを四半期に1回</li></ul>`},
+  {name:"やや時間", range:[65,79], file:"t04.webp", alt:"やや時間", tag:"基本は時間重視、節約も織り交ぜる。",
+   one:`<div class="small">基本は時間重視。必要な場面では節約も織り交ぜ、外注・自動化をバランス良く使う。</div>
+   <ul class="small"><li>待ち30分超は代替案を用意</li><li>配送料の上限を自分ルール化</li><li>家事は面倒トップ3だけ外注候補</li></ul>`},
+  {name:"バランス", range:[45,64], file:"t03.webp", alt:"バランス", tag:"状況で切り替える現実派。",
+   one:`<div class="small">忙しい時期は時間を買い、余裕がある時期は自分で手を動かす。</div>
+   <ul class="small"><li>繁忙/閑散の切替基準を事前定義</li><li>並ぶ店はモバイルオーダー有無で選ぶ</li><li>モノは「使用時間」で判断</li></ul>`},
+  {name:"やや金銭", range:[30,44], file:"t02.webp", alt:"やや金銭", tag:"費用対効果に敏感。",
+   one:`<div class="small">配送料や手数料は控えめで、モノ購買の優先がやや強い。</div>
+   <ul class="small"><li>時給換算で上限額を一度設定</li><li>無料ルートでも渋滞30分超は再検討</li><li>クーポン待ちは締切を決める</li></ul>`},
+  {name:"金銭最優先", range:[0,29], file:"t01.webp", alt:"金銭最優先", tag:"貯蓄・収入を最重視。",
+   one:`<div class="small">長時間の自己対応や並びも許容しやすい一方、ゆとりは後回しになりがち。</div>
+   <ul class="small"><li>週1の「余白30分」を先に確保</li><li>時短家電は中古/レンタルで試す</li><li>待ち時間は学び/運動に置換</li></ul>`}
 ];
 
   // DOM
@@ -238,16 +259,9 @@ const TYPES = [
       html += `
         <div class="qrow">
           <div class="ttl">Q${n}. ${q.t}${q.r?' <span class="small" title="逆転項目（自動で採点反転）">（R）</span>':''}</div>
-          <div class="scale" role="radiogroup" aria-label="Q${n}">
-            ${[1,2,3,4,5].map(v=>`
-              <label>
-                <input type="radio" name="Q${n}" value="${v}">
-                <span>${v}</span>
-              </label>`).join("")}
-            <div class="hint" aria-hidden="true">
-              <span>1 まったく当てはまらない</span>
-              <span>5 とても当てはまる</span>
-            </div>
+       ${["全くない","まれにある","ときどきある","よくある","いつもある"].map((txt,idx)=>`
+  <input id="q${n}-${idx+1}" type="radio" name="Q${n}" value="${idx+1}">
+  <label for="q${n}-${idx+1}">${txt}</label>`).join("")}
           </div>
         </div>`;
     });
@@ -259,15 +273,28 @@ const TYPES = [
   }
 
   function updateProgress(){
-    const total = Q.length;
-    let answered = 0;
-    for(let i=1;i<=total;i++){
-      if(document.querySelector(`input[name="Q${i}"]:checked`)) answered++;
-    }
-    const pct = Math.round(100*answered/total);
-    prog.style.width = pct + "%";
-    progText.textContent = `${answered}/${total}`;
+  const total = Q.length;
+  let answered = 0;
+  for(let i=1;i<=total;i++){
+    if(document.querySelector(`input[name="Q${i}"]:checked`)) answered++;
   }
+  const pct = Math.round(100*answered/total);
+  const bar = document.getElementById('prog');
+  const txt = document.getElementById('progText');
+  if(bar) bar.style.width = pct + "%";
+  if(txt) txt.textContent = `${answered}/${total}`;
+
+  // ARIA（ここでだけ設定する）
+  const shell = document.querySelector('.progress');
+  if(shell){
+    shell.setAttribute('role','progressbar');
+    shell.setAttribute('aria-valuemin','0');
+    shell.setAttribute('aria-valuemax', String(total));
+    shell.setAttribute('aria-valuenow', String(answered));
+    shell.setAttribute('aria-label', `回答進捗：${answered} / ${total}`);
+  }
+}
+
 
   function readAnswers(){
     const missing = [];
@@ -301,24 +328,29 @@ const TYPES = [
     return TYPES.find(t=> tfi>=t.range[0] && tfi<=t.range[1]) || TYPES[2];
   }
 
-  // Chart
-  let chartAxes=null;
-  function drawAxes(axisPct){
-    const labels = ["余白感(TA)","手放し力(DG)","体験志向(EX)","移動効率(MV)","未来時間投資(FT)"];
-    const data = [axisPct.TA,axisPct.DG,axisPct.EX,axisPct.MV,axisPct.FT];
-    const ctx = document.getElementById('chartAxes').getContext('2d');
-    if(chartAxes) chartAxes.destroy();
-    chartAxes = new Chart(ctx, {
-      type:'bar',
-      data:{ labels, datasets:[{label:'各軸スコア(0–100)', data:data}] },
-      options:{
-        indexAxis:'y',
-        responsive:true,
-        plugins:{ legend:{display:false} },
-        scales:{ x:{ beginAtZero:true, max:100, ticks:{ stepSize:20 } } }
-      }
-    });
-  }
+ 
+  // NOH風：因子バーを描画
+function renderFactors(axisPct){
+  const rows = [
+    ["余白感 (TA)","TA"],
+    ["手放し力 (DG)","DG"],
+    ["体験志向 (EX)","EX"],
+    ["移動効率 (MV)","MV"],
+    ["未来時間投資 (FT)","FT"],
+  ];
+  const html = rows.map(([label,key])=>{
+    const v = Math.max(0, Math.min(100, axisPct[key]||0));
+    return `
+      <div class="meter">
+        <div class="row"><div class="name">${label}</div><div class="pct">${v}%</div></div>
+        <div class="mbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v}">
+          <span style="width:${v}%"></span>
+        </div>
+      </div>`;
+  }).join("");
+  const box = document.getElementById("factorBox");
+  if(box) box.innerHTML = html;
+}
 
   function compute(){
     const {missing, values} = readAnswers();
@@ -334,20 +366,36 @@ const TYPES = [
       localStorage.setItem('specimens:last', JSON.stringify({ id: 'time-money', title: '時の天秤診断', href: location.pathname }));
     }catch{}
 
-    const r = score(values);
-    const typ = pickType(r.TFI);
+   const r = score(values);
+const typ = pickType(r.TFI);
 
-    // 表示
-    resEmpty.classList.add("hidden");
-    resArea.classList.remove("hidden");
-    titleText.textContent = `あなたの天秤は「${typ.name}」寄り`;
-    pillTFI.textContent = `TFI: ${r.TFI}`;
-    pillType.textContent = `タイプ: ${typ.name}`;
-    oneLine.innerHTML = typ.one;
+// 表示
+resEmpty.classList.add("hidden");
+resArea.classList.remove("hidden");
+titleText.textContent = `あなたの天秤は「${typ.name}」寄り`;
+pillTFI.textContent = `TFI: ${r.TFI}`;
+pillType.textContent = `タイプ: ${typ.name}`;
+oneLine.innerHTML = typ.one;
 
-    drawAxes(r.axisPct);
-    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
-  }
+// 画像とキャプション
+const hero = document.getElementById('heroImg');
+if(hero){
+  hero.src = IMG_BASE + typ.file;
+  hero.alt = typ.alt || '結果イメージ';
+}
+const ht = document.getElementById('heroTitle'); if(ht) ht.textContent = typ.name;
+const rb = document.getElementById('rangeBadge'); if(rb) rb.textContent = `TFI ${r.TFI}`;
+const tag= document.getElementById('heroTag'); if(tag) tag.textContent = typ.tag;
+
+// 因子バー（NOH風）
+renderFactors(r.axisPct);
+
+try{
+  document.dispatchEvent(new Event('result:ready'));
+  localStorage.setItem('specimens:last', JSON.stringify({ id: 'time-money', title: '時の天秤診断', href: location.pathname }));
+}catch(_){}
+document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+}
 
   function restore(){
     try{
@@ -384,6 +432,182 @@ const TYPES = [
     }catch(_e){}
   }
 });
+</script>
+<script>
+/* ============================================================
+   診断ページ共通スニペット（コピペ用）
+   1) 回答の自動保存・自動復元（入力中も逐次保存）
+   2) 結果表示タイミングで「済」＋ あなたのLv +1
+   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
+   ------------------------------------------------------------
+   ★置き場所：各診断HTMLの </body> の直前
+   ★ページID：<body data-id="xxxxx"> を推奨（未設定でも動作）
+============================================================ */
+(function(){
+  'use strict';
+
+  // ===== 固定キー：index.html と合わせてあります =====
+  var DONE_KEY   = 'specimens:open:byid';   // 診断ごとの「済」マップ
+  var TOTAL_KEY  = 'specimens:open:total';  // あなたのこころLv（合計）
+  var GLOBAL_LAST= 'specimens:open:global:last'; // みんなのLvの前回表示キャッシュ
+
+  // ===== このページのID =====
+  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
+
+  // ===== 回答保存ストレージ（この診断だけの箱） =====
+  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
+
+  // ===== みんなのLv（CountAPI設定） =====
+  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
+  var COUNTAPI_KEY = 'specimens_open_total';
+  function countapiHit(){
+    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+    if(navigator.sendBeacon){
+      try{ navigator.sendBeacon(url); }catch(_){}
+    }else{
+      fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){});
+    }
+  }
+
+  // ---------- 回答の保存/復元 ----------
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; }
+  }
+  function saveState(obj){
+    try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){}
+  }
+  function saveField(el){
+    if(!el || !el.name) return;
+    var st = loadState();
+    var nm = el.name;
+
+    if(el.type === 'radio'){
+      // ラジオは選ばれた value を保存
+      var chosen = (el.form || document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
+      st[nm] = chosen ? {t:'r', v: chosen.value} : {t:'r', v:null};
+    }else if(el.type === 'checkbox'){
+      // チェックボックスは同名グループのチェック済み value 配列
+      var all = (el.form || document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+      var vals = [];
+      all.forEach(function(c){ if(c.checked) vals.push(c.value || 'on'); });
+      st[nm] = {t:'c', v: vals};
+    }else if(el.tagName==='SELECT'){
+      if(el.multiple){
+        var arr=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) arr.push(o.value); });
+        st[nm] = {t:'m', v: arr};
+      }else{
+        st[nm] = {t:'s', v: el.value};
+      }
+    }else{
+      // text / number / textarea など
+      st[nm] = {t:'t', v: el.value};
+    }
+    saveState(st);
+  }
+  function restoreOnce(){
+    var st = loadState();
+    var names = Object.keys(st);
+    if(!names.length) return false;
+
+    names.forEach(function(nm){
+      var info = st[nm]; if(!info) return;
+
+      if(info.t==='r'){
+        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
+        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
+      }else if(info.t==='c'){
+        var all = document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]');
+        var set = new Set(info.v||[]);
+        all.forEach(function(c){ c.checked = set.has(c.value || 'on'); });
+      }else if(info.t==='m'){
+        var sel = document.querySelector('select[name="'+nm+'"]');
+        if(sel){
+          var setm = new Set(info.v||[]);
+          [].slice.call(sel.options).forEach(function(o){ o.selected = setm.has(o.value); });
+        }
+      }else if(info.t==='s'){
+        var s = document.querySelector('select[name="'+nm+'"]');
+        if(s){ s.value = info.v; }
+      }else{
+        var t = document.querySelector('[name="'+nm+'"]');
+        if(t){ t.value = info.v==null? '' : String(info.v); }
+      }
+    });
+    // プログレス等を更新したいUIのため、軽く change を投げる
+    try{
+      document.dispatchEvent(new Event('change', {bubbles:true}));
+    }catch(_){}
+    return true;
+  }
+  // 入力監視（保存）
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[name], select[name], textarea[name]')) saveField(el);
+  }, true);
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if(!(el instanceof HTMLElement)) return;
+    if(el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el);
+  }, true);
+
+  // 復元は「入力が描画されてから」一度だけ試みる（動的生成にも対応）
+  (function restoreWhenReady(){
+    var TRY_MAX=12, tries=0;
+    function tick(){
+      tries++;
+      // 入力が一つでも見つかってから復元
+      var hasAny = document.querySelector('input[name], select[name], textarea[name]');
+      if(hasAny){
+        restoreOnce(); return;
+      }
+      if(tries<TRY_MAX){ setTimeout(tick, 300); }
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive'){ tick(); }
+    else document.addEventListener('DOMContentLoaded', tick);
+  })();
+
+  // リセット系ボタンがあれば保存も削除（#btnReset / data-role="reset" を想定）
+  function clearAnswers(){
+    try{ localStorage.removeItem(ANSWER_KEY); }catch(_){}
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.id==='btnReset' || t.matches('[data-role="reset"]')) clearAnswers();
+  }, true);
+
+  // ---------- 結果確定で「済」＋Lv加算 ----------
+  var marked = false;
+  function markOnce(){
+    if(marked) return; marked = true;
+    try{
+      // 1) あなたのこころLv 合計 +1
+      var total = (+localStorage.getItem(TOTAL_KEY) || 0) + 1;
+      localStorage.setItem(TOTAL_KEY, String(total));
+
+      // 2) この診断の「済」を +1（他タブ即時反映用にタイムスタンプ混ぜる）
+      var map={}; try{ map = JSON.parse(localStorage.getItem(DONE_KEY) || '{}'); }catch(_){}
+      map[MY_ID] = (map[MY_ID] || 0) + 1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({}, map, {_ts: Date.now()})));
+
+      // 3) みんなのこころLv +1（表示は index 側で取得／ここでは送るだけ）
+      countapiHit();
+      // ついでに前回キャッシュも+1（index初期表示の見栄え改善）
+      try{
+        var last = (+localStorage.getItem(GLOBAL_LAST) || 0) + 1;
+        localStorage.setItem(GLOBAL_LAST, String(last));
+      }catch(_){}
+    }catch(_){}
+  }
+
+  // A) 結果が描画された合図（推奨：各ページの集計完了時に dispatch してください）
+  //   例）document.dispatchEvent(new Event('result:ready'));
+  document.addEventListener('result:ready', markOnce);
+
+  // B) フォールバック：結果UIが見えてから2秒後に一度だけ実行（戻る無しでも確実に「済」）
+  setTimeout(markOnce, 2000);
+})();
 </script>
 </body>
 </html>
