@@ -107,7 +107,7 @@ h1{margin:0;font-size:clamp(22px,4.5vw,34px)}
 
   <section class="card section">
     <h2>説明</h2>
-    <p>直感で選んでください（全問必須・1〜5）。</p>
+    <p>直感で選んでください（全問必須・0〜4）。</p>
     
   </section>
 
@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {axis:"FT", t:"時短家電や自動化ツールにお金をかける価値があると思う。", r:false},
     {axis:"FT", t:"将来の時短のために今の時間を割くのは後回しにしがちだ。", r:true}
   ];
+const LABELS = ["0 まったくない","1 あまりない","2 どちらとも","3 だいたい","4 とてもある"];
 
 const TYPES = [
   {name:"時間最優先", range:[80,100], file:"t05.webp", alt:"時間最優先", tag:"自由時間と心の余裕を第一に置くタイプ。",
@@ -259,9 +260,13 @@ const TYPES = [
       html += `
         <div class="qrow">
           <div class="ttl">Q${n}. ${q.t}${q.r?' <span class="small" title="逆転項目（自動で採点反転）">（R）</span>':''}</div>
-       ${["全くない","まれにある","ときどきある","よくある","いつもある"].map((txt,idx)=>`
-  <input id="q${n}-${idx+1}" type="radio" name="Q${n}" value="${idx+1}">
-  <label for="q${n}-${idx+1}">${txt}</label>`).join("")}
+       <div class="scale" role="radiogroup" aria-label="${q.t}">
+  ${[0,1,2,3,4].map(v=>`
+    <div style="position:relative">
+      <input id="q${n}-${v}" type="radio" name="Q${n}" value="${v}">
+      <label for="q${n}-${v}">${LABELS[v]}</label>
+    </div>`).join("")}
+</div>
           </div>
         </div>`;
     });
@@ -308,15 +313,15 @@ const TYPES = [
   }
 
   function toPct(arr){
-    const m = arr.reduce((a,b)=>a+b,0)/arr.length; // 1..5
-    return Math.round(((m - 1) / 4) * 100); // 0..100
-  }
+    const m = arr.reduce((a,b)=>a+b,0)/arr.length; // 0..4
+    return Math.round((m / 4) * 100); // 0..100
+}
 
   function score(values){
     const byAxis = {TA:[],DG:[],EX:[],MV:[],FT:[]};
     values.forEach((v,i)=>{
       const def = Q[i];
-      const vv = def.r ? (6 - v) : v;
+      const vv = def.r ? (4 - v) : v;
       byAxis[def.axis].push(vv);
     });
     const axisPct = Object.fromEntries(Object.keys(byAxis).map(k=>[k, toPct(byAxis[k])]));
@@ -402,9 +407,11 @@ document.getElementById("result").scrollIntoView({behavior:"smooth", block:"star
       const raw = localStorage.getItem(STORAGE_KEY);
       if(!raw) return;
       const saved = JSON.parse(raw);
-      (saved||[]).forEach((v,i)=>{
-        const el = document.querySelector(`input[name="Q${i+1}"][value="${v}"]`); if(el) el.checked = true;
-      });
+    (saved||[]).forEach((v,i)=>{
+  const vv = (v>4) ? (v-1) : v; // 旧1..5 → 新0..4へ移行
+  const el = document.querySelector(`input[name="Q${i+1}"][value="${vv}"]`);
+  if(el){ el.checked = true; }
+});
       updateProgress();
     }catch{}
   }
