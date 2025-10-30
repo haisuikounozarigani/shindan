@@ -307,11 +307,11 @@ body{ padding-top:56px; } /* 固定バーの高さぶん余白を足す */
 (function(){
   // 画像（tNN.webp）
   const IMG = {
-    1: '/shindan/assets/results/kizuna-rope/t01.webp', // 鎖（とても強い）
-    2: '/shindan/assets/results/kizuna-rope/t02.webp', // 登山用ロープ
-    3: '/shindan/assets/results/kizuna-rope/t03.webp', // 麻縄
-    4: '/shindan/assets/results/kizuna-rope/t04.webp', // 荷造り紐
-    5: '/shindan/assets/results/kizuna-rope/t05.webp'  // 糸（切れかけ）
+    1: '/shindan/assets/results/kizuna-rope/t01.webp',
+    2: '/shindan/assets/results/kizuna-rope/t02.webp',
+    3: '/shindan/assets/results/kizuna-rope/t03.webp',
+    4: '/shindan/assets/results/kizuna-rope/t04.webp',
+    5: '/shindan/assets/results/kizuna-rope/t05.webp'
   };
 
   const R_TITLE = {
@@ -323,31 +323,30 @@ body{ padding-top:56px; } /* 固定バーの高さぶん余白を足す */
   };
 
   const R_TEXT = {
-  1: '【今日の一手】①感謝2：不満1で伝える ②寝る前に「今日よかった」を1つ交換 ③中断→再開の合図を紙で共有',
-  2: '【今日の一手】①役割を1つ入れ替える ②スマホは画面伏せ ③ねぎらいを名前付きで言う（先回りありがとう等）',
-  3: '【今日の一手】①非難語を出来事語に置換 ②追う↔逃げるは“再開時刻”で調整 ③不満は相談箱に入れて週1で話す',
-  4: '【今日の一手】①荒れたら即停止→翌日再開 ②合図カードを決める ③食卓・寝室にスマホを持ち込まない',
-  5: '【今日の一手】①安全最優先で距離を確保 ②連絡は短文・記録に残す ③期限を区切って見直す（3週間）'
-};
+    1:'【今日の一手】①感謝2：不満1で伝える ②寝る前に「今日よかった」を1つ交換 ③中断→再開の合図を紙で共有',
+    2:'【今日の一手】①役割を1つ入れ替える ②スマホは画面伏せ ③ねぎらいを名前付きで言う（先回りありがとう等）',
+    3:'【今日の一手】①非難語を出来事語に置換 ②追う↔逃げるは“再開時刻”で調整 ③不満は相談箱に入れて週1で話す',
+    4:'【今日の一手】①荒れたら即停止→翌日再開 ②合図カードを決める ③食卓・寝室にスマホを持ち込まない',
+    5:'【今日の一手】①安全最優先で距離を確保 ②連絡は短文・記録に残す ③期限を区切って見直す（3週間）'
+  };
 
-// ▼ ランク別の“総評”を追加（短く一言＋状況説明）
-const R_SUMMARY = {
-  1: 'ベースは安定。良い習慣をキープしつつ、油断の積み重ねにだけ注意。',
-  2: '概ね良好。忙しさで雑になる瞬間を整えると、もっとラクになる。',
-  3: 'ゆるい凸凹あり。噛み合う日と噛み合わない日が混在、合図作りが鍵。',
-  4: '摩擦がたまりやすい局面。ルール・言い方・休憩の仕組み化で脱出を。',
-  5: 'まず安全と距離。感情が落ち着く場を確保し、短文・記録ベースで再構築を。'
-};
+  const R_SUMMARY = {
+    1:'ベースは安定。良い習慣をキープしつつ、油断の積み重ねにだけ注意。',
+    2:'概ね良好。忙しさで雑になる瞬間を整えると、もっとラクになる。',
+    3:'ゆるい凸凹あり。噛み合う日と噛み合わない日が混在、合図作りが鍵。',
+    4:'摩擦がたまりやすい局面。ルール・言い方・休憩の仕組み化で脱出を。',
+    5:'まず安全と距離。感情が落ち着く場を確保し、短文・記録ベースで再構築を。'
+  };
 
   // しきい値（avg<=1.8→1, <=2.6→2, <=3.4→3, <=4.2→4, それ以外→5）
   const TH = [1.8, 2.6, 3.4, 4.2];
 
-  const $ = (q,root=document)=>root.querySelector(q);
+  const $  = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
 
-  // 進捗
+  /* ---- 進捗バー ---- */
   const TOTAL = 20;
-  const prog = $('#prog');
+  const prog  = $('#prog');
   function answeredCount(){ return document.querySelectorAll('input[type="radio"]:checked').length; }
   function updateProgress(){
     const a = answeredCount();
@@ -366,15 +365,15 @@ const R_SUMMARY = {
   }, true);
   document.addEventListener('DOMContentLoaded', updateProgress);
 
-  // 平均（リスク側）計算：data-rev="1"は反転
+  /* ---- 平均（リスク側） ---- */
   function calcAvg(){
     const vals=[];
-    for(let i=1;i<=20;i++){
-      const v=document.querySelector(`input[name="q${i}"]:checked`)?.value;
-      if(!v) continue;
-      const raw=parseInt(v,10);
-      const rev=document.querySelector('.scale[data-i="'+i+'"]')?.dataset.rev==='1';
-      vals.push(rev ? (6 - raw) : raw); // 1..5
+    for(let i=1;i<=TOTAL;i++){
+      const chk = document.querySelector(`input[name="q${i}"]:checked`);
+      if(!chk) continue;
+      const raw = parseInt(chk.value,10);         // 1..5
+      const rev = document.querySelector(`.scale[data-i="${i}"]`)?.dataset.rev==='1';
+      vals.push(rev ? (6 - raw) : raw);
     }
     if(!vals.length) return null;
     return vals.reduce((a,b)=>a+b,0)/vals.length; // 1..5
@@ -387,7 +386,7 @@ const R_SUMMARY = {
     return 5;
   }
 
-  // 因子（保護的％：高いほど良い）※raw=1..5 → (raw-1)/4×100、revまたはextraRevは反転
+  /* ---- 因子（保護％：高いほど良い） ---- */
   const EXTRA_REV = new Set([10]); // 10はネガ項目だが保護%では反転して扱う
   const FACTORS = [
     {name:'対話の整流', desc:'落ち着いて話し切る・合図・決め方', items:[6,7,11,18]},
@@ -402,9 +401,9 @@ const R_SUMMARY = {
       for(const i of f.items){
         const chk = document.querySelector(`input[name="q${i}"]:checked`);
         const raw = chk ? parseInt(chk.value,10) : 0; // 1..5 or 0
-        let v = raw ? (raw-1) : 0; // 0..4
-        const rev = document.querySelector('.scale[data-i="'+i+'"]')?.dataset.rev==='1';
-        if(rev || EXTRA_REV.has(i)) v = 4 - v; // 反転
+        let v = raw ? (raw-1) : 0;                     // 0..4
+        const rev = document.querySelector(`.scale[data-i="${i}"]`)?.dataset.rev==='1';
+        if(rev || EXTRA_REV.has(i)) v = 4 - v;         // 反転
         got += v;
       }
       const pct = Math.round((got / (n*4)) * 100);
@@ -414,22 +413,36 @@ const R_SUMMARY = {
   }
   function renderFactors(){
     const list = calcProtectivePct();
-    const box = $('#factorBox');
+    const box = document.getElementById('factorBox');
     if(!box) return;
-    box.innerHTML = list.map((e,idx)=>{
-      const id='mbar-'+idx;
-      return `
-        <div class="meter" role="group" aria-label="${e.name}">
-          <div class="row">
-            <div class="name">${e.name}</div>
-            <div class="pct" id="${id}-pct">${e.pct}%</div>
-          </div>
-          <div class="mbar" aria-hidden="true"><span id="${id}" style="width:${e.pct}%"></span></div>
-          ${e.desc ? `<div class="muted" style="font-size:.92em">${e.desc}</div>` : ``}
-        </div>`;
-    }).join('');
+    box.innerHTML = list.map((e, i) => `
+      <div class="meter" role="group" aria-label="${e.name}">
+        <div class="row">
+          <div class="name">${e.name}</div>
+          <div class="pct" id="mbar-${i}-pct">${e.pct}%</div>
+        </div>
+        <div class="mbar" aria-hidden="true"><span id="mbar-${i}" style="width:0"></span></div>
+        ${e.desc ? `<div class="muted" style="font-size:.92em">${e.desc}</div>` : ``}
+      </div>
+    `).join('');
+    requestAnimationFrame(() => {
+      list.forEach((e,i) => {
+        const bar = document.getElementById('mbar-'+i);
+        if(bar) bar.style.width = e.pct + '%';
+        const pct = document.getElementById(`mbar-${i}-pct`);
+        if(pct) pct.textContent = e.pct + '%';
+      });
+    });
   }
+  // 回答を変えたら、結果表示中は因子バーを再計算
+  document.addEventListener('change', (e) => {
+    if(e.target && e.target.matches('input[type="radio"]')){
+      const r = document.getElementById('result');
+      if(r && r.style.display !== 'none') renderFactors();
+    }
+  }, true);
 
+  /* ---- 結果描画 ---- */
   function onCalc(){
     const avg=calcAvg();
     if(avg===null){ alert('未回答があります。できる範囲で選んでください。'); return; }
@@ -439,31 +452,31 @@ const R_SUMMARY = {
     $('#r-img').src = IMG[rank];
     $('#r-img').alt = R_TITLE[rank];
     $('#r-avgline').textContent = `平均スコア：${avg.toFixed(2)}（1=鎖に近い／5=糸に近い）`;
-$('#r-summary').textContent = R_SUMMARY[rank] || '';
+    $('#r-summary').textContent = R_SUMMARY[rank] || '';
     $('#r-text').textContent = R_TEXT[rank];
     renderFactors();
 
     try{
       document.dispatchEvent(new Event('result:ready')); // みんなのこころLv用
       localStorage.setItem('specimens:last', JSON.stringify({ id:'kizuna-rope', title:document.title, href: location.pathname }));
-    }catch(e){}
+    }catch(_){}
     window.scrollTo({top: $('#result').offsetTop-10, behavior:'smooth'});
   }
 
-  // ボタン紐付け（上・下どちらからでも）
-  $('#btn-calc').addEventListener('click', onCalc);
-  $('#btn-calc-top').addEventListener('click', onCalc);
+  // ボタン
+  $('#btn-calc')    ?.addEventListener('click', onCalc);
+  $('#btn-calc-top')?.addEventListener('click', onCalc);
 
-  // クリア（保存は共通スニペット側でも削除されます）
-  $('#btn-clear').addEventListener('click', ()=>{
+  // クリア
+  $('#btn-clear')?.addEventListener('click', ()=>{
     $$('input[type="radio"]:checked').forEach(el=>el.checked=false);
     $('#result').style.display='none';
     updateProgress();
   });
 
   // 一覧戻る保存
-  $('#to-index').addEventListener('click', ()=>{
-    try{ localStorage.setItem('specimens:last', JSON.stringify({ id:'kizuna-rope', title:document.title, href: location.pathname })); }catch(e){}
+  $('#to-index')?.addEventListener('click', ()=>{
+    try{ localStorage.setItem('specimens:last', JSON.stringify({ id:'kizuna-rope', title:document.title, href: location.pathname })); }catch(_){}
   });
 })();
 </script>
