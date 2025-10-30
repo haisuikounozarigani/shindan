@@ -48,9 +48,15 @@ h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
 
 fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
 legend{font-weight:700}
-.scale{display:grid;grid-template-columns:repeat(5,minmax(58px,1fr));gap:8px;margin-top:8px}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:8px}
 .scale input{position:absolute;opacity:0;pointer-events:none}
-.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
+.scale label{
+  display:grid;place-items:center;
+  border:1px solid #e5e9f3;border-radius:10px;
+  padding:10px 6px; cursor:pointer; user-select:none; background:#fff;
+  text-align:center; white-space:normal; word-break:keep-all; overflow-wrap:anywhere;
+  line-height:1.25; font-size:clamp(12px,3.4vw,14px); min-height:42px
+}
 .scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
 mark.need{animation:need 1.6s ease}
 @keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
@@ -86,6 +92,18 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   .hero-vert .capline{font-size:clamp(16px,5.2vw,20px)}
   .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.8}
 }
+/* 極小幅のときの詰め調整 */
+@media (max-width: 380px){
+  .scale{gap:6px}
+  .scale label{padding:8px 4px; min-height:40px}
+}
+/* かなり狭い端末では3列×2段で表示（はみ出し防止） */
+@media (max-width: 340px){
+  .scale{grid-template-columns:repeat(3,1fr)}
+}
+
+/* 伝票（legend）も折り返しやすく */
+fieldset.q legend{line-height:1.4; word-break:keep-all; overflow-wrap:anywhere}
 </style>
 </head>
 <body data-id="jp-myth">
@@ -183,7 +201,7 @@ a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1
   <section class="footer card">
     <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
     <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用のセルフチェック</b>です。医療・診断・治療・カウンセリング等の目的ではありません。結果の解釈・利用はご自身の判断と責任にてお願いいたします。<br>
-回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。<br>
+データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。<br>
 宗教的・倫理的価値判断を意図せず、因子名・比喩は<b>演出表現</b>です。</p>
   </section>
 </main>
