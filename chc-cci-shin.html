@@ -34,6 +34,8 @@
   .cell.sel{outline:3px solid #8e5a5a55}
   .center{display:flex;justify-content:center;align-items:center;min-height:64px;font-size:42px;letter-spacing:.04em}
   canvas{max-width:100%;height:auto}
+/* 正方形ヒーロー */
+.hero.sq img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;border:1px solid #eee}
 
   /* ボタン行（スマホで押しやすく） */
   .controls-row,.btnrow-inline{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -79,7 +81,7 @@
   }
 </style>
 </head>
-<body>
+<body data-id="chc-cci-shin">
 <div class="wrap">
   <header>
     <h1>認知プロファイル・チャレンジ（CHC簡易版）<span class="pill">練習なし・一発計測</span></h1>
@@ -261,12 +263,30 @@
   <!-- RESULT -->
   <section class="card" id="result" style="display:none">
     <h2>結果</h2>
+<figure class="hero sq"><img id="heroImg" src="/shindan/assets/results/chc-cci-shin/t01.webp" alt="結果イメージ" loading="lazy"></figure>
+<p id="heroCopy" class="small muted" style="margin:8px 0 0"></p>
     <div class="row"><canvas id="radar" width="760" height="540"></canvas></div>
     <div class="row" style="display:flex;gap:8px;flex-wrap:wrap">
       <button id="btnSaveCard" class="bigbtn">画像保存</button>
     </div>
     <div class="row" id="result_body">未実施</div>
     <div id="result_comment" class="row small muted"></div>
+    
+    <section class="card" aria-labelledby="note-title">
+  <h2 id="note-title">利用にあたって</h2>
+  <ul class="small muted" style="margin:8px 0 0 18px; line-height:1.7">
+    <li>本ページは<strong>自己理解・学習用の簡易版</strong>です。医療・診断・選抜の用途には使えません。</li>
+    <li>計測は短時間・少数試行のため<b>近似的</b>です。体調や環境でぶれます。なるべく静かな環境で。</li>
+    <li>結果データはサーバへ送信しません。<b>ブラウザのローカル保存（localStorage）</b>を使います。</li>
+    <li>「みんなのこころLv」は CountAPI を利用して<b>合計回数のみ匿名集計</b>します（個人識別なし）。</li>
+    <li>途中で疲れ・不安を感じたら<b>いつでも中断</b>してください（再開可）。</li>
+    <li>学術名や基準値は簡略化しています。研究・教育で引用する場合は原典へ当たってください。</li>
+  </ul>
+  <div class="small muted" style="margin-top:10px">
+    <a href="https://haisuikounozarigani.github.io/shindan/" class="btn linklike">診断一覧に戻る</a>
+  </div>
+</section>
+    
     <div class="muted small">
       <hr>
       <p><b>標準化の近似</b>（簡易版・参考域）<br>
@@ -319,10 +339,43 @@ const FEEDBACK_DELAY_MS = 2500;
 el('delayInfo').textContent = (FEEDBACK_DELAY_MS/1000).toFixed(1)+'秒';
 const tabs = document.querySelectorAll('.tab');
 const secs = { gwm: $('#gwm'), gf: $('#gf'), gc: $('#gc'), gv: $('#gv'), gs: $('#gs'), result: $('#result') };
+
+// ▼ こころカウント（あなたの合計／済マップ＋みんなのLv）
+const COUNTAPI_NS='haisuikounozarigani_shindan';
+const COUNTAPI_KEY='specimens_open_total';
+const DONE_KEY   ='specimens:open:byid';
+const TOTAL_KEY  ='specimens:open:total';
+const MY_ID = document.body.getAttribute('data-id') || 'chc-cci-shin';
+let __sentEveryone=false;
+
+function hitEveryone(){
+  const url='https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
+  if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+  else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(()=>{}); }
+}
+
+function bumpYoursOnce(){
+  try{
+    // あなたの合計
+    const t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+    localStorage.setItem(TOTAL_KEY,String(t));
+    // 済マップ（このIDを+1）＋storageイベント用タイムスタンプ
+    let map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+    map[MY_ID]=(map[MY_ID]||0)+1;
+    localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+  }catch(_){}
+}
+
 tabs.forEach(b=>b.addEventListener('click', ()=>{
   tabs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
   Object.values(secs).forEach(s=>s.style.display='none');
   secs[b.dataset.tab].style.display='';
+  // 結果タブを初めて開いた瞬間に みんなの＋あなたの を一度だけ加算
+  if(b.dataset.tab==='result' && !__sentEveryone){
+    __sentEveryone=true;
+    bumpYoursOnce();
+    hitEveryone();
+  }
 }));
 
 // ===== Scores =====
@@ -831,6 +884,16 @@ function updateOverall(){
   const pct = Math.round(normCdf(zbar)*100);
   const top = Math.max(0, 100 - pct);
   overallEl.innerHTML = `CCI：<b>${pct}％位</b>（上位 <b>${top}%</b>） <span class="pill">${classifyPct(pct)}</span>`;
+
+// ▼ 結果画像（tNN.webp 正方形）：％位→5段階（t01〜t05）
+const band = (pct>=80)?5 : (pct>=60)?4 : (pct>=40)?3 : (pct>=20)?2 : 1;
+const hero = document.getElementById('heroImg');
+if(hero){
+  hero.src = `/shindan/assets/results/chc-cci-shin/t0${band}.webp`;
+  hero.alt = `結果イメージ（t0${band})`;
+}
+// 短いひとこと（ヒーロー下・軽め）
+
 
   const parts = [];
   const pcts = {};
