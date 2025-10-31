@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="思考クセモン診断">
 <meta property="og:description" content="25問・10因子％で主役クセモンを判定。画像webp対応＆結果画像保存OK。">
-<meta property="og:image" content="/shindan/assets/results/kusemon/t01.webp">
+<meta property="og:image" content="/shindan/assets/results/kusemon/t00.webp">
 <style>
 :root{
   --accent:#6b9bff; --accent2:#8bd3ff;
@@ -89,6 +89,22 @@ mark.need{animation:need 1.6s ease}
   .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
   .note h4{font-size:15px}
 }
+/* t00.webp カバー（正方形ヒーロー） */
+.hero-cover{
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+  margin:10px 0 14px;
+}
+.hero-cover img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1/1; /* 正方形を維持 */
+  object-fit:cover;
+  background:#f7f9ff;
+}
 </style>
 </head>
 <body data-id="kusemon">
@@ -100,6 +116,13 @@ mark.need{animation:need 1.6s ease}
       <p class="sub">25問（0〜4の5件法）。10因子の％と「主役クセモン」を表示します。※エンタメ自己理解／因果は断定しません。</p>
     </div>
   </header>
+
+<!-- カバー：t00.webp（正方形ヒーロー） -->
+<figure class="hero-cover" aria-label="カバー画像">
+  <img src="/shindan/assets/results/kusemon/t00.webp"
+       alt="思考クセモン診断 カバー"
+       loading="lazy" width="1080" height="1080">
+</figure>
 
   <div class="sticky" aria-live="polite">
     <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="25">
@@ -210,7 +233,7 @@ mark.need{animation:need 1.6s ease}
   <section class="footer card">
     <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
     <p class="small">このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
-    回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。</p>
+    データは端末内で処理され、個人を特定する情報の送信・収集は行いません（ご利用環境によりアクセス解析等が動作する場合があります）。</p>
   </section>
 </main>
 
@@ -1008,5 +1031,4 @@ function dataURLtoBlob(dataUrl){
 })();
 </script>
 </body>
-
 </html>
