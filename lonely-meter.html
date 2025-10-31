@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>孤独感メーター診断｜ひとり感の質と強さをやさしく見える化</title>
+<meta name="description" content="15問×5件法で、いま感じる“ひとり感”の質と強さをやさしく見える化。絆・社交リズム・自己開示・境界疲労・置換つながりの5因子を可視化し、短い一歩アドバイスつき。">
+<meta name="theme-color" content="#0F2A1F">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="孤独感メーター診断">
+<meta property="og:description" content="15問×5件法で“ひとり感”の質と強さをやさしく見える化。5因子バーとミニ一歩つき。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/lonely-meter.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/lonely-meter/t00.webp">
+<style>
+  :root{
+    --bg:#f4f7f6;
+    --paper:#fff;
+    --ink:#10231c;
+    --muted:#5a7268;
+    --line:#e3ebe7;
+    --accent:#8c6bff;      /* hotテーマ既定 */
+    --accent2:#E6C689;     /* 差し光 */
+    --forest:#0F2A1F;      /* 指定色 */
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+  a{color:var(--forest);text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  header.hd{position:relative;background:linear-gradient(160deg,#f1f6f3, #e8efe9);border-bottom:1px solid var(--line)}
+  header.hd .wrap{padding:20px 16px 10px}
+  .ttl{font-weight:800;font-size:1.35rem;letter-spacing:.02em}
+  .sub{color:var(--muted);font-size:.95rem}
+
+  /* 固定進捗バー（noh準拠） */
+  .progress-fixed{position:sticky;top:0;z-index:20;height:8px;background:var(--line)}
+  .progress-bar{height:100%;border-radius:6px;background:var(--accent);transition:width .2s ease}
+
+  figure.hero{margin:12px 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  figure.hero img{display:block;width:100%;height:auto}
+
+  .paper{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+  .qnum{font-weight:700;color:#2c3e36}
+  .qtext{margin:.4rem 0 1rem}
+  .opts{display:grid;grid-template-columns:1fr;gap:8px}
+  .btn{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:.12s}
+  .btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff8e8}
+  .btn:hover{transform:translateY(-1px)}
+  .opt-note{color:#7b8b84;font-size:.9rem}
+  .ctrls{display:flex;gap:8px;margin-top:12px}
+  .ctrls button{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f6faf8;cursor:pointer}
+  .ctrls button.primary{background:var(--forest);color:#fff;border-color:#0b1e17}
+  .hint{font-size:.9rem;color:#5c6d65}
+
+  .result{display:none}
+  .rank{display:inline-block;padding:.2em .6em;border-radius:999px;background:#efe8ff;color:#4b3a7f;font-weight:700;margin-left:.4em}
+  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  .result .imgbox{flex:1 1 280px;min-width:260px}
+  .result .imgbox img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+  .result .text{flex:2 1 360px;min-width:300px}
+  .bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .bar{background:#f0f4f2;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bar .h{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:.92rem}
+  .bar .b{height:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+  .meta{color:#6b7a72;font-size:.92rem}
+  .footer-note{font-size:.88rem;color:#6b7a72}
+  .back{display:inline-block;margin:10px 0 20px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f6faf8}
+
+  .mini-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:#1d2c26;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9rem;transition:.25s;z-index:40}
+  .mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* アクセシビリティ */
+  [role="progressbar"]{width:100%}
+</style>
+</head>
+
+<body data-id="lonely-meter">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">孤独感メーター診断 <span class="rank" aria-label="5段階ランク">Lv?</span></div>
+    <div class="sub">「いま感じる“ひとり感”の質と強さ」をやさしく見える化。さっと答えてミニ一歩へ。</div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed"><div class="progress-bar" style="width:0%"></div></div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/lonely-meter/t00.webp" alt="木漏れ日の森の入口と小径" loading="lazy">
+  </figure>
+
+  <!-- 質問カード -->
+  <section id="quiz" class="paper" aria-label="質問セクション">
+    <div class="qnum" id="qnum">Q1/15</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択">
+      <!-- 5件法（数字禁止→テキスト） -->
+      <!-- 生成時に埋め込み -->
+    </div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+      <button type="button" id="nextBtn" class="primary">次へ</button>
+    </div>
+    <div class="hint" id="hint">押した瞬間に小さなご褒美✨（保存されます）</div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <h3 id="resultTitle" style="margin:.2rem 0 0;"></h3>
+        <p id="resultLines" style="white-space:pre-line;margin:.4rem 0 1rem"></p>
+        <div class="meta" id="resultMeta"></div>
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+
+    <details style="margin-top:14px">
+      <summary>研究メモ（にごし）</summary>
+      <ul style="margin:.4rem 0 .2rem .9rem">
+        <li>短い交流（挨拶・1分通話）でも、気分や“つながり感”が少し上向く傾向があると言われます。</li>
+        <li>小さな共同作業（散歩・家事シェア等）は所属感と自己効力感を助けるとの報告があります。※個人差あり</li>
+      </ul>
+    </details>
+
+    <p class="footer-note" style="margin-top:12px">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+<button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite">記録したよ ✅</div>
+
+<script>
+/* ===== 固定進捗バー更新関数（規定） ===== */
+function updateProgress(p){
+  document.querySelector('.progress-bar').style.width = Math.max(0,Math.min(100,p)) + '%';
+}
+
+/* ===== データ定義 ===== */
+const SLUG = 'lonely-meter';
+const LS_ANS = `shindan:${SLUG}:answers`;
+const LS_IDX = `shindan:${SLUG}:index`;
+const LS_DONE = `shindan:${SLUG}:done`;
+
+const FACTORS = ['BOND','RHY','OPEN','BOUND','DIGI'];
+const FACTOR_LABEL = {
+  BOND:'絆の質',
+  RHY:'社交リズム',
+  OPEN:'自己開示',
+  BOUND:'境界疲労',
+  DIGI:'置換つながり'
+};
+const TYPE_NAME = {
+  BOND:'絆うすめ',
+  RHY:'リズム欠け',
+  OPEN:'胸の鍵',
+  BOUND:'境界つかれ',
+  DIGI:'画面まさり'
+};
+const TYPE_ANIMAL = {BOND:'🦌',RHY:'🐦',OPEN:'🐇',BOUND:'🦔',DIGI:'💡'}; // DIGI=ホタル→光絵文字
+
+// 15問・5件法（0–4）★は反転
+const QUESTIONS = [
+  {t:'いざという時に頼れる人が思い浮かばない。', key:'BOND', rev:false},
+  {t:'気持ちを分かってもらえていない感じが続く。', key:'BOND', rev:false},
+  {t:'安心できる相手と月1回はゆっくり話している。', key:'BOND', rev:true},
+  {t:'挨拶や雑談が少なく、日が空きがち。', key:'RHY', rev:false},
+  {t:'予定がない日は声を出さずに終わることが多い。', key:'RHY', rev:false},
+  {t:'週1回は短い交流（5〜10分）がある。', key:'RHY', rev:true},
+  {t:'近況や感情を少しでも話すのがむずかしい。', key:'OPEN', rev:false},
+  {t:'弱みを見せると距離を置かれそうでこわい。', key:'OPEN', rev:false},
+  {t:'“浅め”なら話してもいい相手がいる。', key:'OPEN', rev:true},
+  {t:'人づき合いで気をつかいすぎてぐったり。', key:'BOUND', rev:false},
+  {t:'断りたい時に言いにくくて抱え込みがち。', key:'BOUND', rev:false},
+  {t:'無理しない線を決めるのが少しずつ上手い。', key:'BOUND', rev:true},
+  {t:'スクロールや配信が主な“つながり”になっている。', key:'DIGI', rev:false},
+  {t:'SNSで比べて落ち込むことがよくある。', key:'DIGI', rev:false},
+  {t:'画面を閉じて休む時間をとれている。', key:'DIGI', rev:true},
+];
+
+const LABELS = ['ぜんぜん','ときどき','どちらとも','けっこう','かなり']; // 数字禁止→テキスト
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素参照 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $next = document.getElementById('nextBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultLines = document.getElementById('resultLines');
+const $resultMeta = document.getElementById('resultMeta');
+const $bars = document.getElementById('bars');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== 初期化（復元） ===== */
+(function restore(){
+  try{
+    const savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    const savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+    if(Array.isArray(savedAns) && savedAns.length === QUESTIONS.length){
+      answers = savedAns;
+      idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+      // すでに全回答済みなら結果へ
+      if(answers.every(v => v !== null)){ showResult(); return; }
+    }
+  }catch(_){}
+  renderQuestion();
+})();
+
+/* ===== 画面描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span>${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click',()=>{
+      selectAnswer(i);
+    });
+    $opts.appendChild(btn);
+  });
+  $prev.disabled = (idx===0);
+  $next.textContent = (idx===QUESTIONS.length-1)? '結果を見る':'次へ';
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+  document.querySelector('.rank').textContent = `Lv?`;
+}
+
+function descFor(i){
+  // 軽い説明（報酬感）
+  switch(i){
+    case 0: return 'ほぼない';
+    case 1: return 'すこし';
+    case 2: return 'どちらとも';
+    case 3: return 'よくある';
+    case 4: return 'とてもある';
+  }
+  return '';
+}
+
+/* ===== 回答処理 ===== */
+function selectAnswer(v){
+  answers[idx] = v; // 0–4
+  persist();
+  showToast('記録したよ ✅');
+  markPressed(v);
+  // 自動で次へ（小休止）
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){ idx++; renderQuestion(); }
+    else { showResult(); }
+  }, 140);
+}
+
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$next.addEventListener('click', ()=>{
+  if(idx<QUESTIONS.length-1){ idx++; persist(); renderQuestion(); }
+  else { showResult(); }
+});
+
+/* ===== 保存 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== スコア計算 ===== */
+// 因子スコア：各0–12（3問×4点）。★は 4↔0 反転
+function compute(){
+  const sums = {BOND:0,RHY:0,OPEN:0,BOUND:0,DIGI:0};
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) v = 0;
+    // 0–4 を “ひとり感”方向に寄せる
+    let score = q.rev ? (4 - v) : v;
+    // 4点化（そのまま0-4点/問）
+    sums[q.key] += score;
+  });
+  // 総合 0–60 → 正規化 0–100
+  const total = Object.values(sums).reduce((a,b)=>a+b,0);
+  const totalPct = Math.round(total/60*100);
+  return {sums,total,totalPct};
+}
+
+/* ===== 画像帯域割当（0–39: t01 / 40–59: t02 / 60–74: t03 / 75–89: t04 / 90–100: t05） ===== */
+function imageFor(pct){
+  let file='t01.webp', lv=1, name='ひだまり';
+  if(pct<=39){ file='t01.webp'; lv=1; name='ひだまり'; }
+  else if(pct<=59){ file='t02.webp'; lv=2; name='影さす'; }
+  else if(pct<=74){ file='t03.webp'; lv=3; name='まどかげ'; }
+  else if(pct<=89){ file='t04.webp'; lv=4; name='うす闇'; }
+  else { file='t05.webp'; lv=5; name='灯り待ち'; }
+  return {file,lv,name};
+}
+
+/* ===== 結果テキスト（レベル土台＋タイプスパイス＋ミニ一歩） ===== */
+function levelBase(lv){
+  switch(lv){
+    case 1: return {base:'用事があれば話せる。', step:'挨拶＋ひと言'};
+    case 2: return {base:'連絡が“あとで”になりがち。', step:'1分ボイス'};
+    case 3: return {base:'下書きが増えがち。', step:'事実＋感情1語'};
+    case 4: return {base:'会う前から疲れ予感。', step:'散歩5分→一言'};
+    case 5: return {base:'声を出さない日が続く。', step:'定型「今日は難しい」'};
+  }
+  return {base:'',step:''};
+}
+function spiceBy(type){
+  switch(type){
+    case 'BOND': return '深い相手はいるが回数少なめ。';
+    case 'RHY':  return '用事がないと無音になりがち。';
+    case 'OPEN': return '浅く開けるならいける、の一歩手前。';
+    case 'BOUND':return '断れず消耗→避けて休むのループ。';
+    case 'DIGI': return '画面では満たされにくい。';
+  }
+  return '';
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+	
+	function restartQuiz(){
+  // 回答とインデックスを初期化
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  // 保存をクリア（完了タイムスタンプは残す）
+  try{
+    localStorage.removeItem(LS_ANS);
+    localStorage.removeItem(LS_IDX);
+  }catch(_){}
+  // 画面を戻す
+  $result.style.display = 'none';
+  $quiz.style.display = 'block';
+  updateProgress(0);
+  renderQuestion();
+  // スクロールとトースト
+  window.scrollTo({top:0, behavior:'smooth'});
+  showToast('最初からはじめるよ');
+}
+
+// ボタンにイベント付与
+if($restart){
+  $restart.addEventListener('click', restartQuiz);
+}
+	
+  // 未回答は0扱いで集計
+  const {sums,totalPct} = compute();
+
+  // トップ因子（同点なら二重表記）
+  const entries = Object.entries(sums).sort((a,b)=>b[1]-a[1]);
+  const topVal = entries[0][1];
+  const tops = entries.filter(([k,v])=> v===topVal).map(([k])=>k);
+  const topTypeLabel = tops.map(k=> TYPE_NAME[k]).join(' × ');
+  const topAnimal = tops.map(k=> TYPE_ANIMAL[k]).join('');
+
+  const img = imageFor(totalPct);
+  const base = levelBase(img.lv);
+
+  // 1行目：Lv/タイプ
+  const line1 = `Lv${img.lv}（${img.name}）／タイプ：${topTypeLabel}`;
+  // 2行目：森の一言
+  const mood = ['木漏れ日','細い霧','霧が増す','濃い霧','遠い灯'][img.lv-1];
+  const line2 = `森の一言：${mood}`;
+  // 3行目：あるある（短句）
+  const line3 = (()=>{
+    switch(img.lv){
+      case 1:return '「用事なら話せる」あるある';
+      case 2:return '返信がつい先延ばし';
+      case 3:return '下書きに眠るメッセージ';
+      case 4:return '会う前から気力ゲージ減';
+      case 5:return '声のない日が続く';
+    }
+  })();
+  // 4行目：ミニ一歩
+  const line4 = `ミニ一歩：${base.step}`;
+
+// 画像とタイトル
+const IMG_BASE = '/shindan/assets/results/lonely-meter/';
+$resultImg.src = IMG_BASE + img.file;
+const altMap = {
+  't01.webp':'動物に囲まれる人と柔らかな光',
+  't02.webp':'少し距離のある動物と薄い霧',
+  't03.webp':'近くの小鳥と遠いキツネ、霧が増す',
+  't04.webp':'濃い霧の森と遠いカラス',
+  't05.webp':'深い霧の森で小さな灯りに向かう人影'
+};
+$resultImg.alt = altMap[img.file] || '森の情景';
+$resultTitle.textContent = `総合ひとり感：${totalPct} / 100`;
+
+// 🌳 コメントをもう少し長くする
+const baseComment = (() => {
+  switch(img.lv){
+    case 1: return 'あたたかな距離感の中で、自然体で過ごせている状態。ときどきの静けさも、あなたにとって大切な充電時間です。';
+    case 2: return '少し人との距離ができやすい時期。気づかないうちに「また今度」と後回しにしているだけかもしれません。';
+    case 3: return '自分の世界にこもる時間が増え、外と内のバランスを探している段階。孤独が悪いわけではなく、整理の途中です。';
+    case 4: return '人に会う前から気力を消耗してしまうサイクル。心のバッテリーを守るために、会わない日を「罪悪感なし」で過ごして。';
+    case 5: return '深い霧のような静けさに包まれています。いまは声を出すより、まず灯りを見つける時間。小さな連絡でも充分です。';
+  }
+})();
+
+$resultLines.textContent =
+  [line1,
+   line2,
+   (topAnimal ? topAnimal + ' ' : '') + line3,
+   base.base + spiceBy(tops[0]),
+   baseComment,
+   'ミニ一歩：' + base.step
+  ].join('\n');
+
+  // メタ
+  document.querySelector('.rank').textContent = `Lv${img.lv}`;
+  $resultMeta.textContent = `トップ因子：${topTypeLabel}　（同点: ${tops.length>1?'あり':'なし'}）`;
+
+  // 因子バー（0–12→pct）
+  $bars.innerHTML = '';
+  FACTORS.forEach(key=>{
+    const val = sums[key];
+    const pct = Math.round(val/12*100);
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACTOR_LABEL[key]}（${TYPE_NAME[key]}）</span><span>${pct}%</span></div>
+      <div class="b" style="width:${pct}%" aria-label="${FACTOR_LABEL[key]}のスコア ${pct}%" role="presentation"></div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 切替
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+
+  // 完了マーキング
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+
+  // みんなのこころ ＆ あなたのLv 加算フック
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(msg){
+  $toast.textContent = msg || 'OK';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 850);
+}
+
+/* ===== 初回レンダリング ===== */
+renderQuestion();
+</script>
+
+<!-- みんなのこころ（共通IIFE：保存＋CountAPI） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'lonely-meter';
+  var NS='haisuikounozarigani_shindan', KEY='specimens_open_total';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      var url='https://api.countapi.xyz/hit/'+NS+'/'+KEY;
+      if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+      else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());</script>
+
+</body>
+</html>
