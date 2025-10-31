@@ -119,7 +119,7 @@
     </div>
 
     <details style="margin-top:14px">
-      <summary>読みの根拠とヒント</summary>
+     <summary>研究メモ</summary>
       <ul style="margin:.4rem 0 .2rem .9rem" id="reasons">
         <!-- 上位3因子を自動挿入 -->
       </ul>
@@ -377,36 +377,44 @@ function showResult(){
       $barsFac.appendChild(div);
     });
 
-  // ── 読みの根拠：上位因子＋「研究メモ」を追加
-  $reasons.innerHTML='';
-  reasonsFor(topCat).forEach(item=>{
-    const li=document.createElement('li');
-    li.textContent = `根拠：${item.name}`;
+  // ── 研究メモのみ表示（H/A/R/M 全部） ─────────────────
+$reasons.innerHTML='';
+
+// カテゴリ別 研究メモ辞書（そのまま流用／必要なら編集OK）
+const RESEARCH_HINT = {
+  H: [
+    '短い入浴や温かい飲み物などの「温熱刺激」は、からだの緊張をゆるめ気分を和らげる傾向があると言われます。',
+    '睡眠の一貫性（就寝起床の固定）は、日中の集中や気分の安定と関連しやすいと報告されます。'
+  ],
+  A: [
+    '着手を「最初の数分」に分解する手法は、先延ばしの軽減と関連することが多いとされています。',
+    '小さな進捗の見える化（チェックリストやタイマー）は、自己効力感の回復に役立つと示唆されます。'
+  ],
+  R: [
+    'ごく短い交流（挨拶・1分通話）でも、つながり感や気分の底上げに寄与する傾向があるとされます。',
+    'ポジティブな一言（例：「ありがとう1行」）は、関係満足感の維持に小さな追い風になると報告があります。'
+  ],
+  M: [
+    '支出の可視化（固定費の棚卸しや家計アプリ）は、金銭不安の主観的負担を下げるとされます。',
+    'ルール化（購入前の待機時間や上限設定）は、衝動的な出費の抑制と関連すると言われます。'
+  ]
+};
+
+// H/A/R/M 全カテゴリを順に出す（見出し風→各メモ）
+['H','A','R','M'].forEach(cat=>{
+  const head = document.createElement('li');
+  head.textContent = `— ${CAT_NAME[cat]} —`;
+  head.style.listStyle = 'none';
+  head.style.margin = '8px 0 2px';
+  head.style.color = '#6f6584';
+  $reasons.appendChild(head);
+
+  (RESEARCH_HINT[cat] || []).forEach(t=>{
+    const li = document.createElement('li');
+    li.textContent = '' + t;
     $reasons.appendChild(li);
   });
-  const RESEARCH_HINT = {
-    H: [
-      '短い入浴や温かい飲み物などの「温熱刺激」は、からだの緊張をゆるめ気分を和らげる傾向があると言われます。',
-      '睡眠の一貫性（就寝起床の固定）は、日中の集中や気分の安定と関連しやすいと報告されます。'
-    ],
-    A: [
-      '着手を「最初の数分」に分解する手法は、先延ばしの軽減と関連することが多いとされています。',
-      '小さな進捗の見える化（チェックリストやタイマー）は、自己効力感の回復に役立つと示唆されます。'
-    ],
-    R: [
-      'ごく短い交流（挨拶・1分通話）でも、つながり感や気分の底上げに寄与する傾向があるとされます。',
-      'ポジティブな一言（例：「ありがとう1行」）は、関係満足感の維持に小さな追い風になると報告があります。'
-    ],
-    M: [
-      '支出の可視化（固定費の棚卸しや家計アプリ）は、金銭不安の主観的負担を下げるとされます。',
-      'ルール化（購入前の待機時間や上限設定）は、衝動的な出費の抑制と関連すると言われます。'
-    ]
-  };
-  (RESEARCH_HINT[topCat]||[]).forEach(t=>{
-    const li=document.createElement('li');
-    li.textContent = '研究メモ：' + t;
-    $reasons.appendChild(li);
-  });
+});
 
   // 画面切替＆保存＆集計フック
   $quiz.style.display='none';
