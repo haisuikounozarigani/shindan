@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>水晶のお告げ診断｜H/A/R/M（健康・野心/仕事・関係・お金）をやさしく当てる</title>
+<meta name="description" content="24問×5件法。体のサイン/未来と締切/他人の目線/お金への敏感さ/自己批評の声/動き出し抵抗の6因子から、いま一番強い悩みがH（健康）/A（野心・仕事）/R（関係）/M（お金）のどれかをやさしく推定。度合いバー＋根拠ワード＋ミニ一歩つき。">
+<meta name="theme-color" content="#2a1840">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="水晶のお告げ診断">
+<meta property="og:description" content="24問×5件法で、H/A/R/M（健康・野心/仕事・関係・お金）の“今いちばん重い”を推定。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/crystal-guess.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/crystal-guess/t00.webp">
+<style>
+  :root{
+    --bg:#f7f5fb; --paper:#fff; --ink:#221a2a; --muted:#6d6280; --line:#ece7f4;
+    --accent:#8c6bff; --accent2:#ff8fc7; --witch:#2a1840;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+  a{color:var(--witch);text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  header.hd{position:relative;background:linear-gradient(160deg,#f5f0ff,#f0f4ff);border-bottom:1px solid var(--line)}
+  header.hd .wrap{padding:20px 16px 10px}
+  .ttl{font-weight:800;font-size:1.35rem;letter-spacing:.02em}
+  .sub{color:var(--muted);font-size:.95rem}
+
+  /* 固定進捗バー（noh準拠） */
+  .progress-fixed{position:sticky;top:0;z-index:20;height:8px;background:var(--line)}
+  .progress-bar{height:100%;border-radius:6px;background:var(--accent);transition:width .2s ease}
+
+  figure.hero{margin:12px 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  figure.hero img{display:block;width:100%;height:auto}
+
+  .paper{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+  .qnum{font-weight:700;color:#3b2b54}
+  .qtext{margin:.4rem 0 1rem}
+  .opts{display:grid;grid-template-columns:1fr;gap:8px}
+  .btn{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:.12s}
+  .btn[aria-pressed="true"]{outline:2px solid #ffdff2;background:#fff8fe}
+  .btn:hover{transform:translateY(-1px)}
+  .opt-note{color:#7f7196;font-size:.9rem}
+  .ctrls{display:flex;gap:8px;margin-top:12px}
+  .ctrls button{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#faf7ff;cursor:pointer}
+  .ctrls button.primary{background:var(--witch);color:#fff;border-color:#1c0f2d}
+  .hint{font-size:.9rem;color:#7b6f8d}
+
+  .result{display:none}
+  .rank{display:inline-block;padding:.2em .6em;border-radius:999px;background:#efe8ff;color:#4b3a7f;font-weight:700;margin-left:.4em}
+  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  .result .imgbox{flex:1 1 280px;min-width:260px}
+  .result .imgbox img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+  .result .text{flex:2 1 360px;min-width:300px}
+  .bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .bar{background:#f5f2ff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bar .h{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:.92rem}
+  .bar .b{height:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+  .meta{color:#6f6584;font-size:.92rem}
+  .footer-note{font-size:.88rem;color:#6f6584}
+  .back{display:inline-block;margin:10px 0 20px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#faf7ff}
+
+  .mini-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:#2a1840;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9rem;transition:.25s;z-index:40}
+  .mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  [role="progressbar"]{width:100%}
+</style>
+</head>
+
+<body data-id="crystal-guess">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">水晶のお告げ診断 <span class="rank" aria-label="本命カテゴリ">H/A/R/M</span></div>
+    <div class="sub">魔女の水晶球が「いま一番重いお悩み」をやさしく推定。度合いバー＋根拠ワード＋ミニ一歩つき。</div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed"><div class="progress-bar" style="width:0%"></div></div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/crystal-guess/t00.webp" alt="魔女と水晶球" loading="lazy">
+  </figure>
+
+  <!-- 質問カード -->
+  <section id="quiz" class="paper" aria-label="質問セクション">
+    <div class="qnum" id="qnum">Q1/24</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+      <button type="button" id="nextBtn" class="primary">次へ</button>
+    </div>
+    <div class="hint" id="hint">押した瞬間に小さなご褒美🔮（保存されます）</div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">お告げ</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <h3 id="resultTitle" style="margin:.2rem 0 0;"></h3>
+        <p id="resultLines" style="white-space:pre-line;margin:.4rem 0 1rem"></p>
+        <div class="meta" id="resultMeta"></div>
+
+     
+        <!-- ▼ 置き換え：カテゴリ＆因子のバー表示（2段） -->
+<h4 class="minihead" style="margin:.6rem 0 .4rem;color:#6f6584;font-size:.95rem">H/A/R/M の傾き</h4>
+<div class="bars" id="barsCat"></div>
+
+<h4 class="minihead" style="margin:1rem 0 .4rem;color:#6f6584;font-size:.95rem">因子の内訳</h4>
+<div class="bars" id="barsFac"></div>
+        </div>
+      </div>
+    </div>
+
+    <details style="margin-top:14px">
+      <summary>読みの根拠とヒント</summary>
+      <ul style="margin:.4rem 0 .2rem .9rem" id="reasons">
+        <!-- 上位3因子を自動挿入 -->
+      </ul>
+    </details>
+
+    <p class="footer-note" style="margin-top:12px">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。つらさが続く時は、身近な人や専門の相談先へ早めに相談してください。</p>
+
+    <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite">記録したよ ✅</div>
+
+<script>
+/* ===== 固定進捗バー更新（規定） ===== */
+function updateProgress(p){
+  document.querySelector('.progress-bar').style.width = Math.max(0,Math.min(100,p)) + '%';
+}
+
+/* ===== 定義 ===== */
+const SLUG='crystal-guess';
+const LS_ANS=`shindan:${SLUG}:answers`;
+const LS_IDX=`shindan:${SLUG}:index`;
+const LS_DONE=`shindan:${SLUG}:done`;
+
+const FACT = {BODY:'体のサイン', FUT:'未来と締切', GAZE:'他人の目線', MONEY:'お金への敏感さ', SELF:'自己批評の声', START:'動き出し抵抗'};
+const LABELS = ['ぜんぜん','あまり','半々','けっこう','すごく']; // 数字禁止
+
+// 24問（各因子4問）— rev=true は“軽くできている/緩和できる”内容で逆転
+const Q = [
+  // ①体のサイン
+  {t:'寝途中で目が覚めることが多い。', k:'BODY'},
+  {t:'体のこわばりを意識する。', k:'BODY'},
+  {t:'疲れで考えが狭くなる。', k:'BODY'},
+  {t:'温かい飲み物や入浴でほどける。', k:'BODY', rev:true},
+
+  // ②未来と締切
+  {t:'締切が遠いほど手がつかない。', k:'FUT'},
+  {t:'「最初の5分」が重い。', k:'FUT'},
+  {t:'次の一手が決まらないことが多い。', k:'FUT'},
+  {t:'進捗が見えず焦る。', k:'FUT'},
+
+  // ③他人の目線
+  {t:'相手の返事が遅いと不安が強まる。', k:'GAZE'},
+  {t:'相手の反応を何度も反すうしてしまう。', k:'GAZE'},
+  {t:'断りの理由を長文で書きがち。', k:'GAZE'},
+  {t:'人前の小さなミスを何度も思い出す。', k:'GAZE'},
+
+  // ④お金への敏感さ
+  {t:'固定費の増減に敏感だ。', k:'MONEY'},
+  {t:'月末は小さな支出が特に気になる。', k:'MONEY'},
+  {t:'今買うか来月かで悩むことが多い。', k:'MONEY'},
+  {t:'キャッシュレスの見えない出費が不安だ。', k:'MONEY'},
+
+  // ⑤自己批評の声
+  {t:'全部のやり方を疑ってしまう。', k:'SELF'},
+  {t:'注意された一点が強く残る。', k:'SELF'},
+  {t:'つい周りと比べがち。', k:'SELF'},
+  {t:'小さなミスを性格に結びつけてしまう。', k:'SELF'},
+
+  // ⑥動き出し抵抗
+  {t:'連絡だけなら動けることが多い。', k:'START', rev:true},
+  {t:'机を「10cmだけ」片づけると始まれる。', k:'START', rev:true},
+  {t:'タイマー「3分」で着手できる。', k:'START', rev:true},
+  {t:'体調が微妙だと後回しが増える。', k:'START'}
+];
+
+// H/A/R/M 重み（因子→カテゴリ）。あとで各カテゴリ総和で正規化して0–100にします。
+const W = {
+  H:{BODY:.70, FUT:.10, GAZE:.10, MONEY:0.00, SELF:.10, START:.30},
+  A:{BODY:.10, FUT:.70, GAZE:.10, MONEY:.20, SELF:.40, START:.40},
+  R:{BODY:.10, FUT:.10, GAZE:.70, MONEY:.10, SELF:.40, START:.20},
+  M:{BODY:.10, FUT:.10, GAZE:.10, MONEY:.70, SELF:.10, START:.10}
+};
+const CAT_NAME = {H:'H（健康）', A:'A（野心/仕事）', R:'R（関係）', M:'M（お金）'};
+const CAT_IMG  = {H:'t01.webp', A:'t02.webp', R:'t03.webp', M:'t04.webp'};
+const CAT_ALT  = {H:'水晶と健康', A:'水晶と野心', R:'水晶と関係', M:'水晶とお金'};
+const MINI_STEP = {
+  H:['就寝90分前ぬるめ入浴10分','朝いち水一杯＋姿勢30秒'],
+  A:['最初の5分だけ着手','連絡だけ先に送る'],
+  R:['「ありがとう1行」だけ送る','短文＋代案日時で断る'],
+  M:['固定費を1項目だけ見直す','明細を1カ所に集約']
+};
+
+/* ===== 状態と要素 ===== */
+let idx=0, ans = new Array(Q.length).fill(null);
+const $qnum = document.getElementById('qnum');
+const $qtext= document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $next = document.getElementById('nextBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $img = document.getElementById('resultImg');
+const $ttl = document.getElementById('resultTitle');
+const $lines = document.getElementById('resultLines');
+const $meta = document.getElementById('resultMeta');
+const $barsCat = document.getElementById('barsCat');
+const $barsFac = document.getElementById('barsFac');
+const $degBar = document.getElementById('degBar');
+const $degPct = document.getElementById('degPct');
+const $degLabel = document.getElementById('degLabel');
+const $reasons = document.getElementById('reasons');
+const $toast = document.getElementById('toast');
+const $restart = document.getElementById('restartBtn');
+
+/* ===== 復元 ===== */
+(function restore(){
+  try{
+    const a = JSON.parse(localStorage.getItem(LS_ANS)||'null');
+    const i = JSON.parse(localStorage.getItem(LS_IDX)||'0');
+    if(Array.isArray(a) && a.length===Q.length){ ans=a; idx=Math.min(Math.max(0,+i||0),Q.length-1);
+      if(ans.every(v=>v!==null)){ showResult(); return; }
+    }
+  }catch(_){}
+  renderQ();
+})();
+
+/* ===== 進行描画 ===== */
+function renderQ(){
+  const q=Q[idx];
+  $qnum.textContent = `Q${idx+1}/${Q.length}`;
+  $qtext.textContent = q.t;
+  $opts.innerHTML='';
+  LABELS.forEach((lab,i)=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='btn';
+    b.setAttribute('aria-pressed', ans[idx]===i?'true':'false');
+    b.innerHTML = `<span>${lab}</span><span class="opt-note">${note(i)}</span>`;
+    b.addEventListener('click',()=> select(i));
+    $opts.appendChild(b);
+  });
+  $prev.disabled = (idx===0);
+  $next.textContent = (idx===Q.length-1)? 'お告げを見る':'次へ';
+  const done = ans.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/Q.length*100));
+}
+function note(i){
+  return ['まったくない','すこし','半分くらい','わりとある','とてもある'][i];
+}
+
+/* ===== 回答処理 ===== */
+function select(v){
+  ans[idx]=v; persist();
+  showToast('記録したよ 🔮');
+  mark(v);
+  setTimeout(()=>{ if(idx<Q.length-1){idx++; renderQ();} else {showResult();} },140);
+}
+function mark(v){[...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v?'true':'false'));}
+$prev.addEventListener('click',()=>{ if(idx>0){ idx--; persist(); renderQ(); }});
+$next.addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; persist(); renderQ(); } else { showResult(); }});
+function persist(){ try{localStorage.setItem(LS_ANS,JSON.stringify(ans)); localStorage.setItem(LS_IDX,JSON.stringify(idx));}catch(_){} }
+
+/* ===== スコア計算 ===== */
+// 因子ごとに avg(0–4) → pct(0–100) に換算（revは 4-v）
+function compute(){
+  const sums={BODY:0,FUT:0,GAZE:0,MONEY:0,SELF:0,START:0};
+  const cnt={BODY:0,FUT:0,GAZE:0,MONEY:0,SELF:0,START:0};
+  Q.forEach((q,i)=>{
+    let v = ans[i]; if(v==null) v=0;
+    if(q.rev) v = 4 - v;
+    sums[q.k]+=v; cnt[q.k]++;
+  });
+  const pct={}; Object.keys(sums).forEach(k=>{
+    const avg = sums[k]/(cnt[k]*4); // 0–1
+    pct[k] = Math.round(avg*100);   // 0–100
+  });
+  // H/A/R/M計算：重み付き→カテゴリごとに総和で割って0–100正規化
+  function scoreCat(cat){
+    const w=W[cat], keys=Object.keys(w);
+    const raw = keys.reduce((a,k)=>a + (pct[k]*w[k]), 0);
+    const wsum = keys.reduce((a,k)=>a + w[k], 0);
+    return raw/wsum; // 0–100相当
+  }
+  const S = {H:scoreCat('H'), A:scoreCat('A'), R:scoreCat('R'), M:scoreCat('M')};
+  // 根拠：本命に寄与した因子の上位3つ（pct×w）
+  function reasonsFor(cat){
+    const w=W[cat];
+    return Object.keys(w)
+      .map(k=>({k, v:pct[k]*w[k]}))
+      .sort((a,b)=>b.v-a.v)
+      .slice(0,3)
+      .map(o=>({key:o.k, name:FACT[o.k]}));
+  }
+  return {pct, S, reasonsFor};
+}
+
+/* ===== 画像 & テキスト ===== */
+function showResult(){
+  const {pct,S,reasonsFor} = compute();
+
+  // 本命 & 次点
+  const entries = Object.entries(S).sort((a,b)=>b[1]-a[1]);
+  const [topCat, topVal] = entries[0];
+  const [secCat, secVal] = entries[1];
+  const diff = Math.round(topVal - secVal);
+  const degPct = Math.round(topVal); // 0–100
+  const degBand = degPct<=39?'弱':(degPct<=69?'中':'強');
+
+  // 画像
+  const IMG_BASE='/shindan/assets/results/crystal-guess/';
+  const file = CAT_IMG[topCat];
+  $img.src = IMG_BASE + file;
+  $img.alt = CAT_ALT[topCat] || '水晶';
+
+  // タイトル
+  document.querySelector('.rank').textContent = CAT_NAME[topCat];
+  $ttl.textContent = `本命：${CAT_NAME[topCat]}（度合い：${degPct}/100｜${degBand}）`;
+
+  // 用語変更：「お告げ確度」→「読みのはっきり度」
+  const clarity = diff<=6?'弱め':(diff<=14?'ふつう':'はっきり');
+  const clarityLine = `読みのはっきり度：${clarity}（本命と次点の差 ${diff}）`;
+  const secLine = `次点：${CAT_NAME[secCat]}`;
+
+  // コメント（2〜3文＋ミニ一歩）
+  const baseLine = (()=> {
+    switch(topCat){
+      case 'H': return '体のサインが先に鳴ると、思考も狭まりやすい時期。休息の「質」を1つだけ上げると全体が軽くなります。';
+      case 'A': return '未来と締切の負荷が主役。最初の5分を切り出すと、迷いは「具体」に変わりやすい。';
+      case 'R': return '他人の目線が強く入る配置。関係を保つ最小単位を決めると、心の揺れが減ります。';
+      case 'M': return 'お金への注意が集中。支出の見える化は、それだけで不安の芯をほどきます。';
+    }
+  })();
+  const mini = MINI_STEP[topCat][Math.floor(Math.random()*MINI_STEP[topCat].length)];
+  $lines.textContent = [baseLine, `${clarityLine}／${secLine}`, 'ミニ一歩：' + mini].join('\n');
+
+  // メタ（因子の生pct）
+  $meta.textContent = `因子（0–100）：体${pct.BODY}／未来${pct.FUT}／目線${pct.GAZE}／お金${pct.MONEY}／自己批評${pct.SELF}／動き出し${pct.START}`;
+
+  // ── H/A/R/M（4本バー）
+  $barsCat.innerHTML = '';
+  [['H','健康'],['A','野心/仕事'],['R','関係'],['M','お金']].forEach(([k])=>{
+    const v = Math.round(S[k]);
+    const div = document.createElement('div');
+    div.className = 'bar';
+    div.innerHTML = `
+      <div class="h"><span>${CAT_NAME[k]}</span><span>${v}%</span></div>
+      <div class="b" style="width:${v}%"></div>
+    `;
+    $barsCat.appendChild(div);
+  });
+
+  // ── 因子（6本バー）
+  $barsFac.innerHTML = '';
+  [['BODY','体のサイン'],['FUT','未来と締切'],['GAZE','他人の目線'],['MONEY','お金への敏感さ'],['SELF','自己批評の声'],['START','動き出し抵抗']]
+    .forEach(([k,jp])=>{
+      const v = pct[k];
+      const div = document.createElement('div');
+      div.className = 'bar';
+      div.innerHTML = `
+        <div class="h"><span>${jp}</span><span>${v}%</span></div>
+        <div class="b" style="width:${v}%"></div>
+      `;
+      $barsFac.appendChild(div);
+    });
+
+  // ── 読みの根拠：上位因子＋「研究メモ」を追加
+  $reasons.innerHTML='';
+  reasonsFor(topCat).forEach(item=>{
+    const li=document.createElement('li');
+    li.textContent = `根拠：${item.name}`;
+    $reasons.appendChild(li);
+  });
+  const RESEARCH_HINT = {
+    H: [
+      '短い入浴や温かい飲み物などの「温熱刺激」は、からだの緊張をゆるめ気分を和らげる傾向があると言われます。',
+      '睡眠の一貫性（就寝起床の固定）は、日中の集中や気分の安定と関連しやすいと報告されます。'
+    ],
+    A: [
+      '着手を「最初の数分」に分解する手法は、先延ばしの軽減と関連することが多いとされています。',
+      '小さな進捗の見える化（チェックリストやタイマー）は、自己効力感の回復に役立つと示唆されます。'
+    ],
+    R: [
+      'ごく短い交流（挨拶・1分通話）でも、つながり感や気分の底上げに寄与する傾向があるとされます。',
+      'ポジティブな一言（例：「ありがとう1行」）は、関係満足感の維持に小さな追い風になると報告があります。'
+    ],
+    M: [
+      '支出の可視化（固定費の棚卸しや家計アプリ）は、金銭不安の主観的負担を下げるとされます。',
+      'ルール化（購入前の待機時間や上限設定）は、衝動的な出費の抑制と関連すると言われます。'
+    ]
+  };
+  (RESEARCH_HINT[topCat]||[]).forEach(t=>{
+    const li=document.createElement('li');
+    li.textContent = '研究メモ：' + t;
+    $reasons.appendChild(li);
+  });
+
+  // 画面切替＆保存＆集計フック
+  $quiz.style.display='none';
+  $result.style.display='block';
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== やり直し ===== */
+function restartQuiz(){
+  ans = new Array(Q.length).fill(null); idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX);}catch(_){}
+  $result.style.display='none'; $quiz.style.display='block';
+  updateProgress(0); renderQ();
+  window.scrollTo({top:0,behavior:'smooth'}); showToast('最初からはじめるよ');
+}
+if($restart){ $restart.addEventListener('click', restartQuiz); }
+
+/* ===== トースト ===== */
+let toastTimer=null;
+function showToast(msg){
+  $toast.textContent = msg || 'OK';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=> $toast.classList.remove('show'), 850);
+}
+
+/* ===== 初期描画 ===== */
+renderQ();
+</script>
+
+<!-- みんなのこころ（共通IIFE：保存＋CountAPI） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'crystal-guess';
+  var NS='haisuikounozarigani_shindan', KEY='specimens_open_total';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      var url='https://api.countapi.xyz/hit/'+NS+'/'+KEY;
+      if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+      else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());</script>
+
+</body>
+</html>
