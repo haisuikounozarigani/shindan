@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>心の探偵診断｜手がかり→確認→結論の“読心力”を見える化</title>
+<meta name="description" content="20問×5件法で、相手の感情を“手がかり→確認→結論”の順で正しく読む力＝読心スキルを見える化。観察眼・一次情報重視・質問力・文脈感度・検証リズムの5因子バーと短いミニ一歩つき。">
+<meta name="theme-color" content="#14202b">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="心の探偵診断">
+<meta property="og:description" content="20問×5件法で読心スキルを見える化。5因子バーとミニ一歩つき。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/kokoro-detective.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/kokoro-detective/t00.webp">
+<style>
+  :root{
+    --bg:#f4f7f9;
+    --paper:#fff;
+    --ink:#0e1920;
+    --muted:#566575;
+    --line:#e4ebf1;
+    --accent:#4aa8ff;   /* cold系 */
+    --accent2:#a48bff;  /* 差し光 */
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+  a{color:#274b6b;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  header.hd{background:linear-gradient(160deg,#f1f7fd,#ecf2f9);border-bottom:1px solid var(--line)}
+  header.hd .wrap{padding:20px 16px 10px}
+  .ttl{font-weight:800;font-size:1.35rem;letter-spacing:.02em}
+  .sub{color:var(--muted);font-size:.95rem}
+
+  /* 固定進捗バー（noh準拠） */
+  .progress-fixed{position:sticky;top:0;z-index:20;height:8px;background:var(--line)}
+  .progress-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s ease}
+
+  figure.hero{margin:12px 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  figure.hero img{display:block;width:100%;height:auto}
+
+  .paper{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+  .qnum{font-weight:700;color:#1c2a36}
+  .qtext{margin:.4rem 0 1rem}
+  .opts{display:grid;grid-template-columns:1fr;gap:8px}
+  .btn{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:.12s}
+  .btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#f3f0ff}
+  .btn:hover{transform:translateY(-1px)}
+  .opt-note{color:#6c7b8b;font-size:.9rem}
+  .ctrls{display:flex;gap:8px;margin-top:12px}
+  .ctrls button{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f6f9ff;cursor:pointer}
+  .ctrls button.primary{background:#14202b;color:#fff;border-color:#0e1620}
+  .hint{font-size:.9rem;color:#5b6876}
+
+  .result{display:none}
+  .rank{display:inline-block;padding:.2em .6em;border-radius:999px;background:#e9f2ff;color:#1a3a6b;font-weight:700;margin-left:.4em}
+  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  .result .imgbox{flex:1 1 280px;min-width:260px}
+  .result .imgbox img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+  .result .text{flex:2 1 360px;min-width:300px}
+  .bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .bar{background:#f2f6fb;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bar .h{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:.92rem}
+  .bar .b{height:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+  .meta{color:#6b7a85;font-size:.92rem}
+  .back{display:inline-block;margin:10px 0 20px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f6f9ff}
+
+  .mini-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:#12202b;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9rem;transition:.25s;z-index:40}
+  .mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  [role="progressbar"]{width:100%}
+</style>
+</head>
+
+<body data-id="kokoro-detective">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">心の探偵診断 <span class="rank" aria-label="5段階ランク">Lv?</span></div>
+    <div class="sub">相手の感情を「手がかり→確認→結論」で読む力＝読心スキルを、5因子でやさしく見える化。</div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed"><div class="progress-bar" style="width:0%"></div></div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/kokoro-detective/t00.webp" alt="探偵帽とルーペ" loading="lazy">
+  </figure>
+
+  <!-- 質問カード -->
+  <section id="quiz" class="paper" aria-label="質問セクション">
+    <div class="qnum" id="qnum">Q1/20</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+      <button type="button" id="nextBtn" class="primary">次へ</button>
+    </div>
+    <div class="hint" id="hint">押した瞬間に小さなご褒美✨（自動保存＆開き直し復元）</div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <h3 id="resultTitle" style="margin:.2rem 0 0;"></h3>
+        <p id="resultLines" style="white-space:pre-line;margin:.4rem 0 1rem"></p>
+        <div class="meta" id="resultMeta"></div>
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+
+    <details style="margin-top:14px">
+      <summary>研究メモ</summary>
+      <ul style="margin:.4rem 0 .2rem .9rem">
+        <li>推測より一次情報（本人の言葉や目の前の事実）を先に置くと、誤解が減る傾向があると言われます。</li>
+        <li>断定を質問に変える小さな確認は、信頼の土台づくりに役立つとされます。※個人差あり</li>
+      </ul>
+    </details>
+
+    <p class="meta" style="margin:.8rem 0 0">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。医療・採用用途には使えません。</p>
+    <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite">記録したよ ✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  document.querySelector('.progress-bar').style.width = Math.max(0,Math.min(100,p)) + '%';
+}
+
+/* ===== 定義 ===== */
+const SLUG = 'kokoro-detective';
+const LS_ANS = `shindan:${SLUG}:answers`;
+const LS_IDX = `shindan:${SLUG}:index`;
+const LS_DONE = `shindan:${SLUG}:done`;
+
+const FACTORS = ['OBS','FACT','ASK','CTX','VER'];
+const FACTOR_LABEL = {
+  OBS:'観察眼',
+  FACT:'一次情報重視',
+  ASK:'質問力',
+  CTX:'文脈感度',
+  VER:'検証リズム'
+};
+const TYPE_NAME = {
+  OBS:'目の探偵',
+  FACT:'事実推し',
+  ASK:'聞き出し上手',
+  CTX:'場読み巧者',
+  VER:'検証職人'
+};
+
+/* 20問・5件法（0–4）／“高いほど良い”（反転なし） */
+const QUESTIONS = [
+  // 観察眼（OBS）
+  {t:'声のトーンがいつもと違うと気づく。', key:'OBS'},
+  {t:'返事までの「間」が長い/短いと感じ取れる。', key:'OBS'},
+  {t:'目が合う回数が減ったとピンとくる。', key:'OBS'},
+  {t:'笑っていても元気なさそうだとわかる。', key:'OBS'},
+
+  // 一次情報重視（FACT）
+  {t:'人づてよりも「本人の言葉」を優先する。', key:'FACT'},
+  {t:'推測より「見た事実」を先にメモする。', key:'FACT'},
+  {t:'自分の気分と相手の様子を分けて考えられる。', key:'FACT'},
+  {t:'その場で確かめられることはその場で確認する。', key:'FACT'},
+
+  // 質問力（ASK）
+  {t:'すぐ断定せずに「質問を一つ」挟める。', key:'ASK'},
+  {t:'「どのあたり？」など具体で聞ける。', key:'ASK'},
+  {t:'選択肢を2つ出してたずねられる。', key:'ASK'},
+  {t:'長い話題は小分けにして聞き直せる。', key:'ASK'},
+
+  // 文脈感度（CTX）
+  {t:'相手との関係で言葉の重さが変わると思う。', key:'CTX'},
+  {t:'場の目的で同じ言葉の意味が変わると思う。', key:'CTX'},
+  {t:'昨日の出来事が今日の反応に影響すると考える。', key:'CTX'},
+  {t:'公の場と個人の場で話し方を切り替えられる。', key:'CTX'},
+
+  // 検証リズム（VER）
+  {t:'自分の理解を一文で言い返す習慣がある。', key:'VER'},
+  {t:'「今日はここまで」と区切れる。', key:'VER'},
+  {t:'大事な点は後で短文フォローできる。', key:'VER'},
+  {t:'誤解に気づいたらすぐ直しにいける。', key:'VER'},
+];
+
+const LABELS = ['ぜんぜん','あまり','半々','わりと','とても'];
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $next = document.getElementById('nextBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultLines = document.getElementById('resultLines');
+const $resultMeta = document.getElementById('resultMeta');
+const $bars = document.getElementById('bars');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== 復元 ===== */
+(function restore(){
+  try{
+    const savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    const savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+    if(Array.isArray(savedAns) && savedAns.length === QUESTIONS.length){
+      answers = savedAns;
+      idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+      if(answers.every(v => v !== null)){ showResult(); return; }
+    }
+  }catch(_){}
+  renderQuestion();
+})();
+
+/* ===== 画面描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span>${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click',()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+  $prev.disabled = (idx===0);
+  $next.textContent = (idx===QUESTIONS.length-1)? '結果を見る':'次へ';
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+  document.querySelector('.rank').textContent = `Lv?`;
+}
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','とてもある'][i] || '';
+}
+
+/* ===== 回答処理 ===== */
+function selectAnswer(v){
+  answers[idx] = v; // 0–4
+  persist();
+  showToast('記録したよ ✅');
+  markPressed(v);
+  setTimeout(()=>{ // 次へ自動
+    if(idx < QUESTIONS.length-1){ idx++; renderQuestion(); }
+    else { showResult(); }
+  }, 140);
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+$prev.addEventListener('click', ()=>{ if(idx>0){ idx--; persist(); renderQuestion(); }});
+$next.addEventListener('click', ()=>{ if(idx<QUESTIONS.length-1){ idx++; persist(); renderQuestion(); } else { showResult(); }});
+
+/* ===== 保存 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== スコア ===== */
+function compute(){
+  const sums = {OBS:0,FACT:0,ASK:0,CTX:0,VER:0};
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i]; if(v==null) v = 0; // 0–4
+    sums[q.key] += v;
+  });
+  // 総合 0–80 → 0–100
+  const total = Object.values(sums).reduce((a,b)=>a+b,0);
+  const totalPct = Math.round(total/80*100);
+  return {sums,total,totalPct};
+}
+
+/* ===== 画像帯域（0–39 t01 / 40–59 t02 / 60–74 t03 / 75–89 t04 / 90–100 t05） ===== */
+function imageFor(pct){
+  let file='t01.webp', lv=1, title='迷子の怪盗';
+  if(pct<=39){ file='t01.webp'; lv=1; title='迷子の怪盗'; }
+  else if(pct<=59){ file='t02.webp'; lv=2; title='見習い怪盗'; }
+  else if(pct<=74){ file='t03.webp'; lv=3; title='見習い探偵'; }
+  else if(pct<=89){ file='t04.webp'; lv=4; title='探偵'; }
+  else { file='t05.webp'; lv=5; title='名探偵'; }
+  return {file,lv,title};
+}
+
+/* ランク別の短文＆ミニ一歩 */
+function levelLines(lv){
+  // “あるある＋ちょいクスッ＋自然に一歩”を一段落で返す
+  switch(lv){
+    case 1: return {copy:'物語が先に走りやすいタイプ。相手の表情より自分の想像が先にしゃべりがち。まずは「事実・推測・気持ち」を10秒でメモしてから話すと、誤解がグッと減る。'};
+    case 2: return {copy:'断定は早めだけど観察の芽は育ってるタイプ。「たぶん…」と言い切る前に「どのあたり？」と一問はさむだけで、推理に鍵がかかる。'};
+    case 3: return {copy:'手がかり志向に切り替わってきた過渡期。会話の終わりに「つまり〜ってことでOK？」と一文要約を返すと、誤解がスルッと抜ける。'};
+    case 4: return {copy:'検証が日常化した堅実派。反応のズレに早めに気づけるので、重要ポイントは翌日に短文フォローすると、信頼が静かに積み上がる。'};
+    case 5: return {copy:'文脈と一次情報を両立できる安定型。場の目的を冒頭にひと言共有してから話すと、チーム全体の推理速度まで上がる。'};
+  }
+  return {copy:''};
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+
+  // リスタート
+  function restartQuiz(){
+    answers = new Array(QUESTIONS.length).fill(null);
+    idx = 0;
+    try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+    $result.style.display = 'none';
+    $quiz.style.display = 'block';
+    updateProgress(0);
+    renderQuestion();
+    window.scrollTo({top:0, behavior:'smooth'});
+    showToast('最初からはじめるよ');
+  }
+  if($restart){ $restart.addEventListener('click', restartQuiz); }
+
+  const {sums,totalPct} = compute();
+
+  // トップ因子（同点許容）
+  const entries = Object.entries(sums).sort((a,b)=>b[1]-a[1]);
+  const topVal = entries[0][1];
+  const tops = entries.filter(([k,v])=> v===topVal).map(([k])=>k);
+  const topTypeLabel = tops.map(k=> FACTOR_LABEL[k]).join(' × ');
+
+  const img = imageFor(totalPct);
+  const ll = levelLines(img.lv);
+
+  // 画像＆タイトル
+  const IMG_BASE = '/shindan/assets/results/kokoro-detective/';
+  $resultImg.src = IMG_BASE + img.file;
+  const altMap = {
+    't01.webp':'影の怪盗',
+    't02.webp':'仮面と手袋',
+    't03.webp':'鍵穴と足跡',
+    't04.webp':'ルーペと証拠',
+    't05.webp':'名探偵の机'
+  };
+  $resultImg.alt = altMap[img.file] || '探偵モチーフ';
+  $resultTitle.textContent = `総合読心力：${totalPct} / 100`;
+
+// 本文（MBTIっぽい“あるある一段落”）
+const paragraph = `Lv${img.lv}（${img.title}）\nタイプ：${topTypeLabel}\n${levelLines(img.lv).copy}`;
+$resultLines.textContent = paragraph;
+
+  // メタと因子バー
+  document.querySelector('.rank').textContent = `Lv${img.lv}`;
+  $resultMeta.textContent = `トップ因子：${topTypeLabel}（同点：${tops.length>1?'あり':'なし'}）`;
+  $bars.innerHTML = '';
+  FACTORS.forEach(key=>{
+    const val = sums[key];               // 0–16（4問×4点）
+    const pct = Math.round(val/16*100);  // 0–100
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACTOR_LABEL[key]}（${TYPE_NAME[key]}）</span><span>${pct}%</span></div>
+      <div class="b" style="width:${pct}%" aria-label="${FACTOR_LABEL[key]}のスコア ${pct}%" role="presentation"></div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 切替
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+
+  // 完了マーキング＋みんなのこころ加算
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(msg){
+  $toast.textContent = msg || 'OK';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 850);
+}
+
+/* ===== 初回描画 ===== */
+renderQuestion();
+</script>
+
+<!-- みんなのこころ（共通IIFE：あなたのLv＋CountAPI） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'kokoro-detective';
+  var NS='haisuikounozarigani_shindan', KEY='specimens_open_total';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      var url='https://api.countapi.xyz/hit/'+NS+'/'+KEY;
+      if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+      else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());</script>
+
+</body>
+</html>
