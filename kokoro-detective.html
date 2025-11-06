@@ -67,6 +67,14 @@
   .mini-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:#12202b;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9rem;transition:.25s;z-index:40}
   .mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   [role="progressbar"]{width:100%}
+  
+  /* ── 前回の回答：スマホ視認性UP ───────────────── */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line)}
+/* 質問文は2行で省略（自然な位置で） */
+.prev-q{flex:1;min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+/* 回答ラベルは1行固定のチップ化（折り返さない） */
+.prev-a{flex:0 0 auto;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:.9rem;background:#f6f9ff}
 </style>
 </head>
 
@@ -120,7 +128,13 @@
         <li>推測より一次情報（本人の言葉や目の前の事実）を先に置くと、誤解が減る傾向があると言われます。</li>
         <li>断定を質問に変える小さな確認は、信頼の土台づくりに役立つとされます。※個人差あり</li>
       </ul>
-    </details>
+</details>
+
+<!-- 前回の回答（レビュー） -->
+<details id="prevBlock" style="margin-top:10px">
+  <summary>前回の回答（一覧）</summary>
+  <ul id="prevList" class="prev-list"></ul>
+</details>
 
     <p class="meta" style="margin:.8rem 0 0">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。医療・採用用途には使えません。</p>
     <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
@@ -141,6 +155,7 @@ const SLUG = 'kokoro-detective';
 const LS_ANS = `shindan:${SLUG}:answers`;
 const LS_IDX = `shindan:${SLUG}:index`;
 const LS_DONE = `shindan:${SLUG}:done`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`; // 前回完了時の回答スナップショット
 
 const FACTORS = ['OBS','FACT','ASK','CTX','VER'];
 const FACTOR_LABEL = {
@@ -333,6 +348,24 @@ function showResult(){
 
   const {sums,totalPct} = compute();
 
+// ⬇ 前回の回答を読み出し、レビューを描画
+try{
+  const prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
+  const $block = document.getElementById('prevBlock');
+  const $list  = document.getElementById('prevList');
+  if(prev && Array.isArray(prev.answers) && $block && $list){
+    $list.innerHTML = '';
+    prev.answers.forEach((v,i)=>{
+      const li = document.createElement('li');
+      li.className = 'prev-item';
+      const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+      li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+      $list.appendChild(li);
+    });
+    $block.open = false; // 初期は閉じる
+  }
+}catch(_){}
+
   // トップ因子（同点許容）
   const entries = Object.entries(sums).sort((a,b)=>b[1]-a[1]);
   const topVal = entries[0][1];
@@ -381,7 +414,11 @@ $resultLines.textContent = paragraph;
 
   // 完了マーキング＋みんなのこころ加算
   try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
-  document.dispatchEvent(new Event('result:ready'));
+  try{
+  localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+}catch(_){}
+
+document.dispatchEvent(new Event('result:ready'));
 }
 
 /* ===== トースト ===== */
