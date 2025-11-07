@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>集中BGM診断｜歌の有無・テンポ・刺激量のちょうどよさ</title>
+<meta name="description" content="24問×5件法で、集中タスクに合う“歌の有無・テンポ・刺激量”のバランスを見える化。6因子バーとミニ一歩、推し曲タイプの提案つき。">
+<meta name="theme-color" content="#14202b">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="集中BGM診断">
+<meta property="og:description" content="24問×5件法で、あなたに合うBGMの条件を見える化。因子バー＋推し曲タイプ提案。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/focus-bgm-check.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/focus-bgm-check/t00.webp">
+<style>
+  :root{
+    --bg:#f4f7f9; --paper:#fff; --ink:#0e1920; --muted:#566575; --line:#e4ebf1;
+    --accent:#4aa8ff; /* cold */ --accent2:#a48bff;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+  a{color:#274b6b;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  header.hd{background:linear-gradient(160deg,#f1f7fd,#ecf2f9);border-bottom:1px solid var(--line)}
+  header.hd .wrap{padding:20px 16px 10px}
+  .ttl{font-weight:800;font-size:1.35rem;letter-spacing:.02em}
+  .sub{color:var(--muted);font-size:.95rem}
+
+  /* 固定進捗（noh準拠） */
+  .progress-fixed{position:sticky;top:0;z-index:20;height:8px;background:var(--line)}
+  .progress-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s ease}
+  [role="progressbar"]{width:100%}
+
+  figure.hero{margin:12px 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+  figure.hero img{display:block;width:100%;height:auto}
+
+  .paper{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+  .qnum{font-weight:700;color:#1c2a36}
+  .qtext{margin:.4rem 0 1rem}
+  .opts{display:grid;grid-template-columns:1fr;gap:8px}
+  .btn{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:.12s}
+  .btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#f3f0ff}
+  .btn:hover{transform:translateY(-1px)}
+  .opt-note{color:#6c7b8b;font-size:.9rem}
+  .ctrls{display:flex;gap:8px;margin-top:12px}
+  .ctrls button{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f6f9ff;cursor:pointer}
+  .ctrls button.primary{background:#14202b;color:#fff;border-color:#0e1620}
+  .hint{font-size:.9rem;color:#5b6876}
+
+  .result{display:none}
+  .rank{display:inline-block;padding:.2em .6em;border-radius:999px;background:#e9f2ff;color:#1a3a6b;font-weight:700;margin-left:.4em}
+  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  .result .imgbox{flex:1 1 280px;min-width:260px}
+  .result .imgbox img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+  .result .text{flex:2 1 360px;min-width:300px}
+  .bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .bar{background:#f2f6fb;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bar .h{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:.92rem}
+  .bar .b{height:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+  .meta{color:#6b7a85;font-size:.92rem}
+  .back{display:inline-block;margin:10px 0 20px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#f6f9ff}
+
+  .mini-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:#12202b;color:#fff;padding:8px 12px;border-radius:999px;font-size:.9rem;transition:.25s;z-index:40}
+  .mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* 前回回答：スマホ視認性UP */
+  .prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+  .prev-item{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line)}
+  .prev-q{flex:1;min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+  .prev-a{flex:0 0 auto;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:.9rem;background:#f6f9ff}
+</style>
+</head>
+
+<body data-id="focus-bgm-check">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">集中BGM診断 <span class="rank" aria-label="5段階ランク">Lv?</span></div>
+    <div class="sub">集中タスクに合う「歌の有無・テンポ・刺激量」を、6因子でやさしく見える化。</div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed"><div class="progress-bar" style="width:0%"></div></div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/focus-bgm-check/t00.webp" alt="静かな書斎" loading="lazy">
+  </figure>
+
+  <!-- 質問カード -->
+  <section id="quiz" class="paper" aria-label="質問セクション">
+    <div class="qnum" id="qnum">Q1/24</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+      <button type="button" id="nextBtn" class="primary">次へ</button>
+    </div>
+    <div class="hint" id="hint">押した瞬間に小さなご褒美✨（自動保存＆開き直し復元）</div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <h3 id="resultTitle" style="margin:.2rem 0 0;"></h3>
+        <p id="resultLines" style="white-space:pre-line;margin:.4rem 0 1rem"></p>
+
+        <!-- 推し曲タイプ＆おすすめ -->
+        <div class="meta" id="resultSuggest" style="margin:.4rem 0 .2rem"></div>
+
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+
+    <details style="margin-top:14px">
+      <summary>研究メモ</summary>
+      <ul style="margin:.4rem 0 .2rem .9rem">
+        <li>歌詞などの言語情報は作業内容によって注意を引きやすいことがあると言われます。</li>
+        <li>一定の反復や環境音は、集中を保ちやすい人もいますが個人差が大きいとされます。</li>
+      </ul>
+    </details>
+
+    <!-- 前回の回答（レビュー） -->
+    <details id="prevBlock" style="margin-top:10px">
+      <summary>前回の回答（一覧）</summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <p class="meta" style="margin:.8rem 0 0">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。医療・採用用途には使えません。</p>
+    <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite">記録したよ ✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  document.querySelector('.progress-bar').style.width = Math.max(0,Math.min(100,p)) + '%';
+}
+
+/* ===== 定義 ===== */
+const SLUG = 'focus-bgm-check';
+const LS_ANS = `shindan:${SLUG}:answers`;
+const LS_IDX = `shindan:${SLUG}:index`;
+const LS_DONE = `shindan:${SLUG}:done`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+const FACTORS = ['LANG','LOOP','BASS','AMB','SURP','TEMPO'];
+const FACTOR_LABEL = {
+  LANG:'言語負荷',
+  LOOP:'反復許容量',
+  BASS:'低音の存在感',
+  AMB:'環境音の可否',
+  SURP:'驚き耐性',
+  TEMPO:'テンポ欲'
+};
+const TYPE_NAME = {
+  LANG:'歌詞に敏感',
+  LOOP:'ループOK',
+  BASS:'低音好き',
+  AMB:'自然音派',
+  SURP:'サプライズ耐性',
+  TEMPO:'テンポ駆動'
+};
+
+/* 24問・5件法（0–4）／“高いほど望ましい方向”で作問 */
+const QUESTIONS = [
+  // 言語負荷（LANG）
+  {t:'歌詞が耳に入ると手が止まりやすい。', key:'LANG', rev:true},
+  {t:'英語や聞き取りにくい歌詞なら気になりにくい。', key:'LANG'},
+  {t:'人の話し声を流していても作業は進む。', key:'LANG', rev:true},
+  {t:'セリフ入りでも集中を保てる。', key:'LANG', rev:true},
+
+  // 反復許容量（LOOP）
+  {t:'ループが続いても飽きにくい。', key:'LOOP'},
+  {t:'単調なビートは考えを整えてくれる。', key:'LOOP'},
+  {t:'変化が少ない曲は逆に気が散る。', key:'LOOP', rev:true},
+  {t:'作業の手の動きと曲のリズムが合うと心地よい。', key:'LOOP'},
+
+  // 低音（BASS）
+  {t:'低音が弱いと物足りない。', key:'BASS'},
+  {t:'ベースが強いと集中が上がる感じがする。', key:'BASS'},
+  {t:'重低音は長時間だと疲れる。', key:'BASS', rev:true},
+  {t:'低い音がはっきり聴こえると集中しやすい。', key:'BASS'},
+
+  // 環境音（AMB）
+  {t:'雨音・風音のトラックで落ち着く。', key:'AMB'},
+  {t:'カフェのざわめきは心地よい。', key:'AMB'},
+  {t:'生活音が混じると集中が途切れる。', key:'AMB', rev:true},
+  {t:'自然音だけでも作業は進む。', key:'AMB'},
+
+  // 驚き耐性（SURP）
+  {t:'不意のブレイクや展開も楽しい。', key:'SURP'},
+  {t:'突然の大音量はすぐ気が散る。', key:'SURP', rev:true},
+  {t:'予想外の進行はむしろ覚醒する。', key:'SURP'},
+  {t:'安定した構成でないと落ち着かない。', key:'SURP', rev:true},
+
+  // テンポ欲（TEMPO）
+  {t:'ゆっくりめのテンポが好きだ。', key:'TEMPO', rev:true},
+  {t:'速いテンポだと手が動く。', key:'TEMPO'},
+  {t:'テンポ一定だと安心する。', key:'TEMPO'},
+  {t:'BPMが高めの曲で能率が上がる気がする。', key:'TEMPO'}
+];
+
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $next = document.getElementById('nextBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultLines = document.getElementById('resultLines');
+const $resultSuggest = document.getElementById('resultSuggest');
+const $bars = document.getElementById('bars');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== 復元 ===== */
+(function restore(){
+  try{
+    const savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    const savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+    if(Array.isArray(savedAns) && savedAns.length === QUESTIONS.length){
+      answers = savedAns;
+      idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+      if(answers.every(v => v !== null)){ showResult(); return; }
+    }
+  }catch(_){}
+  renderQuestion();
+})();
+
+/* ===== 画面描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span>${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click',()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+  $prev.disabled = (idx===0);
+  $next.textContent = (idx===QUESTIONS.length-1)? '結果を見る':'次へ';
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+  document.querySelector('.rank').textContent = `Lv?`;
+}
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','とてもある'][i] || '';
+}
+
+/* ===== 回答処理 ===== */
+function selectAnswer(v){
+  answers[idx] = v; // 0–4
+  persist();
+  showToast('記録したよ ✅');
+  markPressed(v);
+  setTimeout(()=>{ // 自動で次へ
+    if(idx < QUESTIONS.length-1){ idx++; renderQuestion(); }
+    else { showResult(); }
+  }, 140);
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+$prev.addEventListener('click', ()=>{ if(idx>0){ idx--; persist(); renderQuestion(); }});
+$next.addEventListener('click', ()=>{ if(idx<QUESTIONS.length-1){ idx++; persist(); renderQuestion(); } else { showResult(); }});
+
+/* ===== 保存 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== スコア ===== */
+function compute(){
+  const sums = {LANG:0,LOOP:0,BASS:0,AMB:0,SURP:0,TEMPO:0};
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i]; if(v==null) v = 0; // 0–4
+    if(q.rev) v = 4 - v;                  // 逆転処理
+    sums[q.key] += v;
+  });
+  // 各因子 4問×4点=16、全体最大 16×6=96 → 0–100換算
+  const total = Object.values(sums).reduce((a,b)=>a+b,0);
+  const totalPct = Math.round(total/96*100);
+  return {sums,total,totalPct};
+}
+
+/* ===== 画像帯域（0–39 t01 / 40–59 t02 / 60–74 t03 / 75–89 t04 / 90–100 t05） ===== */
+function imageFor(pct){
+  let file='t01.webp', lv=1, title='ほぼ無音〜環境音';
+  if(pct<=39){ file='t01.webp'; lv=1; title='ほぼ無音〜環境音'; }
+  else if(pct<=59){ file='t02.webp'; lv=2; title='やさしいインスト'; }
+  else if(pct<=74){ file='t03.webp'; lv=3; title='チル〜中庸ビート'; }
+  else if(pct<=89){ file='t04.webp'; lv=4; title='しっかりノリ'; }
+  else { file='t05.webp'; lv=5; title='高刺激OK'; }
+  return {file,lv,title};
+}
+
+/* ランク別の“あるある一段落”＋推し曲タイプ・おすすめ */
+function levelPack(lv){
+  switch(lv){
+    case 1: return {
+      copy:'音は壁紙タイプ。静けさ＋自然音が最強。語が入ると注意がそっちへ寄りやすい。まずは歌なしで、環境音を背景に敷くと手が止まりにくい。',
+      suggest:'推し曲：アンビエント／雨・風／歌なしBPM60–80｜おすすめ：サティ《ジムノペディ1》、バッハ無伴奏チェロ（遅め）、雨音・焚き火・図書館空調'
+    };
+    case 2: return {
+      copy:'薄いメロと一定ビートが心地よい。低音は控えめ、声は遠目がちょうどいい。BPM90前後を1曲だけ決め打ちで回すと粘りが出る。',
+      suggest:'推し曲：ピアノLo-Fi／アコギ／BPM70–90｜おすすめ：ドビュッシー《アラベスク1》、ショパン前奏曲（静かな曲）、小雨＋ピアノ小音量'
+    };
+    case 3: return {
+      copy:'軽いループと程よい低音が相棒。タスクの波に合わせて音を少し上げ下げできる器用さ。開始前に“最初の1曲”を決めると迷子にならない。',
+      suggest:'推し曲：チルホップ／Lo-Fi＋環境音／BPM80–110｜おすすめ：平均律から数曲、四季の緩徐楽章、雨だれ＋遠めのカフェ音'
+    };
+    case 4: return {
+      copy:'一定の推進力で作業を押すタイプ。歌は遠めならOK、低音はほどほど。音量を2だけ下げると長持ちしやすい。',
+      suggest:'推し曲：シンセ／英語Vo遠め／BPM100–120｜おすすめ：ベト7-2、ラヴェル《ボレロ》、規則的な波音／車窓の走行音'
+    };
+    case 5: return {
+      copy:'速めBPM＋強め低音でも崩れない短距離ランナー。締切ダッシュに強い。5分ラッシュ→短休憩の繰り返しで爆速＆消耗セーブ。',
+      suggest:'推し曲：EDMインスト／ブレイクビーツ／BPM120–150｜おすすめ：ブランデンブルク3-1、熊蜂の飛行、一定テンポの打鍵音／電車リズム'
+    };
+  }
+  return {copy:'',suggest:''};
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+
+  function restartQuiz(){
+    answers = new Array(QUESTIONS.length).fill(null);
+    idx = 0;
+    try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+    $result.style.display = 'none';
+    $quiz.style.display = 'block';
+    updateProgress(0);
+    renderQuestion();
+    window.scrollTo({top:0, behavior:'smooth'});
+    showToast('最初からはじめるよ');
+  }
+  if($restart){ $restart.addEventListener('click', restartQuiz); }
+
+  const {sums,totalPct} = compute();
+
+  // 前回の回答一覧
+  try{
+    const prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
+    const $block = document.getElementById('prevBlock');
+    const $list  = document.getElementById('prevList');
+    if(prev && Array.isArray(prev.answers) && $block && $list){
+      $list.innerHTML = '';
+      prev.answers.forEach((v,i)=>{
+        const li = document.createElement('li');
+        li.className = 'prev-item';
+        const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+        li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+        $list.appendChild(li);
+      });
+      $block.open = false;
+    }
+  }catch(_){}
+
+  // トップ因子（同点許容）
+  const entries = Object.entries(sums).sort((a,b)=>b[1]-a[1]);
+  const topVal = entries[0][1];
+  const tops = entries.filter(([k,v])=> v===topVal).map(([k])=>k);
+  const topTypeLabel = tops.map(k=> FACTOR_LABEL[k]).join(' × ');
+
+  // 画像・ランク
+  const img = imageFor(totalPct);
+  const pack = levelPack(img.lv);
+  const IMG_BASE = '/shindan/assets/results/focus-bgm-check/';
+  $resultImg.src = IMG_BASE + img.file;
+  const altMap = {
+    't01.webp':'図書館の机',
+    't02.webp':'雨粒と鍵盤',
+    't03.webp':'一定のドラム',
+    't04.webp':'夜景と低音',
+    't05.webp':'ネオンと疾走'
+  };
+  $resultImg.alt = altMap[img.file] || 'BGMの抽象イメージ';
+
+  // 見出し・本文（MBTIっぽい“あるある一段落”）
+  $resultTitle.textContent = `総合BGM適合：${totalPct} / 100`;
+  const paragraph = `Lv${img.lv}（${img.title}）
+タイプ：${topTypeLabel}
+${pack.copy}`;
+  $resultLines.textContent = paragraph;
+
+  // 推し曲タイプ＆おすすめ
+  $resultSuggest.textContent = pack.suggest;
+
+  // 因子バー
+  document.querySelector('.rank').textContent = `Lv${img.lv}`;
+  $bars.innerHTML = '';
+  FACTORS.forEach(key=>{
+    const val = sums[key];               // 0–16
+    const pct = Math.round(val/16*100);  // 0–100
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACTOR_LABEL[key]}（${TYPE_NAME[key]}）</span><span>${pct}%</span></div>
+      <div class="b" style="width:${pct}%" aria-label="${FACTOR_LABEL[key]}のスコア ${pct}%" role="presentation"></div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 切替
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+
+  // 完了・前回回答保存・みんなのこころ発火
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+  try{ localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()})); }catch(_){}
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(msg){
+  $toast.textContent = msg || 'OK';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 850);
+}
+
+/* ===== 初回描画 ===== */
+renderQuestion();
+</script>
+
+<!-- みんなのこころ（共通IIFE：あなたのLv＋CountAPI） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'focus-bgm-check';
+  var NS='haisuikounozarigani_shindan', KEY='specimens_open_total';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      var url='https://api.countapi.xyz/hit/'+NS+'/'+KEY;
+      if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
+      else{ fetch(url,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){}); }
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());</script>
+
+</body>
+</html>
