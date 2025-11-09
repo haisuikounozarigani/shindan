@@ -97,7 +97,6 @@
       <button type="button" id="prevBtn">もどる</button>
       <button type="button" id="nextBtn" class="primary">次へ</button>
     </div>
-    <div class="hint" id="hint">押した瞬間に小さなご褒美✨（自動保存＆開き直し復元）</div>
   </section>
 
   <!-- 結果 -->
@@ -118,13 +117,43 @@
       </div>
     </div>
 
-    <details style="margin-top:14px">
-      <summary>研究メモ</summary>
-      <ul style="margin:.4rem 0 .2rem .9rem">
-        <li>歌詞などの言語情報は作業内容によって注意を引きやすいことがあると言われます。</li>
-        <li>一定の反復や環境音は、集中を保ちやすい人もいますが個人差が大きいとされます。</li>
-      </ul>
-    </details>
+   <details style="margin-top:14px">
+  <summary>研究メモ</summary>
+  <ul style="margin:.4rem 0 .2rem .9rem">
+    <!-- 作業用BGM（歌なし×グルーヴ） -->
+    <li>“作業用BGM”はオフィス雑音や汎用ポップスより反応時間が<span aria-label="約7パーセント">約7％</span>速い＆気分↑の報告。歌詞なし＋グルーヴが鍵。</li>
+
+    <!-- 中程度ノイズと発想 -->
+    <li>創造課題では50dBより70dBの環境ノイズで成績↑、85dBでは低下。発想系に限って正の影響が出やすい。</li>
+
+    <!-- メタ/総説（読解・記憶は静寂有利） -->
+    <li>総合レビューでは、読解・言語記憶は静かな環境が有利。BGMの正の効果は限定的で、歌詞ありがより不利。</li>
+
+    <!-- 母語歌詞の影響 -->
+    <li>歌詞つきは読解の正答率を下げやすく、特にテキストと歌詞が同じ言語だと影響が強い。</li>
+
+    <!-- 自己選択BGM・覚醒度 -->
+    <li>高覚醒・ポジ寄りの曲は知覚判断をわずかに改善。自分で選んだBGMが注意統制を上げた報告も。</li>
+
+    <!-- テンポ×感情価 -->
+    <li>速いテンポ×ポジ感情の曲は、単語想起や語の流暢性を小さく底上げ。</li>
+
+    <!-- 無関係音効果 -->
+    <li>好き嫌いに関係なく、歌詞や変化のある音声は系列リコール（暗記）を妨げやすい＝静寂が有利。</li>
+
+    <!-- ADHDとホワイトノイズ -->
+    <li>ADHD傾向が強い人にはホワイトノイズが成績改善に働くことがある一方、健常群では不利になりやすい（条件依存）。</li>
+
+    <!-- バイノーラルビート（β帯） -->
+    <li>15Hz（β帯）のバイノーラルビートはメンタル疲労下で持続注意や作業記憶の低下を小さく抑える報告（再現性は混在）。</li>
+
+    <!-- タスク負荷とテンポ -->
+    <li>高負荷時は速いテンポが注意・気分にプラス、低負荷では差が出にくい。</li>
+
+    <!-- 作業用BGMと疲労 -->
+    <li>“リラックス系／アップテンポ／本人選択”などは主観的疲労↓に寄与し、抑制や作業記憶の落ち込みを一部で緩和。</li>
+  </ul>
+</details>
 
     <!-- 前回の回答（レビュー） -->
     <details id="prevBlock" style="margin-top:10px">
@@ -138,7 +167,7 @@
   </section>
 </main>
 
-<div class="mini-toast" id="toast" role="status" aria-live="polite">記録したよ ✅</div>
+<div class="mini-toast" id="toast" role="status" aria-live="polite"> ✅</div>
 
 <script>
 /* ===== 固定進捗バー ===== */
@@ -275,7 +304,7 @@ function descFor(i){
 function selectAnswer(v){
   answers[idx] = v; // 0–4
   persist();
-  showToast('記録したよ ✅');
+  showToast(' ✅');
   markPressed(v);
   setTimeout(()=>{ // 自動で次へ
     if(idx < QUESTIONS.length-1){ idx++; renderQuestion(); }
