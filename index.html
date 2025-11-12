@@ -99,9 +99,20 @@ a.link > div{flex:1 1 auto;min-width:0}
   .badge{display:none}
 }
 
-/* 標本カウンタ（控えめ） */
-.stats-inline{justify-content:flex-end;gap:10px;margin-top:6px}
-.stats-inline .mini{color:var(--muted);font-size:.9em}
+/* 標本カウンタ：横並び固定（改行させない） */
+.stats-inline{
+  display:flex;            /* 明示 */
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:6px;
+  flex-wrap:nowrap;        /* ← ここで折返し禁止 */
+}
+.stats-inline .mini{
+  color:var(--muted);
+  font-size:.9em;
+  white-space:nowrap;      /* ← 文中での改行も禁止 */
+}
 
 /* === ランクボックス === */
 .rankbox{
