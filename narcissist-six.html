@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ナルシスト6タイプ診断｜6羽の鳥で見る“前に出る顔”</title>
+<meta name="description" content="スズメ・ハト・クジャク・オウム・ワシ・フクロウの6羽の鳥をモチーフに、24問であなたの“前に出る顔（ナルシスト6タイプ）”をチェックします。">
+<meta name="theme-color" content="#fff7fd">
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ナルシスト6タイプ診断">
+<meta property="og:description" content="6羽の鳥モチーフ（スズメ／ハト／クジャク／オウム／ワシ／フクロウ）から、今日いちばん強いナルシスト顔を判定。因子バーとミニ一歩つき。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/narcissist-six.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/narcissist-six/t00.webp">
+<style>
+  :root{
+    --bg:#fdf7ff; --paper:#fff; --ink:#201322; --muted:#6a5b70; --line:#ece3f5;
+    --accent:#8c6bff; /* hot */ --accent2:#ff8fc7; /* duo */
+  }
+  html,body{
+    margin:0;padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  }
+  a{color:#5b2ea8;text-decoration:none}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  header.hd{
+    background:linear-gradient(160deg,#fff7fd,#f3ecff);
+    border-bottom:1px solid var(--line);
+  }
+  header.hd .wrap{padding:20px 16px 10px}
+  .ttl{font-weight:800;font-size:1.35rem;letter-spacing:.02em}
+  .sub{color:var(--muted);font-size:.95rem}
+
+  /* 固定進捗（noh準拠） */
+  .progress-fixed{position:sticky;top:0;z-index:20;height:8px;background:var(--line)}
+  .progress-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s ease}
+  [role="progressbar"]{width:100%}
+
+  figure.hero{
+    margin:12px 0;
+    border:1px solid var(--line);
+    border-radius:16px;
+    overflow:hidden;
+    background:#fff;
+  }
+  figure.hero img{display:block;width:100%;height:auto}
+
+  .paper{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px;
+    margin:14px 0;
+  }
+
+  /* プロローグ */
+  #prologue h2{
+    margin-top:0;
+    font-size:1.1rem;
+  }
+  #prologue p{
+    margin:.4rem 0;
+  }
+  .start-btn{
+    margin-top:12px;
+    width:100%;
+    padding:12px 16px;
+    border-radius:999px;
+    border:1px solid var(--accent);
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff;
+    font-weight:700;
+    letter-spacing:.03em;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+  }
+  .start-btn span.emo{font-size:1.2rem}
+
+  .qnum{font-weight:700;color:#4c2b5f}
+  .qtext{margin:.4rem 0 1rem}
+  .opts{display:grid;grid-template-columns:1fr;gap:8px}
+  .btn{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    cursor:pointer;
+    transition:.12s;
+  }
+  .btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+  .btn:hover{transform:translateY(-1px)}
+  .opt-note{color:#8b7b93;font-size:.9rem}
+  .ctrls{display:flex;gap:8px;margin-top:12px}
+  .ctrls button{
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#faf5ff;
+    cursor:pointer;
+  }
+  .ctrls button.primary{
+    background:#4c2b5f;
+    color:#fff;
+    border-color:#4c2b5f;
+  }
+
+  .result{display:none}
+  .rank{
+    display:inline-block;
+    padding:.2em .6em;
+    border-radius:999px;
+    background:#f3e9ff;
+    color:#4b266e;
+    font-weight:700;
+    margin-left:.4em;
+  }
+  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  .result .imgbox{flex:1 1 280px;min-width:260px}
+  .result .imgbox img{
+    width:100%;height:auto;
+    border-radius:14px;
+    border:1px solid var(--line);
+    display:block;
+  }
+  .result .text{flex:2 1 360px;min-width:300px}
+  .bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .bar{
+    background:#f9f2ff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .bar .h{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:6px 10px;
+    font-size:.92rem;
+  }
+  .bar .b{
+    height:10px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    width:0%;
+  }
+  .meta{color:#7a6c86;font-size:.92rem}
+  .back{
+    display:inline-block;
+    margin:10px 0 20px;
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#faf5ff;
+  }
+
+  .mini-toast{
+    position:fixed;
+    left:50%;bottom:24px;
+    transform:translateX(-50%) translateY(20px);
+    opacity:0;
+    background:#4c2b5f;
+    color:#fff;
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:.9rem;
+    transition:.25s;
+    z-index:40;
+  }
+  .mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* 前回回答：スマホ視認性UP */
+  .prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+  .prev-item{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    padding:6px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .prev-q{
+    flex:1;min-width:0;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+    overflow-wrap:anywhere;
+  }
+  .prev-a{
+    flex:0 0 auto;
+    white-space:nowrap;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:2px 8px;
+    font-size:.9rem;
+    background:#faf5ff;
+  }
+</style>
+</head>
+
+<body data-id="narcissist-six">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">ナルシスト6タイプ診断 <span class="rank" aria-label="タイプ">—</span></div>
+    <div class="sub">
+      6羽の鳥になぞらえて、「つい前に出ちゃう顔」をこっそり確認するテストです。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー：Aviary of mirrors -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/narcissist-six/t00.webp" alt="鳥の羽灯る回廊" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2>プロローグ：六羽が住む鏡の鳥小屋</h2>
+    <p>
+      自撮りがうまく決まったとき、武勇伝を話したくなったとき、
+      「それは良くない」とつい説教モードになるとき。
+      そのたびに、心の鳥小屋では六羽の鳥がバタバタと騒いでいる。
+    </p>
+    <p>
+      目立ちたがりのオウム、守られたいスズメ、色気担当のクジャク、
+      正しさ大好きなハト、仕切りたがりのワシ、距離感プロのフクロウ。
+      どの鳥も、ちょっと過剰で、ちょっと愛おしい「ナルシストの顔」だ。
+    </p>
+    <p>
+      この診断は、24問の質問で、「いま一番前に出ている鳥」をそっと指さしてくれる、
+      小さな見世物小屋。覗いてみる勇気があるなら、さあ、扉をあけてみよう。
+    </p>
+    <p style="color:var(--muted);font-size:.9rem;margin-top:.6rem">
+      ※深刻な性格診断ではなく、「自己演出のクセ」をゆるく眺めるためのテストです。
+    </p>
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">🐦</span><span>鳥たちの楽屋をのぞく</span>
+    </button>
+  </section>
+
+  <!-- 質問カード -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qnum" id="qnum">Q1/24</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+      <button type="button" id="nextBtn" class="primary">次へ</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <h3 id="resultTitle" style="margin:.2rem 0 0;"></h3>
+        <p id="resultLines" style="white-space:pre-line;margin:.4rem 0 1rem"></p>
+
+        <!-- 因子バー（6本） -->
+        <div class="bars" id="bars"></div>
+
+        <!-- メタ -->
+        <div class="meta" id="meta" style="margin-top:.6rem"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（レビュー） -->
+    <details id="prevBlock" style="margin-top:10px">
+      <summary>前回の回答（一覧）</summary>
+      <ul id="prevList" class="prev-list"></ul>
+   </details>
+    <!-- 研究メモ -->
+<div class="meta" style="margin:.8rem 0 0">
+      <strong>研究メモ：</strong>
+      心理学の研究では、自己愛は「堂々とした自己愛（grandiose）」と
+      「傷つきやすい自己愛（vulnerable）」という二つの顔を持つとよく言われます。
+      前者はカリスマ性や自信と結びつきやすい一方で、誇示や支配が強いほど
+      周囲との衝突や短命な対人関係と関連しやすいことが報告されています。
+      後者は「評価に敏感で、すぐヘコむ」特徴とセットで現れやすく、
+      軽いレベルでは自己防衛やストレス対処のクッションにもなりうるとされています。
+    </div>
+    <p class="meta" style="margin:.8rem 0 0">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+    <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite"> ✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  bar.style.width = val + '%';
+  wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 定義 ===== */
+const SLUG = 'narcissist-six';
+const LS_ANS = `shindan:${SLUG}:answers`;
+const LS_IDX = `shindan:${SLUG}:index`;
+const LS_DONE = `shindan:${SLUG}:done`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* 因子（6） */
+const FACTS = ['SHOW','VULN','SEXY','MORAL','DOM','BOUND'];
+const FACT_LABEL = {
+  SHOW:'誇示（オウム）',
+  VULN:'脆弱（スズメ）',
+  SEXY:'性的演出（クジャク）',
+  MORAL:'道徳誇示（ハト）',
+  DOM:'支配圧（ワシ）',
+  BOUND:'境界線（フクロウ）'
+};
+
+/* タイプと画像（t01〜t06タイプ固定） */
+const TYPE_INFO = {
+  // sparrow
+  VULN:{
+    name:'スズメ系・脆弱アピ型',
+    file:'t01.webp',
+    alt:'スズメ系の二人',
+    short:'守られたいサインが上手。スズメみたいに小さく震えつつ、ちゃんと気を引けるタイプです。',
+    step:'事実＋感情1語で送る'
+  },
+  // dove
+  MORAL:{
+    name:'ハト系・道徳アピ型',
+    file:'t02.webp',
+    alt:'ハト系の二人',
+    short:'良心のアナウンス係。ハトのように静かに、でも確実に「それ正しくないかも…」を広報します。',
+    step:'相手の良点を1つ書く'
+  },
+  // peacock
+  SEXY:{
+    name:'クジャク系・性的アピ型',
+    file:'t03.webp',
+    alt:'クジャク系の二人',
+    short:'魅せ方の演出家。クジャクの羽みたいに、「ここぞ」のタイミングだけ色を増やしたくなる人です。',
+    step:'投稿は下書き30分'
+  },
+  // parrot
+  SHOW:{
+    name:'オウム系・誇示アピ型',
+    file:'t04.webp',
+    alt:'オウム系の二人',
+    short:'スポットライトの扱い人。オウムの声量とリアクションで場を動かし、「聞いて聞いて！」が得意です。',
+    step:'成果を数字で一言'
+  },
+  // eagle
+  DOM:{
+    name:'ワシ系・支配・強さ型',
+    file:'t05.webp',
+    alt:'ワシ系の二人',
+    short:'船長ポジションを取りがち。ワシの目で全体を見渡し、「とりあえずこうしよう」を決めていきます。',
+    step:'要望を「お願い」に'
+  },
+  // owl
+  BOUND:{
+    name:'フクロウ系・境界・配慮型',
+    file:'t06.webp',
+    alt:'フクロウ系の二人',
+    short:'編集者気質のフクロウタイプ。静かに全体を見守りつつ、余白と距離感をきれいに整えます。',
+    step:'断り文テンプレ作る'
+  }
+};
+
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+
+/* 設問 24問（6因子×4｜0–4） */
+const QUESTIONS = [
+  // 誇示（目立ち・見せ場） SHOW（オウム）
+  {t:'注目が集まると元気が出る。', key:'SHOW'},
+  {t:'成果は数字で示したい。', key:'SHOW'},
+  {t:'大きなリアクションで場を動かすことがある。', key:'SHOW'},
+  {t:'静かな役回りだと物足りない。', key:'SHOW'},
+
+  // 脆弱（弱み・守られたい） VULN（スズメ）
+  {t:'弱音を出すと距離が近くなると感じる。', key:'VULN'},
+  {t:'「つらかった話」は反応がよい。', key:'VULN'},
+  {t:'守ってほしい気持ちを匂わせることがある。', key:'VULN'},
+  {t:'励ましの言葉を待ってから話を続ける。', key:'VULN'},
+
+  // 性的演出（色気・魅せ） SEXY（クジャク）
+  {t:'見た目や雰囲気を“ちょっとだけ”盛る。', key:'SEXY'},
+  {t:'さりげない仕草で印象を変える。', key:'SEXY'},
+  {t:'外見を褒められると特にうれしい。', key:'SEXY'},
+  {t:'視線や間で“色気”を作れる気がする。', key:'SEXY'},
+
+  // 道徳誇示（正しさ・善） MORAL（ハト）
+  {t:'正しさを示すと安心する。', key:'MORAL'},
+  {t:'善い行動は共有したい。', key:'MORAL'},
+  {t:'「それは良くない」と指摘したくなる。', key:'MORAL'},
+  {t:'寄付やマナーの話題を選びがち。', key:'MORAL'},
+
+  // 支配圧（主導・決定） DOM（ワシ）
+  {t:'議論の主導権を取りたくなる。', key:'DOM'},
+  {t:'指示が曖昧だとイラつく。', key:'DOM'},
+  {t:'結論を急いで“決める”ことが多い。', key:'DOM'},
+  {t:'相手のペースより自分のペースを優先しがち。', key:'DOM'},
+
+  // 境界線（配慮・距離感） BOUND（フクロウ）
+  {t:'「今は話せない」と言える。', key:'BOUND'},
+  {t:'相手の領域に踏み込みすぎない。', key:'BOUND'},
+  {t:'頼みごとは断る練習をしている。', key:'BOUND'},
+  {t:'意見が違っても尊重して終われる。', key:'BOUND'}
+];
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $next = document.getElementById('nextBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultLines = document.getElementById('resultLines');
+const $bars = document.getElementById('bars');
+const $meta = document.getElementById('meta');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+/* ===== 初期表示：復元 or プロローグ ===== */
+(function init(){
+  updateProgress(0);
+  let savedAns = null;
+  let savedIdx = 0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const validArray = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = validArray && savedAns.some(v => v !== null);
+  const allDone = validArray && savedAns.every(v => v !== null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion(); // 内部状態だけ整える
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    renderQuestion();
+    enterQuizMode();
+    return;
+  }
+  // 完全新規：プロローグ表示のまま
+  enterPrologueMode();
+})();
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  document.querySelector('.rank').textContent = '—';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 画面描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span>${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click',()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+  $prev.disabled = (idx===0);
+  $next.textContent = (idx===QUESTIONS.length-1)? '結果を見る':'次へ';
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+  document.querySelector('.rank').textContent = '—';
+}
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','とてもある'][i] || '';
+}
+
+/* ===== 回答処理 ===== */
+function selectAnswer(v){
+  answers[idx] = v; // 0–4
+  persist();
+  showToast(' ✅');
+  markPressed(v);
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  }, 140);
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+$prev.addEventListener('click', ()=>{
+  if(idx>0){
+    idx--;
+    persist();
+    renderQuestion();
+  }
+});
+$next.addEventListener('click', ()=>{
+  if(idx<QUESTIONS.length-1){
+    idx++;
+    persist();
+    renderQuestion();
+    enterQuizMode();
+  }else{
+    enterResultMode();
+    showResult();
+  }
+});
+
+/* プロローグ → スタート */
+$startBtn.addEventListener('click', ()=>{
+  if(!answers.some(v=>v!==null)){
+    idx = 0;
+    renderQuestion();
+  }
+  enterQuizMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ===== 保存 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== スコア計算（avg→pct） ===== */
+function computeScores(){
+  const sums = {SHOW:0,VULN:0,SEXY:0,MORAL:0,DOM:0,BOUND:0};
+  const counts = {SHOW:0,VULN:0,SEXY:0,MORAL:0,DOM:0,BOUND:0};
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v == null) v = 0; // 未回答は0扱い
+    sums[q.key] += v; counts[q.key] += 1;
+  });
+  const avg = {}; const pct = {};
+  FACTS.forEach(k=>{
+    const a0 = (sums[k]/(counts[k]||1)); // 0–4
+    const a15 = a0 + 1;                  // 1–5 へシフト
+    avg[k] = a15;
+    pct[k] = Math.round((a15-1)/4*100);  // 0–100
+  });
+
+  // トップ因子＝タイプ。同点時は境界線が高い方を優先
+  let bestVal = -Infinity;
+  FACTS.forEach(k=>{
+    if(avg[k] > bestVal) bestVal = avg[k];
+  });
+  let top = null;
+  FACTS.forEach(k=>{
+    if(top === null || avg[k] > avg[top]) top = k;
+  });
+  if(Math.abs(avg.BOUND - bestVal) < 1e-6){
+    top = 'BOUND';
+  }
+
+  return {avg,pct,top};
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  const {pct, top} = computeScores();
+  const typeInfo = TYPE_INFO[top] || TYPE_INFO.VULN;
+
+  // 画像
+  const IMG_BASE = '/shindan/assets/results/narcissist-six/';
+  const file = typeInfo.file;
+  $resultImg.src = IMG_BASE + file;
+  $resultImg.alt = typeInfo.alt || '鳥モチーフのタイプ';
+
+  // タイトル・バッジ
+  const label = typeInfo.name;
+  document.querySelector('.rank').textContent = label;
+  $resultTitle.textContent = `あなたのタイプ：${label}`;
+
+  // 本文（短評＋スパイス＋ミニ一歩）
+  const flavor = typeInfo.short;
+  const spice = (top === 'VULN')  ? '深い相手はいるのに、自分からは鳴き始めにくいところも。羽の休めどころを1カ所だけ決めておくと楽になります。' :
+                 (top === 'MORAL') ? '正しさの物差しをいつも持っている人。ときどき自分にも、ハト並みのやさしい判定をあげてみると心が軽くなります。' :
+                 (top === 'SEXY')  ? '空気を読んで雰囲気を足せる装飾担当。盛りすぎそうな日は、「今日は一色だけ派手にする」くらいに絞るとちょうどいいかも。' :
+                 (top === 'SHOW')  ? '場を動かす「起爆役」を買って出がち。鳴き声のボリュームだけ一段階下げても、あなたが主役なのはちゃんと伝わっています。' :
+                 (top === 'DOM')   ? '決断と舵取りを任されやすいポジション。「今日はこの空だけ見る日」と決めて、責任範囲を少しだけ狭めても大丈夫。' :
+                 /* BOUND */        '自分と相手の余白を守れるクッション役。「ここまで」が言えるほど、フクロウの羽根も整っていきます。やさしい線引きは才能です。';
+  const line = `${flavor}\n${spice}\nミニ一歩：${typeInfo.step}`;
+  $resultLines.textContent = line;
+
+  // 因子バー（6本） 0–100%
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = pct[k];
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k]}</span><span>${v}%</span></div>
+      <div class="b" style="width:${v}%"></div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // メタ行
+  $meta.textContent =
+    `因子（0–100）：`+
+    `${FACT_LABEL.SHOW}${pct.SHOW}／`+
+    `${FACT_LABEL.VULN}${pct.VULN}／`+
+    `${FACT_LABEL.SEXY}${pct.SEXY}／`+
+    `${FACT_LABEL.MORAL}${pct.MORAL}／`+
+    `${FACT_LABEL.DOM}${pct.DOM}／`+
+    `${FACT_LABEL.BOUND}${pct.BOUND}`;
+
+  // 完了・前回回答保存
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== リスタート ===== */
+function restartQuiz(){
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{
+    localStorage.removeItem(LS_ANS);
+    localStorage.removeItem(LS_IDX);
+  }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0, behavior:'smooth'});
+  showToast('最初からはじめるよ');
+}
+$restart.addEventListener('click', restartQuiz);
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(msg){
+  $toast.textContent = msg || 'OK';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 850);
+}
+
+/* ===== 前回回答一覧を結果表示時に構築 ===== */
+(function hookPrev(){
+  const obs = new MutationObserver(()=>{
+    if($result.style.display==='block'){
+      try{
+        const prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
+        const $block = document.getElementById('prevBlock');
+        const $list  = document.getElementById('prevList');
+        if(prev && Array.isArray(prev.answers) && $block && $list){
+          $list.innerHTML = '';
+          prev.answers.forEach((v,i)=>{
+            const li = document.createElement('li');
+            li.className = 'prev-item';
+            const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+            li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+            $list.appendChild(li);
+          });
+          $block.open = false;
+        }
+      }catch(_){}
+      obs.disconnect();
+    }
+  });
+  obs.observe($result, {attributes:true, attributeFilter:['style']});
+})();
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'narcissist-six';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      // あなたのこころLv（全診断合計）
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      // 診断ごとのカウント
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());</script>
+
+</body>
+</html>
