@@ -657,6 +657,9 @@ function showResult(){
     localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
   }catch(_){}
 
+  // 前回回答一覧を更新
+  buildPrevAnswers();
+
   document.dispatchEvent(new Event('result:ready'));
 }
 
@@ -683,31 +686,31 @@ function showToast(msg){
   toastTimer = setTimeout(()=> $toast.classList.remove('show'), 850);
 }
 
-/* ===== 前回回答一覧を結果表示時に構築 ===== */
-(function hookPrev(){
-  const obs = new MutationObserver(()=>{
-    if($result.style.display==='block'){
-      try{
-        const prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
-        const $block = document.getElementById('prevBlock');
-        const $list  = document.getElementById('prevList');
-        if(prev && Array.isArray(prev.answers) && $block && $list){
-          $list.innerHTML = '';
-          prev.answers.forEach((v,i)=>{
-            const li = document.createElement('li');
-            li.className = 'prev-item';
-            const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
-            li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
-            $list.appendChild(li);
-          });
-          $block.open = false;
-        }
-      }catch(_){}
-      obs.disconnect();
-    }
+/* ===== 前回回答一覧を構築 ===== */
+function buildPrevAnswers(){
+  const $block = document.getElementById('prevBlock');
+  const $list  = document.getElementById('prevList');
+  if(!$block || !$list) return;
+
+  let prev = null;
+  try{
+    prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
+  }catch(_){}
+
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $list.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $list.appendChild(li);
   });
-  obs.observe($result, {attributes:true, attributeFilter:['style']});
-})();
+
+  // デフォルトは閉じておく
+  $block.open = false;
+}
 </script>
 
 <!-- あなたのこころLv（ローカルのみ） -->
