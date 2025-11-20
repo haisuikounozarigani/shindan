@@ -275,8 +275,7 @@
         <!-- 因子バー（6本） -->
         <div class="bars" id="bars"></div>
 
-        <!-- メタ -->
-        <div class="meta" id="meta" style="margin-top:.6rem"></div>
+        
       </div>
     </div>
 
@@ -440,7 +439,6 @@ const $resultImg = document.getElementById('resultImg');
 const $resultTitle = document.getElementById('resultTitle');
 const $resultLines = document.getElementById('resultLines');
 const $bars = document.getElementById('bars');
-const $meta = document.getElementById('meta');
 const $restart = document.getElementById('restartBtn');
 const $toast = document.getElementById('toast');
 const $prologue = document.getElementById('prologue');
@@ -651,15 +649,7 @@ function showResult(){
     $bars.appendChild(wrap);
   });
 
-  // メタ行
-  $meta.textContent =
-    `因子（0–100）：`+
-    `${FACT_LABEL.SHOW}${pct.SHOW}／`+
-    `${FACT_LABEL.VULN}${pct.VULN}／`+
-    `${FACT_LABEL.SEXY}${pct.SEXY}／`+
-    `${FACT_LABEL.MORAL}${pct.MORAL}／`+
-    `${FACT_LABEL.DOM}${pct.DOM}／`+
-    `${FACT_LABEL.BOUND}${pct.BOUND}`;
+  
 
   // 完了・前回回答保存
   try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
