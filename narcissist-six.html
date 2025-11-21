@@ -106,11 +106,6 @@
     background:#faf5ff;
     cursor:pointer;
   }
-  .ctrls button.primary{
-    background:#4c2b5f;
-    color:#fff;
-    border-color:#4c2b5f;
-  }
 
   .result{display:none}
   .rank{
@@ -131,26 +126,43 @@
     display:block;
   }
   .result .text{flex:2 1 360px;min-width:300px}
+
+  /* 因子バー */
   .bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
   .bar{
-    background:#f9f2ff;
-    border:1px solid var(--line);
+    background:transparent;
     border-radius:10px;
-    overflow:hidden;
+    padding:4px 0 6px;
   }
   .bar .h{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:6px 10px;
-    font-size:.92rem;
+    padding:2px 10px 4px;
+    font-size:.9rem;
   }
-  .bar .b{
+  .bar .h span:first-child{font-weight:600}
+  .bar .track{
+    margin:0 10px 4px;
     height:10px;
-    background:linear-gradient(90deg,var(--accent),var(--accent2));
-    width:0%;
+    border-radius:999px;
+    background:#f3e9ff;
+    overflow:hidden;
   }
-  .meta{color:#7a6c86;font-size:.92rem}
+  .bar .fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:inherit;
+    transition:width .25s ease-out;
+  }
+  .bar-desc{
+    padding:0 10px 2px;
+    font-size:.8rem;
+    color:var(--muted);
+  }
+
+  .meta{color:#7a6c86;font-size:.92rem;clear:both}
   .back{
     display:inline-block;
     margin:10px 0 20px;
@@ -200,6 +212,44 @@
     padding:2px 8px;
     font-size:.9rem;
     background:#faf5ff;
+  }
+
+  /* ギャラリー（6タイプの鳥） */
+  #galleryBlock{
+    margin-top:10px;
+    margin-bottom:8px;
+  }
+  #galleryBlock summary{
+    cursor:pointer;
+    list-style:none;
+  }
+  #galleryBlock[open] summary{
+    margin-bottom:6px;
+  }
+  .gallery{
+    margin-top:2px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:10px;
+  }
+  .gallery figure{
+    margin:0;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    padding:6px;
+    text-align:center;
+    font-size:.85rem;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .gallery img{
+    width:100%;
+    height:auto;
+    border-radius:8px;
+    display:block;
   }
 </style>
 </head>
@@ -257,7 +307,6 @@
     <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
     <div class="ctrls">
       <button type="button" id="prevBtn">もどる</button>
-      <button type="button" id="nextBtn" class="primary">次へ</button>
     </div>
   </section>
 
@@ -274,8 +323,6 @@
 
         <!-- 因子バー（6本） -->
         <div class="bars" id="bars"></div>
-
-        
       </div>
     </div>
 
@@ -283,9 +330,41 @@
     <details id="prevBlock" style="margin-top:10px">
       <summary>前回の回答（一覧）</summary>
       <ul id="prevList" class="prev-list"></ul>
-   </details>
+    </details>
+
+    <!-- 6タイプの鳥ギャラリー -->
+    <details id="galleryBlock">
+      <summary>6タイプの鳥ギャラリー</summary>
+      <div class="gallery">
+        <figure>
+          <img src="/shindan/assets/results/narcissist-six/t01.webp" alt="スズメ系・脆弱アピ型" loading="lazy">
+          <figcaption>スズメ系・脆弱アピ型</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/narcissist-six/t02.webp" alt="ハト系・道徳アピ型" loading="lazy">
+          <figcaption>ハト系・道徳アピ型</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/narcissist-six/t03.webp" alt="クジャク系・性的アピ型" loading="lazy">
+          <figcaption>クジャク系・性的アピ型</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/narcissist-six/t04.webp" alt="オウム系・誇示アピ型" loading="lazy">
+          <figcaption>オウム系・誇示アピ型</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/narcissist-six/t05.webp" alt="ワシ系・支配・強さ型" loading="lazy">
+          <figcaption>ワシ系・支配・強さ型</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/narcissist-six/t06.webp" alt="フクロウ系・境界・配慮型" loading="lazy">
+          <figcaption>フクロウ系・境界・配慮型</figcaption>
+        </figure>
+      </div>
+    </details>
+
     <!-- 研究メモ -->
-<div class="meta" style="margin:.8rem 0 0">
+    <div class="meta" style="margin:.8rem 0 0">
       <strong>研究メモ：</strong>
       心理学の研究では、自己愛は「堂々とした自己愛（grandiose）」と
       「傷つきやすい自己愛（vulnerable）」という二つの顔を持つとよく言われます。
@@ -328,6 +407,15 @@ const FACT_LABEL = {
   MORAL:'道徳誇示（ハト）',
   DOM:'支配圧（ワシ）',
   BOUND:'境界線（フクロウ）'
+};
+/* 因子の説明（バーの下に表示） */
+const FACT_DESC = {
+  SHOW:'どれだけ目立ち・見せ場を取りにいくか',
+  VULN:'どれだけ「守ってほしい気持ち」でアピールするか',
+  SEXY:'どれだけ見た目や色気で魅せようとするか',
+  MORAL:'どれだけ正しさ・善さを前面に出すか',
+  DOM:'どれだけ主導権を握って決めたがるか',
+  BOUND:'どれだけ距離感と線引きをうまく保てるか'
 };
 
 /* タイプと画像（t01〜t06タイプ固定） */
@@ -432,7 +520,6 @@ const $qnum = document.getElementById('qnum');
 const $qtext = document.getElementById('qtext');
 const $opts = document.getElementById('opts');
 const $prev = document.getElementById('prevBtn');
-const $next = document.getElementById('nextBtn');
 const $quiz = document.getElementById('quiz');
 const $result = document.getElementById('result');
 const $resultImg = document.getElementById('resultImg');
@@ -511,7 +598,6 @@ function renderQuestion(){
     $opts.appendChild(btn);
   });
   $prev.disabled = (idx===0);
-  $next.textContent = (idx===QUESTIONS.length-1)? '結果を見る':'次へ';
   const done = answers.filter(v=>v!==null).length;
   updateProgress(Math.round(done/QUESTIONS.length*100));
   document.querySelector('.rank').textContent = '—';
@@ -544,17 +630,6 @@ $prev.addEventListener('click', ()=>{
     idx--;
     persist();
     renderQuestion();
-  }
-});
-$next.addEventListener('click', ()=>{
-  if(idx<QUESTIONS.length-1){
-    idx++;
-    persist();
-    renderQuestion();
-    enterQuizMode();
-  }else{
-    enterResultMode();
-    showResult();
   }
 });
 
@@ -636,20 +711,20 @@ function showResult(){
   const line = `${flavor}\n${spice}\nミニ一歩：${typeInfo.step}`;
   $resultLines.textContent = line;
 
-  // 因子バー（6本） 0–100%
+  // 因子バー（6本） 0–100%＋説明
   $bars.innerHTML = '';
   FACTS.forEach(k=>{
     const v = pct[k];
     const wrap = document.createElement('div');
     wrap.className = 'bar';
+    const desc = FACT_DESC[k] || '';
     wrap.innerHTML = `
       <div class="h"><span>${FACT_LABEL[k]}</span><span>${v}%</span></div>
-      <div class="b" style="width:${v}%"></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${desc}</div>
     `;
     $bars.appendChild(wrap);
   });
-
-  
 
   // 完了・前回回答保存
   try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
