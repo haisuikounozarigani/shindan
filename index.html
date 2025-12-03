@@ -382,18 +382,26 @@ body{
   gap:8px;
   margin:6px 0 4px;
 }
+
 .segbtn{
   flex:1 1 0;
   min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:7px 8px;
   border-radius:999px;
   border:1px solid #ead6f0;
-  padding:8px 10px;
-  font-size:.8rem;
+  font-size:.78rem;
+  line-height:1.2;
   text-align:center;
   text-decoration:none;
   color:#6a5160;
   background:#fff;
+  white-space:nowrap; /* 1行でそろえる */
 }
+
 .segbtn.active{
   background:linear-gradient(90deg,var(--accent),var(--accent2));
   color:#fff;
@@ -416,15 +424,17 @@ body{
   flex-wrap:wrap;
   margin-bottom:8px;
 }
+
 .tab-btn{
   flex:1 1 0;
   min-width:0;
   appearance:none;
   border-radius:999px;
   border:1px solid #ead6f0;
-  padding:9px 10px;
+  padding:8px 10px;
   background:#fff;
-  font-size:.85rem;
+  font-size:.8rem;
+  line-height:1.2;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -432,7 +442,16 @@ body{
   cursor:pointer;
   color:#6a5160;
 }
-.tab-btn span.emo{font-size:1.1rem}
+
+.tab-btn span.emo{
+  font-size:1.1rem;
+  line-height:1;
+}
+
+/* ラベル部分は折り返さず1行に */
+.tab-btn span:last-child{
+  white-space:nowrap;
+}
 .tab-btn.active{
   border-color:transparent;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
@@ -884,7 +903,7 @@ body{
   <a class="segbtn active" href="/shindan/" aria-current="page">🌟 心の標本</a>
   <a class="segbtn" href="/quiz/" rel="noopener">🔎 知識の水槽</a>
   <a class="segbtn" href="/game/" rel="noopener">🎮️ 試練の鳥籠</a>
-  <a class="segbtn"href="/nir/" rel="noopener">🕯 ???</a>
+  <a class="segbtn" href="/nir/" rel="noopener">🕯 ???</a>
 </div>
   <div class="mode-grid" aria-hidden="true">
       <div class="mode-item is-main">
