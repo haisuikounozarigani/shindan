@@ -152,17 +152,9 @@ body{
   z-index:-1;
 }
 
-/* 右上に小さなゆめかわハート */
+/* 右上ハートは封印（お気に入りハートはそのまま） */
 .page-title::after{
-  content:"❤";
-  position:absolute;
-  top:-8px;
-  right:-10px;
-  font-size:.9rem;
-  color:#ff9fd8;
-  text-shadow:
-    0 0 6px rgba(255,255,255,1),
-    0 0 10px rgba(255,159,216,.85);
+  content:none;
 }
 
 /* メインタイトル：心の標本（グラデ＋うっすら黒フチ） */
@@ -195,21 +187,7 @@ body{
     0 0 8px rgba(255,220,240,.7);
 }
 
-/* 下のグラデリボン */
-.page-title-main::after{
-  content:"";
-  position:absolute;
-  left:4px;
-  bottom:-4px;
-  width:calc(100% - 8px);
-  height:11px;
-  border-radius:999px;
-  background:linear-gradient(90deg,#ffe3f7,#f3e3ff);
-  opacity:.7;
-  box-shadow:
-    0 3px 12px rgba(182,156,255,.5),
-    0 0 8px rgba(255,255,255,.9);
-}
+
 
 /* 右上のきらきら */
 .page-title-main::before{
@@ -431,20 +409,20 @@ body{
   appearance:none;
   border-radius:999px;
   border:1px solid #ead6f0;
-  padding:8px 10px;
+  padding:11px 14px;           /* 高さ＆横幅アップ */
   background:#fff;
-  font-size:.8rem;
-  line-height:1.2;
+  font-size:.9rem;             /* 文字少し大きく */
+  line-height:1.3;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:6px;
+  gap:8px;
   cursor:pointer;
   color:#6a5160;
 }
 
 .tab-btn span.emo{
-  font-size:1.1rem;
+  font-size:1.3rem;
   line-height:1;
 }
 
@@ -574,6 +552,56 @@ body{
   gap:4px;
 }
 
+
+.card-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+}
+
+/* 追加：並び順調整 */
+.card-meta .pill{
+  order:1;
+}
+.card-go{
+  margin-left:auto;
+  font-size:.8rem;
+  padding:6px 9px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#fff;
+  border:none;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  order:3;
+}
+
+/* 済カード用：メタ行に独立ピルを出す */
+/* 済カード用ピル：完了感がわかりやすい色＋絵文字 */
+.card[data-done="1"] .card-meta::after{
+  content:"🎀 済";
+  order:2;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:3px 10px;
+  border-radius:999px;
+
+  /* 他のピルと被らないように、ミント×レモン寄りのやさしいグラデ */
+  border:1px solid #cfe8d6;
+  background:linear-gradient(90deg,#e9fff3,#fff9e9);
+
+  font-size:.72rem;
+  letter-spacing:.08em;
+  color:#345344;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.95),
+    0 3px 7px rgba(0,0,0,.05);
+}
+
 /* 推しハート（丸いかわいいボタン） */
 .fav-toggle{
   position:absolute;
@@ -610,21 +638,6 @@ body{
   transform:scale(.9);
 }
 
-/* 済バッジ：右上ハートの少し下に配置（NEWと離す） */
-.card[data-done="1"]::after{
-  content:"済";
-  position:absolute;
-  top:32px;      /* タイトル行より少し下に */
-  right:10px;    /* ハートの少し左 */
-  font-size:.7rem;
-  font-weight:700;
-  padding:3px 7px;
-  border-radius:999px;
-  background:linear-gradient(90deg,#c3ffd6,#d8eaff);
-  border:1px solid #dce9f0;
-  box-shadow:0 3px 8px rgba(0,0,0,.05);
-  color:#233;
-}
 
 /* Small note */
 .small-note{
@@ -774,6 +787,7 @@ body{
 }
 
 .mode-item{
+  display:block;
   border-radius:14px;
   border:1px solid #f0d8ea;
   background:rgba(255,255,255,.95);
@@ -781,6 +795,13 @@ body{
   box-shadow:0 4px 12px rgba(0,0,0,.03);
   font-size:.78rem;
   color:var(--muted);
+  text-decoration:none;
+}
+
+.mode-item:hover{
+  box-shadow:0 6px 16px rgba(255,158,207,.25);
+  border-color:#ffb6dd;
+  transform:translateY(-1px);
 }
 
 .mode-item.is-main{
@@ -863,6 +884,19 @@ body{
   font-size:.75rem;
   opacity:.85;
 }
+
+
+/* ニア行だけ、擬似要素の装飾を完全オフ（白いハート含む） */
+.nir-line::before,
+.nir-line::after,
+.nir-label::before,
+.nir-label::after{
+  content:none !important;
+  border:0 !important;
+  background:none !important;
+  box-shadow:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -899,32 +933,23 @@ body{
   </header>
 
   <section class="panel modes-panel" aria-label="3つのエリアの説明">
-  <div class="switcher" aria-label="サイト切替">
-  <a class="segbtn active" href="/shindan/" aria-current="page">心の標本</a>
-  <a class="segbtn" href="/quiz/" rel="noopener">知識の水槽</a>
-  <a class="segbtn" href="/game/" rel="noopener">試練の鳥籠</a>
-  <a class="segbtn" href="/nir/" rel="noopener">???</a>
-</div>
-  <div class="mode-grid" aria-hidden="true">
-      <div class="mode-item is-main">
-        <div class="mode-ttl">心の標本</div>
-        <p class="mode-desc">ゆめかわ比喩で、心のクセや性格をながめる心理テストたち。</p>
-      </div>
-      <div class="mode-item">
-        <div class="mode-ttl">知識の水槽</div>
-        <p class="mode-desc">研究ベースのクイズで、「へぇ〜」な知識をすこしずつ集める場所。</p>
-      </div>
-      <div class="mode-item">
-        <div class="mode-ttl">試練の鳥籠</div>
-        <p class="mode-desc">（準備中）</p>
-          <!-- 試練の鳥籠（ちょっとした試練やゲームで、「ものの見え方」を軽くゆさぶるコーナー） -->
-             <!-- 試練の鳥籠は美しい自然、鳥がモチーフ -->
-      </div>
-      <div class="mode-item">
-        <div class="mode-ttl">禁書の部屋</div>
-        <p class="mode-desc">???（準備中） </p>
-          <!--  -->
-      </div>
+    <div class="mode-grid">
+      <a class="mode-item is-main" href="/shindan/">
+        <div class="mode-ttl">🌟 心の標本</div>
+        <p class="mode-desc">ゆめかわ比喩で、心の癖を診断</p>
+      </a>
+      <a class="mode-item" href="/quiz/">
+        <div class="mode-ttl">🔍 知識の水槽</div>
+        <p class="mode-desc">研究ベースのクイズで学ぶ場所</p>
+      </a>
+      <a class="mode-item" href="/game/">
+        <div class="mode-ttl">🎮 試練の鳥籠</div>
+        <p class="mode-desc">ゲーム寄りのチャレンジ用（準備中）</p>
+      </a>
+      <a class="mode-item" href="/nir/">
+        <div class="mode-ttl">📜 禁書の部屋</div>
+        <p class="mode-desc">???（準備中）</p>
+      </a>
     </div>
   </section>
   <!-- ？？？にニアと話せたりギャラリー＋幻想生物＋ダーク＋物語 -->
@@ -964,20 +989,20 @@ body{
 
   <!-- Tabs + search -->
   <section class="panel" aria-label="診断の切り替えと検索">
-    <div class="tab-row" role="tablist" aria-label="表示モード">
-      <button type="button" class="tab-btn active" data-tab="reco" role="tab" aria-selected="true">
-        <span class="emo">おすすめ</span>
-      </button>
-      <button type="button" class="tab-btn" data-tab="all" role="tab" aria-selected="false">
-        <span class="emo">ぜんぶ</span>
-      </button>
-      <button type="button" class="tab-btn" data-tab="fav" role="tab" aria-selected="false">
-        <span class="emo">推し標本</span>
-      </button>
-      <button type="button" class="tab-btn" data-tab="todo" role="tab" aria-selected="false">
-        <span class="emo">未挑戦</span>
-      </button>
-    </div>
+    <div class="tab-row" role="tablist" aria-label="診断一覧の並べ替え">
+  <button class="tab-btn" type="button" data-tab="reco" aria-selected="false">
+    ✨ おすすめ
+  </button>
+  <button class="tab-btn active" type="button" data-tab="all" aria-selected="true">
+    🌈 ぜんぶ
+  </button>
+  <button class="tab-btn" type="button" data-tab="fav" aria-selected="false">
+    💗 推し標本
+  </button>
+  <button class="tab-btn" type="button" data-tab="todo" aria-selected="false">
+    🌱 未挑戦
+  </button>
+</div>
 
     <div class="search-row">
       <input id="q" type="search" placeholder="キーワードでさがす（例：孤独 / カリスマ）" aria-label="診断を検索">
@@ -2651,14 +2676,14 @@ const feedbackHint  = document.querySelector('.feedback .hint');
 
 // 成功・エラー表示用のランダムメッセージ（文言はあとで差し替えOK）
 const FEEDBACK_SUCCESS_TEXTS = [
-  '📬 「また話そうね」と打って消して、「おやすみ」に変えた夜のほうが、<br>ほんとは少しだけ話したかった。',
-  '📬 既読をつけない理由を並べてるあいだに、<br>一番伝えたかった一文だけ、ゆっくり冷めていく。',
-  '📬 長文を書いて全部消して、スタンプひとつにしたとき、<br>人間はだいたい本音から一歩下がっている。',
-  '📬 誰かのストーリーを眺めながら、<br>今日の自分だけ透明だった気がする瞬間ってあるよね。',
-  '📬 通話を切ったあとに浮かぶ返事が、<br>いつもいちばん正確で、いちばん遅い。',
-  '📬 「送る」か「下書き保存」かで迷った履歴だけが、<br>ちゃっかり心の中にはログインし続けている。',
-  '📬 タイムラインを何周もスクロールして、<br>けっきょく一番見ているのが自分の投稿だったりする。',
-  '📬 本音はツイートじゃなくて、<br>消した下書きのほうでちゃんと生きている。'
+  '📬 「また話そうね」と打って消して、「おやすみ」に変えた夜のほうが、ほんとは少しだけ話したかった。',
+  '📬 既読をつけない理由を並べてるあいだに、一番伝えたかった一文だけ、ゆっくり冷めていく。',
+  '📬 長文を書いて全部消して、スタンプひとつにしたとき、人間はだいたい本音から一歩下がっている。',
+  '📬 誰かのストーリーを眺めながら、今日の自分だけ透明だった気がする瞬間ってあるよね。',
+  '📬 通話を切ったあとに浮かぶ返事が、いつもいちばん正確で、いちばん遅い。',
+  '📬 「送る」か「下書き保存」かで迷った履歴だけが、ちゃっかり心の中にはログインし続けている。',
+  '📬 タイムラインを何周もスクロールして、けっきょく一番見ているのが自分の投稿だったりする。',
+  '📬 本音はツイートじゃなくて、消した下書きのほうでちゃんと生きている。'
 ];
 
 const FEEDBACK_ERROR_TEXTS = [
@@ -2675,7 +2700,7 @@ function pickRandom(arr){
   const LS_TOTAL_KEY = 'specimens:open:total';
   const LS_BYID_KEY  = 'specimens:open:byid';
   const LS_FAV_KEY   = 'specimens:favs';
-  let activeTab = 'reco';
+  let activeTab = 'all';
 
   function loadTotal(){
     const n = +localStorage.getItem(LS_TOTAL_KEY) || 0;
