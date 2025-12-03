@@ -146,9 +146,9 @@ body{
   background:
     radial-gradient(circle at 10% 0%, #ffffff 0 40%, #ffeef9 60%, #f2e9ff 100%);
   box-shadow:
-    0 10px 24px rgba(255,158,207,.45),
+    0 10px 24px rgba(255,158,207,.95),
     0 0 0 1px rgba(255,255,255,.95),
-    0 0 18px rgba(255,255,255,.9);
+    0 0 18px rgba(255,255,255,9);
   z-index:-1;
 }
 
@@ -610,12 +610,12 @@ body{
   transform:scale(.9);
 }
 
-/* 済バッジ：右上ハートの左に配置 */
+/* 済バッジ：右上ハートの少し下に配置（NEWと離す） */
 .card[data-done="1"]::after{
   content:"済";
   position:absolute;
-  top:8px;
-  right:44px;  /* ← ここでハートの“左横”に寄せる */
+  top:32px;      /* タイトル行より少し下に */
+  right:10px;    /* ハートの少し左 */
   font-size:.7rem;
   font-weight:700;
   padding:3px 7px;
@@ -900,28 +900,28 @@ body{
 
   <section class="panel modes-panel" aria-label="3つのエリアの説明">
   <div class="switcher" aria-label="サイト切替">
-  <a class="segbtn active" href="/shindan/" aria-current="page">🌟 心の標本</a>
-  <a class="segbtn" href="/quiz/" rel="noopener">🔎 知識の水槽</a>
-  <a class="segbtn" href="/game/" rel="noopener">🎮️ 試練の鳥籠</a>
-  <a class="segbtn" href="/nir/" rel="noopener">🕯 ???</a>
+  <a class="segbtn active" href="/shindan/" aria-current="page">心の標本</a>
+  <a class="segbtn" href="/quiz/" rel="noopener">知識の水槽</a>
+  <a class="segbtn" href="/game/" rel="noopener">試練の鳥籠</a>
+  <a class="segbtn" href="/nir/" rel="noopener">???</a>
 </div>
   <div class="mode-grid" aria-hidden="true">
       <div class="mode-item is-main">
-        <div class="mode-ttl">🌟 心の標本</div>
+        <div class="mode-ttl">心の標本</div>
         <p class="mode-desc">ゆめかわ比喩で、心のクセや性格をながめる心理テストたち。</p>
       </div>
       <div class="mode-item">
-        <div class="mode-ttl">🔎 知識の水槽</div>
+        <div class="mode-ttl">知識の水槽</div>
         <p class="mode-desc">研究ベースのクイズで、「へぇ〜」な知識をすこしずつ集める場所。</p>
       </div>
       <div class="mode-item">
-        <div class="mode-ttl">🎮️ 試練の鳥籠</div>
+        <div class="mode-ttl">試練の鳥籠</div>
         <p class="mode-desc">（準備中）</p>
           <!-- 試練の鳥籠（ちょっとした試練やゲームで、「ものの見え方」を軽くゆさぶるコーナー） -->
              <!-- 試練の鳥籠は美しい自然、鳥がモチーフ -->
       </div>
       <div class="mode-item">
-        <div class="mode-ttl">🃏 禁書の部屋</div>
+        <div class="mode-ttl">禁書の部屋</div>
         <p class="mode-desc">???（準備中） </p>
           <!--  -->
       </div>
@@ -966,16 +966,16 @@ body{
   <section class="panel" aria-label="診断の切り替えと検索">
     <div class="tab-row" role="tablist" aria-label="表示モード">
       <button type="button" class="tab-btn active" data-tab="reco" role="tab" aria-selected="true">
-        <span class="emo">✨</span><span>おすすめ</span>
+        <span class="emo">おすすめ</span>
       </button>
       <button type="button" class="tab-btn" data-tab="all" role="tab" aria-selected="false">
-        <span class="emo">🌈</span><span>ぜんぶ</span>
+        <span class="emo">ぜんぶ</span>
       </button>
       <button type="button" class="tab-btn" data-tab="fav" role="tab" aria-selected="false">
-        <span class="emo">💖</span><span>推し標本</span>
+        <span class="emo">推し標本</span>
       </button>
       <button type="button" class="tab-btn" data-tab="todo" role="tab" aria-selected="false">
-        <span class="emo">🌱</span><span>未挑戦</span>
+        <span class="emo">未挑戦</span>
       </button>
     </div>
 
