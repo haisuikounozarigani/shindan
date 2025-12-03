@@ -174,17 +174,19 @@ body{
   text-indent:.18em;
   line-height:1.2;
 
-  background:linear-gradient(90deg,#ff8fc7,#ffb8e0,#b190ff);
+  /* グラデを少しだけ濃く */
+  background:linear-gradient(90deg,#ff6fae,#ff9bd4,#8f74ff);
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
   text-rendering:optimizeLegibility;
   -webkit-font-smoothing:antialiased;
 
+  /* 黒フチをほんの少し強めてクッキリ */
   text-shadow:
-    0 0 1px rgba(255,255,255,.1),
-    0 0 3px rgba(0,0,0,.1),
-    0 0 8px rgba(255,220,240,.7);
+    0 0 1px rgba(255,255,255,.15),
+    0 0 3px rgba(0,0,0,.16),
+    0 0 10px rgba(255,220,240,.9);
 }
 
 
@@ -230,6 +232,18 @@ body{
 .hero-pill-link{
   text-decoration:none;
   color:inherit;
+}
+
+/* こころLv＋説明を1行に保つ用 */
+.hero-pill-main{
+  white-space:nowrap;
+}
+
+/* 「※こころLvは閲覧数です。」の見た目 */
+.hero-pill-note{
+  font-size:.78rem;
+  color:var(--muted);
+  margin-left:6px;
 }
 
 /* Panel */
@@ -419,16 +433,7 @@ body{
   gap:8px;
   cursor:pointer;
   color:#6a5160;
-}
-
-.tab-btn span.emo{
-  font-size:1.3rem;
-  line-height:1;
-}
-
-/* ラベル部分は折り返さず1行に */
-.tab-btn span:last-child{
-  white-space:nowrap;
+  white-space:nowrap;          /* ← ここを追加：ボタン内で改行させない */
 }
 .tab-btn.active{
   border-color:transparent;
@@ -916,14 +921,12 @@ body{
     <h1 class="page-title">
       <span class="page-title-main">心の標本</span>
     </h1>
-    <p class="page-sub">ゆめかわ心理診断たちを、おすすめ・推し標本・未挑戦からサッと選べる入口サイト。</p>
+    <p class="page-sub">ゆめかわ心理診断たちで、遊んでね。</p>
     <div class="page-stats">
-  <div class="hero-pill">
+  <div class="hero-pill hero-pill-main">
     <span>👑 あなたのこころLv</span>
     <strong id="myOpenCount">0</strong>
-  </div>
-  <div class="hero-pill">
-    <span>※こころLvは閲覧数です。</span>
+    <span class="hero-pill-note">※こころLvは閲覧数です。</span>
   </div>
   <a class="hero-pill hero-pill-link" href="#feedback">
     <span>💌 問い合わせ</span>
