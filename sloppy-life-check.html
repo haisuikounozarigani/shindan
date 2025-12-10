@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>生活だらしなさ診断｜18問で見る「時間・部屋・お金・リズムのほころび」</title>
+<meta name="description" content="18問で、時間・部屋・お金・生活リズム・デジタル・自分メンテの6方向から、いまの「生活だらしなさポイント」と、小さく整える一歩をチェックするセルフテスト。カオス沼レベル〜ミニマル管理マスターまで、あなたの現状を可視化します。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="生活だらしなさ診断">
+<meta property="og:description" content="時間・部屋・お金・リズム…どこからほころびやすいかを18問でチェック。カオス寄りのズボラ勢〜そこそこ整ってる管理勢まで、あなたの“生活だらしなさレベル”を見てみよう。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/sloppy-life-check.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/sloppy-life-check/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;   /* hot */
+  --accent2:#ff8fc7;  /* duo */
+}
+html,body{
+  margin:0;padding:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:800;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:.2em .7em;
+  border-radius:999px;
+  background:#f3e9ff;
+  color:#4b266e;
+  font-weight:700;
+  font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー */
+figure.hero{
+  margin:12px 0;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;height:auto;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{
+  margin-top:0;
+  font-size:1.1rem;
+}
+#prologue p{margin:.4rem 0}
+#prologue .note{
+  color:var(--muted);
+  font-size:.9rem;
+}
+.start-btn{
+  margin-top:12px;
+  width:100%;
+  padding:12px 16px;
+  border-radius:999px;
+  border:1px solid var(--accent);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-weight:700;
+  letter-spacing:.03em;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問エリア */
+.qhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+.qnum{font-weight:700;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;
+  color:#7a6c86;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.qtext{margin:.6rem 0 1rem}
+.opts{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  transition:.12s;
+}
+.btn[aria-pressed="true"]{
+  outline:2px solid var(--accent2);
+  background:#fff4fa;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:500}
+.opt-note{color:#8b7b93;font-size:.9rem}
+.ctrls{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.ctrls button{
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#faf5ff;
+  cursor:pointer;
+}
+
+/* 結果エリア */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{
+  flex:1 1 280px;
+  min-width:260px;
+}
+.result .imgbox img{
+  width:100%;height:auto;
+  border-radius:14px;
+  border:1px solid var(--line);
+  display:block;
+}
+.result .text{
+  flex:2 1 360px;
+  min-width:300px;
+}
+.result-title-main{
+  margin:.2rem 0 0;
+}
+.result-title-sub{
+  margin:.1rem 0 .6rem;
+  font-size:.9rem;
+  color:var(--muted);
+}
+
+/* 今日の一手（結果コメント内の強調ボックス） */
+.tip-inline{
+  display:block;
+  margin:0;                    /* 外側の余白を完全になくす */
+  padding:4px 5px 20px;        /* 上下も少なめに詰める */
+  border-radius:8px;
+  border:1px dashed var(--accent2);
+  background:#fff7fb;
+}
+
+.tip-label{
+  display:inline-block;
+  font-size:.83rem;
+  font-weight:700;
+  letter-spacing:.03em;
+  margin:0em 0 0;        /* ラベルと本文の間だけ少し空ける */
+  color:#5b2a7f;
+}
+
+.tip-body{
+  display:inline;           /* 見出しの続きにそのまま本文が来る */
+  font-size:.9rem;
+  margin:0;
+}
+
+/* 因子バー */
+.bars{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.bar{
+  background:transparent;
+  border-radius:10px;
+  padding:4px 0 6px;
+}
+.bar .h{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:2px 10px 4px;
+  font-size:.9rem;
+}
+.bar .h span:first-child{font-weight:600}
+.bar .track{
+  margin:0 10px 4px;
+  height:10px;
+  border-radius:999px;
+  background:#f3e9ff;
+  overflow:hidden;
+}
+.bar .fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;
+  transition:width .25s ease-out;
+}
+.bar-desc{
+  padding:0 10px 2px;
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+/* 前回回答 */
+.prev-list{
+  list-style:none;
+  padding-left:0;
+  margin:.4rem 0 .2rem .9rem;
+}
+.prev-item{
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  padding:6px 0;
+  border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;
+  white-space:nowrap;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:2px 8px;
+  font-size:.9rem;
+  background:#faf5ff;
+}
+
+.gallery{
+  margin-top:2px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:10px;
+}
+.gallery figure{
+  margin:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:6px;
+  text-align:center;
+  font-size:.85rem;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.gallery img{
+  width:100%;
+  height:auto;
+  border-radius:8px;
+  display:block;
+}
+
+/* その他 */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+.back{
+  display:inline-block;
+  margin:10px 0 20px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#faf5ff;
+}
+
+/* ✅だけのトースト */
+.mini-toast{
+  position:fixed;
+  left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;
+  background:#4c2b5f;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:1.1rem;
+  transition:.25s;
+  z-index:40;
+}
+.mini-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* 小さい画面調整 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+
+/* 研究メモ＆折りたたみ系の見た目 */
+.meta-note{
+  margin-top:8px;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fdf7ff;
+  color:var(--muted);
+  font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.meta-note[open]{
+  background:#fff;
+}
+.meta-note ul{
+  margin:.5rem 0 0 1.1rem;
+  padding-left:0;
+}
+.meta-note ul li + li{
+  margin-top:10px;
+  padding-top:6px;
+  border-top:1px dashed var(--line);
+}
+.fold-card{
+  margin:10px 0 8px;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--muted);
+  font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.fold-card[open]{
+  background:#fdf7ff;
+  box-shadow:0 3px 8px rgba(0,0,0,.03);
+}
+.fold-card[open] summary{
+  margin-bottom:6px;
+}
+</style>
+</head>
+
+<body data-id="sloppy-life-check">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      生活だらしなさ診断
+      <span class="rank" aria-label="現在の生活ランク">
+        <span>🧺</span><span>ランク未判定</span>
+      </span>
+    </div>
+    <div class="sub">
+      時間・部屋・お金・リズム…どこからほころびやすいか、18問であなたの「生活だらしなさレベル」と小さな修正ポイントをチェックします。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar"
+     aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/sloppy-life-check/t00.webp"
+         alt="散らかった部屋と羅針盤" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2>プロローグ：床と通知と「まあいっか」ボタン</h2>
+    <p>気づいたら床がちょっと狭くなっていて、通知バッジは二桁三桁。頭のどこかで「そろそろまずいな…」と思いながら、今日も「まあいっか」を押してしまう。</p>
+    <p>こういう生活のほころびって、「自分がダメだから」ではなく、疲れた脳が選びがちなショートカットの結果だったりします。仕事も人間関係も優先してたら、自分の生活フォルダだけバグりやすいのはむしろ自然です。</p>
+    <p>この診断は、あなたの生活バグをジャッジするためではなく、「どこから崩れやすいか」と「どこなら小さく直せそうか」をゆるく可視化するためのテストです。</p>
+    <p class="note">※深刻な診断ではなく、「生活のクセ」をネタ半分で眺めるための簡易テストです。</p>
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">✨</span><span>生活バグをこっそり確認する</span>
+    </button>
+  </section>
+
+  <!-- 質問セクション -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/18</div>
+      <div class="qtag" id="qtag">
+        <span>🧺</span><span>生活チェック</span>
+      </div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge">
+            <span>🧺</span><span>ランク未判定</span>
+          </span>
+          <span class="badge-pill" id="scoreBadge">
+            スコア — / 100
+          </span>
+        </div>
+        <h3 class="result-title-main" id="resultTitle"></h3>
+        <p class="result-title-sub" id="resultSubtitle"></p>
+        <div id="resultLines" style="white-space:pre-line;margin:.1rem 0 .05rem"></div>
+
+        <!-- 因子バー（6本） -->
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）</summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- 5ランクの生活ギャラリー -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🏠 生活ランクのギャラリー</summary>
+      <div class="gallery">
+        <figure>
+          <img src="/shindan/assets/results/sloppy-life-check/t01.webp"
+               alt="足の踏み場ない部屋" loading="lazy">
+          <figcaption>🧨 t01 カオス沼レベル</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/sloppy-life-check/t02.webp"
+               alt="散らかった部屋の二人" loading="lazy">
+          <figcaption>🌊 t02 サバイバル生活レベル</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/sloppy-life-check/t03.webp"
+               alt="普通のワンルームの二人" loading="lazy">
+          <figcaption>🌤 t03 とりあえず生活レベル</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/sloppy-life-check/t04.webp"
+               alt="片づいたリビングの二人" loading="lazy">
+          <figcaption>📚 t04 そこそこ整え上手レベル</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/sloppy-life-check/t05.webp"
+               alt="整ったミニマル部屋の二人" loading="lazy">
+          <figcaption>🧊 t05 ミニマル管理マスター</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <!-- 研究メモ（折りたたみ） -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 生活だらしなさの研究メモ</summary>
+      <ul>
+        <li><strong>時間ゆるゆる</strong>：締切ギリギリ行動は、短期的な不快（面倒くささ）を避けて長期的コストを増やす「時間割引」のクセと関連すると言われます。</li>
+        <li><strong>片づけ放置</strong>：視界にモノが多い環境ほど、集中しづらくストレスホルモンも上がりやすいという報告があります。「見えない場所にしまう」だけでも負荷はかなり変わります。</li>
+        <li><strong>生活リズム迷子</strong>：睡眠や食事の時間がバラバラだと、体内時計が乱れて日中の集中・気分・食欲にもじわじわ影響が出やすいと言われます。</li>
+        <li><strong>お金ざる目</strong>：コンビニなどの小さな衝動買いは、「1回あたりは小さいけれど合計するとかなり大きい出費」になりやすく、自己制御研究でも定番の落とし穴とされています。</li>
+        <li><strong>デジタルごちゃごちゃ</strong>：通知・タブ・アプリの多さは、マルチタスクや注意散漫と結びつきやすく、「やるべきことに戻るまでの切り替えコスト」を増やします。</li>
+        <li><strong>自分メンテ後回し</strong>：身なりや健康の後回しは、「今は大丈夫だから」と先送りされがちですが、長期的には自己評価や体調の土台にじわじわ響きます。</li>
+      </ul>
+    </details>
+
+    <!-- 免責 -->
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+    <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 定義 ===== */
+const SLUG = 'sloppy-life-check';
+const LS_ANS = `shindan:${SLUG}:answers`;
+const LS_IDX = `shindan:${SLUG}:index`;
+const LS_DONE = `shindan:${SLUG}:done`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* 因子キー（6因子） */
+const FACTS = ['TIME','ROOM','RHYTHM','MONEY','DIGITAL','SELFCARE'];
+
+/* 因子ごとのラベル＆説明（だらしなさ側） */
+const FACT_LABEL = {
+  TIME:'時間ゆるゆる',
+  ROOM:'片づけ放置',
+  RHYTHM:'生活リズム迷子',
+  MONEY:'お金ざる目',
+  DIGITAL:'デジタルごちゃごちゃ',
+  SELFCARE:'自分メンテ後回し'
+};
+const FACT_DESC = {
+  TIME:'約束・締切・「今やる」のスイッチがどれくらいゆるみやすいか',
+  ROOM:'床・机・洗い物などが「一時置きゾーン」で渋滞しやすさ',
+  RHYTHM:'睡眠・食事・活動時間がどれくらい不規則になりやすいか',
+  MONEY:'ちょい買い・支払い後回しなど、お金がこぼれやすい度合い',
+  DIGITAL:'通知・タブ・アプリがごちゃついて集中を削りやすさ',
+  SELFCARE:'健康・身なり・洗濯など自分メンテを後ろ倒しにしやすさ'
+};
+
+/* 回答ラベル */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+
+/* 設問 18問（6因子×各3） */
+/* 回答が大きいほど「だらしなさ」が高くなる設計 */
+const QUESTIONS = [
+  // 時間ゆるゆる
+  {t:'約束や待ち合わせの時間に、「ギリギリ〜数分遅れ」になることが多い。', key:'TIME'},
+  {t:'小さな用事ほど「あとでやろう」と後回しにして、気づいたらたまっている。', key:'TIME'},
+  {t:'「5分だけスマホを見る」がきっかけで、予定がずれたことがよくある。', key:'TIME'},
+
+  // 片づけ放置
+  {t:'床や椅子の上に服の「一時置きゾーン」ができて、そのまま定位置になりがちだ。', key:'ROOM'},
+  {t:'洗い物やゴミ出しを「明日の自分に任せる」ことが多い。', key:'ROOM'},
+  {t:'片づけを始めようとして、別のことをしているうちに時間だけ過ぎることがある。', key:'ROOM'},
+
+  // 生活リズム迷子
+  {t:'寝る時間が日によって2時間以上ズレることがよくある。', key:'RHYTHM'},
+  {t:'「明日つらくなる」と分かっていても、つい夜更かしを繰り返してしまう。', key:'RHYTHM'},
+  {t:'空腹でなくても、なんとなくつまみ食いを続けてしまうことがある。', key:'RHYTHM'},
+
+  // お金ざる目
+  {t:'コンビニやネットで、予定していなかった「ちょい買い」をよくしてしまう。', key:'MONEY'},
+  {t:'家計簿や明細チェックを始めても、数日〜数週間で止まりがちだ。', key:'MONEY'},
+  {t:'支払い期日ギリギリまで手をつけないことがある。', key:'MONEY'},
+
+  // デジタルごちゃごちゃ
+  {t:'スマホの通知バッジが2桁〜3桁のまま放置されていることが多い。', key:'DIGITAL'},
+  {t:'ブラウザのタブを10個以上開きっぱなしにしていることが多い。', key:'DIGITAL'},
+  {t:'使っていないアプリやスクショがホーム画面を埋めている。', key:'DIGITAL'},
+
+  // 自分メンテ後回し
+  {t:'「髪・服・爪」など身なりのケアを、つい後回しにしてしまう。', key:'SELFCARE'},
+  {t:'健康診断や病院の予約を、気にはしているのに先延ばししてしまう。', key:'SELFCARE'},
+  {t:'洗濯物を畳まず、「山のまま」から着ることがある。', key:'SELFCARE'}
+];
+
+/* ランク情報：総合スコア0–100（数字が高いほど整い気味）で5段階（t01〜t05） */
+const GRADE_DEF = [
+  {
+    id:'G1',
+    min:0,max:39,
+    emo:'🧨',
+    label:'カオス沼レベル',
+    img:'t01.webp',
+    alt:'足の踏み場ない部屋',
+    title:'床が記憶媒体になりつつある人',
+    sub:'床と机が「とりあえず置き場」になっていて、服と紙袋の地層ができやすいカオス沼タイプ。片づけたい気持ちはあるのに、いざ始めようとするとスタミナがゼロになるあるあるパターンです。',
+    tip:'今日の一手：部屋全体ではなく、床一マスだけ、机の右半分だけなど、笑えるくらい小さいエリアだけ片づける。終わらなくてよくて「ここだけクリア」で合格にする。'
+  },
+  {
+    id:'G2',
+    min:40,max:59,
+    emo:'🌊',
+    label:'サバイバル生活レベル',
+    img:'t02.webp',
+    alt:'散らかった部屋の二人',
+    title:'ギリギリでいつも生きていたい人',
+    sub:'洗濯はギリ、シンクにはコップ常駐、通知は二桁…でもなぜか致命傷にはならないサバイバル生活タイプ。本気を出せば整うのは分かっているので、つい「明日の自分」に丸投げしがちな人です。',
+    tip:'今日の一手：未来の自分にだけは優しいゾーンを一つ決める。ベッド周りだけ毎日リセット、シンクだけ寝る前に空にするなど、場所限定で「ここだけは守る」を作る。'
+  },
+  {
+    id:'G3',
+    min:60,max:74,
+    emo:'🌤',
+    label:'とりあえず生活レベル',
+    img:'t03.webp',
+    alt:'普通のワンルームの二人',
+    title:'人は呼べるけど、開けてほしくない扉がある人',
+    sub:'リビングはそれなりに整っていて、人は普通に呼べる。けれどクローゼットやデスクの引き出しだけは絶対に開けてほしくない表面きれい系タイプ。外からはちゃんとして見えるぶん、自分だけカオスを知っていてモヤモヤしやすいです。',
+    tip:'今日の一手：見せたくないゾーンを一か所だけ選び、五分タイマーで触る。きれいにし切らなくてよくて「ここまでは動いた」というログを残せればクリアにする。'
+  },
+  {
+    id:'G4',
+    min:75,max:89,
+    emo:'📚',
+    label:'そこそこ整え上手レベル',
+    img:'t04.webp',
+    alt:'片づいたリビングの二人',
+    title:'生活をだいたい管理できている人',
+    sub:'予定と洗濯サイクルと冷蔵庫の中身がなんとなく頭に入っている現実派マネージャータイプ。崩れても短期間で復旧できる一方で、少し乱れただけでも「前の自分なら…」と自分にダメ出ししがちな真面目さもあります。',
+    tip:'今日の一手：ここは八十点でよしとするエリアを一つ作る。洗濯物はハンガー収納でよい、書類は月一でざっくり見るだけなど、あえてゆるめる場所を決めて肩の力を抜く。'
+  },
+  {
+    id:'G5',
+    min:90,max:100,
+    emo:'🧊',
+    label:'ミニマル管理マスター',
+    img:'t05.webp',
+    alt:'整ったミニマル部屋の二人',
+    title:'環境チューニングが趣味レベルの人',
+    sub:'モノも予定もかなり絞り込めるミニマル管理タイプ。判断回数を減らして集中したいことにエネルギーを回せる一方で、他人の生活のゆるさにイラッとしやすく、自分がやった方が早い沼に落ちがちな人でもあります。',
+    tip:'今日の一手：自分のルールが通るテリトリーを一つだけ決め、それ以外は「まあ人それぞれ」と流す練習をする。守るのは完璧な部屋ではなく、自分のエネルギーだと考えてみる。'
+  }
+];
+
+/* スコア帯からグレードを取得（総合は数字が高いほど整い気味） */
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2]; // デフォルトで中間
+}
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素取得 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+const $resultLines = document.getElementById('resultLines');
+const $bars = document.getElementById('bars');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+/* ===== 初期表示：復元 or プロローグ ===== */
+(function init(){
+  updateProgress(0);
+  let savedAns = null;
+  let savedIdx = 0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const validArray = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = validArray && savedAns.some(v => v !== null);
+  const allDone = validArray && savedAns.every(v => v !== null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion(); // 内部状態だけ
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    renderQuestion();
+    enterQuizMode();
+    return;
+  }
+  // 完全新規
+  enterPrologueMode();
+})();
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  if($prologue) $prologue.style.display = 'block';
+  if($quiz) $quiz.style.display = 'none';
+  if($result) $result.style.display = 'none';
+  if($rankBadge){
+    $rankBadge.innerHTML = '<span>🧺</span><span>ランク未判定</span>';
+  }
+  updateProgress(0);
+}
+function enterQuizMode(){
+  if($prologue) $prologue.style.display = 'none';
+  if($quiz) $quiz.style.display = 'block';
+  if($result) $result.style.display = 'none';
+}
+function enterResultMode(){
+  if($prologue) $prologue.style.display = 'none';
+  if($quiz) $quiz.style.display = 'none';
+  if($result) $result.style.display = 'block';
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  // タグは因子がバレないように共通ラベルに固定
+  if($qtag){
+    $qtag.innerHTML = `<span>🧺</span><span>生活チェック</span>`;
+  }
+
+  // 選択肢
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML =
+      `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click',()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  // 「もどる」ボタン
+  $prev.disabled = (idx===0);
+
+  // 進捗バー
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  // ヘッダのランクは設問中は常に「未判定」
+  if($rankBadge){
+    $rankBadge.innerHTML = '<span>🧺</span><span>ランク未判定</span>';
+  }
+}
+
+function descFor(i){
+  return ['ほとんどない','あまりない','半々くらい','けっこうある','とてもよくある'][i] || '';
+}
+
+/* ===== 回答処理 ===== */
+function selectAnswer(v){
+  answers[idx] = v; // 0–4
+  persist();
+  markPressed(v);
+  showToast(); // ✅だけ
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=>{
+    el.setAttribute('aria-pressed', i===v ? 'true' : 'false');
+  });
+}
+$prev.addEventListener('click', ()=>{
+  if(idx>0){
+    idx--;
+    persist();
+    renderQuestion();
+  }
+});
+
+/* プロローグ → スタート */
+$startBtn.addEventListener('click', ()=>{
+  if(!answers.some(v=>v!==null)){
+    idx = 0;
+    renderQuestion();
+  }
+  enterQuizMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ===== 保存 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== スコア計算 ===== */
+/* 各因子0–4 → 0–100の「だらしなさ％」に変換。
+   総合スコアは「整い度」（100-だらしなさ平均）として扱う。 */
+function computeScores(){
+  const sums = {TIME:0,ROOM:0,RHYTHM:0,MONEY:0,DIGITAL:0,SELFCARE:0};
+  const counts = {TIME:0,ROOM:0,RHYTHM:0,MONEY:0,DIGITAL:0,SELFCARE:0};
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v == null) v = 0;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg0 = (sums[k]/(counts[k]||1)); // 0–4（だらしなさ）
+    const sloppyPct = Math.round((avg0/4)*100); // 0–100（高いほどだらしない）
+    pct[k] = sloppyPct;
+  });
+
+  // 総合だらしなさ％と整い度％
+  let sumSloppy = 0;
+  FACTS.forEach(k=> sumSloppy += pct[k]);
+  const avgSloppy = sumSloppy / FACTS.length;
+  const totalSloppyPct = Math.round(avgSloppy);      // 高いほどだらしない
+  const totalNeatPct   = Math.round(100 - avgSloppy); // 高いほど整い気味
+
+  return {pct,totalPct: totalNeatPct,totalSloppyPct};
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  const {pct,totalPct,totalSloppyPct} = computeScores();
+  const grade = gradeFromScore(totalPct);
+
+  // ランクバッジ in header
+  if($rankBadge){
+    $rankBadge.innerHTML =
+      `<span>${grade.emo}</span><span>${grade.label}</span>`;
+  }
+
+  // 画像（t01〜t05はスコア帯で割当）
+  const IMG_BASE = '/shindan/assets/results/sloppy-life-check/';
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '生活だらしなさランク';
+
+  // 結果タイトル・サブ
+  $resultTitle.textContent = `あなたの生活ランク：${grade.label}`;
+  $resultSubtitle.textContent =
+    `生活だらしなさレベル：${totalSloppyPct} / 100（数字が高いほどカオス寄り）`;
+
+  // バッジ類
+  if($gradeBadge){
+    $gradeBadge.innerHTML =
+      `<span>${grade.emo}</span><span>${grade.label}</span>`;
+  }
+  if($scoreBadge){
+    $scoreBadge.textContent = `整い度スコア ${totalPct} / 100`;
+  }
+
+  // 本文：強み＋落とし穴（シンプル）＋ 今日の一手（枠で強調）
+  const body = `${grade.title}
+${grade.sub}`;
+  const tip = grade.tip || '';
+
+  // 先頭の「今日の一手：」は見た目で付けるので表示時には外す
+  const cleanTip = tip.replace(/^今日の一手[：:]\s*/,'');
+
+  const html =
+    body.replace(/\n/g,'<br>') +
+    `<div class="tip-inline">
+       <span class="tip-label">【今日の一手】</span>
+       <span class="tip-body">${cleanTip}</span>
+     </div>`;
+
+  $resultLines.innerHTML = html;
+
+  // 因子バー描画（だらしなさ％）
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = pct[k];
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    const desc = FACT_DESC[k] || '';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k]}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${desc}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 完了フラグ／前回回答保存
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+
+  buildPrevAnswers();
+
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== 前回回答一覧 ===== */
+function buildPrevAnswers(){
+  const $block = document.getElementById('prevBlock');
+  const $list  = document.getElementById('prevList');
+  if(!$block || !$list) return;
+
+  let prev = null;
+  try{
+    prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
+  }catch(_){}
+
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $list.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML =
+      `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $list.appendChild(li);
+  });
+
+  $block.open = false;
+}
+
+/* ===== リスタート ===== */
+function restartQuiz(){
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{
+    localStorage.removeItem(LS_ANS);
+    localStorage.removeItem(LS_IDX);
+  }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast(); // ここも✅だけ
+}
+$restart.addEventListener('click', restartQuiz);
+
+/* ===== トースト（✅のみ） ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'sloppy-life-check';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      // あなたのこころLv（全診断合計）
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      // 診断ごとのカウント
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());</script>
+</body>
+</html>
