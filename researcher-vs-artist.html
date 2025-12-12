@@ -854,6 +854,10 @@ function persist(){
 
 /* ===== スコア計算 ===== */
 /* 各因子0–4 → 1–5へシフト → 0–100。逆転因子はなし。 */
+/* 研究 vs 芸術バランスは
+   - 研究側：ANCHOR＋FRAME
+   - 芸術側：SPARK＋SENSE
+   の差から算出（0=超研究者寄り / 100=超芸術家寄り） */
 function computeScores(){
   const sums = {ANCHOR:0,FRAME:0,SPARK:0,SENSE:0,DRIVE:0};
   const counts = {ANCHOR:0,FRAME:0,SPARK:0,SENSE:0,DRIVE:0};
@@ -864,25 +868,35 @@ function computeScores(){
     counts[q.key] += 1;
   });
 
+  // 因子ごとの 0–100 パーセンテージ
   const pct = {};
   FACTS.forEach(k=>{
     const avg0 = (sums[k]/(counts[k]||1)); // 0–4
-    const a15 = avg0 + 1; // 1–5
-    pct[k] = Math.round((a15-1)/4*100); // 0–100
+    const a15 = avg0 + 1;                  // 1–5
+    pct[k] = Math.round((a15-1)/4*100);    // 0–100
   });
 
-  // 総合スコア＝5因子pct平均
+  // 参考用：全体の「没頭度」的な平均（今は表示には使わない）
   let sumPct = 0;
   FACTS.forEach(k=> sumPct += pct[k]);
   const totalPct = Math.round(sumPct / FACTS.length);
 
-  return {pct,totalPct};
+  // 研究側（ANCHOR, FRAME）と芸術側（SPARK, SENSE）の平均
+  const researchPct = Math.round((pct.ANCHOR + pct.FRAME) / 2);
+  const artistPct  = Math.round((pct.SPARK  + pct.SENSE) / 2);
+
+  // 差分を -100〜+100 → 0〜100 にマッピング
+  // diffがマイナスほど研究寄り / プラスほど芸術寄り
+  const diff = artistPct - researchPct;         // -100〜+100 目安
+  const styleScore = Math.round((diff + 100) / 2); // 0〜100
+
+  return {pct,totalPct,styleScore,researchPct,artistPct};
 }
 
 /* ===== 結果表示 ===== */
 function showResult(){
-  const {pct,totalPct} = computeScores();
-  const grade = gradeFromScore(totalPct);
+  const {pct,totalPct,styleScore,researchPct,artistPct} = computeScores();
+  const grade = gradeFromScore(styleScore);
 
   // ランクバッジ in header
   if($rankBadge){
@@ -897,7 +911,8 @@ function showResult(){
 
   // 結果タイトル・サブ
   $resultTitle.textContent = `あなたのスタイル：${grade.label}`;
-  $resultSubtitle.textContent = `研究者マインド〜芸術家マインド総合スコア：${totalPct} / 100`;
+  $resultSubtitle.textContent =
+    `研究者⇔芸術家バランススコア：${styleScore} / 100（高いほど芸術寄り）`;
 
   // バッジ類
   if($gradeBadge){
@@ -905,7 +920,7 @@ function showResult(){
       `<span>${grade.emo}</span><span>${grade.label}</span>`;
   }
   if($scoreBadge){
-    $scoreBadge.textContent = `スコア ${totalPct} / 100`;
+    $scoreBadge.textContent = `スコア ${styleScore} / 100`;
   }
 
   // 本文：強み→落とし穴→今日の一手
