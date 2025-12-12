@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>研究者vs芸術家 診断｜18問で見る「ロジックと感性の狂気度」</title>
+<meta name="description" content="18問で、データで世界を見る“研究者マインド”と、感覚で世界を塗り替える“芸術家マインド”のバランスと没頭のしかたをチェックする診断。事実アンカー・構造フレーム・ひらめきスパーク・美意識センサー・没頭スイッチの5因子から、あなたの狂気の方向性を可視化します。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="研究者vs芸術家 診断">
+<meta property="og:description" content="18問でロジックと感性のバランス、そして“狂気”の向き先をチェックする診断。研究室マインドとアトリエマインド、あなたはどちら寄り？">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/researcher-vs-artist.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/researcher-vs-artist/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;   /* hot */
+  --accent2:#ff8fc7;  /* duo */
+}
+html,body{
+  margin:0;padding:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:800;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:.2em .7em;
+  border-radius:999px;
+  background:#f3e9ff;
+  color:#4b266e;
+  font-weight:700;
+  font-size:.85rem;
+}
+
+/* 固定進捗バー（noh準拠） */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー */
+figure.hero{
+  margin:12px 0;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;height:auto;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{
+  margin-top:0;
+  font-size:1.1rem;
+}
+#prologue p{margin:.4rem 0}
+#prologue .note{
+  color:var(--muted);
+  font-size:.9rem;
+}
+.start-btn{
+  margin-top:12px;
+  width:100%;
+  padding:12px 16px;
+  border-radius:999px;
+  border:1px solid var(--accent);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-weight:700;
+  letter-spacing:.03em;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問エリア */
+.qhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+.qnum{font-weight:700;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;
+  color:#7a6c86;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.qtext{margin:.6rem 0 1rem}
+.opts{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  transition:.12s;
+}
+.btn[aria-pressed="true"]{
+  outline:2px solid var(--accent2);
+  background:#fff4fa;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:500}
+.opt-note{color:#8b7b93;font-size:.9rem}
+.ctrls{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.ctrls button{
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#faf5ff;
+  cursor:pointer;
+}
+
+/* 結果エリア */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{
+  flex:1 1 280px;
+  min-width:260px;
+}
+.result .imgbox img{
+  width:100%;height:auto;
+  border-radius:14px;
+  border:1px solid var(--line);
+  display:block;
+}
+.result .text{
+  flex:2 1 360px;
+  min-width:300px;
+}
+.result-title-main{
+  margin:.2rem 0 0;
+}
+.result-title-sub{
+  margin:.1rem 0 .6rem;
+  font-size:.9rem;
+  color:var(--muted);
+}
+.badge-line{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+  margin:.2rem 0 .4rem;
+}
+.badge-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:2px 10px;
+  border-radius:999px;
+  background:#fff1fb;
+  font-size:.85rem;
+}
+
+/* 因子バー */
+.bars{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.bar{
+  background:transparent;
+  border-radius:10px;
+  padding:4px 0 6px;
+}
+.bar .h{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:2px 10px 4px;
+  font-size:.9rem;
+}
+.bar .h span:first-child{font-weight:600}
+.bar .track{
+  margin:0 10px 4px;
+  height:10px;
+  border-radius:999px;
+  background:#f3e9ff;
+  overflow:hidden;
+}
+.bar .fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;
+  transition:width .25s ease-out;
+}
+.bar-desc{
+  padding:0 10px 2px;
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+/* 前回回答 */
+.prev-list{
+  list-style:none;
+  padding-left:0;
+  margin:.4rem 0 .2rem .9rem;
+}
+.prev-item{
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  padding:6px 0;
+  border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;
+  white-space:nowrap;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:2px 8px;
+  font-size:.9rem;
+  background:#faf5ff;
+}
+
+.gallery{
+  margin-top:2px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:10px;
+}
+.gallery figure{
+  margin:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:6px;
+  text-align:center;
+  font-size:.85rem;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.gallery img{
+  width:100%;
+  height:auto;
+  border-radius:8px;
+  display:block;
+}
+
+/* その他 */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+.back{
+  display:inline-block;
+  margin:10px 0 20px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#faf5ff;
+}
+
+/* ✅だけのトースト */
+.mini-toast{
+  position:fixed;
+  left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;
+  background:#4c2b5f;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:1.1rem;
+  transition:.25s;
+  z-index:40;
+}
+.mini-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* 小さい画面調整 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+
+/* 研究メモ＆折りたたみ系の見た目 */
+.meta-note{
+  margin-top:8px;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fdf7ff;
+  color:var(--muted);
+  font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.meta-note[open]{
+  background:#fff;
+}
+.meta-note ul{
+  margin:.5rem 0 0 1.1rem;
+  padding-left:0;
+}
+
+.meta-note ul li + li{
+  margin-top:10px;
+  padding-top:6px;
+  border-top:1px dashed var(--line);
+}
+.fold-card{
+  margin:10px 0 8px;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--muted);
+  font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.fold-card[open]{
+  background:#fdf7ff;
+  box-shadow:0 3px 8px rgba(0,0,0,.03);
+}
+.fold-card[open] summary{
+  margin-bottom:6px;
+}
+</style>
+</head>
+
+<body data-id="researcher-vs-artist">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      研究者vs芸術家 診断
+      <span class="rank" aria-label="現在のスタイルランク">
+        <span>🧩</span><span>ランク未判定</span>
+      </span>
+    </div>
+    <div class="sub">
+      ロジックで世界を見るか、感性で世界を塗り替えるか——18問であなたの“狂気の方向”をチェックします。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar"
+     aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+  <!-- ヒーロー -->
+  <figure class="hero">
+    <img src="/shindan/assets/results/researcher-vs-artist/t00.webp"
+         alt="研究室とアトリエに立つ二人" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2>プロローグ：ラボとアトリエのあいだ</h2>
+    <p>世界には、エクセルが恋人な人と、キャンバスが恋人な人がいる。あなたの中では、どっちの声が大きいだろう。</p>
+    <p>研究者寄りだと何でも分解して検証したくなるし、芸術家寄りだと言葉にならない「しっくり」を形にしたくなる。どちらも少しだけ常識からズレた、同じ没頭族です。</p>
+    <p>このテストは、18の質問から「あなたの狂気がロジック寄りか、感性寄りか、そのあいだか」をゆるく眺める遊びです。深呼吸しつつ、気楽にポチポチ答えてみてください。</p>
+    <p class="note">※人生の進路を決めるテストではなく、「自分のこじらせポイント」をニヤッと確認するための遊びです。</p>
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">✨</span><span>ロジックと感性のバランスを見る</span>
+    </button>
+  </section>
+
+  <!-- 質問セクション -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/18</div>
+      <div class="qtag" id="qtag">
+        <span>🧪🎨</span><span>スタイルチェック</span>
+      </div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge">
+            <span>🧩</span><span>ランク未判定</span>
+          </span>
+          <span class="badge-pill" id="scoreBadge">
+            スコア — / 100
+          </span>
+        </div>
+        <h3 class="result-title-main" id="resultTitle"></h3>
+        <p class="result-title-sub" id="resultSubtitle"></p>
+        <p id="resultLines" style="white-space:pre-line;margin:.4rem 0 1rem"></p>
+
+        <!-- 因子バー（5本） -->
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）</summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- 5ランクのスタイルギャラリー -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🧪🎨 スタイルランクのギャラリー</summary>
+      <div class="gallery">
+        <figure>
+          <img src="/shindan/assets/results/researcher-vs-artist/t01.webp"
+               alt="数式に没頭する男性研究者" loading="lazy">
+          <figcaption>📉 t01 狂気的な研究者</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/researcher-vs-artist/t02.webp"
+               alt="資料を読み込む男性研究者" loading="lazy">
+          <figcaption>📊 t02 研究モード強め</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/researcher-vs-artist/t03.webp"
+               alt="研究者と芸術家の二人" loading="lazy">
+          <figcaption>⚖️ t03 ハイブリッド</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/researcher-vs-artist/t04.webp"
+               alt="大きなキャンバスに向かう女性芸術家" loading="lazy">
+          <figcaption>🎨 t04 芸術モード強め</figcaption>
+        </figure>
+        <figure>
+          <img src="/shindan/assets/results/researcher-vs-artist/t05.webp"
+               alt="作品と一体化する女性芸術家" loading="lazy">
+          <figcaption>🌈 t05 狂気的な芸術家</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <!-- 研究メモ（折りたたみ） -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモをひらく</summary>
+      <ul>
+        <li><strong>事実アンカー</strong>：直感だけで信じず、ちゃんと証拠をチェックする人ほど、陰謀論や「うますぎる話」に飲み込まれにくいことが複数の研究で示されています。</li>
+        <li><strong>構造フレーム</strong>：白黒ハッキリさせたい気持ちが強すぎると、単純でわかりやすいストーリー（ときに陰謀論）に飛びつきやすくなる、というデータがあります。</li>
+        <li><strong>ひらめきスパーク</strong>：ぼんやり空想するネットワークと、集中してコントロールするネットワークが同時に動いているとき、創造的なアイデアが出やすいとされます。</li>
+        <li><strong>美意識センサー</strong>：開放性や没頭感・充実感が高い一方で、感覚刺激にやや疲れやすい「世界を濃く味わうタイプ」として整理されています。</li>
+        <li><strong>没頭スイッチ</strong>：フローに入りやすさは知能そのものよりも、低い不安・高い誠実性・自分でコントロールできている感覚と強く結びつくことが報告されています。</li>
+      </ul>
+    </details>
+
+    <!-- 免責 -->
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+    <button type="button" class="back" id="restartBtn" aria-label="最初からやり直す">最初からやり直す</button>
+    <a class="back" href="https://haisuikounozarigani.github.io/shindan/">診断一覧に戻る</a>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 定義 ===== */
+const SLUG = 'researcher-vs-artist';
+const LS_ANS = `shindan:${SLUG}:answers`;
+const LS_IDX = `shindan:${SLUG}:index`;
+const LS_DONE = `shindan:${SLUG}:done`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* 因子キー（5因子） */
+const FACTS = ['ANCHOR','FRAME','SPARK','SENSE','DRIVE'];
+
+/* 因子ごとのラベル＆説明 */
+const FACT_LABEL = {
+  ANCHOR:'事実アンカー',
+  FRAME:'構造フレーム',
+  SPARK:'ひらめきスパーク',
+  SENSE:'美意識センサー',
+  DRIVE:'没頭スイッチ'
+};
+const FACT_DESC = {
+  ANCHOR:'数字・データ・証拠にどれくらい安心感を感じるか',
+  FRAME:'仮説や段取りを組み立てて考える力の強さ',
+  SPARK:'「ふと浮かぶ」アイデアや連想の勢い',
+  SENSE:'色・空気・雰囲気の違いにどれだけ敏感か',
+  DRIVE:'ハマると時間を忘れてやり込み続けるスイッチ'
+};
+
+/* 回答ラベル */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+
+/* 設問 18問（5因子×だいたい3問） */
+const QUESTIONS = [
+  // 事実アンカー
+  {t:'新しい情報を信じる前に、「元データや根拠」を確認したくなる。', key:'ANCHOR'},
+  {t:'直感よりも、「数字や統計」がそろっていると安心する。', key:'ANCHOR'},
+  {t:'意見を言うとき、「それってどうやって測ったの？」と聞きたくなることがある。', key:'ANCHOR'},
+  {t:'アートや物語でも、「実際のデータはどうなんだろう」とつい気になる。', key:'ANCHOR'},
+
+  // 構造フレーム
+  {t:'問題を見ると、まず全体像や構造をざっくり整理したくなる。', key:'FRAME'},
+  {t:'アイデアを出したあと、「仮説→検証」のようにステップに分けて考えがちだ。', key:'FRAME'},
+  {t:'人の話を聞きながら、頭の中で図やフローにして整理していることが多い。', key:'FRAME'},
+  {t:'「とりあえずやってみる」より、「どう進めるか」を先に考えたいタイプだ。', key:'FRAME'},
+
+  // ひらめきスパーク
+  {t:'別のジャンルの話を聞いていても、自分の領域への応用アイデアが勝手に湧いてくる。', key:'SPARK'},
+  {t:'説明しづらいけれど、「なんかこっちの方がおもしろそう」という勘で動くことがある。', key:'SPARK'},
+  {t:'散歩やシャワー中など、ぼーっとしているときにアイデアが落ちてくる感覚がある。', key:'SPARK'},
+
+  // 美意識センサー
+  {t:'同じ内容でも、「フォントや余白の違い」で印象が大きく変わると感じる。', key:'SENSE'},
+  {t:'部屋や机のレイアウトを、「作業しやすさ」と同じくらい「雰囲気」でも決めがちだ。', key:'SENSE'},
+  {t:'数字より先に、「この色・形は好きかどうか」で物事をジャッジしてしまうことがある。', key:'SENSE'},
+
+  // 没頭スイッチ
+  {t:'面白いテーマを見つけると、気づいたら何時間も調べたり作業してしまう。', key:'DRIVE'},
+  {t:'集中し始めると、飲み物や睡眠のことを忘れてしまうことがある。', key:'DRIVE'},
+  {t:'締切がなくても、「ここまでやり切りたい」と自分でラインを決めて追い込みがちだ。', key:'DRIVE'},
+  {t:'好きなことに没頭しているとき、「これが行きすぎるとちょっと怖いな」と自分の狂気を感じる瞬間がある。', key:'DRIVE'}
+];
+
+/* ランク情報：スコア0–100で5段階（t01〜t05） */
+const GRADE_DEF = [
+  {
+    id:'G1',
+    min:0,max:39,
+    emo:'📉',
+    label:'狂気的な研究者',
+    img:'t01.webp',
+    alt:'数式に没頭する男性研究者',
+    title:'QOLよりエビデンス優先な人',
+    sub:'分からないことを見ると「資料どこ？」で頭がいっぱいになる研究ガチ勢。強みは、世界をちゃんと検証しようとする真面目さ。弱みは、感情と直感まで p値で殴ろうとしがちなところです。友だちの恋バナにも「サンプル数1だよね？」って思ってませんか。バレてますよ。',
+    tip:'今日の一手：今日は一回だけ、「なんとなくそうしたいから」で行動してみる。論文はあとで読んで。'
+  },
+  {
+    id:'G2',
+    min:40,max:59,
+    emo:'📊',
+    label:'研究モード強め',
+    img:'t02.webp',
+    alt:'資料を読み込む男性研究者',
+    title:'なんでも図解したくなる真面目くん',
+    sub:'やる前に「全体像」と「手順」をサッと組み立てる、段取りマスタータイプ。強みは、ミスを減らして着実に前へ進めること。弱みは、遊びや趣味まで効率化して、気づいたら人生が全部タスク管理表になることです。旅行のしおりがExcelで3枚ある人は、このランクを疑ってください。',
+    tip:'今日の一手：「なんとなく楽しそうだから」という理由だけで、5〜10分だけ寄り道してみる。'
+  },
+  {
+    id:'G3',
+    min:60,max:74,
+    emo:'⚖️',
+    label:'研究者×芸術家ハイブリッド',
+    img:'t03.webp',
+    alt:'研究者と芸術家の二人',
+    title:'Excelとスケッチブックを両手に持って迷う人',
+    sub:'ロジックも大事、雰囲気も大事。「どっちも分かるからこそ疲れる」通訳ポジション。強みは、ガチ理系ともガチ感性派ともそれなりに会話が成立すること。弱みは、どちらのコミュニティでも「なんか分かるけど、なんかよく分からない人」になりがちなところです。会議でパワポと落書きメモを同時に出してくる人、だいたいこのランク。',
+    tip:'今日の一手：今日はあえて「理屈しか信じない日」か「直感しか信じない日」、どちらか1日に振り切ってみる。'
+  },
+  {
+    id:'G4',
+    min:75,max:89,
+    emo:'🎨',
+    label:'芸術モード強め',
+    img:'t04.webp',
+    alt:'大きなキャンバスに向かう女性芸術家',
+    title:'とりあえず「それダサくない？」フィルターを通す人',
+    sub:'数字より配色、仕様より余白。世界を「しっくりくる/こない」で判定する美意識番長タイプ。強みは、まだ誰も言葉にしてない違和感や良さを先にキャッチできること。弱みは、「理由はないけどイヤ」が多すぎて、周りからはただの気分屋に見えやすいところです。服を買うとき、機能性より「写真で映えるか」を優先してませんか。たぶんそう。',
+    tip:'今日の一手：パッと選んだものに、「なぜ良いと思ったのか」を一文だけ後付けで書いてみる。'
+  },
+  {
+    id:'G5',
+    min:90,max:100,
+    emo:'🌈',
+    label:'狂気的な芸術家',
+    img:'t05.webp',
+    alt:'作品と一体化する女性芸術家',
+    title:'生活を丸ごと作品フォルダにぶち込む人',
+    sub:'気づいたら夜、机の上はカオス、でも作品だけはかっこいいタイプ。没頭ゲージがバグっています。強みは、世界観ごと人を連れ去るレベルの表現を生み出せること。弱みは、その前に自分のHPバーが真っ赤になって強制ログアウトさせられがちなところです。「ご飯食べるの忘れてた」が週1以上あるなら、かなり怪しい。',
+    tip:'今日の一手：作品の締切とは別に、「寝る」「食べる」「風呂」のどれかをカレンダーに一枠入れて、アラームまでセットしてみる。'
+  }
+];
+
+/* スコア帯からグレードを取得 */
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[1]; // デフォルトで中間
+}
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素取得 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+const $resultLines = document.getElementById('resultLines');
+const $bars = document.getElementById('bars');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+/* ===== 初期表示：復元 or プロローグ ===== */
+(function init(){
+  updateProgress(0);
+  let savedAns = null;
+  let savedIdx = 0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const validArray = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = validArray && savedAns.some(v => v !== null);
+  const allDone = validArray && savedAns.every(v => v !== null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion(); // 内部状態だけ
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    renderQuestion();
+    enterQuizMode();
+    return;
+  }
+  // 完全新規
+  enterPrologueMode();
+})();
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  if($prologue) $prologue.style.display = 'block';
+  if($quiz) $quiz.style.display = 'none';
+  if($result) $result.style.display = 'none';
+  if($rankBadge){
+    $rankBadge.innerHTML = '<span>🧩</span><span>ランク未判定</span>';
+  }
+  updateProgress(0);
+}
+function enterQuizMode(){
+  if($prologue) $prologue.style.display = 'none';
+  if($quiz) $quiz.style.display = 'block';
+  if($result) $result.style.display = 'none';
+}
+function enterResultMode(){
+  if($prologue) $prologue.style.display = 'none';
+  if($quiz) $quiz.style.display = 'none';
+  if($result) $result.style.display = 'block';
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  // タグ：因子がバレないように共通ラベルに固定
+  if($qtag){
+    $qtag.innerHTML = `<span>🧪🎨</span><span>スタイルチェック</span>`;
+  }
+
+  // 選択肢
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML =
+      `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click',()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  // 「もどる」ボタン
+  $prev.disabled = (idx===0);
+
+  // 進捗バー
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  // ヘッダのランクは設問中は常に「未判定」
+  if($rankBadge){
+    $rankBadge.innerHTML = '<span>🧩</span><span>ランク未判定</span>';
+  }
+}
+
+function descFor(i){
+  return ['ほとんどない','あまりない','半々くらい','けっこうある','とてもよくある'][i] || '';
+}
+
+/* ===== 回答処理 ===== */
+function selectAnswer(v){
+  answers[idx] = v; // 0–4
+  persist();
+  markPressed(v);
+  showToast(); // ✅だけ
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=>{
+    el.setAttribute('aria-pressed', i===v ? 'true' : 'false');
+  });
+}
+$prev.addEventListener('click', ()=>{
+  if(idx>0){
+    idx--;
+    persist();
+    renderQuestion();
+  }
+});
+
+/* プロローグ → スタート */
+$startBtn.addEventListener('click', ()=>{
+  if(!answers.some(v=>v!==null)){
+    idx = 0;
+    renderQuestion();
+  }
+  enterQuizMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ===== 保存 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== スコア計算 ===== */
+/* 各因子0–4 → 1–5へシフト → 0–100。逆転因子はなし。 */
+function computeScores(){
+  const sums = {ANCHOR:0,FRAME:0,SPARK:0,SENSE:0,DRIVE:0};
+  const counts = {ANCHOR:0,FRAME:0,SPARK:0,SENSE:0,DRIVE:0};
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v == null) v = 0;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg0 = (sums[k]/(counts[k]||1)); // 0–4
+    const a15 = avg0 + 1; // 1–5
+    pct[k] = Math.round((a15-1)/4*100); // 0–100
+  });
+
+  // 総合スコア＝5因子pct平均
+  let sumPct = 0;
+  FACTS.forEach(k=> sumPct += pct[k]);
+  const totalPct = Math.round(sumPct / FACTS.length);
+
+  return {pct,totalPct};
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  const {pct,totalPct} = computeScores();
+  const grade = gradeFromScore(totalPct);
+
+  // ランクバッジ in header
+  if($rankBadge){
+    $rankBadge.innerHTML =
+      `<span>${grade.emo}</span><span>${grade.label}</span>`;
+  }
+
+  // 画像（t01〜t05はスコア帯で割当）
+  const IMG_BASE = '/shindan/assets/results/researcher-vs-artist/';
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '研究者と芸術家のスタイル';
+
+  // 結果タイトル・サブ
+  $resultTitle.textContent = `あなたのスタイル：${grade.label}`;
+  $resultSubtitle.textContent = `研究者マインド〜芸術家マインド総合スコア：${totalPct} / 100`;
+
+  // バッジ類
+  if($gradeBadge){
+    $gradeBadge.innerHTML =
+      `<span>${grade.emo}</span><span>${grade.label}</span>`;
+  }
+  if($scoreBadge){
+    $scoreBadge.textContent = `スコア ${totalPct} / 100`;
+  }
+
+  // 本文：強み→落とし穴→今日の一手
+  const text = `${grade.title}
+${grade.sub}
+${grade.tip}`;
+  $resultLines.textContent = text;
+
+  // 因子バー描画
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = pct[k];
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    const desc = FACT_DESC[k] || '';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k]}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${desc}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 完了フラグ／前回回答保存
+  try{ localStorage.setItem(LS_DONE, String(Date.now())); }catch(_){}
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+
+  buildPrevAnswers();
+
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== 前回回答一覧 ===== */
+function buildPrevAnswers(){
+  const $block = document.getElementById('prevBlock');
+  const $list  = document.getElementById('prevList');
+  if(!$block || !$list) return;
+
+  let prev = null;
+  try{
+    prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null');
+  }catch(_){}
+
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $list.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML =
+      `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $list.appendChild(li);
+  });
+
+  $block.open = false;
+}
+
+/* ===== リスタート ===== */
+function restartQuiz(){
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{
+    localStorage.removeItem(LS_ANS);
+    localStorage.removeItem(LS_IDX);
+  }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast(); // ここも✅だけ
+}
+$restart.addEventListener('click', restartQuiz);
+
+/* ===== トースト（✅のみ） ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'researcher-vs-artist';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      // あなたのこころLv（全診断合計）
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      // 診断ごとのカウント
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000); // フォールバック
+}());
+</script>
+</body>
+</html>
