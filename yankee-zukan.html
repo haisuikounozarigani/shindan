@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ヤンキー図鑑｜18問で“あなたのヤンキー気質”を図鑑化</title>
+<meta name="description" content="夜の校門＆コンビニ前モチーフ。仁義・ケンカ腰・不良ファッション欲・教師への反発・面倒見・世紀末ノリを、18問の5件法でゆるく可視化します（娯楽用）。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ヤンキー図鑑">
+<meta property="og:description" content="ビビり一般人寄り〜伝説級。あなたの“ヤンキー気質”を図鑑化（18問）。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/yankee-zukan.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/yankee-zukan/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;
+  --accent2:#ff8fc7;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:.2em .75em;border-radius:999px;
+  background:#f3e9ff;color:#4b266e;font-weight:850;font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(140,107,255,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(236,227,245,.9);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+.result-small{margin:.2rem 0 0;color:var(--muted);font-size:.88rem}
+
+/* ✅ 今日の一手：囲い */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(140,107,255,.35);
+  background:linear-gradient(135deg, rgba(140,107,255,.14), rgba(255,143,199,.12));
+  box-shadow:0 10px 22px rgba(140,107,255,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(236,227,245,.9);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2px 10px 4px;font-size:.9rem
+}
+.bar .h span:first-child{font-weight:850}
+.bar .track{
+  margin:0 10px 4px;height:10px;border-radius:999px;background:#f3e9ff;overflow:hidden;
+  border:1px solid var(--line);
+}
+.bar .fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;transition:width .25s ease-out;
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 前回回答 */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:6px 0;border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;white-space:nowrap;
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  font-size:.9rem;background:#faf5ff;
+}
+
+/* ギャラリー */
+.gallery{margin-top:2px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.gallery figure{
+  margin:0;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px;text-align:center;font-size:.85rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;
+}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fdf7ff;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fdf7ff;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+.meta-note ul{margin:.5rem 0 0 1.1rem;padding-left:0}
+.meta-note ul li + li{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+
+/* フッタ */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+
+/* ✅ 最初から＆一覧へ（装飾） */
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  box-shadow:0 12px 24px rgba(140,107,255,.14);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(140,107,255,.18);border-color:#ead9f2}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(140,107,255,.14)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.22);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(182,156,255,.18);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* ✅だけのトースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#4c2b5f;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<body data-id="yankee-zukan">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">📚</span>
+      <span id="pageTitle">ヤンキー図鑑</span>
+      <span class="rank" aria-label="現在のランク">
+        <span aria-hidden="true">🧩</span><span>未判定</span>
+      </span>
+    </div>
+    <div class="sub" id="pageSub">
+      ビビり一般人寄り〜伝説級。夜の校門から、あなたを“観察”します。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <!-- ヒーロー（t00.webp） -->
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/yankee-zukan/t00.webp" alt="夜の校門前のヤンキーたち" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <!-- prologue の書き方：①世界観ワンカット ②共感あるある(2〜3行) ③気楽に回答を促す ④注意書き -->
+    <h2>プロローグ：校門の影で、図鑑が開く</h2>
+    <p>「え、別にヤンキーじゃないし」って顔で、なぜか唐揚げ棒を選ぶ手だけ妙に堂々としてる日、ない？</p>
+    <p>上司の一言が雑だった瞬間、心の中でリーゼントが立つ。<br>でも次の瞬間には「いや大人やし…」って、前髪だけそっと戻す。</p>
+    <p>この診断は、そういう<strong>“夜の校門成分”</strong>をこっそり採取して、あなたを図鑑のそれっぽいページに貼る遊びです。</p>
+    <p class="note">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">✨</span><span>メンチを切る</span>
+    </button>
+  </section>
+
+  <!-- 質問セクション（初期は非表示） -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/18</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">🔎</span><span>観察中</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">🧩</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">スコア —点</span>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="今日の一手">
+          <div class="today-head"><span aria-hidden="true">🔥</span><span>今日の一手</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <p class="result-small" id="resultSmall"></p>
+
+        <!-- 因子バー -->
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）<span aria-hidden="true">▾</span></summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- ギャラリー（t01〜t05） -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🖼 ランクのギャラリー<span aria-hidden="true">▾</span></summary>
+      <div class="gallery" id="gallery"></div>
+    </details>
+
+    <!-- 研究メモ（任意） -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ（ゆるめ）<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+        <li><strong>諸説</strong>：人は「自分の中の物語っぽい役割」に名前をつけると、ちょっと扱いやすくなる（気がする）。</li>
+        <li><strong>注意</strong>：ここは娯楽。ガチ診断ではないので、笑えたら勝ち。</li>
+      </ul>
+    </details>
+
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 基本設定 ===== */
+const SLUG = 'yankee-zukan';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+/* 保存キー（衝突回避：SLUGを含める） */
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* ===== 回答ラベル（数字禁止） ===== */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','めっちゃある'][i] || '';
+}
+
+/* =========================================================
+   ヤンキー図鑑：因子・設問・採点・結果
+========================================================= */
+
+/* 因子 */
+const FACTS = ['JIN','KEN','FASH','TEACH','CARE','DOOM'];
+const FACT_LABEL = {
+  JIN:'仁義スイッチ',
+  KEN:'ケンカ腰トリガー',
+  FASH:'不良ファッション欲',
+  TEACH:'教師への反発',
+  CARE:'面倒見の良さ',
+  DOOM:'世紀末ノリ'
+};
+const FACT_DESC = {
+  JIN:'身内・筋・約束にスイッチが入る度',
+  KEN:'売られたケンカ（的な空気）に反応する度',
+  FASH:'髪・服・小物を“ちょい悪”にしたい度',
+  TEACH:'権威・ルールへ「それ今必要？」と言いたい度',
+  CARE:'弱い人や年下のフォローが自然に出る度',
+  DOOM:'武勇伝っぽいノリ／カオス耐性の度'
+};
+
+/* 設問（18問｜6因子×3）
+   answers は 0..4（LABELSのindex）
+   reverse:true は v=4-v（＝逆転項目）
+   ※因子はタグ表示しない（誤読予防）
+*/
+const QUESTIONS = [
+  {t:'約束した相手が困ってたら、予定が多少ズレても助けに行きたくなる。', key:'JIN'},
+  {t:'「それズルくない？」って場面でも、まあいっかで流せる。', key:'JIN', reverse:true},
+  {t:'身内認定した人には、つい“守る側”に回りがち。', key:'JIN'},
+
+  {t:'軽く煽られただけでも、内心でスイッチが入る（顔には出さない努力はする）。', key:'KEN'},
+  {t:'相手が強めに出てきても、基本は冷静に引ける。', key:'KEN', reverse:true},
+  {t:'「ナメられたくない」という感情がたまに顔を出す。', key:'KEN'},
+
+  {t:'制服や普段着を“ちょい崩し”するだけで気分が上がる。', key:'FASH'},
+  {t:'髪・アクセ・靴など、どこか一箇所は主張したくなる。', key:'FASH'},
+  {t:'服は機能重視で、見た目の“雰囲気”はどうでもいい。', key:'FASH', reverse:true},
+
+  {t:'「ルールだから」で押されると、理由を聞きたくなる。', key:'TEACH'},
+  {t:'先生・上司・先輩の言うことは、だいたい正しいと思う。', key:'TEACH', reverse:true},
+  {t:'理不尽に感じたら、心の中で反抗の落書きが始まる。', key:'TEACH'},
+
+  {t:'場の“弱い側”が損しそうだと、勝手にフォローしてしまう。', key:'CARE'},
+  {t:'面倒ごとは苦手で、誰かの相談には距離を置きがち。', key:'CARE', reverse:true},
+  {t:'怒ってる人がいても、なぜか間に入って丸めたくなる。', key:'CARE'},
+
+  {t:'勢いで始めた話が、気づけば“武勇伝っぽい味”になる。', key:'DOOM'},
+  {t:'カオスな空気でも「まあ、なんとかなるっしょ」で笑える。', key:'DOOM'},
+  {t:'静かで平和が一番。刺激は少なめがいい。', key:'DOOM', reverse:true}
+];
+
+/* ランク（0–39 / 40–59 / 60–74 / 75–89 / 90–100 → t01〜t05） */
+const GRADE_DEF = [
+  {
+    min:0, max:39, emo:'🫥', label:'ビビり一般人寄り', img:'t01.webp', alt:'遠くのヤンキーを見る二人',
+    headline:'回避が早い。最短で平和に帰れる。',
+    blurb:'基本は慎重派で、空気を先にスキャンしてから動くタイプ。ヤンキー漫画は読む。でも現実は「今の音…風だよね？」って顔でスッと裏ルートに消える。争いを避けるのが上手い＝生活の治安を守ってる。',
+    action:'今日は“守ってもいいかも”と思う相手を1人だけイメージしてみる。'
+  },
+  {
+    min:40, max:59, emo:'🧷', label:'ライトヤンキー気味', img:'t02.webp', alt:'少し崩した制服の二人',
+    headline:'まじめの皮に、ちょい悪の縫い目。',
+    blurb:'だいたい常識人。でも「ここだけは譲れない」もちゃんとある。鏡の前で「今日は攻めるか…」って1秒悩んで、結局ピアス1個で落ち着くタイプ。協調できるのに、ちゃんと自分の線も引ける。',
+    action:'言いにくいことを“1行だけ”丁寧に伝える（長文禁止）。'
+  },
+  {
+    min:60, max:74, emo:'🏪', label:'中間ガチ勢', img:'t03.webp', alt:'コンビニ前のヤンキー二人',
+    headline:'コンビニ前が似合う。もはや生息地。',
+    blurb:'情に厚くて、身内認定がわりと早い。口は悪いのに行動が優しい、あの“矛盾の人気者”枠。ツッコミが速くて、後輩の財布が薄いと勝手に肉まんを買わせろ圧が出る（優しさの圧）。',
+    action:'武勇伝じゃなくて“優しさエピソード”を1個だけ思い出す。'
+  },
+  {
+    min:75, max:89, emo:'🌙', label:'地元では有名', img:'t04.webp', alt:'仲間に囲まれたヤンキー二人',
+    headline:'名前が出た瞬間、会話が小声になる。',
+    blurb:'面倒見が良くて、人をまとめるのが得意。そのぶん勢いで引っ張りがちで、助け方が“物理的に頼もしい”方向に寄る。「困ってる」の一言で集合が発生するタイプ（本人は普通のつもり）。',
+    action:'今日は“身内扱い”したい相手にだけ、優しさを1回足す。'
+  },
+  {
+    min:90, max:100, emo:'🏙️', label:'伝説級ヤンキー', img:'t05.webp', alt:'屋上で風に立つヤンキー二人',
+    headline:'風が吹くと、勝手に主題歌が流れる。',
+    blurb:'度胸と主張が強めで、存在感が勝手に前に出るタイプ。屋上・夜景・フェンス前が似合いすぎる。歩くだけで「先輩…！」が発生し、武勇伝が増える速度が季節を超える。盛られるのは半分くらい周囲のせい。',
+    action:'今夜は“静かな時間”を10分だけ確保して、伝説の燃料を守る。'
+  }
+];
+
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2];
+}
+
+/* 採点（独自）
+   - 因子ごと平均（1..5）→0..100
+   - 総合は「平均 + 最大値 + ばらつき（カオス）」の合成
+     mean(60%) + max(25%) + chaos(15%)
+   - chaos は 因子pctの標準偏差を 0..100 に正規化（40で100扱い）
+*/
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0; // 0..4
+    const a15 = avg04 + 1;                             // 1..5
+    pct[k] = Math.round((a15-1)/4*100);                // 0..100
+  });
+
+  const arr = FACTS.map(k=>pct[k]||0);
+  const mean = arr.reduce((a,v)=>a+v,0)/arr.length;
+  const maxv = Math.max.apply(null, arr);
+  const mu = mean;
+  const variance = arr.reduce((a,v)=>a+Math.pow(v-mu,2),0)/arr.length;
+  const std = Math.sqrt(variance);
+
+  const chaos = Math.max(0, Math.min(100, Math.round(std/40*100)));
+  const totalScore = Math.max(0, Math.min(100, Math.round(mean*0.60 + maxv*0.25 + chaos*0.15)));
+
+  let top = FACTS[0];
+  FACTS.forEach(k=>{ if((pct[k]||0) > (pct[top]||0)) top = k; });
+
+  return { pct, totalScore, top, chaos: chaos };
+}
+
+/* ギャラリー（t01〜t05） */
+function buildGallery(){
+  return [
+    {img:'t01.webp', cap:'ビビり一般人寄り', alt:'遠くのヤンキーを見る二人'},
+    {img:'t02.webp', cap:'ライトヤンキー気味', alt:'少し崩した制服の二人'},
+    {img:'t03.webp', cap:'中間ガチ勢', alt:'コンビニ前のヤンキー二人'},
+    {img:'t04.webp', cap:'地元では有名', alt:'仲間に囲まれたヤンキー二人'},
+    {img:'t05.webp', cap:'伝説級ヤンキー', alt:'屋上で風に立つヤンキー二人'}
+  ];
+}
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+const $resultSmall = document.getElementById('resultSmall');
+
+const $bars = document.getElementById('bars');
+const $prevList = document.getElementById('prevList');
+const $gallery = document.getElementById('gallery');
+
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 保存/復元 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+function clearSaved(){
+  try{
+    localStorage.removeItem(LS_ANS);
+    localStorage.removeItem(LS_IDX);
+    localStorage.removeItem(LS_LASTANS);
+  }catch(_){}
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  // 因子を出すと誤読の温床になりやすいので固定ラベル
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">🔎</span><span>観察中</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+}
+
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  // 未回答があるなら最初の未回答へ戻す（安全策）
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct,totalScore,top,chaos} = computeScores(answers);
+  const grade = gradeFromScore(totalScore);
+
+  // ヘッダバッジ
+  if($rankBadge) $rankBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // 画像 t01〜t05
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  // 見出し・スコア（n点）
+  $resultTitle.textContent = `あなたのランク：${grade.label}`;
+  $resultSubtitle.textContent = `総合：${totalScore}点`;
+  if($scoreBadge) $scoreBadge.textContent = `スコア ${totalScore}点`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // コメント（あるある＆くすっと）
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.blurb}</p>
+    `;
+  }
+
+  // 今日の一手（囲い）
+  if($todayText) $todayText.textContent = grade.action;
+
+  // 小さめ補足（トップ因子＆カオス）
+  const topName = FACT_LABEL[top] || top;
+  const chaosTxt = (chaos>=70) ? '（世紀末ノリ強め）' : (chaos>=40 ? '（ノリの振れ幅あり）' : '（安定寄り）');
+  $resultSmall.textContent = `いちばん出てる気配 → ${topName} ${chaosTxt}`;
+
+  // 因子バー
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k] || k}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 前回回答（一覧）
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+  buildPrevAnswers();
+
+  // ギャラリー
+  buildGalleryUI();
+
+  // 完了イベント（必須）
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function buildPrevAnswers(){
+  let prev = null;
+  try{ prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null'); }catch(_){}
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $prevList.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $prevList.appendChild(li);
+  });
+}
+
+function buildGalleryUI(){
+  const g = buildGallery();
+  $gallery.innerHTML = '';
+  g.forEach(x=>{
+    const fig = document.createElement('figure');
+    fig.innerHTML = `
+      <img src="${IMG_BASE + x.img}" alt="${x.alt||''}" loading="lazy">
+      <figcaption>${x.cap||x.img}</figcaption>
+    `;
+    $gallery.appendChild(fig);
+  });
+}
+
+/* ===== 操作 ===== */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$startBtn.addEventListener('click', ()=>{
+  enterQuizMode();
+  renderQuestion();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast();
+});
+
+/* ===== 起動：復元 or プロローグ ===== */
+(function init(){
+  // ヒーローは常に t00.webp（正方形）
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  // 開き直したら「前回の結果」を優先表示
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion(); // 状態だけ整える
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||SLUG;
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());</script>
+
+</body>
+</html>
