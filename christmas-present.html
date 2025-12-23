@@ -1,0 +1,1934 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>クリスマスプレゼント｜スロット抽選（10種＋ハズレ）</title>
+  <meta name="description" content="押すたび抽選。動物メタファの“今日の一手”が1つ出る。動物3つ揃いで当たり。">
+  <meta name="theme-color" content="#fff4ec">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="クリスマスプレゼント">
+  <meta property="og:description" content="押すたび抽選：10種＋ハズレ。動物3つ揃いで当たり。">
+  <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/christmas-present.html">
+  <meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/christmas-present/t00.webp">
+  <meta name="twitter:card" content="summary">
+
+  <style>
+    :root{
+      --bg:#fff7f1;
+      --panel:rgba(255,255,255,.92);
+      --ink:#111;
+      --muted:#444;
+      --line:rgba(0,0,0,.12);
+
+      --a1:#ff2f4f;
+      --a2:#2ecc71;
+      --a3:#ffd06b;
+      --a4:#1fc8ff;
+
+      --shadow:0 16px 42px rgba(0,0,0,.18);
+      --r:18px;
+      --r2:26px;
+
+      --comicDot: rgba(0,0,0,.045);
+      --comicDot2: rgba(0,0,0,.028);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+      color:var(--ink);
+      line-height:1.6;
+
+      /* 漫画っぽい: ハーフトーン＋強め光 */
+      background:
+        radial-gradient(900px 520px at 12% -10%, rgba(255,47,79,.20), transparent 62%),
+        radial-gradient(900px 520px at 92% 0%, rgba(46,204,113,.18), transparent 60%),
+        radial-gradient(1000px 520px at 70% 110%, rgba(31,200,255,.14), transparent 60%),
+        radial-gradient(1200px 700px at 40% 120%, rgba(255,208,107,.16), transparent 58%),
+
+        radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,.95) 40%, transparent 45%),
+        radial-gradient(2px 2px at 32% 38%, rgba(255,255,255,.80) 40%, transparent 45%),
+        radial-gradient(2px 2px at 62% 22%, rgba(255,255,255,.88) 40%, transparent 45%),
+        radial-gradient(2px 2px at 82% 48%, rgba(255,255,255,.74) 40%, transparent 45%),
+        radial-gradient(2px 2px at 52% 72%, rgba(255,255,255,.82) 40%, transparent 45%),
+
+        /* ハーフトーン */
+        radial-gradient(circle at 0 0, var(--comicDot) 0 1px, transparent 1px 6px),
+        radial-gradient(circle at 3px 3px, var(--comicDot2) 0 1px, transparent 1px 6px),
+
+        var(--bg);
+      background-size:
+        auto,auto,auto,auto,
+        auto,auto,auto,auto,auto,
+        12px 12px, 12px 12px,
+        auto;
+    }
+
+    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 70px}
+
+    header{
+      padding:10px 4px 8px;
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:flex-end; justify-content:space-between;
+    }
+    .ttlbox{min-width:260px}
+    .kicker{
+      display:inline-flex; gap:8px; align-items:center;
+      font-size:12px; color:var(--muted);
+      padding:6px 10px;
+      border:2px solid rgba(0,0,0,.18);
+      border-radius:999px;
+      background:rgba(255,255,255,.82);
+      box-shadow:0 10px 22px rgba(0,0,0,.12);
+      backdrop-filter: blur(10px);
+      letter-spacing:.06em;
+      font-weight:900;
+    }
+    h1{margin:10px 0 4px; font-size:20px; letter-spacing:.2px}
+    .sub{margin:0; color:var(--muted); font-size:13.5px}
+
+    .bottom-nav{
+      margin-top:14px;
+      display:flex;
+      justify-content:flex-end;
+      padding:0 4px;
+    }
+    .btnlink{
+      appearance:none;
+      border:2px solid rgba(0,0,0,.16);
+      background:rgba(255,255,255,.88);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:1100;
+      font-size:12.5px;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow:0 12px 26px rgba(0,0,0,.16);
+      backdrop-filter: blur(10px);
+      opacity:.95;
+    }
+    .btnlink:active{transform:translateY(1px)}
+
+    /* 筐体 */
+    .cabinet{
+      margin-top:12px;
+      border-radius:var(--r2);
+      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.80));
+      border:2px solid rgba(0,0,0,.16);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* 漫画の集中線っぽい */
+    .cabinet::before{
+      content:"";
+      position:absolute; inset:-60px;
+      background:
+        conic-gradient(from 180deg,
+          rgba(0,0,0,.00),
+          rgba(0,0,0,.00) 10%,
+          rgba(0,0,0,.07) 12%,
+          rgba(0,0,0,.00) 14%,
+          rgba(0,0,0,.00) 20%,
+          rgba(0,0,0,.06) 22%,
+          rgba(0,0,0,.00) 24%,
+          rgba(0,0,0,.00) 30%,
+          rgba(0,0,0,.05) 32%,
+          rgba(0,0,0,.00) 34%,
+          rgba(0,0,0,.00)
+        );
+      opacity:.28;
+      filter: blur(.2px);
+      pointer-events:none;
+      transform:rotate(8deg);
+      mix-blend-mode:multiply;
+    }
+    .cabinet::after{
+      content:"";
+      position:absolute; inset:0;
+      border-radius:var(--r2);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.55);
+      pointer-events:none;
+    }
+
+    .cabinet-top{
+      padding:14px 14px 10px;
+      background:
+        linear-gradient(180deg, rgba(255,47,79,.10), rgba(46,204,113,.08)),
+        radial-gradient(650px 120px at 30% 0%, rgba(255,208,107,.20), transparent 65%);
+      border-bottom:2px solid rgba(0,0,0,.12);
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      position:relative;
+      z-index:1;
+    }
+
+    .lights{
+      display:flex; gap:7px; align-items:center;
+      padding:6px 10px;
+      border:2px solid rgba(0,0,0,.12);
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+    }
+    .lamp{
+      width:10px; height:10px; border-radius:50%;
+      background:rgba(255,255,255,.10);
+      box-shadow:none;
+      animation: blink 1.1s infinite;
+    }
+    .lamp:nth-child(2){animation-delay:.14s}
+    .lamp:nth-child(3){animation-delay:.28s}
+    .lamp:nth-child(4){animation-delay:.42s}
+    .lamp:nth-child(5){animation-delay:.56s}
+    @keyframes blink{
+      0%,55%{background:rgba(255,255,255,.10); box-shadow:none}
+      70%{background:rgba(255,208,107,.90); box-shadow:0 0 18px rgba(255,208,107,.55)}
+      100%{background:rgba(255,79,122,.82); box-shadow:0 0 18px rgba(255,79,122,.45)}
+    }
+
+    .meter{
+      display:flex; gap:10px; align-items:center;
+      color:var(--muted);
+      font-size:12.5px;
+      font-weight:1100;
+    }
+    .meter b{color:var(--ink)}
+    .meter .pill{
+      padding:6px 10px;
+      border-radius:999px;
+      border:2px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.72);
+      white-space:nowrap;
+    }
+
+    .slot-area{
+      padding:14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.56));
+      position:relative;
+      z-index:1;
+    }
+
+    .reels{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      position:relative;
+    }
+
+    /* 漫画っぽい「擬音」レイヤー */
+    .sfx{
+      position:absolute;
+      inset:-8px;
+      pointer-events:none;
+      z-index:5;
+      display:none;
+    }
+    .sfx.show{display:block}
+    .sfx .txt{
+      position:absolute;
+      font-weight:1200;
+      letter-spacing:.18em;
+      color:rgba(0,0,0,.18);
+      text-shadow:0 1px 0 rgba(255,255,255,.75);
+      transform:rotate(-10deg);
+      filter: blur(.1px);
+      user-select:none;
+    }
+    .sfx .t1{left:6px; top:10px; font-size:34px}
+    .sfx .t2{right:4px; top:44px; font-size:28px; transform:rotate(12deg)}
+    .sfx .t3{left:18px; bottom:10px; font-size:26px; transform:rotate(6deg)}
+    .sfx.reach .txt{animation: sfxPulse .22s ease-in-out 0s 10}
+    .sfx.win .txt{animation: sfxPulse .18s ease-in-out 0s 14}
+    @keyframes sfxPulse{
+      0%{transform:scale(1) rotate(var(--rot,0deg)); opacity:.55}
+      50%{transform:scale(1.03) rotate(var(--rot,0deg)); opacity:.78}
+      100%{transform:scale(1) rotate(var(--rot,0deg)); opacity:.60}
+    }
+
+    .reels.win::after{
+      content:"決 着";
+      position:absolute;
+      left:50%; top:50%;
+      transform:translate(-50%,-50%) rotate(-2deg);
+      padding:9px 16px;
+      border-radius:999px;
+      border:2px solid rgba(0,0,0,.14);
+      background:rgba(255,255,255,.94);
+      box-shadow:0 20px 55px rgba(0,0,0,.20);
+      font-weight:1200;
+      letter-spacing:.42em;
+      opacity:0;
+      animation: hitTag .52s ease-out 0s 1 forwards;
+      pointer-events:none;
+      z-index:6;
+    }
+    @keyframes hitTag{
+      0%{opacity:0; transform:translate(-50%,-50%) rotate(-2deg) scale(.92)}
+      60%{opacity:1; transform:translate(-50%,-50%) rotate(-2deg) scale(1.04)}
+      100%{opacity:1; transform:translate(-50%,-50%) rotate(-2deg) scale(1)}
+    }
+
+    .reel{
+      border-radius:var(--r);
+      border:2px solid rgba(0,0,0,.16);
+      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.72));
+      min-height:92px;
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+      overflow:hidden;
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.55),
+        0 10px 22px rgba(0,0,0,.08);
+      transition: filter .15s ease, transform .12s ease;
+    }
+    .reel::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(700px 100px at 50% -10%, rgba(255,255,255,.14), transparent 58%),
+        radial-gradient(10px 10px at 20% 30%, rgba(0,0,0,.06) 0 2px, transparent 3px 10px),
+        radial-gradient(10px 10px at 60% 60%, rgba(0,0,0,.05) 0 2px, transparent 3px 10px);
+      pointer-events:none;
+      mix-blend-mode:multiply;
+      opacity:.55;
+    }
+
+    .glyph{
+      font-size:42px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
+      transform: translateZ(0);
+    }
+    .reel.spin .glyph{ animation: jiggle .09s infinite linear; }
+    @keyframes jiggle{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(1px)}
+      100%{transform:translateY(0)}
+    }
+
+    .reels.reach .reel{
+      animation: reachPulse .20s ease-in-out 0s 8;
+      filter: saturate(1.16) contrast(1.03);
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.55),
+        0 0 0 3px rgba(255,208,107,.28),
+        0 0 28px rgba(255,208,107,.22);
+    }
+    @keyframes reachPulse{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-3px)}
+      100%{transform:translateY(0)}
+    }
+
+    .reels.win .reel{
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.55),
+        0 0 0 3px rgba(255,208,107,.40),
+        0 0 34px rgba(255,47,79,.14);
+      animation: winBreathe .32s ease-in-out 0s 6;
+      filter: saturate(1.10);
+    }
+    @keyframes winBreathe{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-2px)}
+      100%{transform:translateY(0)}
+    }
+
+    .cabinet.shake{ animation: cabinetShake .20s ease-in-out 0s 6; }
+    @keyframes cabinetShake{
+      0%{transform:translateX(0)}
+      25%{transform:translateX(2px)}
+      50%{transform:translateX(-2px)}
+      75%{transform:translateX(2px)}
+      100%{transform:translateX(0)}
+    }
+
+    .controls{
+      margin-top:12px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+    button{
+      appearance:none;
+      border:2px solid rgba(0,0,0,.16);
+      background:rgba(255,255,255,.88);
+      color:var(--ink);
+      border-radius:999px;
+      padding:12px 14px;
+      font-weight:1200;
+      font-size:14px;
+      cursor:pointer;
+      box-shadow:0 14px 28px rgba(0,0,0,.16);
+      transition:transform .06s ease, filter .2s ease;
+      letter-spacing:.05em;
+    }
+    button:active{transform:translateY(1px)}
+    button[disabled]{opacity:.55; cursor:not-allowed}
+
+    .spinbtn{
+      position:relative;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.08));
+    }
+    .spinbtn::before{
+      content:"";
+      position:absolute; inset:-1px;
+      border-radius:999px; padding:1px;
+      background:linear-gradient(90deg, rgba(255,79,122,.92), rgba(41,194,106,.92), rgba(255,208,107,.92));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events:none;
+    }
+    .quiet{ background:rgba(255,255,255,.08); color:var(--muted); }
+
+    .minihelp{
+      margin:10px 2px 0;
+      font-size:13.5px;
+      color:var(--muted);
+      font-weight:900;
+      letter-spacing:.03em;
+    }
+
+    /* 結果 */
+    .result{
+      margin-top:14px;
+      border-radius:var(--r2);
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.84));
+      border:2px solid rgba(0,0,0,.16);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:none;
+      position:relative;
+    }
+    .result::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(500px 120px at 30% 0%, rgba(255,208,107,.18), transparent 62%),
+        radial-gradient(600px 160px at 80% 10%, rgba(31,200,255,.12), transparent 65%);
+      pointer-events:none;
+      opacity:.70;
+    }
+    .result-head{
+      padding:14px 14px 14px;
+      border-bottom:2px solid rgba(0,0,0,.10);
+      background:
+        linear-gradient(180deg, rgba(41,194,106,.10), rgba(255,255,255,.74));
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+    .res-left{min-width:240px; flex:1}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:2px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.74);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:1200;
+      white-space:nowrap;
+      letter-spacing:.06em;
+    }
+    .rt{ margin:8px 0 0; font-size:18px; letter-spacing:.2px; font-weight:1200}
+    .comment{ margin:8px 0 0; color:var(--ink); font-size:14.4px; font-weight:900}
+
+    .res-media{
+      width:min(200px, 40vw);
+      aspect-ratio: 1 / 1;
+      border-radius:18px;
+      border:2px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.80);
+      overflow:hidden;
+      box-shadow:0 12px 26px rgba(0,0,0,.12);
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+      z-index:1;
+    }
+    .res-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .placeholder{
+      font-weight:1100;
+      color:var(--muted);
+      font-size:12.5px;
+      padding:10px;
+      text-align:center;
+    }
+
+    .action-box{
+      margin:12px 14px 14px;
+      border-radius:var(--r2);
+      border:2px solid rgba(255,208,107,.45);
+      background:linear-gradient(180deg, rgba(255,208,107,.18), rgba(255,255,255,.74));
+      padding:12px 12px;
+      box-shadow:0 12px 26px rgba(0,0,0,.10);
+      position:relative;
+      z-index:1;
+    }
+    .action-ttl{ margin:0 0 6px; font-weight:1200; display:flex; gap:8px; align-items:center; letter-spacing:.06em;}
+    .action-txt{ margin:0; color:var(--ink); font-size:14.2px; font-weight:900}
+
+    .method-box{
+      margin:0 14px 14px;
+      border-radius:var(--r2);
+      border:2px solid rgba(0,0,0,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.80));
+      padding:12px 12px;
+      box-shadow:0 12px 28px rgba(0,0,0,.12);
+      display:none;
+      position:relative;
+      z-index:1;
+    }
+    .method-head{
+      margin:0 0 10px;
+      font-weight:1200;
+      display:flex; gap:8px; align-items:center;
+      letter-spacing:.06em;
+    }
+    .method-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    @media (min-width:780px){
+      .method-grid{ grid-template-columns:1fr 1fr; }
+    }
+    .method-col{
+      border:2px solid rgba(0,0,0,.10);
+      border-radius:16px;
+      background:rgba(255,255,255,.78);
+      padding:10px 10px;
+    }
+    .method-ttl{
+      margin:0 0 8px;
+      font-weight:1200;
+      color:var(--ink);
+      font-size:13px;
+      letter-spacing:.08em;
+    }
+    .method-list{
+      margin:0;
+      padding-left:18px;
+      font-size:13.6px;
+      color:var(--ink);
+      line-height:1.55;
+      font-weight:900;
+    }
+    .method-list.muted{ color:var(--muted); font-weight:900; }
+    .method-list li{ margin:6px 0; }
+
+    .foot{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+      padding:0 4px;
+      font-weight:900;
+    }
+    .warn{
+      margin-top:10px;
+      padding:10px 12px;
+      border:2px solid rgba(0,0,0,.12);
+      border-radius:var(--r);
+      background:rgba(255,255,255,.76);
+    }
+
+    /* 図鑑 */
+    .dex{
+      margin-top:14px;
+      border-radius:var(--r2);
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+      border:2px solid rgba(0,0,0,.16);
+      box-shadow:var(--shadow);
+      padding:12px 14px;
+      position:relative;
+    }
+    .dex::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(600px 130px at 20% 0%, rgba(255,47,79,.14), transparent 62%),
+        radial-gradient(600px 130px at 80% 0%, rgba(46,204,113,.12), transparent 62%);
+      opacity:.60;
+      pointer-events:none;
+    }
+    .dex-head{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding-bottom:10px;
+      border-bottom:2px solid rgba(0,0,0,.10);
+      position:relative;
+      z-index:1;
+    }
+    .dex-ttl{font-weight:1200; letter-spacing:.10em}
+    .dex-meta{
+      padding:6px 10px;
+      border-radius:999px;
+      border:2px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.74);
+      font-weight:1200;
+      color:var(--muted);
+      letter-spacing:.06em;
+    }
+    .dex-grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      gap:10px;
+      position:relative;
+      z-index:1;
+    }
+    @media (min-width:780px){
+      .dex-grid{ grid-template-columns:repeat(10, 1fr); }
+    }
+    .dex-cell{
+      border-radius:14px;
+      border:2px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.76);
+      overflow:hidden;
+      aspect-ratio:1/1;
+      position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .dex-cell img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .dex-lock{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:1200;
+      color:rgba(0,0,0,.45);
+      background:linear-gradient(180deg, rgba(255,255,255,.90), rgba(255,255,255,.76));
+      letter-spacing:.12em;
+    }
+    .dex-note{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+      font-weight:900;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ===== FX（別レイヤー演出） ===== */
+    .reach-banner{
+      position:fixed;
+      left:50%; top:14px;
+      transform:translateX(-50%) rotate(-2deg);
+      background:rgba(255,255,255,.95);
+      border:2px solid rgba(0,0,0,.14);
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1200;
+      letter-spacing:.22em;
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+      display:none;
+      z-index:9998;
+      pointer-events:none;
+    }
+    .reach-banner.show{
+      display:block;
+      animation: reachIn .22s ease-out, reachBlink .22s ease-in-out 0s 10;
+    }
+    @keyframes reachIn{
+      from{opacity:0; transform:translateX(-50%) translateY(-10px) rotate(-2deg)}
+      to{opacity:1; transform:translateX(-50%) translateY(0) rotate(-2deg)}
+    }
+    @keyframes reachBlink{
+      0%{filter:saturate(1)}
+      50%{filter:saturate(1.35) contrast(1.05)}
+      100%{filter:saturate(1)}
+    }
+
+    .fx{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      z-index:9999;
+      pointer-events:none;
+    }
+    .fx.show{display:flex}
+
+    /* 決着BONUS: 派手な背景 */
+    .fx-bg{
+      position:absolute; inset:0;
+      background:
+        conic-gradient(
+          from 0deg,
+          rgba(255,47,79,.34),
+          rgba(46,204,113,.30),
+          rgba(255,208,107,.34),
+          rgba(31,200,255,.30),
+          rgba(255,47,79,.34)
+        );
+      animation: raysSpin 1.10s linear infinite;
+      filter: blur(1px);
+      opacity:.92;
+    }
+    @keyframes raysSpin{to{transform:rotate(360deg)}}
+
+    /* さらに集中線 */
+    .fx-lines{
+      position:absolute; inset:-80px;
+      background:
+        conic-gradient(from 180deg,
+          rgba(0,0,0,.00),
+          rgba(0,0,0,.00) 6%,
+          rgba(0,0,0,.10) 7%,
+          rgba(0,0,0,.00) 8%,
+          rgba(0,0,0,.00) 14%,
+          rgba(0,0,0,.08) 15%,
+          rgba(0,0,0,.00) 16%,
+          rgba(0,0,0,.00) 22%,
+          rgba(0,0,0,.07) 23%,
+          rgba(0,0,0,.00) 24%,
+          rgba(0,0,0,.00)
+        );
+      opacity:.22;
+      pointer-events:none;
+      mix-blend-mode:multiply;
+      animation: linesWobble .8s ease-in-out infinite;
+    }
+    @keyframes linesWobble{
+      0%{transform:rotate(-2deg)}
+      50%{transform:rotate(2deg)}
+      100%{transform:rotate(-2deg)}
+    }
+
+    .fx-dim{
+      position:absolute; inset:0;
+      background:rgba(255,255,255,.56);
+      backdrop-filter: blur(2px);
+    }
+
+    .fx-card{
+      position:relative;
+      background:rgba(255,255,255,.94);
+      border:2px solid rgba(0,0,0,.14);
+      border-radius:22px;
+      padding:14px 16px;
+      text-align:center;
+      box-shadow:0 22px 60px rgba(0,0,0,.26);
+      min-width:min(90vw,620px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      transform:rotate(-1deg);
+    }
+
+    /* 斜め帯 */
+    .fx-ribbon{
+      position:absolute;
+      left:-46px; top:16px;
+      transform:rotate(-12deg);
+      padding:8px 70px;
+      background:linear-gradient(90deg, rgba(0,0,0,.86), rgba(0,0,0,.66));
+      color:rgba(255,255,255,.95);
+      border:2px solid rgba(255,255,255,.18);
+      letter-spacing:.22em;
+      font-weight:1200;
+      font-size:12px;
+      box-shadow:0 12px 28px rgba(0,0,0,.22);
+      border-radius:999px;
+    }
+
+    .fx-top{
+      font-weight:1200;
+      letter-spacing:.22em;
+      font-size:12.5px;
+      color:#333;
+      text-transform:uppercase;
+    }
+    .fx-mid{
+      margin-top:2px;
+      font-weight:1200;
+      font-size:30px;
+      letter-spacing:.08em;
+      color:#111;
+      text-shadow:0 2px 0 rgba(255,208,107,.55), 0 0 18px rgba(255,47,79,.20);
+      animation: pop .22s ease-out 0s 4;
+    }
+    @keyframes pop{
+      0%{transform:scale(.97)}
+      60%{transform:scale(1.04)}
+      100%{transform:scale(1)}
+    }
+    .fx-sub{
+      margin-top:4px;
+      font-size:13px;
+      font-weight:1000;
+      color:#333;
+      max-width:56ch;
+      margin-inline:auto;
+      white-space:normal;
+      line-height:1.35;
+      letter-spacing:.02em;
+    }
+    .fx-media{
+      width:min(240px, 62vw);
+      aspect-ratio: 1 / 1;
+      border-radius:18px;
+      border:2px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.82);
+      overflow:hidden;
+      box-shadow:0 14px 30px rgba(0,0,0,.16);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .fx-media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* トースト */
+    .toast{
+      position:fixed; left:50%; bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(255,255,255,.95);
+      color:var(--ink);
+      border:2px solid rgba(0,0,0,.14);
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:12.5px;
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease;
+      z-index:10000;
+      max-width:min(92vw,760px);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      font-weight:1100;
+      letter-spacing:.06em;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px)}
+
+    @media (min-width:780px){
+      h1{font-size:24px}
+      .reel{min-height:106px}
+      .glyph{font-size:48px}
+      .rt{font-size:20px}
+      .res-media{width:220px}
+      .sfx .t1{font-size:40px}
+      .sfx .t2{font-size:32px}
+      .sfx .t3{font-size:30px}
+    }
+  </style>
+</head>
+
+<body data-id="christmas-present">
+  <div class="wrap">
+    <header aria-label="ヘッダー">
+      <div class="ttlbox">
+        <div class="kicker"><span>🎁</span><span>クリスマスプレゼント</span><span>・</span><span>押すたび抽選</span><span>・</span><span>三つ揃えば決着</span></div>
+        <h1>クリスマスプレゼント</h1>
+        <p class="sub">押して回すだけ。<b>今日の一手</b>が1つ出る。たまに<b>凍結</b>、たまに<b>激アツ</b>。</p>
+      </div>
+    </header>
+
+    <section class="cabinet" id="cabinet" aria-label="スロット筐体">
+      <div class="cabinet-top">
+        <div class="lights" aria-hidden="true">
+          <span class="lamp"></span><span class="lamp"></span><span class="lamp"></span><span class="lamp"></span><span class="lamp"></span>
+        </div>
+        <div class="meter" aria-label="ステータス">
+          <span class="pill">連打数 <b id="spinCount">0</b></span>
+          <span class="pill">音 <b id="sndMode">OFF</b></span>
+        </div>
+      </div>
+
+      <div class="slot-area">
+        <div class="reels" id="reels" aria-label="リール表示">
+          <div class="sfx" id="sfxLayer" aria-hidden="true">
+            <div class="txt t1">ゴゴゴ</div>
+            <div class="txt t2">ザワ</div>
+            <div class="txt t3">ドン</div>
+          </div>
+
+          <div class="reel" id="reel1"><div class="glyph" id="g1" aria-live="polite">❄️</div></div>
+          <div class="reel" id="reel2"><div class="glyph" id="g2" aria-live="polite">🎄</div></div>
+          <div class="reel" id="reel3"><div class="glyph" id="g3" aria-live="polite">🎁</div></div>
+        </div>
+
+        <div class="controls" aria-label="操作">
+          <div class="btnrow">
+            <button class="spinbtn" id="spinBtn" type="button" aria-label="スロットを回す（スペースでも可）">
+              🎰 回す（SPACE）
+            </button>
+            <button class="quiet" id="resetBtn" type="button" aria-label="連打数と保存をリセット">
+              ↩️ リセット
+            </button>
+          </div>
+          <div class="btnrow">
+            <button class="quiet" id="toggleSnd" type="button" aria-pressed="false" aria-label="効果音を切り替える">
+              🔈 音：OFF
+            </button>
+          </div>
+        </div>
+
+        <p class="minihelp">
+          <b>当たり</b>：動物が3つ揃う ／ <b>リーチ</b>：2つ揃い ／ <b>凍結</b>：一瞬の静寂が来る。
+        </p>
+      </div>
+    </section>
+
+    <section class="result" id="resultPanel" aria-label="結果">
+      <div class="result-head">
+        <div class="res-left">
+          <div class="badge" id="badgeLine">—</div>
+          <h2 class="rt" id="resTitle">—</h2>
+          <p class="comment" id="resComment">—</p>
+        </div>
+
+        <div class="res-media" aria-label="結果画像">
+          <img id="resImg" alt="" loading="lazy" decoding="async">
+          <div class="placeholder" id="resImgPlaceholder" style="display:none">画像が読み込めません</div>
+        </div>
+      </div>
+
+      <div class="action-box" aria-label="今日の一手">
+        <p class="action-ttl"><span aria-hidden="true">🧭</span><span>今日の一手（30〜90秒）</span></p>
+        <p class="action-txt" id="resAction">—</p>
+      </div>
+
+      <div class="method-box" id="methodBox" aria-label="ストレス軽減のやり方と研究メモ">
+        <p class="method-head"><span aria-hidden="true">🧠</span><span>やり方（ゆっくり読める版）</span></p>
+
+        <div class="method-grid">
+          <div class="method-col">
+            <p class="method-ttl">手順</p>
+            <ul class="method-list" id="methodHow"></ul>
+          </div>
+
+          <div class="method-col">
+            <p class="method-ttl">研究メモ</p>
+            <ul class="method-list muted" id="methodMemo"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dex" id="dexPanel" aria-label="動物図鑑">
+      <div class="dex-head">
+        <div class="dex-ttl">📗 図鑑</div>
+        <div class="dex-meta"><span id="dexCount">0</span>/10</div>
+      </div>
+      <div class="dex-grid" id="dexGrid"></div>
+      <p class="dex-note" id="dexNote">当たり（3つ揃い）で埋まる。</p>
+    </section>
+
+    <div class="foot" style="padding:0 14px 14px">
+      <div class="warn">
+        ※娯楽＋自己ケアの補助です。症状や不調が続く場合は専門機関へ。<br>
+        ※スロット風は演出です。お金は増えません。
+      </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="下部ナビ">
+      <a class="btnlink" href="/shindan/" aria-label="診断一覧に戻る（下）">
+        <span>📚</span><span>診断一覧に戻る</span>
+      </a>
+    </nav>
+
+    <div class="foot" aria-label="フッター">
+      <p style="margin:14px 0 0">保存：前回結果と設定を localStorage に保持（端末内のみ）。</p>
+      <p style="margin:6px 0 0">画像：/shindan/assets/results/christmas-present/ の t01.webp〜t10.webp を使用。</p>
+    </div>
+  </div>
+
+  <div class="reach-banner" id="reachBanner" aria-hidden="true">R E A C H</div>
+
+  <!-- 凍結 -->
+  <div class="fx" id="freezeFx" aria-hidden="true">
+    <div class="fx-dim"></div>
+    <div class="fx-card">
+      <div class="fx-ribbon">静 寂</div>
+      <div class="fx-top">FREEZE</div>
+      <div class="fx-mid">……</div>
+      <div class="fx-sub" id="freezeSub">—</div>
+    </div>
+  </div>
+
+  <!-- BONUS -->
+  <div class="fx" id="bonusFx" aria-hidden="true">
+    <div class="fx-bg"></div>
+    <div class="fx-lines"></div>
+    <div class="fx-card">
+      <div class="fx-ribbon" id="bxRibbon">決 着</div>
+      <div class="fx-top" id="bxTop">BONUS</div>
+      <div class="fx-mid" id="bxMid">HIT</div>
+
+      <div class="fx-media" aria-label="当たり画像">
+        <img id="bxImg" alt="" loading="lazy" decoding="async">
+        <div class="placeholder" id="bxImgPlaceholder" style="display:none">画像が読み込めません</div>
+      </div>
+
+      <div class="fx-sub" id="bxSub">—</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (function(){
+    var SLUG = document.body.getAttribute('data-id') || 'christmas-present';
+    var STATE_KEY = 'specimens:' + SLUG + ':state';
+    var DEX_KEY   = 'specimens:' + SLUG + ':dex';
+
+    /* ここは /shindan/christmas-present.html 前提で相対にしてる */
+    var IMG_BASE  = 'assets/results/christmas-present/';
+
+    // ===== DOM =====
+    var $toast = document.getElementById('toast');
+    var $spinBtn = document.getElementById('spinBtn');
+    var $resetBtn = document.getElementById('resetBtn');
+    var $toggleSnd = document.getElementById('toggleSnd');
+
+    var $spinCount = document.getElementById('spinCount');
+    var $sndMode = document.getElementById('sndMode');
+
+    var $cabinet = document.getElementById('cabinet');
+
+    var $reels = document.getElementById('reels');
+    var $reel1 = document.getElementById('reel1');
+    var $reel2 = document.getElementById('reel2');
+    var $reel3 = document.getElementById('reel3');
+    var $g1 = document.getElementById('g1');
+    var $g2 = document.getElementById('g2');
+    var $g3 = document.getElementById('g3');
+
+    var $sfx = document.getElementById('sfxLayer');
+
+    var $panel = document.getElementById('resultPanel');
+    var $badge = document.getElementById('badgeLine');
+    var $resTitle = document.getElementById('resTitle');
+    var $resComment = document.getElementById('resComment');
+    var $resAction = document.getElementById('resAction');
+    var $resImg = document.getElementById('resImg');
+    var $resImgPlaceholder = document.getElementById('resImgPlaceholder');
+
+    var $methodBox = document.getElementById('methodBox');
+    var $methodHow = document.getElementById('methodHow');
+    var $methodMemo = document.getElementById('methodMemo');
+
+    var $reachBanner = document.getElementById('reachBanner');
+    var $freezeFx = document.getElementById('freezeFx');
+    var $freezeSub = document.getElementById('freezeSub');
+
+    var $bonusFx = document.getElementById('bonusFx');
+    var $bxRibbon = document.getElementById('bxRibbon');
+    var $bxTop = document.getElementById('bxTop');
+    var $bxMid = document.getElementById('bxMid');
+    var $bxSub = document.getElementById('bxSub');
+    var $bxImg = document.getElementById('bxImg');
+    var $bxImgPlaceholder = document.getElementById('bxImgPlaceholder');
+
+    var $dexGrid = document.getElementById('dexGrid');
+    var $dexCount = document.getElementById('dexCount');
+    var $dexNote = document.getElementById('dexNote');
+
+    // ===== データ：10種（t01..t10.webp）=====
+    var RESULTS = [
+      { key:'DOG',  glyph:'🐶', name:'犬：匂いで心を固定', img:'t01.webp', alt:'サンタと犬',
+        comment:'空気の変化に気づくのが早い。だから先に疲れる。先に休むのも才能。',
+        action:'好きな香りを10秒ゆっくり吸う→吐く×3。最後に「いま戻った」と1回だけ言って終了。',
+        howSteps:[
+          '好きな香りを用意（コーヒー/洗剤/ハンドクリームなどでOK）。',
+          '鼻から吸う→口から吐く（吐く長め）を3回。',
+          '最後に「いま戻った」と心の中で1回だけ言って終わり。'
+        ],
+        memo:[
+          '嗅覚刺激（香り）が気分やストレス反応に影響し得るというレビューは複数ある。〔確度：中〕',
+          '匂い刺激の効果は条件や個人差が大きい。〔確度：低〕'
+        ]
+      },
+      { key:'CAT',  glyph:'🐱', name:'猫：肩をほどいて人間に戻る', img:'t02.webp', alt:'サンタと猫',
+        comment:'頭で耐えるほど、肩が先に抗議する。身体は嘘をつかない。',
+        action:'肩甲骨を寄せて5秒→脱力10秒×2。最後に首を左右へ各1回。',
+        howSteps:[
+          '肩甲骨を寄せて5秒キープ→脱力10秒（2回）。',
+          '首を左右にゆっくり倒して各1回（痛みのない範囲）。',
+          '背伸びを1回して終わり。'
+        ],
+        memo:[
+          '軽いストレッチが主観的ストレス低下につながる報告がある。〔確度：中〕',
+          '身体活動と不安/気分の改善は多くの研究で示唆。〔確度：中〕'
+        ]
+      },
+      { key:'SLOTH', glyph:'🦥', name:'ナマケモノ：0.5倍速で鎮圧', img:'t03.webp', alt:'サンタとナマケモノ',
+        comment:'焦りが出たら、まず速度を落とす。思考の暴走は燃料が減ると止まる。',
+        action:'今の動作を“25%だけ”ゆっくり20秒→深呼吸1回（吐く長め）。',
+        howSteps:[
+          '今してる動作を25%だけ遅くする（歩く/入力/片付け等）。',
+          '20秒続ける。',
+          '深呼吸1回（吐く長め）で締める。'
+        ],
+        memo:[
+          '行動テンポを落とすと覚醒を下げやすい。〔確度：中〕',
+          '焦りループ（速く動く→さらに焦る）を断ち切りやすい。〔確度：中〕'
+        ]
+      },
+      { key:'PENG', glyph:'🐧', name:'ペンギン：胸に手を置いて耐久', img:'t04.webp', alt:'サンタとペンギン',
+        comment:'他人の席は用意できるのに、自分だけ立たせがち。今日は座る番。',
+        action:'胸に手→吸う4秒／吐く6秒×3。最後に肩をストンと落とす。',
+        howSteps:[
+          '片手を胸（鎖骨の少し下）に置く。',
+          '吸う4秒→吐く6秒を3回（吐く長め）。',
+          '肩をストンと落として終了。'
+        ],
+        memo:[
+          '呼気を長くする呼吸法はリラクゼーション反応と関連。〔確度：中〕',
+          'セルフタッチは安心感を作りやすい介入として研究がある。〔確度：中〕'
+        ]
+      },
+      { key:'REIN', glyph:'🦌', name:'トナカイ：脚で強制退勤', img:'t05.webp', alt:'サンタとトナカイ',
+        comment:'考えすぎると“脳だけ残業”が始まる。脚を動かすと退勤命令が通る。',
+        action:'その場足踏みorかかと上げ30秒→水を一口。',
+        howSteps:[
+          'その場で足踏みorかかと上げを30秒。',
+          '水を一口（飲んだ感覚を1秒だけ意識）。',
+          '終わり。'
+        ],
+        memo:[
+          '短い休憩や軽運動が疲労感・緊張の低下に寄与する報告。〔確度：中〕',
+          '“考えを止める”より“体を動かす”の方が実装しやすい。〔確度：高〕'
+        ]
+      },
+      { key:'OWL', glyph:'🦉', name:'フクロウ：光量を下げて沈静', img:'t06.webp', alt:'サンタとフクロウ',
+        comment:'情報が多いほど冴えるが、同じだけ消耗する。光は騒音にもなる。',
+        action:'画面の明るさを一段落とす→20秒遠くを見る→目を2秒ギュッ→脱力。',
+        howSteps:[
+          '画面の明るさを1段階下げる（夜は特に）。',
+          '20秒だけ遠くを見る。',
+          '目を2秒ギュッ→脱力して終了。'
+        ],
+        memo:[
+          '夜間の強い光は睡眠関連ホルモンを抑制し得る。〔確度：高〕',
+          '遠くを見る休憩は眼精疲労対策として広く推奨。〔確度：中〕'
+        ]
+      },
+      { key:'RAB', glyph:'🐰', name:'ウサギ：噛んで回路を変える', img:'t07.webp', alt:'サンタとうさぎ',
+        comment:'思考が回る時ほど口が止まる。なら噛んで、回路を切り替える。',
+        action:'ガム10回（なければ水を一口含み味に10秒集中）→肩を1回落とす。',
+        howSteps:[
+          'ガムがあれば10回噛む（一定リズム）。',
+          'なければ水を一口含んで味/温度に10秒集中。',
+          '肩を1回ストンと落として終了。'
+        ],
+        memo:[
+          '咀嚼（ガム）で主観ストレスや指標が改善した報告がある。〔確度：中〕',
+          '注意を身体感覚へ寄せ、思考ループを切りやすい。〔確度：中〕'
+        ]
+      },
+      { key:'FOX', glyph:'🦊', name:'キツネ：感情を一語で封印', img:'t08.webp', alt:'サンタとキツネ',
+        comment:'脳内で裁判が始まったら、証拠集めを止めて“名前”をつける。',
+        action:'メモに「いま：〇〇（不安/焦り/だるい等）」と1行だけ。理由は書かない。',
+        howSteps:[
+          '紙かメモアプリを開く。',
+          '「いま：〇〇（不安/焦り/だるい/怒り）」と1行だけ書く。',
+          '理由は書かずに閉じる（ここが効く）。'
+        ],
+        memo:[
+          '感情ラベリングは情動反応の鎮静と関連する報告。〔確度：中〕',
+          '分析で燃料投下しやすいので1行縛りが実用的。〔確度：高〕'
+        ]
+      },
+      { key:'DOL', glyph:'🐬', name:'イルカ：鼻歌で排気', img:'t09.webp', alt:'サンタとイルカ',
+        comment:'黙って耐えるほど内側が騒がしくなる。出口は“音”で作れる。',
+        action:'鼻から吸う→口を閉じ「んーー」で10秒吐く×3（吐く＞吸う）。',
+        howSteps:[
+          '鼻から吸う（約3秒）。',
+          '口を閉じたまま「んーー」と吐く（約7〜10秒）。',
+          'これを3回（吐く＞吸う）。'
+        ],
+        memo:[
+          'ハミング呼吸が生理指標を改善した小規模報告がある。〔確度：中〕',
+          '効果は条件差が大きいので“出たら儲け”くらいで。〔確度：低〕'
+        ]
+      },
+      { key:'OCT', glyph:'🐙', name:'タコ：握る→ほどく（短縮PMR）', img:'t10.webp', alt:'サンタとタコ',
+        comment:'緊張すると手が増える（比喩）。まず握ってほどく。人間に戻る。',
+        action:'こぶし5秒→脱力10秒／肩すくめ5秒→脱力10秒／奥歯5秒→ゆるめ10秒。これを2周。',
+        howSteps:[
+          'こぶしを強く握る5秒→一気に脱力10秒。',
+          '肩をすくめる5秒→ストンと落として脱力10秒。',
+          '奥歯を軽く噛む5秒→口をゆるめる10秒。',
+          '上の3つをもう1周（合計2周）。'
+        ],
+        memo:[
+          '漸進的筋弛緩（PMR）が不安などの指標を改善した報告がある。〔確度：中〕',
+          'ここでは導入用の短縮版。長いプロトコル同等は期待しない。〔確度：中〕'
+        ]
+      }
+    ];
+
+    /* ハズレ増量：種類を増やして“回す意味”を作る */
+    var MISSES = [
+      { glyph:'🧦', name:'片方だけの靴下',
+        comment:'噛み合わない日はある。今日はそれ。人格ではなく天候。',
+        action:'10秒だけ肩の力を抜く→吐く長めを1回。終わり。'
+      },
+      { glyph:'🧾', name:'レシートだけ',
+        comment:'頭の中が会計処理中。回しても景気は上がらない。仕様。',
+        action:'目線を遠くに20秒→まばたき3回。終わり。'
+      },
+      { glyph:'🪙', name:'コイン1枚',
+        comment:'「次いく」が言えたら勝ち。切り替え筋トレ回。',
+        action:'水を一口→飲んだ感覚だけ5秒見る。終わり。'
+      },
+      { glyph:'🎈', name:'風船（なぜか軽い）',
+        comment:'真面目に回しすぎると、たまにギャグが出る。回復は軽さから。',
+        action:'口角ちょい上げ→吸って吐くを1回。終わり。'
+      },
+      { glyph:'🧊', name:'氷だけ',
+        comment:'冷えてるのは悪じゃない。冷えないと燃えすぎる。',
+        action:'頬に手を当てて3呼吸（吐く長め）。終わり。'
+      },
+      { glyph:'📎', name:'クリップだけ',
+        comment:'止めるところを間違えると、全部がズレる。今日は“止めどころ”の話。',
+        action:'「今やる1つ」を心で決める→それ以外は一旦保留。終わり。'
+      },
+      { glyph:'🪡', name:'糸と針だけ',
+        comment:'修復は派手じゃない。だけど、ここで縫えば崩れない。',
+        action:'散らかり1点だけ戻す（10秒以内）。終わり。'
+      },
+      { glyph:'🕯️', name:'ロウソク1本',
+        comment:'暗闇は一気に消せない。なら一本分だけ照らす。',
+        action:'画面の明るさを一段落とす。終わり。'
+      },
+      { glyph:'🧩', name:'パズルの欠片',
+        comment:'正解は“次の1ピース”からしか始まらない。',
+        action:'作業を15秒だけ着手→続けるかはその後決める。終わり。'
+      },
+      { glyph:'🪟', name:'窓の指紋',
+        comment:'光が入ると汚れが見える。見えたら、拭けばいいだけ。',
+        action:'画面/机を1拭き。終わり。'
+      },
+      { glyph:'🧵', name:'絡んだ糸',
+        comment:'ほどくのは“力”じゃなく“余白”。',
+        action:'息を吐きながら肩を回す×2。終わり。'
+      },
+      { glyph:'🛎️', name:'鈴だけ（チリン）',
+        comment:'注意喚起は小さく鳴る。無視すると、あとで大音量になる。',
+        action:'通知を1つだけ消す（未読でも可）。終わり。'
+      }
+    ];
+
+    /* セリフ（オリジナル） */
+    var QUOTES = [
+  { t:"電子レンジは優しい顔してるが、金属を入れると牙をむく。人間関係も同じだ。相性の悪い“金属”を持ち込むな。", by:"" },
+  { t:"レシートは捨てても、支払いは消えない。先延ばしは“現実を見ない儀式”だ。", by:"" },
+  { t:"静電気は見えないが、触れた瞬間に分かる。嫌な予感も同じだ。見えないうちに距離を取れ。", by:"" },
+  { t:"スマホのバッテリーは0%になるまで働く。だが0%の後に出るのは“根性”じゃなく“強制終了”だ。", by:"" },
+  { t:"シャンプーは泡立つほど「洗えた気」になる。忙しさも同じだ。泡で満足して、汚れが残る。", by:"" },
+  { t:"ビニール傘は気軽だが、風に弱い。“とりあえず”で作った予定は、だいたい嵐で折れる。", by:"" },
+  { t:"信号は急いでる人ほど赤に見えない。人生の赤は、無視すると“事故として請求”される。", by:"" },
+  { t:"パズルは力で押し込むと、正解でも歪む。頑張り方が雑だと、成功が“後遺症”になる。", by:"" },
+  { t:"冷蔵庫は何でも保存できる顔をして、期限は平等に過ぎる。我慢も同じだ。貯めるほど、腐る。", by:"" },
+  { t:"エレベーターは押し続けても速くならない。不安も同じだ。連打しても現実は加速しない。", by:"" },
+  { t:"カーテンは薄いほど光が入るが、夜に丸見えになる。オープンすぎる優しさは、時々自分を晒す。", by:"" },
+  { t:"辞書は分厚いが、開かないと一文字も助けない。知識も同じだ。“持ってる”だけでは戦えない。", by:"" },
+  { t:"水たまりは避けたつもりで、靴の中に入る。問題も同じだ。避けるほど、別の形で侵入する。", by:"" },
+  { t:"駐車は“入れる技術”より“出る余白”が大事だ。予定も同じだ。詰めるだけ詰めると、抜けられない。", by:"" },
+  { t:"蛍光灯は切れる直前ほどチカチカして目立つ。限界も同じだ。派手になる前に交換しろ。", by:"" },
+  { t:"炭酸は振るほど勢いが出るが、開けると溢れる。感情も同じだ。揺らした分だけ、あとで噴く。", by:"" },
+  { t:"マグカップは熱いほど持ち方が難しい。大事なものほど、“扱い方”が問われる。", by:"" },
+  { t:"地図アプリは迷ってから起動する人にだけ冷たい。準備はいつも、遅い側の味方をしない。", by:"" },
+  { t:"洗濯物は“畳まない自由”を与えると、部屋を支配する。小さな放置は、必ず王になる。", by:"" },
+  { t:"コピー機は紙詰まりのときほど「早くして」と急かす。トラブルは忙しい日に来る。礼儀がない。", by:"" },
+  { t:"目薬は一滴で世界を変えるが、刺した瞬間は痛い。改善も同じだ。効くほど、最初は違和感がある。", by:"" },
+  { t:"冷めたコーヒーは、温め直しても“淹れたて”にはならない。回復も同じだ。だから先に冷ますな。", by:"" },
+  { t:"イヤホンは絡む。必ず絡む。人間関係も同じだ。放置すると“ほどく時間”が増える。", by:"" },
+  { t:"窓の指紋は、光が差して初めて見える。問題も同じだ。明るい時ほど、汚れが目立つ。", by:"" },
+  { t:"アイスは溶けても甘い顔をしている。優しさも同じだ。溶けたら形は戻らない。", by:"" },
+  { t:"コンビニのレジ前は、つい余計なものを掴ませる。誘惑はいつも“出口”に立っている。", by:"" },
+  { t:"鍋の吹きこぼれは、見てない10秒で起きる。人生の崩壊もだいたい、その10秒で来る。", by:"" },
+  { t:"自転車のチェーンは外れた瞬間、脚力がゼロになる。仕組みが壊れると、努力は無音になる。", by:"" },
+  { t:"ダウンロードは進捗が99%で止まる。“もうすぐ大丈夫”って言葉は、危険な麻酔だ。", by:"" },
+  { t:"非常口のマークは普段ダサいが、必要な時に神になる。習慣も同じだ。平凡なものが命綱になる。", by:"" }
+];
+
+    // ===== state / storage =====
+    function loadJson(key, fallback){
+      try{
+        var v = localStorage.getItem(key);
+        if(!v) return fallback;
+        return JSON.parse(v);
+      }catch(_){
+        return fallback;
+      }
+    }
+    function saveJson(key, obj){
+      try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(_){}
+    }
+
+    var state = loadJson(STATE_KEY, null) || {
+      spins: 0,
+      soundOn: false,
+      missStreak: 0,
+      last: null
+    };
+
+    var dex = loadJson(DEX_KEY, {}) || {};
+
+    function applyStateUI(){
+      if($spinCount) $spinCount.textContent = String(state.spins || 0);
+      if($sndMode) $sndMode.textContent = state.soundOn ? 'ON' : 'OFF';
+      if($toggleSnd){
+        $toggleSnd.setAttribute('aria-pressed', state.soundOn ? 'true' : 'false');
+        $toggleSnd.textContent = '🔈 音：' + (state.soundOn ? 'ON' : 'OFF');
+      }
+    }
+
+    // ===== toast =====
+    function toast(msg){
+      if(!$toast) return;
+      $toast.textContent = msg;
+      $toast.classList.add('show');
+      setTimeout(function(){ $toast.classList.remove('show'); }, 1200);
+    }
+
+    // ===== audio / vib =====
+    var audioCtx = null;
+    function ensureAudio(){
+      if(!state.soundOn) return null;
+      if(audioCtx) return audioCtx;
+      try{
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+      }catch(_){
+        return null;
+      }
+    }
+    function vib(p){
+      try{ if(navigator && navigator.vibrate) navigator.vibrate(p); }catch(_){}
+    }
+    function beep(freq, ms, gain){
+      var ctx = ensureAudio();
+      if(!ctx) return;
+      try{
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.value = gain || 0.03;
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start();
+        setTimeout(function(){ try{o.stop();}catch(_){ } }, ms);
+      }catch(_){}
+    }
+    function jingleHit(tier){
+      if(tier==='SUPER'){
+        beep(880,90,0.05); setTimeout(function(){beep(988,90,0.05)},100);
+        setTimeout(function(){beep(1175,140,0.055)},210);
+        setTimeout(function(){beep(1319,160,0.058)},360);
+      }else if(tier==='BIG'){
+        beep(784,90,0.045); setTimeout(function(){beep(880,130,0.045)},110);
+        setTimeout(function(){beep(988,150,0.045)},280);
+      }else{
+        beep(660,70,0.032); setTimeout(function(){beep(880,95,0.04)},90);
+      }
+    }
+
+    function pickIndex(len){ return (len<=1) ? 0 : Math.floor(Math.random()*len); }
+
+    function escapeHtml(s){
+      return String(s || '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
+    // ===== dex =====
+    function dexUnlockedCount(){
+      var n = 0;
+      for(var i=0;i<RESULTS.length;i++){
+        var k = RESULTS[i].key;
+        if(dex && dex[k]) n++;
+      }
+      return n;
+    }
+
+    function renderDex(){
+      if(!$dexGrid) return;
+      $dexGrid.innerHTML = '';
+
+      for(var i=0;i<RESULTS.length;i++){
+        var r = RESULTS[i];
+        var cell = document.createElement('div');
+        cell.className = 'dex-cell';
+
+        if(dex && dex[r.key]){
+          var img = document.createElement('img');
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.src = IMG_BASE + r.img;
+          img.alt = r.name || '図鑑';
+          cell.appendChild(img);
+        }else{
+          var lock = document.createElement('div');
+          lock.className = 'dex-lock';
+          lock.textContent = '???';
+          cell.appendChild(lock);
+        }
+        $dexGrid.appendChild(cell);
+      }
+
+      if($dexCount){
+        var c = dexUnlockedCount();
+        $dexCount.textContent = String(c);
+        if($dexNote){
+          $dexNote.textContent = (c >= 10)
+            ? '10/10達成：称号「冬の図鑑コンプリート」'
+            : '当たり（3つ揃い）で埋まる。';
+        }
+      }
+    }
+
+    function unlockDex(key){
+      if(!key) return;
+      if(!dex) dex = {};
+      if(dex[key]) return;
+      dex[key] = true;
+      saveJson(DEX_KEY, dex);
+      renderDex();
+    }
+
+    // ===== UI reel helpers =====
+    function setReelSpin(on){
+      [$reel1,$reel2,$reel3].forEach(function(r){
+        if(!r) return;
+        if(on) r.classList.add('spin');
+        else r.classList.remove('spin');
+      });
+    }
+    function clearReelFx(){
+      if($reels){
+        $reels.classList.remove('reach');
+        $reels.classList.remove('win');
+      }
+      if($sfx){
+        $sfx.classList.remove('show','reach','win');
+      }
+    }
+    function tickGlyph(el, arr){
+      if(!el) return;
+      el.textContent = arr[Math.floor(Math.random()*arr.length)];
+    }
+
+    // ===== FX =====
+    function showSfx(mode){
+      if(!$sfx) return;
+      $sfx.classList.add('show');
+      $sfx.classList.remove('reach','win');
+      if(mode) $sfx.classList.add(mode);
+      setTimeout(function(){
+        if($sfx){
+          $sfx.classList.remove('show','reach','win');
+        }
+      }, (mode==='win') ? 1600 : 1300);
+    }
+
+    function showReach(){
+      if($reachBanner){
+        $reachBanner.classList.add('show');
+        setTimeout(function(){ if($reachBanner) $reachBanner.classList.remove('show'); }, 1550);
+      }
+      if($reels) $reels.classList.add('reach');
+      showSfx('reach');
+      setTimeout(function(){
+        if($reels) $reels.classList.remove('reach');
+      }, 1550);
+    }
+
+    function showFreeze(sub, ms){
+      if(!$freezeFx || !$freezeSub) return;
+      $freezeSub.textContent = sub || '（沈黙のあと…何かが来る）';
+      $freezeFx.classList.add('show');
+      beep(180, 110, 0.03);
+      setTimeout(function(){ if($freezeFx) $freezeFx.classList.remove('show'); }, Math.max(900, ms||1400));
+    }
+
+    function showBonus(tier, quote, hitRes){
+      if(!$bonusFx) return;
+
+      if($bxRibbon){
+        $bxRibbon.textContent = (tier==='SUPER') ? '極' : (tier==='BIG') ? '熱' : '決着';
+      }
+      if($bxTop) $bxTop.textContent = (tier==='SUPER') ? 'SUPER BONUS' : (tier==='BIG') ? 'BIG BONUS' : 'BONUS';
+      if($bxMid) $bxMid.textContent = (hitRes && hitRes.name) ? (hitRes.name + '！') : 'HIT！';
+
+      if($bxSub){
+        if(quote && quote.t){
+          $bxSub.textContent = '「' + quote.t + '」';
+        }else{
+          $bxSub.textContent = '—';
+        }
+      }
+
+      if($bxImg && $bxImgPlaceholder){
+        $bxImg.onload = null;
+        $bxImg.onerror = null;
+
+        if(hitRes && hitRes.img){
+          $bxImgPlaceholder.style.display = 'none';
+          $bxImg.style.display = '';
+
+          $bxImg.onload = function(){ $bxImgPlaceholder.style.display='none'; };
+          $bxImg.onerror = function(){
+            $bxImg.style.display = 'none';
+            $bxImgPlaceholder.textContent = '画像が読み込めません：' + hitRes.img;
+            $bxImgPlaceholder.style.display = '';
+          };
+          $bxImg.src = IMG_BASE + hitRes.img;
+          $bxImg.alt = hitRes.alt || hitRes.name || '当たり画像';
+        }else{
+          $bxImg.style.display = 'none';
+          $bxImg.removeAttribute('src');
+          $bxImg.alt = '';
+          $bxImgPlaceholder.style.display = 'none';
+        }
+      }
+
+      /* 演出時間：長め */
+      var dur = (tier==='SUPER') ? 6200 : (tier==='BIG') ? 5400 : 4700;
+
+      $bonusFx.classList.add('show');
+      showSfx('win');
+      jingleHit(tier);
+      setTimeout(function(){ if($bonusFx) $bonusFx.classList.remove('show'); }, dur);
+    }
+
+    // ===== result rendering =====
+    function setResultImage(r, isMiss){
+      if(!$resImg || !$resImgPlaceholder) return;
+      $resImg.onload = null;
+      $resImg.onerror = null;
+
+      if(isMiss || !r || !r.img){
+        $resImg.removeAttribute('src');
+        $resImg.setAttribute('alt','');
+        $resImg.style.display = 'none';
+        $resImgPlaceholder.style.display = 'none';
+        return;
+      }
+
+      $resImgPlaceholder.style.display = 'none';
+      $resImg.style.display = '';
+
+      $resImg.onload = function(){ $resImgPlaceholder.style.display='none'; };
+      $resImg.onerror = function(){
+        $resImg.style.display = 'none';
+        $resImgPlaceholder.textContent = '画像が読み込めません：' + r.img;
+        $resImgPlaceholder.style.display = '';
+      };
+
+      $resImg.src = IMG_BASE + r.img;
+      $resImg.alt = r.alt || r.name || '結果画像';
+    }
+
+    function fillList($ul, items){
+      if(!$ul) return;
+      $ul.innerHTML = '';
+      (items || []).forEach(function(txt){
+        var li = document.createElement('li');
+        li.textContent = txt;
+        $ul.appendChild(li);
+      });
+    }
+
+    function renderMethodBlock(r){
+      if(!$methodBox || !$methodHow || !$methodMemo) return;
+      if(!r || !r.howSteps || !r.memo){
+        $methodBox.style.display = 'none';
+        $methodHow.innerHTML = '';
+        $methodMemo.innerHTML = '';
+        return;
+      }
+      fillList($methodHow, r.howSteps);
+      fillList($methodMemo, r.memo);
+      $methodBox.style.display = 'block';
+    }
+
+    function renderHit(resIdx, quoteIdx, tier){
+      var r = RESULTS[resIdx];
+      var q = QUOTES[quoteIdx];
+
+      unlockDex(r.key);
+
+      if($panel) $panel.style.display = 'block';
+      if($badge){
+        var b = (tier==='SUPER') ? '✨ 極当たり' : (tier==='BIG') ? '🌟 激当たり' : '🎯 当たり';
+        $badge.textContent = r.glyph + ' ' + b;
+      }
+      if($resTitle) $resTitle.textContent = r.glyph + ' ' + r.name;
+
+      var line1 = r.comment;
+      var line2 = (q && q.t) ? ('「' + q.t + '」') : '';
+      if($resComment){
+        $resComment.innerHTML =
+          '<span>' + escapeHtml(line1) + '</span>' +
+          '<br><br>' +
+          '<span style="color:var(--muted); font-weight:1100">' + escapeHtml(line2) + '</span>';
+      }
+
+      if($resAction) $resAction.textContent = r.action;
+      setResultImage(r, false);
+      renderMethodBlock(r);
+
+      state.missStreak = 0;
+      state.last = { kind:'HIT', resIdx:resIdx, quoteIdx:quoteIdx, tier:tier };
+      saveJson(STATE_KEY, state);
+
+      document.dispatchEvent(new Event('result:ready'));
+    }
+
+    function renderMiss(missIdx, quoteIdx){
+      var m = MISSES[missIdx];
+      var q = QUOTES[quoteIdx];
+
+      if($panel) $panel.style.display = 'block';
+      if($badge) $badge.textContent = '💥 ハズレ';
+      if($resTitle) $resTitle.textContent = m.glyph + ' ハズレ：' + m.name;
+
+      var line1 = m.comment;
+      var line2 = (q && q.t) ? ('「' + q.t + '」') : '';
+      if($resComment){
+        $resComment.innerHTML =
+          '<span>' + escapeHtml(line1) + '</span>' +
+          '<br><br>' +
+          '<span style="color:var(--muted); font-weight:1100">' + escapeHtml(line2) + '</span>';
+      }
+
+      if($resAction) $resAction.textContent = m.action;
+      setResultImage(null, true);
+      renderMethodBlock(null);
+
+      state.missStreak = (state.missStreak || 0) + 1;
+      state.last = { kind:'MISS', missIdx:missIdx, quoteIdx:quoteIdx };
+      saveJson(STATE_KEY, state);
+
+      document.dispatchEvent(new Event('result:ready'));
+    }
+
+    // ===== lottery =====
+    function rollOutcome(){
+      /* 体感を濃く: リーチ/凍結/当たりが出る世界 */
+      var baseHit = 0.12;     // 12%
+      var reachOnMiss = 0.34; // 外れ時のリーチ率
+      var freezeOnReach = 0.28;
+
+      var ms = (state.missStreak || 0);
+      var add = 0;
+      if(ms >= 7){
+        add = Math.min(0.14, (ms - 7 + 1) * 0.014); // 最大+14%
+      }
+      var hitRate = Math.min(0.30, baseHit + add);
+
+      var isHit = (Math.random() < hitRate);
+      var isNearMiss = (!isHit) && (Math.random() < reachOnMiss);
+
+      var tier = 'NORMAL';
+      if(isHit){
+        var r = Math.random();
+        tier = (r < 0.035) ? 'SUPER' : (r < 0.24) ? 'BIG' : 'NORMAL';
+      }
+
+      var willFreeze = false;
+      if(isNearMiss || isHit){
+        willFreeze = (Math.random() < freezeOnReach);
+      }
+
+      return { isHit:isHit, isNearMiss:isNearMiss, willFreeze:willFreeze, tier:tier };
+    }
+
+    // ===== spin core =====
+    var running = false;
+
+    function spin(){
+      if(running) return;
+      running = true;
+
+      /* 何が起きても帰ってくる保険 */
+      var watchdog = setTimeout(function(){
+        try{ clearReelFx(); }catch(_){}
+        try{ setReelSpin(false); }catch(_){}
+        try{ if($spinBtn) $spinBtn.disabled = false; }catch(_){}
+        running = false;
+      }, 15000);
+
+      try{
+        state.spins = (state.spins || 0) + 1;
+        applyStateUI();
+        saveJson(STATE_KEY, state);
+
+        clearReelFx();
+        if($spinBtn) $spinBtn.disabled = true;
+
+        var glyphs = RESULTS.map(function(r){ return r.glyph; });
+
+        var out = rollOutcome();
+        var quoteIdx = pickIndex(QUOTES.length);
+
+        var winIdx = null;
+        if(out.isHit){
+          winIdx = pickIndex(RESULTS.length);
+        }
+
+        var final1, final2, final3;
+
+        if(out.isHit){
+          final1 = RESULTS[winIdx].glyph;
+          final2 = final1;
+          final3 = final1;
+        }else if(out.isNearMiss){
+          var reachGlyph = glyphs[Math.floor(Math.random()*glyphs.length)];
+          final1 = reachGlyph;
+          final2 = reachGlyph;
+
+          final3 = glyphs[Math.floor(Math.random()*glyphs.length)];
+          var guard=0;
+          while(final3 === reachGlyph && guard < 20){
+            final3 = glyphs[Math.floor(Math.random()*glyphs.length)];
+            guard++;
+          }
+        }else{
+          final1 = glyphs[Math.floor(Math.random()*glyphs.length)];
+          do { final2 = glyphs[Math.floor(Math.random()*glyphs.length)]; } while(final2 === final1);
+          do { final3 = glyphs[Math.floor(Math.random()*glyphs.length)]; } while(final3 === final1 || final3 === final2);
+        }
+
+        /* 演出時間：長め（楽しめる版） */
+        var tick = 32;       // 更新間隔
+        var stop1 = 980;     // 1停止
+        var stop2 = 1560;    // 2停止
+        var freezeAdded = false;
+
+        beep(420, 55, 0.02);
+        setReelSpin(true);
+        vib(10);
+
+        var t = 0;
+        var stopped1=false, stopped2=false, stopped3=false;
+
+        var timer = setInterval(function(){
+          try{
+            t += tick;
+
+            if(!stopped1) tickGlyph($g1, glyphs);
+            if(!stopped2) tickGlyph($g2, glyphs);
+            if(!stopped3) tickGlyph($g3, glyphs);
+
+            if(!stopped1 && t >= stop1){
+              stopped1 = true;
+              $g1.textContent = final1;
+              beep(520, 40, 0.02);
+              vib(10);
+            }
+
+            if(!stopped2 && t >= stop2){
+              stopped2 = true;
+              $g2.textContent = final2;
+              beep(560, 45, 0.02);
+              vib(12);
+
+              if(final1 === final2){
+                showReach();
+                if(out.willFreeze){
+                  freezeAdded = true;
+                  showFreeze(out.isHit ? '（空気が変わった…揃う気がする）' : '（揃う…？ 揃わない…？）', 1700);
+                }
+              }
+            }
+
+            var stop3 = stop2 + 820 + (freezeAdded ? 1400 : 0);
+            if(!stopped3 && t >= stop3){
+              stopped3 = true;
+
+              var tease = (out.isNearMiss && !out.isHit && final1 === final2);
+              if(tease){
+                $g3.textContent = final1; // 一瞬だけ揃い
+              }else{
+                $g3.textContent = final3;
+              }
+
+              beep(620, 55, 0.02);
+              vib(16);
+
+              function finish(){
+                clearInterval(timer);
+                clearTimeout(watchdog);
+
+                setReelSpin(false);
+                if($spinBtn) $spinBtn.disabled = false;
+                running = false;
+
+                try{
+                  if($cabinet){
+                    $cabinet.classList.add('shake');
+                    setTimeout(function(){ $cabinet.classList.remove('shake'); }, 720);
+                  }
+                }catch(_){}
+
+                var isWin = (final1===final2 && final2===final3);
+
+                if(isWin){
+                  if($reels) $reels.classList.add('win');
+
+                  var tier = out.tier || 'NORMAL';
+                  showBonus(tier, QUOTES[quoteIdx], RESULTS[winIdx]);
+                  renderHit(winIdx, quoteIdx, tier);
+                  toast('決着ッ！：' + RESULTS[winIdx].name);
+                }else{
+                  /* リーチ外れ: 結果更新しない（前回の当たりを守る） */
+                  if(out.isNearMiss){
+                    state.missStreak = (state.missStreak || 0) + 1;
+                    saveJson(STATE_KEY, state);
+                    toast('リーチ…！ だが、ここで止まるか');
+                    document.dispatchEvent(new Event('result:ready'));
+                    return;
+                  }
+
+                  var missIdx = pickIndex(MISSES.length);
+                  renderMiss(missIdx, quoteIdx);
+                  toast('敗北…だが学べ：' + MISSES[missIdx].name);
+                }
+
+                setTimeout(function(){
+                  if($reels) $reels.classList.remove('win');
+                }, 2200);
+              }
+
+              if(tease){
+                setTimeout(function(){
+                  $g3.textContent = final3; // ずらす
+                  finish();
+                }, 360);
+              }else{
+                finish();
+              }
+            }
+          }catch(err){
+            try{ clearInterval(timer); }catch(_){}
+            try{ clearTimeout(watchdog); }catch(_){}
+            try{ clearReelFx(); }catch(_){}
+            try{ setReelSpin(false); }catch(_){}
+            try{ if($spinBtn) $spinBtn.disabled = false; }catch(_){}
+            running = false;
+            toast('エラー：もう一度回せる');
+          }
+        }, tick);
+
+      }catch(err){
+        try{ clearTimeout(watchdog); }catch(_){}
+        try{ if($spinBtn) $spinBtn.disabled = false; }catch(_){}
+        running = false;
+        toast('エラー：もう一度回せる');
+      }
+    }
+
+    function resetAll(){
+      if(running) return;
+      state.spins = 0;
+      state.last = null;
+      state.missStreak = 0;
+      saveJson(STATE_KEY, state);
+
+      dex = {};
+      saveJson(DEX_KEY, dex);
+
+      applyStateUI();
+      renderDex();
+      clearReelFx();
+
+      if($panel) $panel.style.display = 'none';
+      if($methodBox) $methodBox.style.display = 'none';
+
+      if($g1) $g1.textContent = '❄️';
+      if($g2) $g2.textContent = '🎄';
+      if($g3) $g3.textContent = '🎁';
+
+      if($resImg){
+        $resImg.style.display='none';
+        $resImg.removeAttribute('src');
+        $resImg.setAttribute('alt','');
+      }
+      if($resImgPlaceholder) $resImgPlaceholder.style.display = 'none';
+
+      toast('リセット完了');
+    }
+
+    // ===== events =====
+    if($spinBtn) $spinBtn.addEventListener('click', function(){
+      if(state.soundOn){
+        var ctx = ensureAudio();
+        if(ctx && ctx.state === 'suspended'){ ctx.resume().catch(function(){}); }
+      }
+      spin();
+    });
+
+    if($resetBtn) $resetBtn.addEventListener('click', resetAll);
+
+    if($toggleSnd) $toggleSnd.addEventListener('click', function(){
+      state.soundOn = !state.soundOn;
+      applyStateUI();
+      saveJson(STATE_KEY, state);
+      toast('音：' + (state.soundOn ? 'ON' : 'OFF'));
+      if(state.soundOn){
+        var ctx = ensureAudio();
+        if(ctx && ctx.state === 'suspended'){ ctx.resume().catch(function(){}); }
+        beep(660, 70, 0.04);
+      }
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.code !== 'Space') return;
+      var tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+      if(tag === 'input' || tag === 'textarea') return;
+      e.preventDefault();
+      spin();
+    });
+
+    // init
+    applyStateUI();
+    renderDex();
+
+    if(state.last){
+      if(state.last.kind === 'HIT'){
+        renderHit(state.last.resIdx, state.last.quoteIdx, state.last.tier || 'NORMAL');
+      }else if(state.last.kind === 'MISS'){
+        renderMiss(state.last.missIdx, state.last.quoteIdx);
+      }
+    }
+  }());
+  </script>
+
+  <script>(function(){
+    // 「あなたのこころLv」：結果確定（当たり/ハズレ/リーチ）で毎回加算
+    var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+    var MY_ID=document.body.getAttribute('data-id')||'christmas-present';
+    function mark(){
+      try{
+        var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+        localStorage.setItem(TOTAL_KEY,String(t));
+        var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+        map[MY_ID]=(map[MY_ID]||0)+1;
+        localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+      }catch(_){}
+    }
+    document.addEventListener('result:ready', function(){ mark(); });
+  }());</script>
+</body>
+</html>
