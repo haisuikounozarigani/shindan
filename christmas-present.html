@@ -829,9 +829,9 @@
   <div class="wrap">
     <header aria-label="ヘッダー">
       <div class="ttlbox">
-        <div class="kicker"><span>🎁</span><span>クリスマスプレゼント</span><span>・</span><span>押すたび抽選</span><span>・</span><span>三つ揃えば決着</span></div>
+        <div class="kicker"><span>🎁</span><span>クリスマスプレゼント</span></div>
         <h1>クリスマスプレゼント</h1>
-        <p class="sub">押して回すだけ。<b>今日の一手</b>が1つ出る。たまに<b>凍結</b>、たまに<b>激アツ</b>。</p>
+        <p class="sub">押して回すだけ。たまに<b>激アツ</b>。</p>
       </div>
     </header>
 
@@ -876,7 +876,7 @@
         </div>
 
         <p class="minihelp">
-          <b>当たり</b>：動物が3つ揃う ／ <b>リーチ</b>：2つ揃い ／ <b>凍結</b>：一瞬の静寂が来る。
+          <b>当たり</b>：動物が3つ揃う ／ <b>リーチ</b>：2つ揃い 
         </p>
       </div>
     </section>
@@ -939,11 +939,7 @@
       </a>
     </nav>
 
-    <div class="foot" aria-label="フッター">
-      <p style="margin:14px 0 0">保存：前回結果と設定を localStorage に保持（端末内のみ）。</p>
-      <p style="margin:6px 0 0">画像：/shindan/assets/results/christmas-present/ の t01.webp〜t10.webp を使用。</p>
-    </div>
-  </div>
+
 
   <div class="reach-banner" id="reachBanner" aria-hidden="true">R E A C H</div>
 
@@ -2099,19 +2095,32 @@ var MISSES = [
 
     // ===== events =====
 
-    // 強制スクロール：結果が出たら結果パネルへ
-    document.addEventListener('result:ready', function(){
-      try{
-        var el = document.getElementById('resultPanel');
-        if(!el) return;
-        if(el.style.display === 'none') return;
+    // 強制スクロール：結果が出たら結果パネルへ（“揃い”を見せるため少し待つ）
+var __scrollTimer = null;
 
-        el.scrollIntoView({ behavior:'smooth', block:'start' });
+document.addEventListener('result:ready', function(){
+  try{
+    var el = document.getElementById('resultPanel');
+    if(!el) return;
+    if(el.style.display === 'none') return;
 
-        // iOSの見切れ対策の微調整（不要なら消してOK）
-        setTimeout(function(){ window.scrollBy(0, -8); }, 260);
-      }catch(_){}
-    });
+    // 当たりは“揃い確認タイム”を長めに。外れは短め。
+    var kind = (state && state.last && state.last.kind) ? state.last.kind : '';
+    var delay = (kind === 'HIT') ? 1600 : 650; // ←好みで調整（例：1200/500など）
+
+    // 連打でタイマーが積み上がらないように一旦キャンセル
+    if(__scrollTimer) clearTimeout(__scrollTimer);
+
+    __scrollTimer = setTimeout(function(){
+      el.scrollIntoView({ behavior:'smooth', block:'start' });
+
+      // iOSの見切れ対策（維持）
+      setTimeout(function(){ window.scrollBy(0, -8); }, 260);
+
+      __scrollTimer = null;
+    }, delay);
+  }catch(_){}
+});
     if($spinBtn) $spinBtn.addEventListener('click', function(){
       if(state.soundOn){
         var ctx = ensureAudio();
