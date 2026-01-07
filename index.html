@@ -1104,23 +1104,112 @@ flex:0 0 auto;
   font-size:.75rem;
   opacity:.85;
 }
+.hidden{display:none!important}
 
+/* Splash：キービジュをタップして開く（ゆめかわ版） */
+.splash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+/* 白ベール＋ほんのりピンク紫の膜（文字の可読性を保つ） */
+.splash::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(1000px 700px at 50% 22%, rgba(255,255,255,.10), rgba(255,255,255,0) 55%),
+    linear-gradient(180deg,
+      rgba(255,255,255,0),
+      rgba(255,245,251,.42) 55%,
+      rgba(247,241,255,.74)
+    );
+}
+
+.splash .bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* 画像が読めない/薄い時の“ゆめかわ”土台 */
+.splash .fallback{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(900px 520px at 30% 20%, rgba(255,143,199,.55), rgba(255,143,199,0) 60%),
+    radial-gradient(900px 520px at 70% 25%, rgba(164,139,255,.55), rgba(164,139,255,0) 60%),
+    radial-gradient(1200px 800px at 50% 85%, rgba(255,245,251,.95), rgba(255,245,251,.70) 55%, rgba(255,245,251,0) 100%),
+    linear-gradient(180deg, #fff5fb, #f7f1ff 55%, #fff8fd);
+}
+
+.splash .hero{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  padding:22px;
+}
+
+/* ボタンもゆめかわ寄せ（でも読みやすく） */
+.splash .open-btn{
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  padding:12px 18px;
+  border-radius:999px;
+  font-weight:900;
+  letter-spacing:.02em;
+  background:rgba(255,255,255,.80);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.14),
+    0 0 0 1px rgba(255,143,199,.28) inset,
+    0 0 0 2px rgba(164,139,255,.18) inset;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.splash .open-btn:focus-visible{
+  outline:3px solid rgba(255,143,199,.35);
+  outline-offset:4px;
+}
+
+/* 本体の“出現”アニメ（任意。要らなければ消してOK） */
+.wrap{
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity .35s ease,transform .35s ease;
+}
+.wrap.show{
+  opacity:1;
+  transform:none;
+}
 </style>
 </head>
 <body class="title-style-2">
 
+
 <!-- Splash：キービジュをタップして開く -->
-<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0" role="button">
+<section id="splash" class="splash" aria-label="入口" tabindex="0" role="button">
   <div class="fallback" aria-hidden="true"></div>
-  <img class="bg" src="/shindan/assets/hero/t01.webp" alt="心の標本のキービジュアル">
+  <img class="bg" src="/shindan/assets/hero/t00.webp" alt="入口のキービジュアル">
   <div class="hero">
-    <h1>心の標本</h1>
-    <p class="sub">タップ（または Enter / Space）で入口が開きます。</p>
+    <button class="open-btn" id="splashOpenBtn" type="button" aria-label="タップして入口を開く">
+      タップして開く
+    </button>
   </div>
 </section>
 
-<main id="content" class="wrap" aria-label="心の標本インデックス" aria-live="polite" tabindex="-1" inert>
-  <header class="page-head">
+<!-- 既存の本体をこの <main> に包む（idとinertが重要） -->
+<main id="content" class="wrap" aria-label="インデックス本体" aria-live="polite" tabindex="-1" inert>
+  <!-- ここに既存の中身（header / tabs / cards など）を全部入れる -->
+</main>
   <div class="head-row">
     <h1 class="page-title" id="titleTap" role="button" tabindex="0" aria-label="導入文を切り替える">
       <span class="page-title-main" id="siteTitle">心の標本</span>
@@ -1194,7 +1283,7 @@ flex:0 0 auto;
             aria-label="ニアからのお知らせと認知の鳥籠を開く">
       <span class="nir-label">💌ニア</span>
       <span class="nir-text" id="nirText">
-        クイズを更新したよ。パンケーキ食べたい
+        クイズ追加したよ。パンケーキ食べたい
        
       </span>
       <span class="nir-more" aria-hidden="true">›</span>
@@ -3630,6 +3719,66 @@ function runTitleBoot(){
 
 
 </script>
+<script>
+(function(){
+  const splash = document.getElementById('splash');
+  const splashOpenBtn = document.getElementById('splashOpenBtn');
+  const contentRoot = document.getElementById('content');
+  const vibrate = (ms=10)=>('vibrate' in navigator)&&navigator.vibrate(ms);
 
+  let splashOpened = false;
+
+  // 戻る/履歴復元(bfcache)でも毎回スプラッシュを出す（任意だが便利）
+  window.addEventListener('pageshow', (ev) => {
+    if (!ev.persisted) return;
+    splashOpened = false;
+    if (splash) splash.classList.remove('hidden');
+    if (contentRoot) {
+      contentRoot.classList.remove('show');
+      contentRoot.setAttribute('inert', '');
+    }
+    try { window.scrollTo(0, 0); } catch (_) {}
+  });
+
+  function openSplash(){
+    if(splashOpened) return;
+    splashOpened = true;
+
+    if(splash) splash.classList.add('hidden');
+
+    if(contentRoot){
+      contentRoot.classList.add('show');
+      contentRoot.removeAttribute('inert');
+      try{ contentRoot.focus({preventScroll:true}); }catch(_){}
+    }
+  }
+
+  // 背景タップでも開く
+  if(splash){
+    splash.addEventListener('click', (e)=>{
+      e.preventDefault();
+      vibrate(10);
+      openSplash();
+    });
+    splash.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        vibrate(10);
+        openSplash();
+      }
+    });
+  }
+
+  // ボタンからも確実に開く（親のclickに伝播させない）
+  if(splashOpenBtn){
+    splashOpenBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      vibrate(10);
+      openSplash();
+    });
+  }
+}());
+</script>
 </body>
 </html>
