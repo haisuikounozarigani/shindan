@@ -39,7 +39,7 @@ body{
 }
 .hidden{display:none!important}
 
-/* Splash：キービジュをタップして開く */
+/* Splash：キービジュをタップして開く（ゆめかわ） */
 .splash{
   position:fixed;
   inset:0;
@@ -49,72 +49,79 @@ body{
   overflow:hidden;
   cursor:pointer;
 }
+
+/* ふわっと白ベール（文字が読みやすくなる） */
 .splash::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.55) 70%,rgba(255,255,255,.9));
+  pointer-events:none; /* ←これを追加 */
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.45) 70%,rgba(255,255,255,.78));
 }
+
 .splash .bg{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
-  filter:saturate(1.05);
 }
+
+/* 画像が死んだ時の背景（青み排除→ピンク/ラベンダー） */
 .splash .fallback{
   position:absolute;
   inset:0;
-  background:radial-gradient(1200px 600px at 50% 30%, #ffe9f7, #e9e9ff);
+  background:
+    radial-gradient(1200px 700px at 50% 30%, #fff5fb, #f7f1ff 55%, #fff8fd 100%);
 }
+
 .splash .hero{
   position:relative;
   z-index:1;
   text-align:center;
   padding:22px;
 }
-.splash h1{
-  margin:0 0 6px;
-  font-size:clamp(22px,6vw,34px);
-  letter-spacing:.05em;
-}
-.splash p.sub{
-  margin:0 0 10px;
-  color:var(--muted);
-  font-size:.9rem;
-}
-.site-switch{
-  display:inline-flex;
-  gap:6px;
-  padding:4px;
-  border-radius:999px;
-  background:rgba(255,255,255,.92);
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  margin:0 auto 12px;
-}
-.site-pill{
-  min-width:0;
-  padding:7px 14px;
-  border-radius:999px;
-  font-size:.82rem;
-  text-decoration:none;
-  border:none;
-  background:transparent;
-  color:#7a5a6a;
-  white-space:nowrap;
-}
-.site-pill.is-active{
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#fff;
-  box-shadow:0 6px 16px rgba(182,156,255,.7);
+
+/* 見出しの“左寄り違和感”を潰す（念のため強制センター） */
+.splash .splash-ttl{
+  margin:0 0 8px;
+  text-align:center;
+  font-weight:900;
+  letter-spacing:.02em;
+  color:#3a2a35;
+  text-shadow:0 10px 30px rgba(0,0,0,.10);
 }
 
-/* Main wrap */
+.splash .sub{
+  margin:0 0 14px;
+  color:rgba(58,42,53,.82);
+}
+
+/* ボタン（ゆめかわ） */
+.splash .open-btn{
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  padding:12px 18px;
+  border-radius:999px;
+  font-weight:900;
+  letter-spacing:.02em;
+  background:rgba(255,255,255,.78);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.14),
+    0 0 0 1px rgba(255,143,199,.28) inset,
+    0 0 0 2px rgba(164,139,255,.18) inset;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.splash .open-btn:focus-visible{
+  outline:3px solid rgba(255,143,199,.35);
+  outline-offset:4px;
+}
+
+/* 本体の“出現”アニメ（任意） */
 .wrap{
-  max-width:980px;
-  margin:20px auto 28px;
-  padding:0 14px max(28px,env(safe-area-inset-bottom));
   opacity:0;
   transform:translateY(12px);
   transition:opacity .35s ease,transform .35s ease;
@@ -1193,18 +1200,28 @@ flex:0 0 auto;
 </style>
 </head>
 <body class="title-style-2">
-
-
-<!-- Splash：キービジュをタップして開く -->
-<section id="splash" class="splash" aria-label="入口" tabindex="0" role="button">
+  
+<!-- Splash -->
+<section id="splash" class="splash" aria-label="心の標本の入口" tabindex="0" role="button">
   <div class="fallback" aria-hidden="true"></div>
-  <img class="bg" src="/shindan/assets/hero/t00.webp" alt="入口のキービジュアル">
+
+  <img class="bg"
+       alt="心の標本のキービジュアル"
+       src="/shindan/assets/hero/t01.webp"
+       onerror="this.onerror=null; this.src='/shindan/assets/hero/file_00000000c928622f8cc11d8e2f2f0f83%20(2).png';">
+
   <div class="hero">
+    
+    <!-- ★追加：ボタン（idが超重要） -->
     <button class="open-btn" id="splashOpenBtn" type="button" aria-label="タップして入口を開く">
       タップして開く
     </button>
   </div>
 </section>
+  
+  
+  
+
 
 <!-- 既存の本体をこの <main> に包む（idとinertが重要） -->
 <main id="content" class="wrap" aria-label="インデックス本体" aria-live="polite" tabindex="-1" inert>
