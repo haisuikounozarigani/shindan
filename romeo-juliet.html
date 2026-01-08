@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ロミオとジュリエット診断｜32問で「禁断に踏み込む力」を測る</title>
+<meta name="description" content="越境衝動・背徳燃料・隠密運用・代償覚悟・免罪ストーリー・破滅ロマン・狂熱執着・理性ブレーキ（逆転）を32問で可視化。娯楽用。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ロミオとジュリエット診断">
+<meta property="og:description" content="禁断に踏み込む力を32問で測る（娯楽用）。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/romeo-juliet.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/romeo-juliet/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;
+  --accent2:#ff8fc7;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:.2em .75em;border-radius:999px;
+  background:#f3e9ff;color:#4b266e;font-weight:850;font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(140,107,255,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(236,227,245,.9);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+.result-small{margin:.2rem 0 0;color:var(--muted);font-size:.88rem}
+
+/* 今日の一手 */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(140,107,255,.35);
+  background:linear-gradient(135deg, rgba(140,107,255,.14), rgba(255,143,199,.12));
+  box-shadow:0 10px 22px rgba(140,107,255,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(236,227,245,.9);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2px 10px 4px;font-size:.9rem
+}
+.bar .h span:first-child{font-weight:850}
+.bar .track{
+  margin:0 10px 4px;height:10px;border-radius:999px;background:#f3e9ff;overflow:hidden;
+  border:1px solid var(--line);
+}
+.bar .fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;transition:width .25s ease-out;
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 前回回答 */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:6px 0;border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;white-space:nowrap;
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  font-size:.9rem;background:#faf5ff;
+}
+
+/* ギャラリー */
+.gallery{margin-top:2px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.gallery figure{
+  margin:0;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px;text-align:center;font-size:.85rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;
+}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fdf7ff;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ（ゆるめ） */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fdf7ff;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+.meta-note ul{margin:.5rem 0 0 1.1rem;padding-left:0}
+.meta-note ul li + li{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+
+/* フッタ */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+
+/* 最初から＆一覧へ */
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  box-shadow:0 12px 24px rgba(140,107,255,.14);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(140,107,255,.18);border-color:#ead9f2}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(140,107,255,.14)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.22);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(182,156,255,.18);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* トースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#4c2b5f;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<body data-id="romeo-juliet">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">🍎</span>
+      <span id="pageTitle">ロミオとジュリエット診断</span>
+      <span class="rank" aria-label="現在のランク">
+        <span aria-hidden="true">🧩</span><span>未判定</span>
+      </span>
+    </div>
+    <div class="sub" id="pageSub">
+      「ダメ」の線を見た瞬間、なぜか心が近づく。そういう禁断の推進力を32問で可視化します（娯楽用）。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <!-- ヒーロー（t00.webp） -->
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/romeo-juliet/t00.webp" alt="禁断の果実を持つ男女" loading="lazy">
+  </figure>
+
+<!-- プロローグ -->
+<section id="prologue" class="paper" aria-label="プロローグ">
+  <h2>プロローグ：何もしてない。だけど夜は、言い訳を増やす</h2>
+
+  <p>何もしてない。</p>
+  <p>本当に何もしてない。</p>
+  <p>ただ、名前を呼ばれただけで。</p>
+  <p>世界の色が一段、静かに塗り替わっただけで。</p>
+
+  <p>禁断は派手な悪じゃない。</p>
+  <p>だいたい、親切みたいな顔で始まる。</p>
+  <p>一つ目は親切。</p>
+  <p>二つ目は心配。</p>
+  <p>三つ目で、世界が二重になる。</p>
+  <p>守りたいものと、触れたいものが、同じ手のひらに乗ってしまう。</p>
+
+  <p>夜は、証拠を薄くしてくれる。</p>
+  <p>街灯の下なら、目が合うだけで「偶然」になる。</p>
+  <p>終電の時間なら、会いたい理由が「用事」に化ける。</p>
+  <p>通知が鳴るだけで、「まだ」の言い訳が増えていく。</p>
+
+  <p>なぜあなたはロミオなの…</p>
+
+  <p class="note">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。しんどさが続く場合は専門機関へご相談ください。</p>
+
+  <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+    <span class="emo">❤️‍🔥</span><span>林檎を食べる</span>
+  </button>
+</section>
+
+  <!-- 質問セクション（初期は非表示） -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/32</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">🔎</span><span>判定中</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">🧩</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">禁断度 —点</span>
+          <span class="badge-pill" id="brakeBadge">理性 —%</span>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="今日の一手">
+          <div class="today-head"><span aria-hidden="true">🗝️</span><span>今日の一手</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <p class="result-small" id="resultSmall"></p>
+
+        <!-- 因子バー -->
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）<span aria-hidden="true">▾</span></summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- ギャラリー（t01〜t05） -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🖼 ランクのギャラリー<span aria-hidden="true">▾</span></summary>
+      <div class="gallery" id="gallery"></div>
+    </details>
+
+    <!-- 研究メモ（ゆるめ） -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ（ゆるめ）<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+        <li><strong>ざっくり</strong>：不確実性や「もう少しで届く感」は、報酬系を刺激しやすいと言われがち。</li>
+        <li><strong>注意</strong>：これは娯楽。現実の意思決定は、現実の損得と安全が優先。</li>
+      </ul>
+    </details>
+
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。しんどさが続く場合は専門機関へご相談ください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 基本設定 ===== */
+const SLUG = 'romeo-juliet';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+/* 保存キー（衝突回避） */
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* 回答ラベル（数字禁止） */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','めっちゃある'][i] || '';
+}
+
+/* 演出テンポ（強制スクロールが早すぎる問題の保険） */
+const NEXT_Q_DELAY_MS = 220;          // 1問進む待ち
+const RESULT_SCROLL_DELAY_MS = 1100;  // 最終回答後、結果へスクロールする待ち（図柄の余韻枠）
+
+/* =========================================================
+   8因子（禁断へ行く推進力）
+========================================================= */
+const FACTS = ['CROSS','GUILT','STEALTH','COST','STORY','ROMANCE','OBSESS','BRAKE'];
+const FACT_LABEL = {
+  CROSS:'越境衝動',
+  GUILT:'背徳燃料',
+  STEALTH:'隠密運用',
+  COST:'代償覚悟',
+  STORY:'免罪ストーリー',
+  ROMANCE:'破滅ロマン',
+  OBSESS:'狂熱執着',
+  BRAKE:'理性ブレーキ'
+};
+const FACT_DESC = {
+  CROSS:'「ダメ」を見た瞬間に踏みたくなる力',
+  GUILT:'罪悪感を熱に変える傾向',
+  STEALTH:'バレない段取りと切り替えのうまさ',
+  COST:'失う可能性を理解しても進む胆力',
+  STORY:'正当化の物語を成立させるうまさ',
+  ROMANCE:'危うさや終わりに美を感じる傾向',
+  OBSESS:'相手が中心になる固定力',
+  BRAKE:'倫理・立場・未来で踏みとどまる力（高いほど止まる）'
+};
+
+/* 設問（32問｜8因子×4）
+   answers は 0..4（LABELSのindex）
+   reverse:true は v=4-v
+*/
+const QUESTIONS = [
+  /* =========================
+     32問（8因子×4）
+     reverse:true は逆転（同意すると禁断度は下がる）
+  ========================= */
+
+  /* 1) 越境衝動 CROSS */
+  {t:'「仕事の連絡は業務時間内で」と言われたのに、夜に私用でメッセージを送りたくなる。', key:'CROSS'},
+  {t:'既に恋人/配偶者がいる相手でも、好意を匂わせるやり取りをしたくなる。', key:'CROSS'},
+  {t:'相手が「距離を置こう」と言ってきたら、こちらも素直に引ける。', key:'CROSS', reverse:true},
+  {t:'「それは立場的にまずい」と言われるほど、会う口実を考えてしまう。', key:'CROSS'},
+
+  /* 2) 背徳燃料 GUILT */
+  {t:'「バレたらまずい」と思うと、気持ちが強くなることがある。', key:'GUILT'},
+  {t:'罪悪感が出た時点で、気持ちが冷めやすい。', key:'GUILT', reverse:true},
+  {t:'隠しているやり取り（通話/DM/会う約束）があると、むしろ気分が上がる。', key:'GUILT'},
+  {t:'相手が困ると分かっていても、気持ちが止まらない瞬間がある。', key:'GUILT'},
+
+  /* 3) 隠密運用 STEALTH */
+  {t:'誰に見られたらまずいかを想定して、会う場所や時間を選べる。', key:'STEALTH'},
+  {t:'通知設定・履歴・写真など、バレ要素の管理がわりと得意だ。', key:'STEALTH'},
+  {t:'段取りや隠し方を考えるのが苦手で、すぐボロが出る。', key:'STEALTH', reverse:true},
+  {t:'「偶然会った」「相談だった」など、説明の筋を用意できる。', key:'STEALTH'},
+
+  /* 4) 代償覚悟 COST */
+  {t:'噂で職場/学校に居づらくなる可能性があっても、進む選択肢は残る。', key:'COST'},
+  {t:'関係が壊れたり信用を失うなら、気持ちがあっても止まれる。', key:'COST', reverse:true},
+  {t:'家族・友人・周囲を巻き込むリスクがあっても、踏み出す覚悟が出ることがある。', key:'COST'},
+  {t:'自分が悪者になる展開でも、受け入れてでも続けたいと思うことがある。', key:'COST'},
+
+  /* 5) 免罪ストーリー STORY */
+  {t:'「これは恋じゃない」「相談だから」で、自分の中で正当化できる。', key:'STORY'},
+  {t:'「今だけ」「一回だけ」で、越えていい理由を作りやすい。', key:'STORY'},
+  {t:'正当化を考えるほど自己嫌悪が増えて、結局引いてしまう。', key:'STORY', reverse:true},
+  {t:'相手が「運命だよね」と言うと、その言葉に乗りやすい。', key:'STORY'},
+
+  /* 6) 破滅ロマン ROMANCE */
+  {t:'危ない状況（秘密・障害が多い）ほど、燃えることがある。', key:'ROMANCE'},
+  {t:'安定した関係より、波がある関係の方が「生きてる感」が出る。', key:'ROMANCE'},
+  {t:'ドラマっぽい展開は苦手で、現実的に損なら避けたい。', key:'ROMANCE', reverse:true},
+  {t:'「終わりが見えてる関係」でも、続けたい気持ちが出ることがある。', key:'ROMANCE'},
+
+  /* 7) 狂熱執着 OBSESS */
+  {t:'相手の返信や既読の速さで、気分がかなり左右される。', key:'OBSESS'},
+  {t:'相手の予定に合わせて、自分の予定を変えることが増える。', key:'OBSESS'},
+  {t:'距離を取ろうとするほど、頭の中で相手が増える。', key:'OBSESS'},
+  {t:'気になっても、生活の優先順位（睡眠/仕事/勉強）は崩れにくい。', key:'OBSESS', reverse:true},
+
+  /* 8) 理性ブレーキ BRAKE（高いほど止まれる） */
+  {t:'倫理や立場を考えると、行動を止められることが多い。', key:'BRAKE'},
+  {t:'相手の将来や周囲への影響を考えると、踏みとどまれる。', key:'BRAKE'},
+  {t:'「今が大事」で押し切って、あとで考えればいいと思うことがある。', key:'BRAKE', reverse:true},
+  {t:'リスクを具体的に想像したら、気持ちがあっても距離を取れる。', key:'BRAKE'}
+];
+
+/* ランク（禁断度 0..100） */
+const GRADE_DEF = [
+  {
+    min:0, max:29, emo:'🧊', label:'境界線の番人', img:'t01.webp', alt:'上司と部下が距離を取る二人',
+    headline:'踏み込まない。踏み込みそうなら引く。',
+    blurb:'あなたは、誘惑に弱いんじゃない。誘惑を“最後まで理解してる”タイプ。目が合った瞬間に心が動くのに、同時に「明日の空気」「周囲の目」「取り返し」を一括で想像してしまう。だから止まれる。止まれるのに、止まったあとで少しだけ後悔する。その“後悔の上品さ”が、いちばん厄介で、いちばん強い。火がないんじゃない。火を隠すのが上手い。……ここで少しだけ胸がザワっとしたなら、多分そこが核心。安心して。次の一手、もう薄々わかってるでしょ？',
+    action:'“二人きり導線”を1個だけ潰す（例：帰り道を合わせない／残業を同じ日にしない／個チャを業務時間だけに縛る）。'
+  },
+  {
+    min:30, max:49, emo:'🪡', label:'礼儀と熱の綱渡り', img:'t02.webp', alt:'医療者と患者の距離が揺れる二人',
+    headline:'線は守る。でも、心だけがはみ出す。',
+    blurb:'あなたは「越える気はない」を言える。なのに、越えそうな場所に立つのが上手い。触れない・踏み込まないは守れるのに、声のトーンだけが優しくなる。距離を取ってるはずなのに、相手の反応を“確認”したくなる瞬間がある。自分では善意のつもりなのに、どこかで“選ばれたい”が混ざる。そこを認めた時点で、もう当たってる。……今ちょっと「やめて」って思った？ それ、図星のサイン。大丈夫。あなたなら“どこで線を引くか”も、もう知ってる。',
+    action:'会話が私物化しそうになったら、その場で話題を「事実」に戻す（例：予定・手順・次回）。戻せないなら今日は切り上げる。'
+  },
+  {
+    min:50, max:69, emo:'🕯️', label:'火種を育てる人', img:'t03.webp', alt:'アイドルとマネージャーの秘密めいた二人',
+    headline:'点火はまだ。でも、火種は増える。',
+    blurb:'あなたは「まだ何もない」を盾にして、雰囲気だけ濃くできる。連絡は用件の顔をしているのに、余白で心を撫でる文が混ざる。誰も見てない場所で距離が近いほど、なぜか安心する。危ないのは“事件”じゃない。“事件にできる状態”を整えてしまう手際。しかもそれを、慎重さと勘違いできる。だから一番ドラマが起きやすい。……ここ、笑えなかったなら当たり。で、悪い知らせと良い知らせがある。悪いのは「才能がある」こと。良いのは「止め方も知ってる」こと。',
+    action:'“深夜・密室・二人だけ”を禁止して枠を固定（例：19時まで／人目のある場所／短時間）。'
+  },
+  {
+    min:70, max:84, emo:'🔥', label:'逸脱の加速帯', img:'t04.webp', alt:'結婚式直前の逃避行を思わせる二人',
+    headline:'理性が負けるんじゃない。遅れる。',
+    blurb:'あなたは「ダメだ」を言える。でも“続きの設計”も同じ手でやる。会わない理由は後回し、会う理由は即時生成。やめようとした日のほうが連絡が丁寧になる。優しい人ほど危ない。傷つけたくない顔のまま、熱だけ守れてしまうから。ここから先は恋じゃない。運用だ。分かってるのに、分かってないフリができる。……読んでて少しムッとした？ それは“自分の上手さ”に気づいてる証拠。安心して。あなた、ほんとは次の一手も次の言い訳も、両方もう用意できる。',
+    action:'今夜は決断しない。連絡もしない。24時間だけ延期して、その間に「失うもの」を具体的に3つ書く。'
+  },
+  {
+    min:85, max:100, emo:'🍎', label:'ロミジュリ級', img:'t05.webp', alt:'古典的なロミオとジュリエット風の二人',
+    headline:'禁断を“正解”に仕立てる。',
+    blurb:'あなたは障害を見ると、燃える。反対されるほど「これは本物だ」に寄せられる。罪悪感がブレーキじゃなく、物語の照明になる瞬間がある。普段は理性的なのに、“二人の世界”に入った途端、理屈が別ルールで走り出す。たぶんあなたは、代償を理解した上で「それでも」を選べる。美しい。危ない。…そして、本人はそれを否定できない。……ここで「言い過ぎ」って思ったなら、そこがいちばん甘い所。大丈夫。あなたが本当に欲しいのは“破滅”じゃない。“二人だけの確信”でしょ？',
+    action:'“絶対に破らないルール”を1本だけ決める（例：第三者を巻き込む嘘はしない／密室で会わない／二重生活はしない）。例外ゼロで運用する。'
+  }
+];
+
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2];
+}
+
+/* スコア計算
+   - 因子ごと平均（1..5）→ pct(0..100)
+   - 禁断度 = 推進7因子の平均 と (100-理性ブレーキ) を平均
+*/
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0; // 0..4
+    const a15 = avg04 + 1;                             // 1..5
+    pct[k] = Math.round((a15-1)/4*100);                // 0..100
+  });
+
+  const pushKeys = ['CROSS','GUILT','STEALTH','COST','STORY','ROMANCE','OBSESS'];
+  const pushMean = pushKeys.map(k=>pct[k]||0).reduce((a,v)=>a+v,0)/pushKeys.length;
+  const brake = pct['BRAKE']||0;
+  const forbidden = Math.max(0, Math.min(100, Math.round((pushMean + (100 - brake))/2)));
+
+  let top = pushKeys[0];
+  pushKeys.forEach(k=>{ if((pct[k]||0) > (pct[top]||0)) top = k; });
+
+  return { pct, forbidden, brake, top };
+}
+
+/* ギャラリー（t01〜t05） */
+function buildGallery(){
+  return [
+    {img:'t01.webp', cap:'境界線ガーディアン', alt:'上司と部下が距離を取る二人'},
+    {img:'t02.webp', cap:'ギリギリ礼儀正しい', alt:'医療者と患者の距離が揺れる二人'},
+    {img:'t03.webp', cap:'禁断の予熱中', alt:'アイドルとマネージャーの秘密めいた二人'},
+    {img:'t04.webp', cap:'熱々ルート', alt:'結婚式直前の逃避行を思わせる二人'},
+    {img:'t05.webp', cap:'禁断ハッピーエンド志望', alt:'古典的なロミオとジュリエット風の二人'}
+  ];
+}
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+const $brakeBadge = document.getElementById('brakeBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+const $resultSmall = document.getElementById('resultSmall');
+
+const $bars = document.getElementById('bars');
+const $prevList = document.getElementById('prevList');
+const $gallery = document.getElementById('gallery');
+
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 保存/復元 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">🔎</span><span>判定中</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+}
+
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+
+      /* 強制スクロール（早すぎ問題の対策で遅め） */
+      setTimeout(()=>{
+        const top = $result.getBoundingClientRect().top + window.pageYOffset - 6;
+        window.scrollTo({top, behavior:'smooth'});
+      }, RESULT_SCROLL_DELAY_MS);
+    }
+  }, NEXT_Q_DELAY_MS);
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  // 未回答があるなら最初の未回答へ戻す（安全策）
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct, forbidden, brake, top} = computeScores(answers);
+  const grade = gradeFromScore(forbidden);
+
+  // ヘッダバッジ
+  if($rankBadge) $rankBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // 画像 t01〜t05
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  // 見出し・スコア
+  $resultTitle.textContent = `あなたのルート：${grade.label}`;
+  $resultSubtitle.textContent = `禁断度：${forbidden}点 / 理性：${brake}%`;
+  if($scoreBadge) $scoreBadge.textContent = `禁断度 ${forbidden}点`;
+  if($brakeBadge) $brakeBadge.textContent = `理性 ${brake}%`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // コメント
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.blurb}</p>
+    `;
+  }
+
+  // 今日の一手
+  if($todayText) $todayText.textContent = grade.action;
+
+  // 小さめ補足（トップ）
+  const topName = FACT_LABEL[top] || top;
+  const brakeHint = (brake>=70) ? '（止まれる力が強い）' : (brake>=40 ? '（止まる日と走る日がある）' : '（止まる担当が不在）');
+
+
+  // 因子バー（理性ブレーキもそのまま表示）
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k] || k}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 前回回答（一覧）
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+  buildPrevAnswers();
+
+  // ギャラリー
+  buildGalleryUI();
+
+  // 完了イベント（必須）
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function buildPrevAnswers(){
+  let prev = null;
+  try{ prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null'); }catch(_){}
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $prevList.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $prevList.appendChild(li);
+  });
+}
+
+function buildGalleryUI(){
+  const g = buildGallery();
+  $gallery.innerHTML = '';
+  g.forEach(x=>{
+    const fig = document.createElement('figure');
+    fig.innerHTML = `
+      <img src="${IMG_BASE + x.img}" alt="${x.alt||''}" loading="lazy">
+      <figcaption>${x.cap||x.img}</figcaption>
+    `;
+    $gallery.appendChild(fig);
+  });
+}
+
+/* ===== 操作 ===== */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$startBtn.addEventListener('click', ()=>{
+  enterQuizMode();
+  renderQuestion();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast();
+});
+
+/* ===== 起動：復元 or プロローグ ===== */
+(function init(){
+  // ヒーローは常に t00.webp
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion();
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||SLUG;
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());</script>
+
+</body>
+</html>
