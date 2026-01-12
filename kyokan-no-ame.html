@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- =========================
+  検索置換ポイント（最低限ここだけ）
+  1) TITLE / description
+  2) og:title / og:description
+  3) og:url
+  4) og:image の slug
+  5) body data-id / SLUG
+========================= -->
+<title>共感の雨｜エンパス傘チェック</title>
+<meta name="description" content="見えない感情の雨に、あなたはどれくらい濡れる？雨量より“傘（境界）”と“乾かし方（回復）”を点検する24問。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="共感の雨｜エンパス傘チェック">
+<meta property="og:description" content="見えない感情の雨に、あなたはどれくらい濡れる？雨量より“傘（境界）”と“乾かし方（回復）”を点検する24問。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/kyokan-no-ame.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/kyokan-no-ame/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;
+  --accent2:#ff8fc7;
+  --good:#1d8f6e;
+  --warn:#b04a2f;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:.2em .75em;border-radius:999px;
+  background:#f3e9ff;color:#4b266e;font-weight:850;font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(140,107,255,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(236,227,245,.9);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+.result-small{margin:.2rem 0 0;color:var(--muted);font-size:.88rem}
+
+/* ✅ 今日の一手：囲い */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(140,107,255,.35);
+  background:linear-gradient(135deg, rgba(140,107,255,.14), rgba(255,143,199,.12));
+  box-shadow:0 10px 22px rgba(140,107,255,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(236,227,245,.9);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2px 10px 4px;font-size:.9rem
+}
+.bar .h span:first-child{font-weight:850}
+.bar .track{
+  margin:0 10px 4px;height:10px;border-radius:999px;background:#f3e9ff;overflow:hidden;
+  border:1px solid var(--line);
+}
+.bar .fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;transition:width .25s ease-out;
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 前回回答 */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:6px 0;border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;white-space:nowrap;
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  font-size:.9rem;background:#faf5ff;
+}
+
+/* ギャラリー */
+.gallery{margin-top:2px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.gallery figure{
+  margin:0;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px;text-align:center;font-size:.85rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;
+}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fdf7ff;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fdf7ff;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+.meta-note ul{margin:.5rem 0 0 1.1rem;padding-left:0}
+.meta-note ul li + li{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+
+/* フッタ */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  box-shadow:0 12px 24px rgba(140,107,255,.14);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(140,107,255,.18);border-color:#ead9f2}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(140,107,255,.14)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.22);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(182,156,255,.18);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* ✅だけのトースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#4c2b5f;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<!-- ★ data-id は SLUG と一致させる -->
+<body data-id="kyokan-no-ame">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">☔</span>
+      <span id="pageTitle">共感の雨</span>
+      <span class="rank" aria-label="現在のランク">
+        <span aria-hidden="true">🧩</span><span>未判定</span>
+      </span>
+    </div>
+    <div class="sub" id="pageSub">
+      見えない感情の雨に、どれくらい濡れる？ エンパスの度合いを測定する24問。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <!-- ヒーロー（t00.webp） -->
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/kyokan-no-ame/t00.webp" alt="夜の街に降る感情の雨" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2 id="proTitle">プロローグ：その気まずさ、拾わなくていい</h2>
+
+    <p id="proLine1">LINEの返信がいつもより短いだけで、「怒ってる？」が頭に出てくる。</p>
+    <p id="proLine2">会ってる時は普通なのに、帰ってから“あの一言”を何回も思い出してしまう。</p>
+    <p id="proLine3">相手が疲れてそうだと、自分まで体が重くなる。なのに理由は説明できない。</p>
+    <p id="proLine4">恋愛だと特に、「今どんな気持ち？」を先に感じ取ろうとして、勝手に不安が増える。</p>
+
+    <p id="proLine5">エンパス（Empath）は、相手の感情や空気の変化を<strong>受け取りやすい傾向</strong>のこと。</p>
+    <p id="proLine6">感度が高いと、気づける・寄り添える・先回りできる。反面、境界が弱いと「相手の問題」まで自分の中に残りやすい。</p>
+    <p id="proLine7">この診断は、あなたの<strong>受け取りやすさ</strong>と<strong>境界の作りやすさ</strong>、それから<strong>疲れやすさ</strong>を点検します。</p>
+
+    <p class="note">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。しんどさが続く場合は専門機関へご相談ください。</p>
+
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">☔</span><span id="startLabel">傘をさす</span>
+    </button>
+  </section>
+
+  <!-- 質問セクション（初期は非表示） -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/??</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">🔖</span><span>チェック</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">🧩</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">スコア —点</span>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="今日の一手">
+          <div class="today-head"><span aria-hidden="true">🔥</span><span>今日の一手</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <p class="result-small" id="resultSmall"> </p>
+
+        <!-- 因子バー -->
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）<span aria-hidden="true">▾</span></summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- ギャラリー（t01〜t05） -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🖼 ランクのギャラリー<span aria-hidden="true">▾</span></summary>
+      <div class="gallery" id="gallery"></div>
+    </details>
+
+    <!-- 研究メモ（必要なら後で差し替えOK） -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+    <li><strong>メリット：</strong>相手の状態変化に気づきやすく、配慮やサポートが速い。対人関係で「察してもらえた」と感じさせやすい。</li>
+    <li><strong>メリット：</strong>感情の機微を拾えるぶん、創作・接客・看護/支援・調整役などで強みになりやすい。</li>
+    <li><strong>デメリット：</strong>情動が“もらい事故”になりやすい。本人は平常のつもりでも、体だけ先に疲れる。</li>
+    <li><strong>デメリット：</strong>助けたい衝動が強いほど、境界が薄い日に燃え尽きやすい。共感疲労的な消耗が起きうる。</li>
+  </ul>
+    </details>
+
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 基本設定（検索置換） ===== */
+const SLUG = 'kyokan-no-ame';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+/* 保存キー（衝突回避：SLUGを含める） */
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* ===== 回答ラベル（数字禁止） ===== */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','めっちゃある'][i] || '';
+}
+
+/* =========================================================
+  ===== EDIT HERE：共感の雨（完全版） =====
+========================================================= */
+
+/* 因子（6本） */
+const FACTS = ['F1','F2','F3','F4','F5','F6'];
+const FACT_LABEL = {
+  F1:'感情うつり',
+  F2:'表情・間合い読解',
+  F3:'視点ジャンプ',
+  F4:'境界線の強度',
+  F5:'助けたい衝動',
+  F6:'共感疲労'
+};
+const FACT_DESC  = {
+  F1:'相手の気分が、そのまま自分の感情になりやすい。',
+  F2:'表情・声・間の変化にすぐ気づく。',
+  F3:'相手の事情や背景を脳内で補完しやすい。',
+  F4:'相手と自分を切り分け、距離を保てる（高いほど守り）。',
+  F5:'困っている人を見て、体が先に動きやすい。',
+  F6:'濡れたまま進んで、回復が追いつかないことがある。'
+};
+
+/* 設問（24問：6因子×4、逆転混ぜ）
+   - 比喩は薄め、日常で答えやすい具体に寄せる
+*/
+const QUESTIONS = [
+  // F1 感情うつり
+  {t:'近くの人が不機嫌だと、理由が分からなくても自分まで落ちる。', key:'F1'},
+  {t:'誰かの緊張が伝染して、こちらの体もこわばる。', key:'F1'},
+  {t:'会話のあと、相手の感情が自分の中に残りやすい。', key:'F1'},
+  {t:'相手の気分に左右されず、自分の気分を保てる。', key:'F1', reverse:true},
+
+  // F2 表情・間合い読解
+  {t:'相手の声のトーンや言い回しの変化にすぐ気づく。', key:'F2'},
+  {t:'場の空気が変わった瞬間が分かることが多い。', key:'F2'},
+  {t:'相手が「大丈夫」と言っても、大丈夫じゃない気配を拾う。', key:'F2'},
+  {t:'人の表情や雰囲気の変化には、あまり気づかない。', key:'F2', reverse:true},
+
+  // F3 視点ジャンプ
+  {t:'相手の立場や事情を想像して、言い方をすぐ調整する。', key:'F3'},
+  {t:'相手の背景（疲れ・不安・家庭事情など）を勝手に補完しがち。', key:'F3'},
+  {t:'対立が起きると、両方の言い分が同時に見えて疲れる。', key:'F3'},
+  {t:'相手の事情はさておき、まず事実と手順を優先できる。', key:'F3', reverse:true},
+
+  // F4 境界線の強度（守り）
+  {t:'「それは自分の問題じゃない」と切り分ける事ができる。', key:'F4'},
+  {t:'頼まれごとを断るとき、罪悪感が少ない。', key:'F4'},
+  {t:'相手の不機嫌を、必要以上に自分の責任だと思わない。', key:'F4'},
+  {t:'人の感情のケアを、自分の役目だと感じやすい。', key:'F4', reverse:true},
+
+  // F5 助けたい衝動
+  {t:'困っている人を見ると、頼まれてなくても動いてしまう。', key:'F5'},
+  {t:'「大丈夫？」と声をかけずにいられない場面が多い。', key:'F5'},
+  {t:'相手が落ちていると、なんとか持ち上げたくなる。', key:'F5'},
+  {t:'人の問題は、基本的に本人が解決すればいいと思える。', key:'F5', reverse:true},
+
+  // F6 共感疲労
+  {t:'人と会ったあと、楽しくてもどっと疲れることがある。', key:'F6'},
+  {t:'頭の中で会話や相手の表情を思い出して、寝つきが悪くなる。', key:'F6'},
+  {t:'「休むより先に次の対応」をしてしまいがち。', key:'F6'},
+  {t:'気を使う場でも、短時間で回復できるほうだ。', key:'F6', reverse:true}
+];
+
+/* 5段階ランク（画像はスコア帯→t01〜t05） */
+const GRADE_DEF = [
+  {
+    min:0, max:24, emo:'☀️', label:'傘いらず', img:'t01.webp', alt:'乾いた夜道',
+    headline:'巻き込まれにくい。判断がブレにくい。',
+    blurb:'感情の影響を受けにくく、切り分けが早いタイプ。周りがピリついても、必要以上に自分の責任にしない。共感が低いというより「距離感の運用がうまい」。必要なときにだけ関わって、必要なときに離れられる。',
+    action:'今日は「確認はする／背負わない」を1回だけ徹底する。'
+  },
+  {
+    min:25, max:44, emo:'🌂', label:'携帯傘', img:'t02.webp', alt:'小雨の携帯傘',
+    headline:'相手によって影響が変わる。',
+    blurb:'普段は安定しているのに、身近な人や気になる人の感情だけ拾いやすいタイプ。急に気にし始めたり、考えすぎたりする場面が出る。「自分が悪いのかも」と結びつけやすいので、そこだけ注意。',
+    action:'気になったら一度だけ切り分け：①事実 ②相手の気分 ③自分の気分。'
+  },
+  {
+    min:45, max:64, emo:'☂️', label:'ふつうの傘', img:'t03.webp', alt:'雨の安定歩道',
+    headline:'気づけるし、回復もできる。',
+    blurb:'共感も気づきも平均より少し強め。相手の変化に気づけて、寄り添える。一方で、回復する力もちゃんとある。疲れやすさは「環境」と「休み方」で大きく変わる帯。日々の調整が効きやすい。',
+    action:'1日の終わりに「自分の気分」だけ1行メモ。原因分析は明日。'
+  },
+  {
+    min:65, max:84, emo:'🌧️', label:'耐風傘', img:'t04.webp', alt:'横雨の耐風傘',
+    headline:'察しが早い。だから疲れやすい。',
+    blurb:'気配の検知が鋭く、先回りの配慮もできるタイプ。助けたい気持ちが強く、つい引き受けやすい。その結果、休む前に次の対応をしてしまい、疲れが溜まりやすい。能力は高いが、消耗も同時に起きやすい。',
+    action:'「助ける前に一呼吸」。提案は1つ、引き受けは0にする。'
+  },
+  {
+    min:85, max:100, emo:'⛈️', label:'骨折れ傘', img:'t05.webp', alt:'豪雨の限界傘',
+    headline:'受け取りすぎ。まず回復を優先。',
+    blurb:'人の感情が強く入ってきやすく、助けたい衝動も強いタイプ。疲労が溜まると切り分けが崩れて「全部自分の責任」になりやすい。共感力の問題ではなく、回復の時間が足りていない状態。最優先は休む設計。',
+    action:'連絡を1つ減らす。予定を1つ軽くする。回復の時間を先に確保する。'
+  }
+];
+
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2];
+}
+
+/* 採点
+   - answers は 0..4（LABELSのindex）
+   - reverse:true は v=4-v
+   - 因子ごと平均→0-100に変換
+   - 総合（エンパス雨量）＝ F1,F2,F3,F5,F6, + (100 - F4) の平均
+*/
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0; // 0..4
+    const a15 = avg04 + 1;                             // 1..5
+    pct[k] = Math.round((a15-1)/4*100);                // 0..100
+  });
+
+  const invBoundary = 100 - (pct.F4 || 0);
+  const totalScore = Math.round((pct.F1 + pct.F2 + pct.F3 + invBoundary + pct.F5 + pct.F6) / 6);
+
+  // トップ因子（そのまま）
+  return { pct, totalScore, invBoundary };
+}
+
+/* ギャラリー（t01〜t05） */
+function buildGallery(){
+  return [
+    {img:'t01.webp', cap:'t01 傘いらず', alt:'乾いた夜道'},
+    {img:'t02.webp', cap:'t02 携帯傘', alt:'小雨の携帯傘'},
+    {img:'t03.webp', cap:'t03 ふつうの傘', alt:'雨の安定歩道'},
+    {img:'t04.webp', cap:'t04 耐風傘', alt:'横雨の耐風傘'},
+    {img:'t05.webp', cap:'t05 骨折れ傘', alt:'豪雨の限界傘'}
+  ];
+}
+/* ===== EDIT HERE END ===== */
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+const $resultSmall = document.getElementById('resultSmall');
+
+const $bars = document.getElementById('bars');
+const $prevList = document.getElementById('prevList');
+const $gallery = document.getElementById('gallery');
+
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 保存/復元 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">🔖</span><span>チェック</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+}
+
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct,totalScore,top,invBoundary} = computeScores(answers);
+  const grade = gradeFromScore(totalScore);
+
+  if($rankBadge) $rankBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  $resultTitle.textContent = `あなたの傘：${grade.label}`;
+  $resultSubtitle.textContent = `雨量：${totalScore}点`;
+  if($scoreBadge) $scoreBadge.textContent = `雨量 ${totalScore}点`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.blurb}</p>
+      <p style="margin-top:.5rem;color:#6a5b70;font-size:.92rem">合言葉：その雨、あなたの雲じゃない。</p>
+    `;
+  }
+
+  if($todayText) $todayText.textContent = grade.action;
+
+  // 補足（表示しない）
+  if($resultSmall) $resultSmall.textContent = '';
+
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k] || k}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+  buildPrevAnswers();
+  buildGalleryUI();
+
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function buildPrevAnswers(){
+  let prev = null;
+  try{ prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null'); }catch(_){}
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $prevList.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $prevList.appendChild(li);
+  });
+}
+
+function buildGalleryUI(){
+  const g = buildGallery();
+  $gallery.innerHTML = '';
+  g.forEach(x=>{
+    const fig = document.createElement('figure');
+    fig.innerHTML = `
+      <img src="${IMG_BASE + x.img}" alt="${x.alt||''}" loading="lazy">
+      <figcaption>${x.cap||x.img}</figcaption>
+    `;
+    $gallery.appendChild(fig);
+  });
+}
+
+/* ===== 操作 ===== */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$startBtn.addEventListener('click', ()=>{
+  enterQuizMode();
+  renderQuestion();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast();
+});
+
+/* ===== 起動：復元 or プロローグ ===== */
+(function init(){
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion();
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||SLUG;
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());</script>
+
+</body>
+</html>
