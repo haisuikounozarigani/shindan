@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>純愛診断｜24問で「まっすぐ愛する力」を測る</title>
+<meta name="description" content="安心ベース・まっすぐさ・思いやり行動・言葉の修復力・信頼の継続・一緒に育てる感・照れと遊び心・覚悟と責任を24問で可視化。娯楽用。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="純愛診断">
+<meta property="og:description" content="まっすぐ愛する力を24問で測る（娯楽用）。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/pure-love.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/pure-love/t00.webp">
+
+<style>
+:root{
+  --bg:#fff7fb;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#f0e3ee;
+  --accent:#ff8fc7;
+  --accent2:#8c6bff;
+}
+html,body{
+  margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:.2em .75em;border-radius:999px;
+  background:#ffeaf6;color:#5a2445;font-weight:850;font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{position:sticky;top:0;z-index:20;height:8px;background:var(--line)}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(255,143,199,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff4fb;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#fff0f8;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(240,227,238,.95);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+.result-small{margin:.2rem 0 0;color:var(--muted);font-size:.88rem}
+
+/* 今日のひとこと */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(255,143,199,.35);
+  background:linear-gradient(135deg, rgba(255,143,199,.14), rgba(140,107,255,.12));
+  box-shadow:0 10px 22px rgba(255,143,199,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(240,227,238,.95);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2px 10px 4px;font-size:.9rem
+}
+.bar .h span:first-child{font-weight:850}
+.bar .track{
+  margin:0 10px 4px;height:10px;border-radius:999px;background:#ffeaf6;overflow:hidden;
+  border:1px solid var(--line);
+}
+.bar .fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;transition:width .25s ease-out;
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fff7fb;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ（ゆるめ） */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff7fb;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+.meta-note ul{margin:.5rem 0 0 1.1rem;padding-left:0}
+.meta-note ul li + li{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+
+/* 最初から＆一覧へ */
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  box-shadow:0 12px 24px rgba(255,143,199,.12);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(255,143,199,.16);border-color:#f1d6e7}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(255,143,199,.12)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(255,143,199,.18);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(255,143,199,.12);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* トースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#5a2445;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<body data-id="pure-love">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">💍</span>
+      <span id="pageTitle">純愛診断</span>
+      <span class="rank" aria-label="現在のランク">
+        <span aria-hidden="true">🧩</span><span>未判定</span>
+      </span>
+    </div>
+    <div class="sub" id="pageSub">
+      「好き」がちゃんと続くタイプか。まっすぐ言えるタイプか。やさしさが“行動”になるタイプか。純愛っぽさを24問で点検します（娯楽用）。
+    </div>
+  </div>
+</header>
+
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/pure-love/t00.webp" alt="花火大会の二人" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2>プロローグ：純愛もロマン</h2>
+    <p>大事件は起きない。なのに、心がちゃんと温かい。</p>
+    <p>返事が少し遅くても疑わない。会えない日も、壊れない。</p>
+    <p>言葉が照れても、行動で伝えられる。そういう“続く好き”には、ちゃんと技術がある。</p>
+    <p>この診断は、あなたの<strong>純愛力</strong>を24問でゆるく可視化する遊びです。</p>
+    <p class="note">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。しんどさが続く場合は専門機関へご相談ください。</p>
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">🎆</span><span>指輪をはめる</span>
+    </button>
+  </section>
+
+  <!-- 質問 -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/24</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">💬</span><span>回答中</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">🧩</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">純愛度 —点</span>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="今日のひとこと">
+          <div class="today-head"><span aria-hidden="true">💌</span><span>今日のひとこと</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <p class="result-small" id="resultSmall"></p>
+
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ（ゆるめ）<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+        <li><strong>方向性</strong>：関係満足には「安心感」「思いやり行動」「修復（仲直り）」が効きやすいと言われがち。</li>
+        <li><strong>注意</strong>：これは娯楽。現実の判断は、安全・尊重・同意が最優先。</li>
+      </ul>
+    </details>
+
+    <p class="note">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。しんどさが続く場合は専門機関へご相談ください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 基本設定 ===== */
+const SLUG = 'pure-love';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+/* 保存キー */
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+
+/* 回答ラベル */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','めっちゃある'][i] || '';
+}
+
+/* テンポ */
+const NEXT_Q_DELAY_MS = 220;
+const RESULT_SCROLL_DELAY_MS = 900;
+
+/* =========================================================
+   8因子（純愛っぽさの材料）
+========================================================= */
+const FACTS = ['BASE','STRAIGHT','CARE','REPAIR','TRUST','GROW','PLAY','COMMIT'];
+const FACT_LABEL = {
+  BASE:'安心ベース',
+  STRAIGHT:'まっすぐさ',
+  CARE:'思いやり行動',
+  REPAIR:'言葉の修復力',
+  TRUST:'信頼の継続',
+  GROW:'一緒に育てる感',
+  PLAY:'照れと遊び心',
+  COMMIT:'覚悟と責任'
+};
+const FACT_DESC = {
+  BASE:'一緒にいると落ち着く・疑いで壊れにくい',
+  STRAIGHT:'好意を隠しすぎず誠実に示せる',
+  CARE:'気遣いが“言うだけ”で終わらず動ける',
+  REPAIR:'気まずさや誤解を会話でほどける',
+  TRUST:'離れても揺れにくい・約束と一貫性',
+  GROW:'未来や日常を共同作業にできる',
+  PLAY:'甘さを軽く笑いにできる',
+  COMMIT:'大事にする責任を背負える'
+};
+
+/* 設問（24問｜8因子×3）
+   answers は 0..4
+   reverse:true は v=4-v（同意すると純愛度が下がる）
+*/
+const QUESTIONS = [
+  /* BASE 安心ベース */
+  {t:'相手の返信が遅くても、最悪の想像に飛びにくい。', key:'BASE'},
+  {t:'一緒にいると、無言の時間も落ち着く。', key:'BASE'},
+  {t:'不安になると、試すような言い方をしてしまう。', key:'BASE', reverse:true},
+
+  /* STRAIGHT まっすぐさ */
+  {t:'好きなら、遠回しじゃなく“好き”寄りの言葉で伝えられる。', key:'STRAIGHT'},
+  {t:'気持ちを隠して駆け引きするより、素直に出したい。', key:'STRAIGHT'},
+  {t:'好意があるほど、わざと冷たくしてしまう。', key:'STRAIGHT', reverse:true},
+
+  /* CARE 思いやり行動 */
+  {t:'相手が疲れてる日に、言葉より先に具体的に助けられる。', key:'CARE'},
+  {t:'「大丈夫？」で終わらず、何が助かるかまで考える。', key:'CARE'},
+  {t:'気遣いはするけど、結局なにも行動に移せないことが多い。', key:'CARE', reverse:true},
+
+  /* REPAIR 言葉の修復力 */
+  {t:'気まずい空気になっても、逃げずに話して戻せる。', key:'REPAIR'},
+  {t:'謝る・訂正する・確認するを、早めに出せる。', key:'REPAIR'},
+  {t:'言い合いになると、勝ち負けが気になってしまう。', key:'REPAIR', reverse:true},
+
+  /* TRUST 信頼の継続 */
+  {t:'約束したことは、小さいことでも守ろうとする。', key:'TRUST'},
+  {t:'離れてても、相手の誠実さを基本は信じられる。', key:'TRUST'},
+  {t:'少しの違和感で、相手を疑うモードに入りやすい。', key:'TRUST', reverse:true},
+
+  /* GROW 一緒に育てる感 */
+  {t:'「二人の予定」を自然に作るのが好きだ。', key:'GROW'},
+  {t:'相手の夢や目標を、現実の段取りまで一緒に考えられる。', key:'GROW'},
+  {t:'将来の話は重く感じて、避けたくなる。', key:'GROW', reverse:true},
+
+  /* PLAY 照れと遊び心 */
+  {t:'照れくさい甘さを、軽く冗談にして出せる。', key:'PLAY'},
+  {t:'二人だけの小さなノリ（合言葉・内輪ネタ）が増えがち。', key:'PLAY'},
+  {t:'甘い雰囲気になると、恥ずかしくて話題を逸らしがち。', key:'PLAY', reverse:true},
+
+  /* COMMIT 覚悟と責任 */
+  {t:'相手を大切にするために、自分の都合を調整できる。', key:'COMMIT'},
+  {t:'関係を続けるための“やること”（報連相・約束・配慮）をやれる。', key:'COMMIT'},
+  {t:'「面倒」が勝って、続ける努力を放棄しやすい。', key:'COMMIT', reverse:true}
+];
+
+/* ランク（純愛度 0..100） */
+const GRADE_DEF = [
+  {
+    min:0, max:24, emo:'☔', label:'まだ照れ雨',
+    img:'t01.webp', alt:'相合傘の二人',
+    headline:'好きはある。だからこそ、照れる。',
+    blurb:'気持ちはちゃんと強いのに、言葉にすると急に照れが邪魔をするタイプ。近づくほど素直になれず、つい軽口や沈黙で包む。でもそれって、「どうでもいい相手」には起きない反応。あなたの優しさは、まだ表に出る準備中。',
+    action:'今日だけ、短くでいい。「会えてうれしかった」を一回だけ言う。'
+  },
+  {
+    min:25, max:44, emo:'🎓', label:'青春まっすぐ',
+    img:'t02.webp', alt:'卒業式の二人',
+    headline:'まっすぐで、ちゃんとやさしい。',
+    blurb:'駆け引きより誠実さが先に出るタイプ。照れはあっても、相手を不安にさせる嘘はつかない。派手じゃないのに信頼が積み上がるのは、あなたが“続ける人”だから。甘さが幼くならないの、かなり強い。',
+    action:'「ありがとう」＋理由を一言だけ添える（例：今日の返信、助かった）。'
+  },
+  {
+    min:45, max:64, emo:'🌅', label:'夕焼け安定',
+    img:'t03.webp', alt:'海辺の夕焼けの二人',
+    headline:'揺れても、手を離さない。',
+    blurb:'安心感と仲直りの力がちょうどいい。気まずくなっても逃げずに戻れるし、相手の弱い日も“嫌いにならない”。恋がイベントじゃなく生活になる帯。ここにいる人の好きは、静かだけど折れない。',
+    action:'「また今度」を一つだけ具体化する（例：来週、20分だけ電話）。'
+  },
+  {
+    min:65, max:84, emo:'🐟', label:'優しさの水族館',
+    img:'t04.webp', alt:'水族館の二人',
+    headline:'甘やかすんじゃない。守り方が上手い。',
+    blurb:'相手の変化にすぐ気づくし、助け方が“言葉”で終わらない。あなたの純愛は、相手の生活をちゃんと軽くするタイプ。たまに自分が後回しになりがちだけど、それでも優しさが濁らないのがすごい。愛がちゃんと実務になる。',
+    action:'相手のために動く前に、自分の回復を1つ確保（睡眠/食事/休憩どれか）。'
+  },
+  {
+    min:85, max:100, emo:'💍', label:'結婚式ルート',
+    img:'t05.webp', alt:'結婚式の二人',
+    headline:'「好き」を、未来に置ける。',
+    blurb:'甘さと責任が同居してる帯。気持ちだけで走らず、相手の不安を増やさない選び方ができる。約束を守る、話し合う、待つ、謝る…そういう地味な行動を“愛”として続けられる人。あなたの純愛は、派手じゃなくて本物。',
+    action:'相手に「安心するポイント」を一つだけ伝える（例：あなたは誠実だから落ち着く）。'
+  }
+];
+
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2];
+}
+
+/* スコア計算：因子平均(1..5)→pct(0..100)、純愛度＝8因子pct平均 */
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0; // 0..4
+    const a15 = avg04 + 1;                             // 1..5
+    pct[k] = Math.round((a15-1)/4*100);                // 0..100
+  });
+
+  const pure = Math.max(0, Math.min(100, Math.round(
+    FACTS.map(k=>pct[k]||0).reduce((a,v)=>a+v,0)/FACTS.length
+  )));
+
+  return { pct, pure };
+}
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+const $resultSmall = document.getElementById('resultSmall');
+
+const $bars = document.getElementById('bars');
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 保存/復元 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">💬</span><span>回答中</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+      setTimeout(()=>{
+        const top = $result.getBoundingClientRect().top + window.pageYOffset - 6;
+        window.scrollTo({top, behavior:'smooth'});
+      }, RESULT_SCROLL_DELAY_MS);
+    }
+  }, NEXT_Q_DELAY_MS);
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct, pure} = computeScores(answers);
+  const grade = gradeFromScore(pure);
+
+  if($rankBadge) $rankBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  $resultTitle.textContent = `あなたの純愛ルート：${grade.label}`;
+  $resultSubtitle.textContent = `純愛度：${pure}点`;
+  if($scoreBadge) $scoreBadge.textContent = `純愛度 ${pure}点`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.blurb}</p>
+    `;
+  }
+  if($todayText) $todayText.textContent = grade.action;
+
+  if($resultSmall){
+    $resultSmall.textContent = '※因子は「得意/苦手」を決めつけるためではなく、伸ばし方のヒント用。';
+  }
+
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k] || k}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+/* ===== 操作 ===== */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$startBtn.addEventListener('click', ()=>{
+  enterQuizMode();
+  renderQuestion();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast();
+});
+
+/* ===== 起動 ===== */
+(function init(){
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion();
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+</body>
+</html>
