@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- =========================
+  検索置換ポイント（最低限ここだけ）
+  1) TITLE / description
+  2) og:title / og:description
+  3) og:url
+  4) og:image の slug
+  5) body data-id / SLUG
+========================= -->
+<title>アイドル診断 21問｜いまのステージと次の一手</title>
+<meta name="description" content="家→SNS→地下→有名→国民的。推され方／伸び方のタイプから、いまのステージと次の一手を出す診断（21問）。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="アイドル診断 21問｜いまのステージと次の一手">
+<meta property="og:description" content="家→SNS→地下→有名→国民的。推され方／伸び方のタイプから、いまのステージと次の一手を出す診断（21問）。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/idol.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/idol/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;
+  --accent2:#ff8fc7;
+  --good:#1d8f6e;
+  --warn:#b04a2f;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:.2em .75em;border-radius:999px;
+  background:#f3e9ff;color:#4b266e;font-weight:850;font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(140,107,255,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(236,227,245,.9);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+.result-small{margin:.2rem 0 0;color:var(--muted);font-size:.88rem;display:none}
+
+/* ✅ 今日の一手：囲い */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(140,107,255,.35);
+  background:linear-gradient(135deg, rgba(140,107,255,.14), rgba(255,143,199,.12));
+  box-shadow:0 10px 22px rgba(140,107,255,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(236,227,245,.9);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2px 10px 4px;font-size:.9rem
+}
+.bar .h span:first-child{font-weight:850}
+.bar .track{
+  margin:0 10px 4px;height:10px;border-radius:999px;background:#f3e9ff;overflow:hidden;
+  border:1px solid var(--line);
+}
+.bar .fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;transition:width .25s ease-out;
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 前回回答 */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:6px 0;border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;white-space:nowrap;
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  font-size:.9rem;background:#faf5ff;
+}
+
+/* ギャラリー */
+.gallery{margin-top:2px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.gallery figure{
+  margin:0;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px;text-align:center;font-size:.85rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;
+}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fdf7ff;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fdf7ff;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+.meta-note ul{margin:.5rem 0 0 1.1rem;padding-left:0}
+.meta-note ul li + li{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+
+/* フッタ */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  font-size:1rem; /* ✅「最初から」が小さくなる事故を封じる */
+  box-shadow:0 12px 24px rgba(140,107,255,.14);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(140,107,255,.18);border-color:#ead9f2}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(140,107,255,.14)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.22);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(182,156,255,.18);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* ✅だけのトースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#4c2b5f;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<!-- ★ data-id は SLUG と一致させる -->
+<body data-id="idol">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">🎤</span>
+      <span id="pageTitle">アイドル診断 21問</span>
+      <span class="rank" aria-label="現在のステージ">
+        <span aria-hidden="true">✨</span><span>未判定</span>
+      </span>
+    </div>
+    <div class="sub" id="pageSub">
+      家→SNS→地下→有名→国民的。いまのステージと「次の一手」を出す。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <!-- ヒーロー（t00.webp） -->
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/idol/t00.webp" alt="夢と舞台の境目" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2 id="proTitle">プロローグ：内緒の質問。</h2>
+<p id="proLine1">「どうせ無理」って言いながら、</p>
+<p id="proLine2">ちょっとだけ“推される自分”を想像したこと、ない？</p>
+<p id="proLine3">あるなら十分。夢はだいたい、そこから始まる。</p>
+
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">🎬</span><span id="startLabel">開演する</span>
+    </button>
+  </section>
+
+  <!-- 質問セクション（初期は非表示） -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/??</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">🔖</span><span>チェック</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">✨</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">スコア —点</span>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="次の一手">
+          <div class="today-head"><span aria-hidden="true">🪄</span><span>次の一手</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <p class="result-small" id="resultSmall" style="display:none"></p>
+
+        <!-- 因子バー -->
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）<span aria-hidden="true">▾</span></summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- ギャラリー（t01〜t05） -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🖼 ランクのギャラリー<span aria-hidden="true">▾</span></summary>
+      <div class="gallery" id="gallery"></div>
+    </details>
+
+    <!-- 研究メモ -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ（アイドル×心理）<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+        <li>
+          <strong>パラソーシャル関係（疑似対人関係）</strong><br>
+          推しとの“片側の親密さ”は、孤独感の緩和や気分の支えになり得る一方、現実の対人回避が強いと依存的に傾くこともある（人と状況の相互作用）。
+        </li>
+        <li>
+          <strong>セレブ崇拝（Celebrity Worship）</strong><br>
+          “熱狂が強すぎる型”では、ストレス・睡眠・自己評価の揺れが出やすいという報告がある。大事なのは「推すな」じゃなくて、生活が先に残る設計。
+        </li>
+        <li>
+          <strong>SNSの反応（いいね・数字）と気分</strong><br>
+          外部評価が波打つほど、気分も波打ちやすい。だから伸びる人ほど「投稿の型」「回復の型」を持っていて、数字を“当日の天気”として扱う傾向がある。
+        </li>
+        <li>
+          <strong>“応援したくなる”成長ストーリー</strong><br>
+          完璧さより「更新」が応援を生みやすい。小さくても継続的な改善は、観客側の愛着や関与を作りやすい（勝手に続編を見たくなるやつ）。
+        </li>
+      </ul>
+    </details>
+
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。疲れたら休んでください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 基本設定（検索置換） ===== */
+const SLUG = 'idol';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+/* 保存キー（衝突回避：SLUGを含める） */
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* ===== 回答ラベル（数字禁止） ===== */
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','めっちゃある'][i] || '';
+}
+
+/* =========================================================
+  ===== EDIT HERE：アイドル診断（因子・設問・採点・結果文） =====
+========================================================= */
+
+/* 因子（7） */
+const FACTS = ['F1','F2','F3','F4','F5','F6','F7'];
+const FACT_LABEL = {
+  F1:'ステージ熱量',
+  F2:'ファンサ精度',
+  F3:'自己プロデュース',
+  F4:'SNS拡散力',
+  F5:'成長ストーリー性',
+  F6:'プロ意識',
+  F7:'メンタル耐久'
+};
+const FACT_DESC  = {
+  F1:'現場や本番で「急に強くなる」スイッチ。',
+  F2:'相手に刺さる反応を出すセンス。',
+  F3:'見せ方の設計（言葉・雰囲気・立ち位置）。',
+  F4:'話題を作り、広げ、残す力。',
+  F5:'「見守りたい」と思わせる伸びしろ。',
+  F6:'継続・体調管理・締切など土台。',
+  F7:'比較や評価の波で折れにくい。'
+};
+
+/* 設問：21問（7因子×3）※具体シーン寄り */
+const QUESTIONS = [
+  // F1 ステージ熱量（現場で化ける）
+  {t:'発表や本番前、緊張してても「よしやるか」でスイッチが入る。', key:'F1'},
+  {t:'人前に出た瞬間、声や表情がいつもよりハッキリする。', key:'F1'},
+  {t:'注目が集まると頭が真っ白になって、動きが固まりやすい。', key:'F1', reverse:true},
+
+  // F2 ファンサ精度（刺さる反応）
+  {t:'相手のテンションに合わせて、返し方（言葉/表情/リアクション）を変えられる。', key:'F2'},
+  {t:'短いやり取りでも「ちゃんと見てるよ」が伝わる言い方ができる。', key:'F2'},
+  {t:'誰にでも同じ対応になりやすく、反応の出し分けは得意じゃない。', key:'F2', reverse:true},
+
+  // F3 自己プロデュース（見せ方の設計）
+  {t:'「自分の売り」を聞かれたら、だいたい一言で答えられる。', key:'F3'},
+  {t:'服・髪・言葉づかい・雰囲気を、見せたい印象に合わせて整えられる。', key:'F3'},
+  {t:'自分の見せ方を考えると分からなくなって、無難に寄りがち。', key:'F3', reverse:true},
+
+  // F4 SNS拡散力（話題の起こし方）
+  {t:'投稿する内容やタイミングを、少しは考えている（なんとなくでもOK）。', key:'F4'},
+  {t:'伸びた投稿の「何が良かったか」を次に反映できる。', key:'F4'},
+  {t:'SNSは見るだけが多く、発信が続かない。', key:'F4', reverse:true},
+
+  // F5 成長ストーリー性（応援したくなる伸びしろ）
+  {t:'できなかったことが「できるようになった」過程を見せられる。', key:'F5'},
+  {t:'失敗や弱さを、重くならない範囲で言葉にできる。', key:'F5'},
+  {t:'完璧じゃないと出したくなくて、表に出すのが遅くなりがち。', key:'F5', reverse:true},
+
+  // F6 プロ意識（継続・管理）
+  {t:'練習や準備を「やる日」を決めると、わりと守れる。', key:'F6'},
+  {t:'睡眠や食事など、コンディションを崩しにくい工夫がある。', key:'F6'},
+  {t:'締切や予定はギリギリで帳尻合わせになりやすい。', key:'F6', reverse:true},
+
+  // F7 メンタル耐久（比較・評価に潰れない）
+  {t:'反応が少ない日でも、落ち込みすぎず切り替えられる。', key:'F7'},
+  {t:'評価が揺れても「自分はこれで行く」が残る。', key:'F7'},
+  {t:'他人の伸びを見ると焦って、気持ちが乱れやすい。', key:'F7', reverse:true},
+];
+
+
+/* ランク（0..100）※結果コメントは“ひたすら褒める/気づき”寄り */
+const GRADE_DEF = [
+  {
+    min:0, max:24, emo:'🪞', label:'鏡前ステージ', img:'t01.webp', alt:'鏡前ステージ',
+    headline:'才能、もう出てる。まだ自分が気づいてないだけ。',
+    blurb:'あなたの魅力は「伸びしろの濃さ」。人前で完璧にできない日があっても、それは弱さじゃなく“伸びる前の形”。むしろ、丁寧に準備してる人ほどここに出る。周りから見ると「真面目で誠実」「ちゃんと良くなっていく人」に見えやすいタイプ。しかも、本人はその価値を過小評価しがち。…もったいない。あなたはもっと推されていい。',
+    action:'今日の自分の良かった点を1つだけ固定して、次もそれだけ守る（声/表情/言葉のどれか）。'
+  },
+  {
+    min:25, max:44, emo:'📱', label:'画面越しのスター', img:'t02.webp', alt:'画面越しのスター',
+    headline:'刺さる瞬間、ちゃんと作れてる。あとは回数。',
+    blurb:'あなたの強みは「伝わる形にできる」こと。投稿や一言の選び方が、自然に“人の記憶に残る側”へ寄ってる。たまに伸びるのは偶然じゃない。ちゃんと素質がある。しかもこの帯の人は、変に盛らずに誠実だから、ファンが付きはじめると長い。派手じゃなく、信頼で伸びる。',
+    action:'週2回だけ、同じテーマで短く発信（続けやすさ優先）。'
+  },
+  {
+    min:45, max:64, emo:'🎟️', label:'小箱の主役', img:'t03.webp', alt:'小箱の主役',
+    headline:'近い距離で“選ばれる”力がある。',
+    blurb:'あなたの魅力は「会った人が好きになる」こと。現場で化ける、目が合う、反応が返ってくる、覚えられる。ここ、才能の塊。しかもあなたは、相手をちゃんと見てる側だから“安心して推せる”空気も出せる。派手な一撃じゃなく、積み重ねで強い。気づいてないかもだけど、あなたって「戻って来たくなる人」なんだよね。',
+    action:'今日刺さった反応を1つだけメモして、次も同じ場面で再現してみる。'
+  },
+  {
+    min:65, max:84, emo:'📺', label:'地上波の顔', img:'t04.webp', alt:'地上波の顔',
+    headline:'安定して魅力を出せる。ここまで来たら強い。',
+    blurb:'あなたは「整ってる強さ」。見せ方、続け方、回復のしかたまでちゃんとある。だからブレが少なく、周りからは“プロっぽい人”に見える。しかも、上手いのに嫌味が出にくいタイプ。ここが地味に難しいのに、できてる。あなたは「好きになっても安心」って思わせる才能がある。推される人の条件、だいたい満たしてる。',
+    action:'尖りを1つだけ足す（言葉づかい/企画/雰囲気のどれかを少しだけ大胆に）。'
+  },
+  {
+    min:85, max:100, emo:'🏟️', label:'国民的センター', img:'t05.webp', alt:'国民的センター',
+    headline:'推される理由が、日常的に出てしまうタイプ。',
+    blurb:'あなたは「才能が総合点で高い」だけじゃない。あなたの場合、“推される設計”が自然にできてる。熱量、反応、見せ方、継続、メンタル。全部が噛み合ってる。しかも一番すごいのは、ちゃんと努力してるのに“軽やかに見える”ところ。これはセンス。つまり、あなたは「手が届きそうなのに眩しい」っていう、強い魅力を持ってる。…自覚して？',
+    action:'休みを先に固定（コンディションも才能の一部として守る）。'
+  }
+];
+
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2];
+}
+
+/* 採点
+   - answers は 0..4（LABELSのindex）
+   - reverse:true は v=4-v
+   - 因子ごと平均→0-100に変換
+   - totalScore は 7因子の平均
+*/
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0; // 0..4
+    const a15 = avg04 + 1;                             // 1..5
+    pct[k] = Math.round((a15-1)/4*100);                // 0..100
+  });
+
+  const totalScore = Math.round(FACTS.reduce((a,k)=>a+pct[k],0)/FACTS.length);
+  return { pct, totalScore };
+}
+
+/* ギャラリー（t01〜t05） */
+function buildGallery(){
+  return [
+    {img:'t01.webp', cap:'t01：鏡前ステージ', alt:'鏡前ステージ'},
+    {img:'t02.webp', cap:'t02：画面越しのスター', alt:'画面越しのスター'},
+    {img:'t03.webp', cap:'t03：小箱の主役', alt:'小箱の主役'},
+    {img:'t04.webp', cap:'t04：地上波の顔', alt:'地上波の顔'},
+    {img:'t05.webp', cap:'t05：国民的センター', alt:'国民的センター'}
+  ];
+}
+/* ===== EDIT HERE END ===== */
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+const $resultSmall = document.getElementById('resultSmall');
+
+const $bars = document.getElementById('bars');
+const $prevList = document.getElementById('prevList');
+const $gallery = document.getElementById('gallery');
+
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">✨</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 保存/復元 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  // 因子がバレると誤読の温床になりやすいので、常に共通ラベル
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">🔖</span><span>チェック</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">✨</span><span>未判定</span>';
+}
+
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  // 未回答があるなら最初の未回答へ戻す（安全策）
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct,totalScore} = computeScores(answers);
+  const grade = gradeFromScore(totalScore);
+
+  // ヘッダバッジ
+  if($rankBadge) $rankBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // 画像
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  // 見出し・スコア
+  $resultTitle.textContent = `あなたのステージ：${grade.label}`;
+  $resultSubtitle.textContent = `総合：${totalScore}点`;
+  if($scoreBadge) $scoreBadge.textContent = `スコア ${totalScore}点`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // コメント
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.blurb}</p>
+    `;
+  }
+
+  // 次の一手
+  if($todayText) $todayText.textContent = grade.action;
+
+  // 余計な補足（トップ因子など）は出さない
+  if($resultSmall){
+    $resultSmall.textContent = '';
+    $resultSmall.style.display = 'none';
+  }
+
+  // 因子バー
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k] || k}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 前回回答（一覧）保存
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+  buildPrevAnswers();
+
+  // ギャラリー
+  buildGalleryUI();
+
+  // 完了イベント（必須）
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function buildPrevAnswers(){
+  let prev = null;
+  try{ prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null'); }catch(_){}
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $prevList.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $prevList.appendChild(li);
+  });
+}
+
+function buildGalleryUI(){
+  const g = buildGallery();
+  $gallery.innerHTML = '';
+  g.forEach(x=>{
+    const fig = document.createElement('figure');
+    fig.innerHTML = `
+      <img src="${IMG_BASE + x.img}" alt="${x.alt||''}" loading="lazy">
+      <figcaption>${x.cap||x.img}</figcaption>
+    `;
+    $gallery.appendChild(fig);
+  });
+}
+
+/* ===== 操作 ===== */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$startBtn.addEventListener('click', ()=>{
+  enterQuizMode();
+  renderQuestion();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast();
+});
+
+/* ===== 起動：復元 or プロローグ ===== */
+(function init(){
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion(); // 状態だけ整える
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||SLUG;
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());</script>
+
+</body>
+</html>
