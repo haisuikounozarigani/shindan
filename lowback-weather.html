@@ -1,0 +1,1253 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- =========================
+  検索置換ポイント（最低限ここだけ）
+  1) TITLE / description
+  2) og:title / og:description
+  3) og:url
+  4) og:image の slug
+  5) body data-id / SLUG
+========================= -->
+<title>腰の天気診断｜黄信号チェック（心理・生活編）</title>
+<meta name="description" content="腰の痛みそのものではなく、慢性化の“燃料”になりやすい心理・生活サインを天気にたとえて点検します（レッドフラッグは別枠で中断）。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="腰の天気診断｜黄信号チェック（心理・生活編）">
+<meta property="og:description" content="慢性化の“燃料”になりやすいサインを天気にして見える化（レッドフラッグは中断）。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/lowback-weather.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/lowback-weather/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+  --accent:#8c6bff;
+  --accent2:#ff8fc7;
+  --good:#1d8f6e;
+  --warn:#b04a2f;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* ランクバッジ（ヘッダ） */
+.rank{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:.2em .75em;border-radius:999px;
+  background:#f3e9ff;color:#4b266e;font-weight:850;font-size:.85rem;
+}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(140,107,255,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* ゲート（レッドフラッグ） */
+.gate h2{margin:0 0 6px;font-size:1.05rem}
+.gate p{margin:.35rem 0;color:var(--muted)}
+.gate .warnbox{
+  margin:.6rem 0 .2rem;
+  padding:10px 12px;border-radius:14px;
+  border:1px solid rgba(176,74,47,.25);
+  background:linear-gradient(180deg,#fff,#fff5f2);
+}
+.gate .warnbox b{color:#5c2d21}
+.chklist{display:grid;gap:8px;margin:.7rem 0 0}
+.chk{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 12px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;
+}
+.chk input{margin-top:3px}
+.chk .t{font-weight:850}
+.chk .d{color:var(--muted);font-size:.92rem}
+.gate-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.gate-actions button{
+  flex:1 1 240px;
+  padding:12px 14px;border-radius:999px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:900;
+}
+.gate-actions .go{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.18);
+}
+.stop{
+  display:none;margin-top:12px;
+  padding:12px 12px 10px;border-radius:16px;
+  border:1px solid rgba(176,74,47,.25);
+  background:linear-gradient(135deg, rgba(176,74,47,.08), rgba(255,143,199,.08));
+}
+.stop .h{font-weight:950}
+.stop ul{margin:.45rem 0 0 1.1rem}
+.stop li{margin:.2rem 0;color:#5c2d21}
+.stop .small{margin-top:.5rem;color:var(--muted);font-size:.9rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(236,227,245,.9);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+.result-small{margin:.2rem 0 0;color:var(--muted);font-size:.88rem}
+
+/* ✅ 今日の一手：囲い */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(140,107,255,.35);
+  background:linear-gradient(135deg, rgba(140,107,255,.14), rgba(255,143,199,.12));
+  box-shadow:0 10px 22px rgba(140,107,255,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(236,227,245,.9);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2px 10px 4px;font-size:.9rem
+}
+.bar .h span:first-child{font-weight:850}
+.bar .track{
+  margin:0 10px 4px;height:10px;border-radius:999px;background:#f3e9ff;overflow:hidden;
+  border:1px solid var(--line);
+}
+.bar .fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:inherit;transition:width .25s ease-out;
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 前回回答 */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:6px 0;border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;white-space:nowrap;
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  font-size:.9rem;background:#faf5ff;
+}
+
+/* ギャラリー */
+.gallery{margin-top:2px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.gallery figure{
+  margin:0;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px;text-align:center;font-size:.85rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;
+}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fdf7ff;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fdf7ff;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+
+/* 研究メモ：段落化（今回追加） */
+.meta-note #researchList{
+  list-style:none;
+  margin:.6rem 0 0;
+  padding:0;
+}
+.meta-note .rm-group{
+  margin:.6rem 0 .3rem;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#faf5ff;
+  border:1px solid var(--line);
+  font-weight:950;
+  color:#4c2b5f;
+}
+.meta-note .rm-item{
+  margin:.35rem 0;
+  padding:10px 10px 9px;
+  border-radius:12px;
+  border:1px dashed var(--line);
+  background:#fff;
+}
+.meta-note .rm-head{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:baseline;
+}
+.meta-note .rm-head strong{color:var(--ink)}
+.meta-note .rm-tag{
+  font-size:.78rem;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff6fb;
+  color:#6a5b70;
+  font-weight:850;
+}
+.meta-note .rm-body{
+  margin:.45rem 0 .35rem;
+  line-height:1.65;
+  color:#5b4b62;
+}
+.meta-note .rm-num{
+  margin:.25rem 0 0;
+  color:#7a6c86;
+  font-size:.88rem;
+}
+
+/* フッタ */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  font-size:1rem;
+  box-shadow:0 12px 24px rgba(140,107,255,.14);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(140,107,255,.18);border-color:#ead9f2}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(140,107,255,.14)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.22);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(182,156,255,.18);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* ✅だけのトースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#4c2b5f;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<!-- ★ data-id は SLUG と一致させる -->
+<body data-id="lowback-weather">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">🌦️</span>
+      <span id="pageTitle">腰の天気診断</span>
+      <span class="rank" aria-label="現在の天気">
+        <span aria-hidden="true">🧩</span><span>未判定</span>
+      </span>
+    </div>
+    <div class="sub" id="pageSub">
+      痛みの強さじゃなく、慢性化の“燃料”になりやすいサインを天気にして点検（まずは危険サインを別枠チェック）。
+    </div>
+  </div>
+</header>
+
+<!-- 固定進捗バー -->
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <!-- ヒーロー（t00.webp） -->
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/lowback-weather/t00.webp" alt="腰の天気診断 ヒーロー画像" loading="lazy">
+  </figure>
+
+  <!-- プロローグ -->
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2 id="proTitle">プロローグ：本日の「腰予報」</h2>
+    <p id="proLine1">本日の腰、平穏な時間帯が多い日もあれば、急に荒れる日もあります。</p>
+    <p id="proLine2">この診断は病名当てじゃなく、荒れやすくする<b>黄信号の条件</b>を点検するやつです。</p>
+    <p id="proLine3">最初に危険サインだけ確認して、OKならそのまま“予報本編”へどうぞ。</p>
+    <p class="note">※本ページは娯楽＋自己理解の補助です。強い不調が続くなら専門機関へ。</p>
+
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">✨</span><span id="startLabel">腰予報を見る</span>
+    </button>
+  </section>
+
+  <!-- レッドフラッグゲート -->
+  <section id="gate" class="paper gate" aria-label="安全チェック（中断ゲート）" style="display:none">
+    <h2>安全チェック：先にここだけ</h2>
+    <p>ここはエンタメ抜き。<b>1つでも当てはまる</b>なら、この診断は中断して「受診目安」へ。</p>
+
+    <div class="warnbox">
+      <b>注意</b>：これは“腰の黄信号診断”の前提条件チェックです。痛みが強いほど危険、とは限りません。
+    </div>
+
+    <div class="chklist" role="group" aria-label="危険サインのチェック">
+      <label class="chk">
+        <input type="checkbox" class="rf" value="bladder">
+        <div>
+          <div class="t">排尿・排便の異常／会陰部のしびれ</div>
+          <div class="d">いつもと違う麻痺っぽさ、感覚の変化など</div>
+        </div>
+      </label>
+
+      <label class="chk">
+        <input type="checkbox" class="rf" value="weakness">
+        <div>
+          <div class="t">脚の脱力が進んでいる（悪化している）</div>
+          <div class="d">歩きづらさが増える、力が入らない など</div>
+        </div>
+      </label>
+
+      <label class="chk">
+        <input type="checkbox" class="rf" value="fever_loss">
+        <div>
+          <div class="t">発熱／原因不明の体重減少がある</div>
+          <div class="d">腰痛と同時期に体調サインが増えている</div>
+        </div>
+      </label>
+
+      <label class="chk">
+        <input type="checkbox" class="rf" value="trauma">
+        <div>
+          <div class="t">強い外傷のあと／骨が弱いリスクが高い</div>
+          <div class="d">転倒・事故のあと、または骨粗鬆リスクが高い等</div>
+        </div>
+      </label>
+
+      <label class="chk">
+        <input type="checkbox" class="rf" value="cancer">
+        <div>
+          <div class="t">がん既往があり、新しく強い痛みが出た</div>
+          <div class="d">既往がある場合は早めに相談が無難</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="gate-actions" aria-label="ゲート操作">
+      <button type="button" id="gateCheckBtn" class="go" aria-label="安全チェックを確定して次へ">
+        ✅ チェックして次へ
+      </button>
+      <button type="button" id="gateBackBtn" aria-label="プロローグへ戻る">
+        ↩︎ もどる
+      </button>
+    </div>
+
+    <div class="stop" id="stopBox" aria-label="中断メッセージ">
+      <div class="h">中断：この診断はここで止めよう。</div>
+      <ul>
+        <li>該当するサインがあるなら、まずは医療機関・相談窓口で確認が安全。</li>
+        <li>急ぐほど不安が増えるなら、同伴や電話相談も手。</li>
+      </ul>
+      <div class="small">※ここから先（黄信号チェック）は“危険サインがない前提”の内容です。</div>
+      <div class="back-row" style="margin-top:12px">
+        <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+          <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 質問セクション（初期は非表示） -->
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/28</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">🔖</span><span>チェック</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <!-- 結果セクション -->
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">🧩</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">総合 —点</span>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="今日の一手">
+          <div class="today-head"><span aria-hidden="true">🧭</span><span>今日の一手</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <p class="result-small" id="resultSmall" style="display:none"></p>
+
+        <!-- 因子バー -->
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <!-- 前回の回答（一覧） -->
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答（一覧）<span aria-hidden="true">▾</span></summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <!-- ギャラリー（t01〜t05） -->
+    <details id="galleryBlock" class="fold-card">
+      <summary>🖼 天気のギャラリー<span aria-hidden="true">▾</span></summary>
+      <div class="gallery" id="gallery"></div>
+    </details>
+
+    <!-- 研究メモ -->
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+  <!-- A) 黄信号（リスク因子） -->
+  <li class="rm-group" aria-hidden="true"><span>黄信号（リスク因子）</span></li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>系統的レビュー（2002）</strong>
+      <span class="rm-tag">慢性化の予測因子</span>
+    </div>
+    <p class="rm-body">
+      急性→慢性へ移るとき、<b>ストレス/落ち込み</b>や<b>身体化（不安で症状が増幅）</b>などの「黄信号」が繰り返し挙がる。
+    </p>
+    <p class="rm-num"><b>数値：</b>（この要約内では定量なし）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>前向き研究（2007）</strong>
+      <span class="rm-tag">経過と心理要因</span>
+    </div>
+    <p class="rm-body">
+      腰痛の経過は「痛みの強さ」だけで決まりにくく、<b>不安・抑うつ・心配</b>が、症状の遷延や生活への支障と結びつきやすい。
+    </p>
+    <p class="rm-num"><b>数値：</b>（この要約内では定量なし）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>レビュー（2015）</strong>
+      <span class="rm-tag">恐怖回避モデル</span>
+    </div>
+    <p class="rm-body">
+      慢性痛では、<b>恐怖→回避→活動低下→さらに恐怖</b>のループが起きやすい。ここをほどくと「生活の詰まり」も改善しやすい。
+    </p>
+    <p class="rm-num"><b>数値：</b>（この要約内では定量なし）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>横断研究（2025, N=276）</strong>
+      <span class="rm-tag">破局化・恐怖回避</span>
+    </div>
+    <p class="rm-body">
+      <b>破局化</b>は障害（生活の不自由さ）と強めに関連。<b>恐怖回避</b>も関連はあるが小さめ。両者で障害の差の一部（約3割台）を説明する報告。
+    </p>
+    <p class="rm-num"><b>数値：</b>破局化 r≈0.52 / 恐怖回避 r≈0.20</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>前向きコホート（2021, N=8,601, 約20年以上追跡）</strong>
+      <span class="rm-tag">睡眠</span>
+    </div>
+    <p class="rm-body">
+      <b>睡眠の質が長期に悪い</b>人は、将来「腰痛由来で生活が回らない」リスクが増えやすい。
+    </p>
+    <p class="rm-num"><b>数値：</b>RR≈1.9（だいたい約2倍）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>系統的レビュー（2024）</strong>
+      <span class="rm-tag">社会的サポート</span>
+    </div>
+    <p class="rm-body">
+      <b>社会的サポート</b>が高いほど、痛み/障害は「少し低い」傾向（相関は弱〜中）。
+    </p>
+    <p class="rm-num"><b>数値：</b>r≈-0.2〜-0.4</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>追跡研究（2025, N=1,772, 24か月）</strong>
+      <span class="rm-tag">自己効力感</span>
+    </div>
+    <p class="rm-body">
+      <b>自己効力感（自分で扱える感）</b>が高い群ほど、その後の<b>痛みが低め</b>で、<b>障害スコアもはっきり低い</b>報告。
+    </p>
+    <p class="rm-num"><b>数値：</b>障害が約5点ぶん低い（例）</p>
+  </li>
+
+  <!-- B) スクリーニング（質問票） -->
+  <li class="rm-group" aria-hidden="true"><span>スクリーニング（質問票）</span></li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>系統的レビュー（2012）</strong>
+      <span class="rm-tag">Örebro系</span>
+    </div>
+    <p class="rm-body">
+      慢性化リスクの早期スクリーニングとして<b>Örebro系</b>は研究でよく使われる。判別の当たり具合は中くらい。
+    </p>
+    <p class="rm-num"><b>数値：</b>感度≈0.59 / 特異度≈0.77</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>検証研究（2021）</strong>
+      <span class="rm-tag">STarT Back（9項目）</span>
+    </div>
+    <p class="rm-body">
+      「身体」と「心理」の2まとまりで扱える設計がデータに合いやすく、やり直しでも結果は比較的安定。
+    </p>
+    <p class="rm-num"><b>数値：</b>CFI≈0.98 / RMSEA≈0.03 / ICC≈0.84</p>
+  </li>
+
+  <!-- C) 心理介入（セルフケア含む） -->
+  <li class="rm-group" aria-hidden="true"><span>心理介入（セルフケア含む）</span></li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>RCT（2016, N=342, 8週間）</strong>
+      <span class="rm-tag">MBSR / CBT</span>
+    </div>
+    <p class="rm-body">
+      慢性腰痛で、<b>MBSR</b>も<b>CBT</b>も通常ケアより「生活の不自由さ」「痛みのつらさ」が改善しやすい。
+    </p>
+    <p class="rm-num"><b>数値：</b>改善者割合が通常ケアより約1.3〜1.4倍（表現）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>メタ分析（2022, RCT=6件, 合計N=300台〜）</strong>
+      <span class="rm-tag">MBSR</span>
+    </div>
+    <p class="rm-body">
+      <b>MBSR</b>は対照より、機能（例：Roland-Morris）を<b>少し改善</b>。
+    </p>
+    <p class="rm-num"><b>数値：</b>平均差 ≈ -1.3点（例）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>小規模RCT（2005, N=43, 8週間）</strong>
+      <span class="rm-tag">慈悲の瞑想（LKM）</span>
+    </div>
+    <p class="rm-body">
+      <b>怒り・心理的つらさ</b>の軽減と一緒に改善が出る可能性が報告（小規模）。
+    </p>
+    <p class="rm-num"><b>数値：</b>（この要約内では効果量の明記なし）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>メタ分析（2023, RCT=21件, N=1,962）</strong>
+      <span class="rm-tag">ACT</span>
+    </div>
+    <p class="rm-body">
+      <b>ACT</b>は対照より、<b>機能障害</b>と<b>痛み</b>が下がりやすく、不安・抑うつも小〜中程度に下がる報告が多い。
+    </p>
+    <p class="rm-num"><b>数値：</b>SMD≈-0.88（機能障害）/ SMD≈-0.45（痛み）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>RCT（2025, N=770, 12か月）</strong>
+      <span class="rm-tag">マインドフルネス系 vs 標準CBT</span>
+    </div>
+    <p class="rm-body">
+      両群とも長期での改善が報告され、両者の差は大きくは出にくいタイプの結果。
+    </p>
+    <p class="rm-num"><b>数値：</b>痛み 約0.4点低下（0〜10尺度）</p>
+  </li>
+
+  <li class="rm-item">
+    <div class="rm-head">
+      <strong>レビュー（2025）</strong>
+      <span class="rm-tag">オンライン/遠隔</span>
+    </div>
+    <p class="rm-body">
+      <b>オンライン/遠隔</b>の心理介入（CBTなど）は、対面に大きく劣らず、痛みやQOLの改善に役立つ可能性（アクセスの良さが強み）。
+    </p>
+    <p class="rm-num"><b>数値：</b>（この要約内では定量なし）</p>
+  </li>
+</ul>
+      <div style="margin-top:6px;color:var(--muted);font-size:.9rem;">
+  この診断は医療の代替ではありません。腰痛が長引きやすい「心理社会的な要因（いわゆる黄信号）」を整理し、必要ならセルフケアや相談先を選びやすくするための補助ツールです。
+</div>
+    </details>
+
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ✅だけのトースト -->
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+/* ===== 固定進捗バー ===== */
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ===== 基本設定 ===== */
+const SLUG = 'lowback-weather';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+/* 保存キー（衝突回避：SLUGを含める） */
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+/* ===== 回答ラベル（数字禁止） ===== */
+const LABELS = ['ない','たまに','半々','わりと','ほぼいつも'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','かなりある'][i] || '';
+}
+
+/* =========================================================
+   因子・設問・採点・結果文（腰の天気診断）
+========================================================= */
+
+/* 因子（7本） */
+const FACTS = ['F1','F2','F3','F4','F5','F6','F7'];
+const FACT_LABEL = {
+  F1:'恐怖回避（動きが怖い）',
+  F2:'破局化・反すう（最悪化）',
+  F3:'気分・ストレス負荷',
+  F4:'睡眠の乱れ',
+  F5:'症状モニタリング過多',
+  F6:'自己効力感（扱える感）',
+  F7:'支援・安心基地'
+};
+const FACT_DESC  = {
+  F1:'動くほど悪化しそうで避けるほど、体は固まりやすい。',
+  F2:'「このまま終わる」思考は、警報システムの燃料になりがち。',
+  F3:'緊張・不安・落ち込みが強いと、痛みの注意が固定されやすい。',
+  F4:'睡眠は回復の工場。壊れると、痛みも粘りやすい。',
+  F5:'小さな違和感を追いかけるほど、感度が上がってしまうことがある。',
+  F6:'「自分で扱える」感覚は、回復の土台になりやすい。',
+  F7:'理解者や調整の余地があると、回避や過緊張が減りやすい。'
+};
+
+/* 設問：7因子×4 = 28問（各因子に逆転1つ） */
+const QUESTIONS = [
+  // F1 恐怖回避
+  {t:'痛みが出そうで、動き方を“かなり控えめ”にしている。', key:'F1'},
+  {t:'腰のことが気になって、前より行動範囲が狭くなった。', key:'F1'},
+  {t:'「無理しない」が続いて、結果として動く量が減っている。', key:'F1'},
+  {t:'多少の違和感があっても、工夫しながら動ける。', key:'F1', reverse:true},
+
+  // F2 破局化・反すう
+  {t:'痛みを考える時間が長く、頭の中で何度も再生される。', key:'F2'},
+  {t:'「これ、ずっと続くかも」と最悪のシナリオが浮かびやすい。', key:'F2'},
+  {t:'痛みの意味（原因）を考え始めると止まらなくなる。', key:'F2'},
+  {t:'痛みがあっても、「まあ波がある」と受け止められる。', key:'F2', reverse:true},
+
+  // F3 気分・ストレス負荷
+  {t:'最近、緊張が抜けにくく、体がずっと構えている感じがする。', key:'F3'},
+  {t:'イライラや不安が増えて、体の不調にも敏感になっている。', key:'F3'},
+  {t:'落ち込み気味で、回復の見通しが立ちにくい。', key:'F3'},
+  {t:'嫌な感情が来ても、いったん落ち着かせる術がある。', key:'F3', reverse:true},
+
+  // F4 睡眠の乱れ
+  {t:'寝つきが悪い／夜中に目が覚めることが増えた。', key:'F4'},
+  {t:'寝ても回復した感じが少ない。', key:'F4'},
+  {t:'睡眠の質が落ちてから、体の不調が粘る感じがある。', key:'F4'},
+  {t:'睡眠はだいたい安定している。', key:'F4', reverse:true},
+
+  // F5 症状モニタリング過多
+  {t:'体の違和感を、無意識に何度もチェックしてしまう。', key:'F5'},
+  {t:'「どこか壊れた気がする」が頭に居座りやすい。', key:'F5'},
+  {t:'痛みの強さや場所の変化に、すぐ注意が吸い寄せられる。', key:'F5'},
+  {t:'違和感があっても、意識を別のことに戻せる。', key:'F5', reverse:true},
+
+  // F6 自己効力感（低いほど黄信号）※逆転の扱いに注意
+  {t:'自分で良くしていける感じがあまりしない。', key:'F6'},
+  {t:'対処法があっても「結局だめかも」と思いがち。', key:'F6'},
+  {t:'回復の主導権が、自分より外側にある感じがする。', key:'F6'},
+  {t:'工夫すれば、調子を上げられる感覚がある。', key:'F6', reverse:true},
+
+  // F7 社会的支援
+  {t:'理解してくれる人が少なく、説明するのがしんどい。', key:'F7'},
+  {t:'職場や周りに相談しづらく、一人で抱えがち。', key:'F7'},
+  {t:'配慮や調整の余地がなく、気持ちが詰まりやすい。', key:'F7'},
+  {t:'安心して頼れる人（場）がある。', key:'F7', reverse:true},
+];
+
+/* 5段階ランク（スコア帯→t01〜t05） */
+const GRADE_DEF = [
+  {
+    min:0, max:39, emo:'☀️', label:'晴れ', img:'t01.webp', alt:'晴れ（黄信号は薄め）',
+    headline:'本日の腰、平穏な時間帯が多そうです。',
+    blurb:'ただし夕方にかけて「取り返しモード」の発生率が上がります。まとめてやると翌日に残りやすいので、今日は“温存”が得。<br><b>強み</b>：回復の土台がある。<br><b>落とし穴</b>：晴れの日に詰め込みすぎて反動を呼ぶ。',
+    action:'動くなら30分で終える（軽い散歩か、ほぐしを少しだけ）。勝ち逃げ推奨。'
+  },
+  {
+    min:40, max:59, emo:'⛅', label:'薄曇り', img:'t02.webp', alt:'薄曇り（黄信号が混じる）',
+    headline:'本日の腰、曇りがち。小さな不調が混じりやすいでしょう。',
+    blurb:'「無茶して押し切る」か「運動せず固まる」か、二択に寄ると天気が崩れやすい帯です。<br><b>強み</b>：まだ修正が効く。<br><b>落とし穴</b>：極端な運転で自分を揺らしやすい。',
+    action:'避けてる動きを1つだけ選んで、10分割。いちばん小さい1個だけ試す。'
+  },
+  {
+    min:60, max:74, emo:'🌧️', label:'雨', img:'t03.webp', alt:'雨（黄信号が増えている）',
+    headline:'本日の腰、雨模様。警戒が先に立ちやすいでしょう。',
+    blurb:'この帯は、痛みそのものより「気にする時間」が増えがち。何度も思い出すと逃げるがセットになると、雨が長引きます。<br><b>強み</b>：体だけが原因じゃない可能性に気づける。<br><b>落とし穴</b>：考えすぎて動けなくなる。',
+    action:'痛みの解釈を1行だけ差し替える（例：「故障」→「警報が敏感かも」「波かも」）。'
+  },
+  {
+    min:75, max:89, emo:'🌊', label:'豪雨', img:'t04.webp', alt:'豪雨（黄信号が濃い）',
+    headline:'本日の腰、豪雨注意報。回復が追いつきにくい見込みです。',
+    blurb:'頑張りで回そうとしても、睡眠と安心が崩れていると回復が足りなくなります。チェック癖が増えるほど感度も上がり、さらに荒れやすい。<br><b>強み</b>：守り方さえ合えば立て直せる。<br><b>落とし穴</b>：やることを増やして空回り。',
+    action:'寝る90分前だけ固定：通知オフ＋照明落とす＋スマホ遠ざける（3点セット）。'
+  },
+  {
+    min:90, max:100, emo:'🌪️', label:'嵐', img:'t05.webp', alt:'嵐（黄信号が最大）',
+    headline:'本日の腰、荒天注意報。無理に通常運転を続けると崩れやすいです。',
+    blurb:'痛みだけの問題じゃなく「止まれない運転」が荒れを育てている可能性。責任感で回せるのは強みですが、今日はそれが裏目に出やすい帯です。<br><b>強み</b>：効く対策が複数ある<br><b>落とし穴</b>：一人で耐えるほど長引く',
+    action:'今日だけは減速を先に決める：①専門家に相談 ②PSRT/PRT/CBT/MBSR系を調べる、どっちか1つだけ選ぶ。'
+  }
+];
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[2];
+}
+
+/* 採点
+   - answers は 0..4（LABELSのindex）
+   - reverse:true は v=4-v
+   - 因子ごと平均→0-100に変換
+   - totalScore は 7因子pctの平均（0-100）
+*/
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0; // 0..4
+    const a15 = avg04 + 1;                             // 1..5
+    pct[k] = Math.round((a15-1)/4*100);                // 0..100
+  });
+
+  const totalScore = Math.round(FACTS.reduce((a,k)=>a+pct[k],0)/FACTS.length);
+  return { pct, totalScore };
+}
+
+/* ギャラリー（t01〜t05） */
+function buildGallery(){
+  return [
+    {img:'t01.webp', cap:'晴れ', alt:'晴れ'},
+    {img:'t02.webp', cap:'薄曇り', alt:'薄曇り'},
+    {img:'t03.webp', cap:'雨', alt:'雨'},
+    {img:'t04.webp', cap:'豪雨', alt:'豪雨'},
+    {img:'t05.webp', cap:'嵐', alt:'嵐'}
+  ];
+}
+
+/* ===== 状態 ===== */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* ===== 要素 ===== */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $gate = document.getElementById('gate');
+const $startBtn = document.getElementById('startBtn');
+
+const $rankBadge = document.querySelector('.rank');
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+
+const $bars = document.getElementById('bars');
+const $prevList = document.getElementById('prevList');
+const $gallery = document.getElementById('gallery');
+
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* Gate */
+const $gateCheckBtn = document.getElementById('gateCheckBtn');
+const $gateBackBtn = document.getElementById('gateBackBtn');
+const $stopBox = document.getElementById('stopBox');
+
+/* ===== トースト ===== */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* ===== 表示切替 ===== */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $gate.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterGateMode(){
+  $prologue.style.display = 'none';
+  $gate.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $gate.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $gate.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* ===== 保存/復元 ===== */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* ===== 質問描画 ===== */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  // 因子がバレると誤読の温床になりやすいので、常に共通ラベル
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">🔖</span><span>チェック</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+    btn.innerHTML = `<span class="btn-label">${lab}</span><span class="opt-note">${descFor(i)}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  if($rankBadge) $rankBadge.innerHTML = '<span aria-hidden="true">🧩</span><span>未判定</span>';
+}
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+
+/* ===== 結果表示 ===== */
+function showResult(){
+  // 未回答があるなら最初の未回答へ戻す
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct,totalScore} = computeScores(answers);
+  const grade = gradeFromScore(totalScore);
+
+  // ヘッダバッジ
+  if($rankBadge) $rankBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  // 画像 t01〜t05
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  // 見出し・スコア
+  $resultTitle.textContent = `あなたの天気：${grade.label}`;
+  $resultSubtitle.textContent = `総合：${totalScore}点（黄信号の濃さ）`;
+  if($scoreBadge) $scoreBadge.textContent = `総合 ${totalScore}点`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.label}</span>`;
+
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.blurb}</p>
+    `;
+  }
+  if($todayText) $todayText.textContent = grade.action;
+
+  // 因子バー
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h"><span>${FACT_LABEL[k] || k}</span><span>${v}%</span></div>
+      <div class="track"><div class="fill" style="width:${v}%"></div></div>
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  // 前回回答（一覧）
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+  buildPrevAnswers();
+
+  // ギャラリー
+  buildGalleryUI();
+
+  // 完了イベント（必須）
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function buildPrevAnswers(){
+  let prev = null;
+  try{ prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null'); }catch(_){}
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $prevList.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $prevList.appendChild(li);
+  });
+}
+function buildGalleryUI(){
+  const g = buildGallery();
+  $gallery.innerHTML = '';
+  g.forEach(x=>{
+    const fig = document.createElement('figure');
+    fig.innerHTML = `
+      <img src="${IMG_BASE + x.img}" alt="${x.alt||''}" loading="lazy">
+      <figcaption>${x.cap||x.img}</figcaption>
+    `;
+    $gallery.appendChild(fig);
+  });
+}
+
+/* ===== 操作 ===== */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+$startBtn.addEventListener('click', ()=>{
+  enterGateMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$gateBackBtn.addEventListener('click', ()=>{
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$gateCheckBtn.addEventListener('click', ()=>{
+  const any = !!document.querySelector('.rf:checked');
+  if(any){
+    $stopBox.style.display = 'block';
+    updateProgress(0);
+    // 進捗だけはゼロで固定、結果には行かない
+    return;
+  }
+  // OKなら設問へ
+  $stopBox.style.display = 'none';
+  enterQuizMode();
+  renderQuestion();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast();
+});
+
+/* ===== 起動：復元 or プロローグ ===== */
+(function init(){
+  // ヒーローは常に t00.webp（正方形）
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  const valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  // 開き直し：完了済みなら結果から
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion(); // 状態だけ整える
+    enterResultMode();
+    showResult();
+    return;
+  }
+  // 途中なら途中から
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+<!-- あなたのこころLv（ローカルのみ） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||SLUG;
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());</script>
+
+</body>
+</html>
