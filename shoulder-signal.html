@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- =========================
+  検索置換ポイント（最低限ここだけ）
+  1) TITLE / description
+  2) og:title / og:description
+  3) og:url
+  4) og:image の slug
+  5) body data-id / SLUG
+========================= -->
+<title>肩こり信号診断｜テンプレ</title>
+<meta name="description" content="肩こりと心理の絡まり具合を“信号”で見える化する診断（雛形）。">
+<meta name="theme-color" content="#fff7fd">
+
+<!-- OG -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="肩こり信号診断">
+<meta property="og:description" content="肩こりと心理の絡まり具合を“信号”で見える化する診断（雛形）。">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/shoulder-signal.html">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/shoulder-signal/t00.webp">
+
+<style>
+:root{
+  --bg:#fdf7ff;
+  --paper:#fff;
+  --ink:#201322;
+  --muted:#6a5b70;
+  --line:#ece3f5;
+
+  /* 基本アクセント（ページ全体） */
+  --accent:#8c6bff;
+  --accent2:#ff8fc7;
+
+  /* 信号色（UIの意味付け） */
+  --sig-blue:#4aa8ff;
+  --sig-yellow:#ffd54a;
+  --sig-red:#ff4a6a;
+  --sig-gray:#b8a9c6;
+  --sig-ink:#2a1930;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+a{color:#5b2ea8;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+
+header.hd{
+  background:linear-gradient(160deg,#fff7fd,#f3ecff);
+  border-bottom:1px solid var(--line);
+}
+header.hd .wrap{padding:20px 16px 10px}
+.ttl{
+  font-weight:900;font-size:1.35rem;letter-spacing:.02em;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.sub{color:var(--muted);font-size:.95rem}
+
+/* 固定進捗バー */
+.progress-fixed{
+  position:sticky;top:0;z-index:20;
+  height:8px;background:var(--line)
+}
+.progress-bar{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .2s ease
+}
+[role="progressbar"]{width:100%}
+
+/* ヒーロー（正方形固定） */
+figure.hero{
+  margin:12px 0;border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;background:#fff;
+}
+figure.hero img{
+  display:block;width:100%;
+  aspect-ratio:1/1;object-fit:cover;
+}
+
+/* 共通カード */
+.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+}
+
+/* プロローグ */
+#prologue h2{margin-top:0;font-size:1.1rem}
+#prologue p{margin:.45rem 0;color:var(--muted)}
+#prologue .note{color:var(--muted);font-size:.9rem}
+.start-btn{
+  margin-top:12px;width:100%;
+  padding:12px 16px;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;font-weight:900;letter-spacing:.03em;
+  cursor:pointer;box-shadow:0 10px 20px rgba(140,107,255,.18);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.start-btn span.emo{font-size:1.2rem}
+
+/* 質問 */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qnum{font-weight:900;color:#4c2b5f}
+.qtag{
+  font-size:.8rem;color:#7a6c86;
+  padding:2px 8px;border-radius:999px;
+  border:1px solid var(--line);
+  background:#f9f3ff;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.qtext{margin:.65rem 0 1rem;font-weight:850}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#fff;cursor:pointer;transition:.12s;
+}
+.btn[aria-pressed="true"]{outline:2px solid var(--accent2);background:#fff4fa}
+.btn:hover{transform:translateY(-1px)}
+.btn-label{font-weight:850}
+.opt-note{color:#8b7b93;font-size:.9rem;white-space:nowrap}
+.ctrls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrls button{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--line);
+  background:#faf5ff;cursor:pointer;font-weight:800;
+}
+.ctrls button:disabled{opacity:.55;cursor:not-allowed}
+
+/* 結果 */
+.result{display:none}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.result .imgbox{flex:1 1 280px;min-width:260px}
+.result .imgbox img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:14px;border:1px solid var(--line);display:block;
+}
+.result .text{flex:2 1 360px;min-width:300px}
+
+.badge-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.2rem 0 .55rem}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;background:#fff1fb;font-size:.85rem;
+  border:1px solid rgba(236,227,245,.9);
+}
+.result-title-main{margin:.1rem 0 0}
+.result-title-sub{margin:.15rem 0 .8rem;font-size:.9rem;color:var(--muted)}
+.result-comment{
+  margin:.35rem 0 .9rem;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fff6fb);
+}
+.result-comment p{margin:.25rem 0;color:#5a3a4f}
+.result-comment .rc-ttl{font-weight:950;color:#3a2433}
+
+/* 今日の一手 */
+.today-box{
+  margin:.9rem 0 .2rem;
+  padding:12px 12px 10px;
+  border-radius:16px;
+  border:1px solid rgba(140,107,255,.35);
+  background:linear-gradient(135deg, rgba(140,107,255,.14), rgba(255,143,199,.12));
+  box-shadow:0 10px 22px rgba(140,107,255,.12);
+}
+.today-head{
+  display:inline-flex;align-items:center;gap:8px;
+  font-weight:950;color:#2b1830;
+  padding:2px 10px;border-radius:999px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(236,227,245,.9);
+}
+.today-text{margin:.55rem 0 0;font-weight:850;color:#2b1830}
+
+/* 因子バー */
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.bar{background:transparent;border-radius:10px;padding:4px 0 6px}
+.bar .h{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;
+  gap:10px;
+  padding:2px 10px 6px;
+  font-size:.92rem;
+}
+.bar .h span:first-child{font-weight:900}
+.bar .pct{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:58px;
+  padding:3px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#3a2433;
+  font-weight:950;
+  font-variant-numeric: tabular-nums;
+}
+.bar .track{
+  margin:0 10px 4px;
+  height:12px;
+  border-radius:999px;
+  background:#f3e9ff;
+  border:1px solid var(--line);
+  overflow:hidden;
+  position:relative;
+}
+.bar .fill{
+  height:100%;
+  width:0%;
+  border-radius:inherit;
+  transition:width .25s ease-out, filter .25s ease-out;
+  opacity:1;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
+}
+.bar-desc{padding:0 10px 2px;font-size:.8rem;color:var(--muted)}
+
+/* 前回回答 */
+.prev-list{list-style:none;padding-left:0;margin:.4rem 0 .2rem .9rem}
+.prev-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:6px 0;border-bottom:1px solid var(--line);
+}
+.prev-q{
+  flex:1;min-width:0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;overflow-wrap:anywhere;
+}
+.prev-a{
+  flex:0 0 auto;white-space:nowrap;
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  font-size:.9rem;background:#faf5ff;
+}
+
+/* ギャラリー */
+.gallery{margin-top:2px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.gallery figure{
+  margin:0;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px;text-align:center;font-size:.85rem;color:var(--muted);
+  display:flex;flex-direction:column;gap:4px;
+}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
+
+/* 折りたたみ */
+.fold-card{
+  margin:10px 0 8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.9rem;
+}
+.fold-card summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fold-card[open]{background:#fdf7ff;box-shadow:0 3px 8px rgba(0,0,0,.03)}
+.fold-card[open] summary{margin-bottom:6px}
+
+/* 研究メモ */
+.meta-note{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  border:1px solid var(--line);background:#fdf7ff;color:var(--muted);font-size:.9rem;
+}
+.meta-note summary{
+  cursor:pointer;list-style:none;font-weight:850;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meta-note[open]{background:#fff}
+.meta-note ul{margin:.5rem 0 0 1.1rem;padding-left:0}
+.meta-note ul li + li{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+
+/* フッタ */
+.meta{color:#7a6c86;font-size:.92rem;clear:both;margin-top:.6rem}
+.back-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 6px;}
+.back{
+  flex:1 1 220px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-weight:900;letter-spacing:.02em;cursor:pointer;
+  font-size:1rem;
+  box-shadow:0 12px 24px rgba(140,107,255,.14);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(140,107,255,.18);border-color:#ead9f2}
+.back:active{transform:translateY(0);box-shadow:0 10px 20px rgba(140,107,255,.14)}
+.back:focus-visible{outline:3px solid rgba(182,156,255,.35);outline-offset:3px}
+.back-primary{
+  border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1b0f1c;box-shadow:0 14px 28px rgba(140,107,255,.22);
+}
+.back-ghost{background:linear-gradient(180deg,#fff,#fff6fb)}
+.back .chev{
+  display:inline-grid;place-items:center;width:22px;height:22px;border-radius:999px;
+  background:rgba(182,156,255,.18);color:rgba(32,19,34,.75);
+  font-size:1.15rem;line-height:1;
+}
+
+/* トースト */
+.mini-toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;background:#4c2b5f;color:#fff;
+  padding:8px 12px;border-radius:999px;
+  font-size:1.1rem;transition:.25s;z-index:40;
+}
+.mini-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ====== 選択肢：信号っぽいUI ====== */
+.btn{
+  position:relative;
+}
+.btn-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.opt-signal{
+  flex:0 0 auto;
+  width:22px;
+  padding:4px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#faf5ff);
+  display:grid;
+  gap:4px;
+  box-shadow:0 8px 14px rgba(140,107,255,.10);
+}
+.opt-signal .dot{
+  width:12px;height:12px;border-radius:999px;
+  margin:0 auto;
+  background:rgba(184,169,198,.28);
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.55);
+  opacity:.55;
+}
+
+/* 0-4 の回答レベルを、信号っぽく点灯させる
+   0=青 / 1=青弱 / 2=黄 / 3=赤 / 4=赤点滅 */
+.opt-signal[data-level="0"] .dot.d1{background:var(--sig-blue); opacity:1; box-shadow:0 0 0 3px rgba(74,168,255,.16), 0 10px 16px rgba(74,168,255,.16)}
+.opt-signal[data-level="1"] .dot.d1{background:var(--sig-blue); opacity:.72}
+.opt-signal[data-level="2"] .dot.d2{background:var(--sig-yellow); opacity:1; box-shadow:0 0 0 3px rgba(255,213,74,.16), 0 10px 16px rgba(255,213,74,.16)}
+.opt-signal[data-level="3"] .dot.d3{background:var(--sig-red); opacity:1; box-shadow:0 0 0 3px rgba(255,74,106,.14), 0 10px 16px rgba(255,74,106,.16)}
+.opt-signal[data-level="4"] .dot.d3{background:var(--sig-red); opacity:1; animation:blink 1.0s steps(1,end) infinite}
+
+.btn-label{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* 押下時、ミニ信号も少し強調 */
+.btn[aria-pressed="true"] .opt-signal{
+  border-color:rgba(140,107,255,.40);
+  box-shadow:0 10px 18px rgba(140,107,255,.18);
+}
+
+/* ========= 信号UI（ここが今回の“斬新部分”） ========= */
+.signal-wrap{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.signal{
+  width:36px;
+  padding:6px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#faf5ff);
+  box-shadow:0 10px 18px rgba(140,107,255,.12);
+  display:grid;
+  gap:6px;
+}
+.light{
+  width:24px;height:24px;border-radius:999px;
+  margin:0 auto;
+  background:rgba(184,169,198,.35);
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.5);
+  position:relative;
+}
+.light::after{
+  content:"";
+  position:absolute;inset:5px;
+  border-radius:999px;
+  background:rgba(255,255,255,.25);
+  filter:blur(.2px);
+  opacity:.6;
+}
+
+/* active */
+.signal[data-state="blue"]  .light[data-k="blue"]  {background:var(--sig-blue); box-shadow:0 0 0 3px rgba(74,168,255,.18), 0 10px 18px rgba(74,168,255,.22)}
+.signal[data-state="yellow"].light, .signal[data-state="yellow"] .light[data-k="yellow"]{}
+.signal[data-state="yellow"] .light[data-k="yellow"]{background:var(--sig-yellow); box-shadow:0 0 0 3px rgba(255,213,74,.20), 0 10px 18px rgba(255,213,74,.22)}
+.signal[data-state="red"]   .light[data-k="red"]   {background:var(--sig-red); box-shadow:0 0 0 3px rgba(255,74,106,.18), 0 10px 18px rgba(255,74,106,.22)}
+.signal[data-state="blink"] .light[data-k="red"]   {background:var(--sig-red); animation:blink 1.0s steps(1,end) infinite}
+.signal[data-state="dead"]  {filter:saturate(.45) grayscale(.15)}
+.signal[data-state="dead"]  .light{background:rgba(184,169,198,.22)}
+.signal[data-state="dead"]  .light::after{opacity:.25}
+
+@keyframes blink{
+  0%,49%{opacity:1}
+  50%,100%{opacity:.15}
+}
+
+.rank{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:.3em .75em;border-radius:999px;
+  background:#f3e9ff;color:#4b266e;font-weight:850;font-size:.85rem;
+}
+
+/* レジェンド（結果で信号がどれか明示） */
+.legend{
+  margin:.6rem 0 .2rem;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  padding:10px 10px 6px;
+}
+.legend-title{
+  font-weight:950;color:var(--sig-ink);
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;
+}
+.legend-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap:8px;
+}
+.legend-item{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:8px 10px;
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(180deg,#fff,#fff7fd);
+  opacity:.72;
+}
+.legend-item.active{
+  opacity:1;
+  box-shadow:0 10px 18px rgba(140,107,255,.14);
+  border-color:rgba(140,107,255,.35);
+}
+.legend-dot{
+  width:14px;height:14px;border-radius:999px;
+  border:1px solid rgba(0,0,0,.06);
+}
+.legend-dot.blue{background:var(--sig-blue)}
+.legend-dot.yellow{background:var(--sig-yellow)}
+.legend-dot.red{background:var(--sig-red)}
+.legend-dot.blink{
+  background:var(--sig-red);
+  animation:blink 1.0s steps(1,end) infinite;
+}
+.legend-dot.dead{background:var(--sig-gray)}
+.legend-cap{font-weight:900}
+.legend-sub{font-size:.85rem;color:var(--muted);margin-left:auto}
+
+/* 小画面 */
+@media (max-width:600px){
+  header.hd .wrap{padding:16px 12px 8px}
+  .paper{padding:14px 12px}
+}
+</style>
+</head>
+
+<body data-id="shoulder-signal">
+<header class="hd" role="banner">
+  <div class="wrap">
+    <div class="ttl">
+      <span aria-hidden="true">🚦</span>
+      <span id="pageTitle">肩こり信号診断</span>
+
+      
+    </div>
+
+    <div class="sub" id="pageSub">
+      肩と心の絡まり具合を、信号に翻訳する。深刻じゃない。観測だ。
+    </div>
+  </div>
+</header>
+
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" style="width:0%"></div>
+</div>
+
+<main class="wrap" id="app" role="main" aria-live="polite">
+
+  <figure class="hero">
+    <img id="heroImg" src="/shindan/assets/results/shoulder-signal/t00.webp" alt="ヒーロー画像" loading="lazy">
+  </figure>
+
+  <section id="prologue" class="paper" aria-label="プロローグ">
+    <h2 id="proTitle">あなたの肩こり、何色？</h2>
+    <p id="proLine1">マッサージ行っても治らない謎、今から解明します。</p>
+    <p id="proLine2">たった1分で、あなたの肩こりが<span style="color: #4169e1;">🔵青信号</span>なのか<span style="color: #dc143c;">🔴赤信号</span>なのか、バレます。</p>
+    <p id="proLine3">準備はいい？ ボタン押したらもう後戻りできない。<br>（嘘。途中でやめられる）</p>
+
+    <p class="note">※結果見て「あ、これ私だ」ってなる人続出中。</p>
+
+    <button type="button" id="startBtn" class="start-btn" aria-label="診断を始める">
+      <span class="emo">🚦</span><span id="startLabel">信号判定スタート</span>
+    </button>
+</section>
+
+  <section id="quiz" class="paper" aria-label="質問セクション" style="display:none">
+    <div class="qhead">
+      <div class="qnum" id="qnum">Q1/??</div>
+      <div class="qtag" id="qtag"><span aria-hidden="true">🧷</span><span>肩ログ</span></div>
+    </div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+
+    <div class="ctrls">
+      <button type="button" id="prevBtn" aria-label="前の設問へ戻る">もどる</button>
+    </div>
+  </section>
+
+  <section id="result" class="paper result" aria-label="結果セクション">
+    <h2 style="margin-top:0">結果</h2>
+
+    <div class="flex">
+      <div class="imgbox">
+        <img id="resultImg" src="" alt="" loading="lazy">
+      </div>
+      <div class="text">
+        <div class="badge-line">
+          <span class="badge-pill" id="gradeBadge"><span aria-hidden="true">🚦</span><span>未判定</span></span>
+          <span class="badge-pill" id="scoreBadge">スコア —点</span>
+        </div>
+
+        <!-- 信号レジェンド（どれに値するか、ここで明確に） -->
+        <div class="legend" aria-label="信号の意味">
+          <div class="legend-title"><span aria-hidden="true">🧭</span><span>信号の対応（どれに値するか）</span></div>
+          <div class="legend-grid" id="legendGrid">
+            <!-- JSで active を付与 -->
+          </div>
+        </div>
+
+        <h3 class="result-title-main" id="resultTitle">—</h3>
+        <p class="result-title-sub" id="resultSubtitle">—</p>
+
+        <div class="result-comment" id="resultComment" aria-label="結果コメント">
+          <p class="rc-ttl">—</p>
+          <p>—</p>
+        </div>
+
+        <div class="today-box" aria-label="今日の一手">
+          <div class="today-head"><span aria-hidden="true">🧩</span><span>今日の一手</span></div>
+          <div class="today-text" id="todayText">—</div>
+        </div>
+
+        <div class="bars" id="bars" aria-label="因子バー"></div>
+      </div>
+    </div>
+
+    <details id="prevBlock" class="fold-card">
+      <summary>📝 前回の回答<span aria-hidden="true">▾</span></summary>
+      <ul id="prevList" class="prev-list"></ul>
+    </details>
+
+    <details id="galleryBlock" class="fold-card">
+      <summary>🖼 ランクのギャラリー<span aria-hidden="true">▾</span></summary>
+      <div class="gallery" id="gallery"></div>
+    </details>
+
+    <details class="meta-note" id="researchNotes">
+      <summary>📚 研究メモ<span aria-hidden="true">▾</span></summary>
+      <ul id="researchList">
+  <li>
+    <strong>横断（大学生 N=23）</strong>：肩こりがある人は、<strong>主観ストレス</strong>がかなり高め。
+    <br>だいたい <strong>59/100</strong> くらい vs なし群は <strong>11/100</strong> くらい（差は約 <strong>+48</strong>）。
+    <br><small>限界：人数が少ないので「傾向確認」レベル。</small>
+  </li>
+
+  <li>
+    <strong>コホート（一般成人 N=604・7年）</strong>：首肩の痛みが<strong>毎日ある</strong>人は、7年後に<strong>気分の落ち込み（抑うつ）</strong>が出る割合が高め。
+    <br>毎日痛い群：<strong>約28%</strong> ／ 痛みなし群：<strong>約10%</strong>。ざっくり<strong>2〜3倍</strong>。
+    <br><small>限界：「痛み→気分」だけでなく、生活要因も混ざる可能性あり。</small>
+  </li>
+
+  <li>
+    <strong>コホート（労働者 N=3123・約4年）</strong>：<strong>仕事の負荷</strong>（反復作業など）に加えて、<strong>強いストレス状態</strong>も「新しく首肩の痛みが出る」確率を上げる。
+    <br>追跡で新規の首肩痛：<strong>約14%</strong>（そのうち強い圧痛つきは <strong>約2%</strong>）。
+    <br><small>限界：職種や環境で強さは変わる。</small>
+  </li>
+
+  <li>
+    <strong>介入（ストレス対策のRCT N=53・8週）</strong>：呼吸・筋ゆるめ等の<strong>ストレス管理</strong>を8週間やると、
+    <strong>ストレス/不安</strong>が下がり、<strong>痛み</strong>や<strong>生活のしんどさ</strong>も改善しやすい（対照群より改善が大きい）。
+    <br><small>限界：小規模なので「効く人がいる」程度の確度。</small>
+  </li>
+
+  <li>
+    <strong>介入（瞑想 vs 運動のRCT N=89・8週）</strong>：安静時の首の痛みが、
+    瞑想は <strong>約46→22</strong> に下がり、運動は <strong>約44→38</strong> 程度。
+    <br>差はだいたい <strong>13/100</strong> くらい（痛みが軽くなる方向）。
+    <br><small>限界：脱落が多めで、長期効果は別途。</small>
+  </li>
+</ul>
+</details>
+
+    <p class="meta">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+    <div class="back-row" aria-label="操作メニュー">
+      <button type="button" class="back back-primary" id="restartBtn" aria-label="最初からやり直す">
+        <span aria-hidden="true">🔁</span><span>最初から</span>
+      </button>
+
+      <a class="back back-ghost" href="/shindan/" aria-label="診断一覧に戻る">
+        <span aria-hidden="true">🧪</span><span>診断一覧へ</span><span class="chev" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<div class="mini-toast" id="toast" role="status" aria-live="polite">✅</div>
+
+<script>
+function updateProgress(p){
+  var bar = document.querySelector('.progress-bar');
+  var wrap = document.querySelector('.progress-fixed');
+  var val = Math.max(0,Math.min(100,p));
+  if(bar) bar.style.width = val + '%';
+  if(wrap) wrap.setAttribute('aria-valuenow', String(val));
+}
+
+/* ========= 検索置換：ここを slug に ========= */
+const SLUG = 'shoulder-signal';
+const IMG_BASE = `/shindan/assets/results/${SLUG}/`;
+
+const LS_ANS     = `shindan:${SLUG}:answers`;
+const LS_IDX     = `shindan:${SLUG}:index`;
+const LS_LASTANS = `shindan:${SLUG}:lastAnswers`;
+
+const LABELS = ['ぜんぜん','あまり','どちらとも','わりと','とても'];
+function descFor(i){
+  return ['ほぼない','すこし','半々','よくある','めっちゃある'][i] || '';
+}
+
+/* ========= EDIT HERE =========
+   設問は後で差し替え前提（いまはダミー）。
+   因子も後で増減OK。まず組み立つ形にする。 */
+
+/* 因子（5本：心理寄りに置いてある） */
+/* 因子（5本：心理寄りに置いてある） */
+const FACTS = ['STRESS','ANX','LOWMOOD','CATA','SEFF'];
+const FACT_LABEL = {
+  STRESS:'ストレス/緊張',
+  ANX:'不安/警戒',
+  LOWMOOD:'気分の落ち',
+  CATA:'破局化（痛み思考）',
+  SEFF:'自己効力感'
+};
+const FACT_DESC = {
+  STRESS:'自覚ストレスや“張り詰め”の強さ。',
+  ANX:'不安・警戒で体が固まりやすい度合い。',
+  LOWMOOD:'気分が落ちて回復力が下がっているサイン。',
+  CATA:'「悪化する/終わった」思考に吸われる傾向。',
+  SEFF:'痛みがあっても対処できる自信（高いほど良い）。'
+};
+
+/* 設問（ダミー：あとで全部入れ替えOK）
+   reverse:true は逆転（例：自己効力感は高いほど良いので reverse を使う） */
+const QUESTIONS = [
+  // STRESS（ストレス/緊張）×4
+  {t:'忙しい時期は、肩に力が入ったまま抜けにくい。', key:'STRESS'},
+  {t:'イライラや焦りが続くと、肩こりが強くなる。', key:'STRESS'},
+  {t:'仕事や予定のことを考えると、首や肩がこわばる。', key:'STRESS'},
+  {t:'休憩しても、肩の緊張が残りやすい。', key:'STRESS'},
+
+  // ANX（不安/警戒）×4
+  {t:'痛みやこりがあると「何か重大な問題かも」と不安になる。', key:'ANX'},
+  {t:'首や肩の違和感があると、体を動かすのが怖くなる。', key:'ANX'},
+  {t:'体調の変化に敏感で、悪化を先に想像しやすい。', key:'ANX'},
+  {t:'肩こりがある日は、周囲に気を張りやすい。', key:'ANX'},
+
+  // LOWMOOD（気分の落ち）×4
+  {t:'肩が重い日は、気分も沈みやすい。', key:'LOWMOOD'},
+  {t:'肩こりが続くと、何をするにも億劫になる。', key:'LOWMOOD'},
+  {t:'最近、疲れが抜けにくく意欲が落ちている。', key:'LOWMOOD'},
+  {t:'不調があると、楽しさを感じにくい。', key:'LOWMOOD'},
+
+  // CATA（破局化）×4
+  {t:'肩がこると「この先ずっと良くならないかも」と考えがち。', key:'CATA'},
+  {t:'痛みが出ると、最悪のシナリオを想像してしまう。', key:'CATA'},
+  {t:'肩こりがあると「自分はもうダメだ」と極端に感じることがある。', key:'CATA'},
+  {t:'痛みやこりがあると、頭の中がそのことで埋まりやすい。', key:'CATA'},
+
+  // SEFF（自己効力感）×4（高いほど良い → reverse:true）
+  {t:'肩がこっていても、必要な用事はこなせる自信がある。', key:'SEFF', reverse:true},
+  {t:'不調があっても、対処法を試して立て直せると思う。', key:'SEFF', reverse:true},
+  {t:'痛みやこりがあっても、落ち着いて対応できる。', key:'SEFF', reverse:true},
+  {t:'体の違和感があっても、日常は回せると思える。', key:'SEFF', reverse:true}
+];
+
+
+/* ランク（信号） */
+const GRADE_DEF = [
+  {
+    min:0, max:39,  state:'blue',  sig:'青（快調）',  emo:'🔵', label:'快調',
+    img:'t01.webp', alt:'青の快調',
+    headline:'青信号。金曜18時の肩。まだ人間。',
+    story:'「ちょっと凝ってるかも」で済む、有給が残ってる人生。でもここで放置して月曜を3回迎えると、「肩こり 即効」でGoogle検索しながらエナジードリンク飲む人間になる。デスクでコソコソ肩回してる時点で黄色信号の入り口。今ならストレッチ1回で戻る。戻らなくなる前に戻せ。',
+    action:'肩甲骨を後ろに10回引く。会議中のカメラオフでやれ。バレても「伸びしてました」で通る。'
+  },
+  {
+    min:40, max:59, state:'yellow', sig:'黄（注意）', emo:'🟡', label:'注意',
+    img:'t02.webp', alt:'黄の注意',
+    headline:'黄色。Teams通知で肩が上がる領域。',
+    story:'椅子を3万円のに変えたのに治らない謎。答え：脳が「月曜〜金曜は臨戦モード」で固定されてる。上司の「ちょっといい？」で反射的に肩がギュッてなる人、完全にこれ。マッサージガン買ったけど使うのめんどくさくなって充電切れてるやつ、本棚の肥やしになってない？ 筋肉より先に、「常時スタンバイモード」を解除しろ。',
+    action:'タイマー2分、トイレ個室で首を長くする。「早く戻らなきゃ」って焦るな。その2分すら許さない会社ならそれ別の問題。'
+  },
+  {
+    min:60, max:74, state:'red',   sig:'赤（停止）', emo:'🔴', label:'停止',
+    img:'t03.webp', alt:'赤の停止',
+    headline:'赤。「週明けが怖い」が肩に住み着いてる。',
+    story:'日曜20時から肩がバキバキになるやつ。不安が痛みを5倍増しで感じさせてるガチ案件。「まだやれる」って思いながらモニター3枚見てる人、それ自傷行為な。あと寝る前に「明日の会議資料…」って考えながらストレッチしても意味ない。脳が「緊急事態です！」って叫んでる状態で筋肉だけほぐしても、秒で戻る。マッサージ屋で「お客さんめちゃくちゃ固いですね」→「仕事忙しくて…」→「無理しないでくださいね」のテンプレ会話、もう飽きたろ？',
+    action:'「最悪のケース想定してない？」を自問。大体、起きない。起きても死なない。上司も人間。たぶん。'
+  },
+  {
+    min:75, max:89, state:'blink', sig:'赤点滅（危険）', emo:'🚨', label:'危険',
+    img:'t04.webp', alt:'赤点滅の危険',
+    headline:'赤点滅。PC開いた瞬間、肩がバグる。',
+    story:'月曜朝、Teams開いただけで肩が「うっ」ってなる段階。完全に条件反射。パブロフの犬が社畜になったやつ。「気合で乗り切る」を選ぶと、体が「あ、本気でヤバい会社なんだ」って学習して、もっと固くなる無限ループ。整体で「ここまで固いの珍しい」って言われて「忙しいんで」ってドヤ顔してるなら、それもう病気の一種。湿布が常備薬になってる時点でレッドカード。根性論が唯一効かないラスボス戦。',
+    action:'「今日中に全部終わらせる」を今すぐゴミ箱へ。次の1時間だけ軽くする。完璧主義と社畜は双子。'
+  },
+  {
+    min:90, max:100, state:'dead', sig:'信号故障（限界）', emo:'🛑', label:'限界',
+    img:'t05.webp', alt:'信号故障',
+    headline:'信号故障。「転職サイト 肩こり 改善」で検索してる。',
+    story:'「もう何やっても治らない」「休日も痛い」「寝ても痛い」の地獄トリオ。しびれ出てるのに「来週の納期終わったら病院…」とか言ってるなら、それ来週も言ってるパターン。朝起きて「あ、今日も会社か」と「あ、肩痛い」が同時に来るレベル。YouTubeの肩こり動画全制覇したけど治らない人、それもう動画の問題じゃない。ネットで「肩こり 重症 末期」って検索してる時間を、予約ボタン押す時間に変えろ。ここは根性じゃなくて、診断書もらって休むか、転職するか、ガチで病院行くフェーズ。課金して専門家召喚しろ。',
+    action:'整形外科・心療内科・転職エージェント、どれでもいいから3つ候補出して1個予約。明日。今日は無理でも明日はやれ。有給使え。'
+  }
+];
+
+function gradeFromScore(pct){
+  for(const g of GRADE_DEF){
+    if(pct >= g.min && pct <= g.max) return g;
+  }
+  return GRADE_DEF[1];
+}
+
+/* 集計：0-4平均→1-5平均→% */
+function computeScores(answers){
+  const sums = {}, counts = {};
+  FACTS.forEach(k=>{ sums[k]=0; counts[k]=0; });
+
+  QUESTIONS.forEach((q,i)=>{
+    let v = answers[i];
+    if(v==null) return;
+    if(q.reverse) v = 4 - v;
+    sums[q.key] += v;
+    counts[q.key] += 1;
+  });
+
+  const pct = {};
+  FACTS.forEach(k=>{
+    const avg04 = counts[k] ? (sums[k]/counts[k]) : 0;
+    const a15 = avg04 + 1;
+    pct[k] = Math.round((a15-1)/4*100);
+  });
+
+  const totalScore = Math.round(FACTS.reduce((a,k)=>a+pct[k],0)/FACTS.length);
+  return { pct, totalScore };
+}
+
+/* ギャラリー（正方形固定想定） */
+function buildGallery(){
+  return [
+    {img:'t01.webp', cap:'青（快調）', alt:'青の快調'},
+    {img:'t02.webp', cap:'黄（注意）', alt:'黄の注意'},
+    {img:'t03.webp', cap:'赤（停止）', alt:'赤の停止'},
+    {img:'t04.webp', cap:'赤点滅（危険）', alt:'赤点滅の危険'},
+    {img:'t05.webp', cap:'信号故障（限界）', alt:'信号故障'}
+  ];
+}
+
+/* 因子バー色：低(青)→高(赤) を連続的に */
+function barGradientForPct(p){
+  var t = Math.max(0, Math.min(1, (p||0)/100));
+  var h = Math.round(210 * (1 - t)); // 210(青)→0(赤)
+  var c1 = `hsl(${h} 88% 48%)`;
+  var c2 = `hsl(${h} 92% 62%)`;
+  return `linear-gradient(90deg, ${c1}, ${c2})`;
+}
+
+/* ========= EDIT HERE END ========= */
+
+/* 状態 */
+let idx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+/* 要素 */
+const $qnum = document.getElementById('qnum');
+const $qtag = document.getElementById('qtag');
+const $qtext = document.getElementById('qtext');
+const $opts = document.getElementById('opts');
+const $prev = document.getElementById('prevBtn');
+
+const $quiz = document.getElementById('quiz');
+const $result = document.getElementById('result');
+const $prologue = document.getElementById('prologue');
+const $startBtn = document.getElementById('startBtn');
+
+const $gradeBadge = document.getElementById('gradeBadge');
+const $scoreBadge = document.getElementById('scoreBadge');
+
+const $resultImg = document.getElementById('resultImg');
+const $resultTitle = document.getElementById('resultTitle');
+const $resultSubtitle = document.getElementById('resultSubtitle');
+
+const $resultComment = document.getElementById('resultComment');
+const $todayText = document.getElementById('todayText');
+
+const $bars = document.getElementById('bars');
+const $prevList = document.getElementById('prevList');
+const $gallery = document.getElementById('gallery');
+
+const $restart = document.getElementById('restartBtn');
+const $toast = document.getElementById('toast');
+
+/* 信号UI */
+const $rankSignal = null;
+const $rankText = null;
+const $legendGrid = document.getElementById('legendGrid');
+
+/* トースト */
+let toastTimer = null;
+function showToast(){
+  if(!$toast) return;
+  $toast.textContent = '✅';
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $toast.classList.remove('show'), 750);
+}
+
+/* 表示切替 */
+function enterPrologueMode(){
+  $prologue.style.display = 'block';
+  $quiz.style.display = 'none';
+  $result.style.display = 'none';
+  setSignalState(null);
+  updateProgress(0);
+}
+function enterQuizMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'block';
+  $result.style.display = 'none';
+}
+function enterResultMode(){
+  $prologue.style.display = 'none';
+  $quiz.style.display = 'none';
+  $result.style.display = 'block';
+}
+
+/* 保存/復元 */
+function persist(){
+  try{
+    localStorage.setItem(LS_ANS, JSON.stringify(answers));
+    localStorage.setItem(LS_IDX, JSON.stringify(idx));
+  }catch(_){}
+}
+
+/* 質問描画 */
+function renderQuestion(){
+  const q = QUESTIONS[idx];
+  $qnum.textContent = `Q${idx+1}/${QUESTIONS.length}`;
+  $qtext.textContent = q.t;
+
+  if($qtag) $qtag.innerHTML = `<span aria-hidden="true">🧷</span><span>肩ログ</span>`;
+
+  $opts.innerHTML = '';
+  LABELS.forEach((lab,i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.setAttribute('aria-pressed', answers[idx]===i ? 'true':'false');
+
+    // 0-4 を信号っぽく可視化（0=青 / 2=黄 / 3=赤 / 4=赤点滅）
+    btn.innerHTML = `
+      <span class="btn-left">
+        <span class="opt-signal" data-level="${i}" aria-hidden="true">
+          <span class="dot d1"></span>
+          <span class="dot d2"></span>
+          <span class="dot d3"></span>
+        </span>
+        <span class="btn-label">${lab}</span>
+      </span>
+      <span class="opt-note">${descFor(i)}</span>
+    `;
+
+    btn.addEventListener('click', ()=> selectAnswer(i));
+    $opts.appendChild(btn);
+  });
+
+  $prev.disabled = (idx===0);
+
+  const done = answers.filter(v=>v!==null).length;
+  updateProgress(Math.round(done/QUESTIONS.length*100));
+
+  setSignalState(null);
+}
+
+function markPressed(v){
+  [...$opts.children].forEach((el,i)=> el.setAttribute('aria-pressed', i===v ? 'true' : 'false'));
+}
+
+function selectAnswer(v){
+  answers[idx] = v;
+  persist();
+  markPressed(v);
+  showToast();
+
+  setTimeout(()=>{
+    if(idx < QUESTIONS.length-1){
+      idx++;
+      renderQuestion();
+    }else{
+      enterResultMode();
+      showResult();
+    }
+  },140);
+}
+
+/* 信号状態設定 */
+function setSignalState(state, text){
+  if($rankSignal){
+    if(!state){
+      $rankSignal.setAttribute('data-state','blue');
+    }else{
+      $rankSignal.setAttribute('data-state', state);
+    }
+  }
+  if($rankText){
+    $rankText.textContent = text || '未判定';
+  }
+}
+
+/* レジェンド */
+function renderLegend(activeState){
+  if(!$legendGrid) return;
+
+  const items = [
+    {state:'blue',  dot:'blue',  cap:'青',   sub:'快調'},
+    {state:'yellow',dot:'yellow',cap:'黄',   sub:'注意'},
+    {state:'red',   dot:'red',   cap:'赤',   sub:'停止'},
+    {state:'blink', dot:'blink', cap:'赤点滅',sub:'危険'},
+    {state:'dead',  dot:'dead',  cap:'故障', sub:'限界'}
+  ];
+
+  $legendGrid.innerHTML = '';
+  items.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'legend-item' + (it.state===activeState ? ' active' : '');
+    d.innerHTML = `
+      <span class="legend-dot ${it.dot}" aria-hidden="true"></span>
+      <span class="legend-cap">${it.cap}</span>
+      <span class="legend-sub">${it.sub}</span>
+    `;
+    $legendGrid.appendChild(d);
+  });
+}
+
+/* 結果表示 */
+function showResult(){
+  const firstNull = answers.findIndex(x=>x==null);
+  if(firstNull !== -1){
+    idx = firstNull;
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+
+  const {pct,totalScore} = computeScores(answers);
+  const grade = gradeFromScore(totalScore);
+
+  setSignalState(grade.state, grade.sig);
+  renderLegend(grade.state);
+
+  $resultImg.src = IMG_BASE + grade.img;
+  $resultImg.alt = grade.alt || '結果画像';
+
+  $resultTitle.textContent = `あなたの信号：${grade.sig}`;
+  $resultSubtitle.textContent = `総合：${totalScore}点`;
+  if($scoreBadge) $scoreBadge.textContent = `スコア ${totalScore}点`;
+  if($gradeBadge) $gradeBadge.innerHTML = `<span aria-hidden="true">${grade.emo}</span><span>${grade.sig}</span>`;
+
+  if($resultComment){
+    $resultComment.innerHTML = `
+      <p class="rc-ttl">${grade.headline}</p>
+      <p>${grade.story}</p>
+    `;
+  }
+  if($todayText) $todayText.textContent = grade.action;
+
+  /* 因子バー */
+  $bars.innerHTML = '';
+  FACTS.forEach(k=>{
+    const v = Math.max(0, Math.min(100, +pct[k]||0));
+    const wrap = document.createElement('div');
+    wrap.className = 'bar';
+    wrap.innerHTML = `
+      <div class="h">
+        <span>${FACT_LABEL[k] || k}</span>
+        <span class="pct">${v}%</span>
+      </div>
+
+      <div class="track" aria-label="${FACT_LABEL[k]||k} のスコア ${v}%">
+        <div class="fill" style="width:${v}%;background:${barGradientForPct(v)}"></div>
+      </div>
+
+      <div class="bar-desc">${FACT_DESC[k] || ''}</div>
+    `;
+    $bars.appendChild(wrap);
+  });
+
+  try{
+    localStorage.setItem(LS_LASTANS, JSON.stringify({answers: answers.slice(), ts: Date.now()}));
+  }catch(_){}
+  buildPrevAnswers();
+  buildGalleryUI();
+
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function buildPrevAnswers(){
+  let prev = null;
+  try{ prev = JSON.parse(localStorage.getItem(LS_LASTANS) || 'null'); }catch(_){}
+  if(!prev || !Array.isArray(prev.answers)) return;
+
+  $prevList.innerHTML = '';
+  prev.answers.forEach((v,i)=>{
+    const li = document.createElement('li');
+    li.className = 'prev-item';
+    const lab = (typeof v === 'number' && v>=0 && v<LABELS.length) ? LABELS[v] : '—';
+    li.innerHTML = `<span class="prev-q">Q${i+1}：${QUESTIONS[i].t}</span><span class="prev-a">「${lab}」</span>`;
+    $prevList.appendChild(li);
+  });
+}
+
+function buildGalleryUI(){
+  const g = buildGallery();
+  $gallery.innerHTML = '';
+  g.forEach(x=>{
+    const fig = document.createElement('figure');
+    fig.innerHTML = `
+      <img src="${IMG_BASE + x.img}" alt="${x.alt||''}" loading="lazy">
+      <figcaption>${x.cap||x.img}</figcaption>
+    `;
+    $gallery.appendChild(fig);
+  });
+}
+
+/* 操作 */
+$prev.addEventListener('click', ()=>{
+  if(idx>0){ idx--; persist(); renderQuestion(); }
+});
+
+/* 自動スクロールはしない（要望対応） */
+$startBtn.addEventListener('click', ()=>{
+  enterQuizMode();
+  renderQuestion();
+});
+
+$restart.addEventListener('click', ()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  idx = 0;
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  enterPrologueMode();
+  showToast();
+});
+
+/* 起動 */
+(function init(){
+  const hero = document.getElementById('heroImg');
+  if(hero) hero.src = IMG_BASE + 't00.webp';
+
+  updateProgress(0);
+
+  let savedAns=null, savedIdx=0;
+  try{
+    savedAns = JSON.parse(localStorage.getItem(LS_ANS) || 'null');
+    savedIdx = JSON.parse(localStorage.getItem(LS_IDX) || '0');
+  }catch(_){}
+  let valid = Array.isArray(savedAns) && savedAns.length === QUESTIONS.length;
+if(Array.isArray(savedAns) && savedAns.length !== QUESTIONS.length){
+  try{ localStorage.removeItem(LS_ANS); localStorage.removeItem(LS_IDX); }catch(_){}
+  savedAns = null; savedIdx = 0; valid = false;
+}
+  const hasAny = valid && savedAns.some(v=>v!==null);
+  const allDone = valid && savedAns.every(v=>v!==null);
+
+  if(allDone){
+    answers = savedAns;
+    idx = QUESTIONS.length - 1;
+    renderQuestion();
+    enterResultMode();
+    showResult();
+    return;
+  }
+  if(hasAny){
+    answers = savedAns;
+    idx = Math.min(Math.max(0, +savedIdx || 0), QUESTIONS.length-1);
+    enterQuizMode();
+    renderQuestion();
+    return;
+  }
+  enterPrologueMode();
+}());
+</script>
+
+<!-- 訪問カウンタ（元のまま） -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||SLUG;
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());</script>
+
+</body>
+</html>
