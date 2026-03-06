@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ぬいぐるみ愛着診断 | 心の標本</title>
+  <meta name="description" content="既読スルーされたとき、あなたの心は何をしているか。24問で愛着スタイルを診断。">
+  <style>
+    :root {
+      --bg:      #F7F4EE;
+      --paper:   #FFFDF8;
+      --card:    #FAF7F1;
+      --ink:     #2B2018;
+      --ink2:    rgba(43,32,24,0.55);
+      --ink3:    rgba(43,32,24,0.18);
+      --rose:    #C0736A;
+      --rose-l:  #F2D8D5;
+      --sage:    #6E9E72;
+      --sage-l:  #D0E8D2;
+      --slate:   #6E8FAE;
+      --slate-l: #CCDAE8;
+      --gold:    #B49050;
+      --gold-l:  #EDE0C0;
+      --purple:  #8B6BAE;
+      --purple-l:#DDD0EE;
+      --bdr:     rgba(43,32,24,0.11);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo','Yu Gothic',sans-serif;
+      min-height: 100vh; line-height: 1.8; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(43,32,24,0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* ── FILM PROGRESS ── */
+    #progressWrap {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 44px; background: var(--paper); border-bottom: 1px solid var(--bdr);
+      display: flex; align-items: center;
+    }
+    .film {
+      flex: 1; height: 100%; position: relative; overflow: hidden;
+    }
+    .film::before, .film::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 24px; z-index: 2;
+      background: repeating-linear-gradient(to bottom,
+        transparent 0,transparent 5px, var(--bdr) 5px, var(--bdr) 6px,
+        transparent 6px, transparent 10px, rgba(43,32,24,0.06) 10px, rgba(43,32,24,0.06) 16px,
+        transparent 16px, transparent 20px, var(--bdr) 20px, var(--bdr) 21px,
+        transparent 21px, transparent 26px);
+    }
+    .film::before { left: 0; } .film::after { right: 0; }
+    .film-bar {
+      position: absolute; left: 24px; top: 0; bottom: 0; width: 0%;
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      opacity: .22; transition: width .5s cubic-bezier(.4,0,.2,1);
+    }
+    .film-txt {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      font-size: 10px; letter-spacing: .22em; color: var(--ink2);
+      font-family: 'Courier New',monospace; white-space: nowrap; z-index: 3;
+    }
+
+    /* ── WRAP ── */
+    .wrap { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 44px 22px 100px; }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    @keyframes pageIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .screen-on { animation: pageIn .45s cubic-bezier(.4,0,.2,1) both; }
+
+    /* ══════════════════════════════
+       PROLOGUE
+    ══════════════════════════════ */
+    .hero-frame {
+      margin: 28px -22px 0; position: relative;
+      border: 8px solid var(--paper);
+      box-shadow: 0 2px 0 var(--bdr),2px 0 0 var(--bdr),-2px 0 0 var(--bdr),0 -2px 0 var(--bdr),8px 8px 0 var(--bdr);
+    }
+    .hero-img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
+    .tape { position:absolute; width:48px; height:18px; background:rgba(176,150,80,.28); border:1px solid rgba(176,150,80,.35); z-index:2; }
+    .tape.tl{top:-9px;left:28px;transform:rotate(-3deg)}
+    .tape.tr{top:-9px;right:28px;transform:rotate(3deg)}
+    .tape.bl{bottom:-9px;left:28px;transform:rotate(2deg)}
+    .tape.br{bottom:-9px;right:28px;transform:rotate(-2deg)}
+
+    .pro-body { padding: 48px 0 44px; }
+    .stamp-row { display:flex; gap:8px; align-items:center; margin-bottom:22px; }
+    .stamp { font-size:8px; letter-spacing:.35em; text-transform:uppercase; padding:4px 10px; border:1.5px solid; font-family:'Courier New',monospace; }
+    .stamp.rose { border-color:var(--rose); color:var(--rose); }
+    .stamp.ink  { border-color:var(--bdr); color:var(--ink2); }
+
+    h1.main-t {
+      font-family:'Hiragino Mincho ProN','Yu Mincho','YuMincho',serif;
+      font-size:clamp(26px,7vw,42px); font-weight:300; line-height:1.35; letter-spacing:.04em; margin-bottom:6px;
+    }
+    h1.main-t em { font-style:normal; color:var(--rose); }
+    .ruled { display:flex; align-items:center; gap:12px; margin:20px 0 26px; }
+    .ruled::before,.ruled::after { content:''; flex:1; height:1px; background:var(--bdr); }
+    .ruled span { font-size:14px; color:var(--ink3); }
+
+    .pro-text { font-size:14px; line-height:2.05; color:var(--ink2); margin-bottom:13px; }
+    .pro-text strong { color:var(--ink); }
+
+    .note-tape {
+      margin:28px 0 36px; background:var(--gold-l); border-left:3px solid var(--gold);
+      padding:14px 18px; font-size:12px; color:var(--ink); line-height:1.9;
+    }
+    .note-tape b { color:var(--rose); font-weight:normal; }
+
+    .btn-start {
+      width:100%; padding:20px 24px; background:var(--ink); color:var(--paper);
+      border:none; font-family:inherit; font-size:13px; letter-spacing:.2em;
+      cursor:pointer; transition:transform .12s, box-shadow .18s;
+    }
+    .btn-start:hover { transform:translateY(-2px); box-shadow:6px 6px 0 var(--bdr); }
+    .btn-start:active { transform:none; box-shadow:2px 2px 0 var(--bdr); }
+
+    /* ══════════════════════════════
+       QUIZ
+    ══════════════════════════════ */
+    #quizSection { padding-top: 20px; }
+
+    .bear-widget {
+      display:flex; align-items:flex-start; gap:16px; margin-bottom:32px;
+      background:var(--paper); border:1px solid var(--bdr); padding:16px 18px;
+      box-shadow:3px 3px 0 var(--bdr);
+    }
+    .bear-face { font-size:44px; line-height:1; flex-shrink:0; }
+    .bear-face.wiggle  { animation:bwiggle .5s ease; }
+    .bear-face.shiver  { animation:bshiver .4s ease; }
+    .bear-face.float   { animation:bfloat .5s ease; }
+    @keyframes bwiggle{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-15deg) scale(1.15)}75%{transform:rotate(12deg) scale(1.1)}}
+    @keyframes bshiver{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px) rotate(-5deg)}40%{transform:translateX(5px) rotate(3deg)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+    @keyframes bfloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.08)}}
+    .bear-msg { font-size:12px; color:var(--ink2); line-height:1.7; padding-top:4px; }
+    .bear-msg strong { color:var(--ink); font-size:13px; display:block; margin-bottom:2px; }
+
+    #qInner { position:relative; }
+    .q-deco-num {
+      position:absolute; right:-4px; top:-30px;
+      font-size:108px; font-weight:900; font-family:'Courier New',monospace;
+      color:rgba(43,32,24,.04); line-height:1; pointer-events:none; user-select:none;
+    }
+    .q-meta { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+    .q-n { font-size:10px; letter-spacing:.22em; color:var(--rose); font-family:'Courier New',monospace; }
+    .q-tag { font-size:9px; letter-spacing:.18em; background:var(--rose-l); color:var(--rose); padding:3px 9px; text-transform:uppercase; }
+    #qText {
+      font-family:'Hiragino Mincho ProN','Yu Mincho','YuMincho',serif;
+      font-size:clamp(17px,4.5vw,21px); font-weight:400; line-height:1.65; letter-spacing:.03em; margin-bottom:26px;
+    }
+
+    .choices { display:flex; flex-direction:column; gap:10px; }
+    .choice-btn {
+      position:relative; background:var(--paper); border:1px solid var(--bdr);
+      padding:0; font-family:inherit; text-align:left; cursor:pointer;
+      transition:box-shadow .15s, transform .15s; overflow:hidden;
+    }
+    .choice-btn:hover:not([aria-pressed="true"]) { box-shadow:4px 4px 0 var(--bdr); transform:translate(-2px,-2px); }
+    .choice-btn[aria-pressed="true"] { box-shadow:4px 4px 0 var(--rose); transform:translate(-2px,-2px); }
+    .choice-inner { display:flex; align-items:stretch; }
+    .choice-abc {
+      flex-shrink:0; width:46px; display:flex; align-items:center; justify-content:center;
+      font-size:11px; letter-spacing:.15em; font-family:'Courier New',monospace;
+      background:rgba(43,32,24,.04); border-right:1px solid var(--bdr); color:var(--ink2);
+      transition:background .18s, color .18s;
+    }
+    .choice-btn[aria-pressed="true"] .choice-abc { background:var(--rose); color:#fff; border-right-color:var(--rose); }
+    .choice-text { flex:1; padding:16px 14px; font-size:13.5px; line-height:1.65; color:var(--ink); }
+    .choice-check { flex-shrink:0; width:38px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--rose); opacity:0; transition:opacity .2s; }
+    .choice-btn[aria-pressed="true"] .choice-check { opacity:1; }
+    .ripple { position:absolute; border-radius:50%; background:rgba(192,115,106,.2); transform:scale(0); animation:rippleA .4s ease-out; pointer-events:none; }
+    @keyframes rippleA { to{transform:scale(4);opacity:0} }
+
+    .q-nav { display:flex; gap:10px; margin-top:24px; }
+    .btn-prev {
+      flex:0 0 auto; background:transparent; border:1px solid var(--bdr);
+      color:var(--ink2); font-family:inherit; font-size:12px; padding:12px 18px; letter-spacing:.1em; cursor:pointer; transition:all .15s;
+    }
+    .btn-prev:hover:not(:disabled) { border-color:var(--ink); color:var(--ink); }
+    .btn-prev:disabled { opacity:.2; cursor:not-allowed; }
+    .btn-next {
+      flex:1; background:var(--ink); border:none; color:var(--paper);
+      font-family:inherit; font-size:12px; letter-spacing:.2em; padding:14px; cursor:pointer; transition:all .18s;
+    }
+    .btn-next:not([disabled]):hover { background:#4a3828; }
+    .btn-next[disabled] { opacity:.18; cursor:not-allowed; }
+
+    /* ══════════════════════════════
+       RESULT
+    ══════════════════════════════ */
+    #resultSection { padding-top: 20px; }
+
+    /* ── RANK BADGE ── */
+    .rank-block {
+      display:flex; align-items:center; gap:16px; margin-bottom:28px;
+      background:var(--paper); border:1px solid var(--bdr); padding:18px 20px;
+      box-shadow:4px 4px 0 var(--bdr);
+    }
+    .rank-tier {
+      font-size:52px; font-weight:900; line-height:1;
+      font-family:'Courier New',monospace; flex-shrink:0;
+    }
+    .rank-info { flex:1; }
+    .rank-label { font-size:9px; letter-spacing:.3em; color:var(--ink2); text-transform:uppercase; font-family:'Courier New',monospace; }
+    .rank-name  { font-family:'Hiragino Mincho ProN','Yu Mincho',serif; font-size:18px; font-weight:400; line-height:1.3; margin-top:4px; }
+    .rank-desc  { font-size:11.5px; color:var(--ink2); margin-top:6px; line-height:1.6; }
+
+    /* ── RESULT HEADER ── */
+    .r-en { font-size:9px; letter-spacing:.4em; color:var(--rose); text-transform:uppercase; font-family:'Courier New',monospace; margin-bottom:8px; }
+    h2.r-title { font-family:'Hiragino Mincho ProN','Yu Mincho','YuMincho',serif; font-size:clamp(26px,7vw,40px); font-weight:300; line-height:1.3; letter-spacing:.04em; margin-bottom:28px; }
+
+    /* ── POLAROID ── */
+    .polaroid {
+      background:#fff; padding:12px 12px 56px;
+      box-shadow:0 4px 24px rgba(43,32,24,.12),6px 6px 0 rgba(43,32,24,.08);
+      margin:0 0 36px; position:relative; transform:rotate(-1deg);
+    }
+    .polaroid img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
+    .polaroid-caption { position:absolute; bottom:12px; left:0; right:0; text-align:center; font-family:'Courier New',monospace; font-size:11px; letter-spacing:.1em; color:var(--ink2); }
+    .wax-seal {
+      position:absolute; top:-22px; right:16px; width:60px; height:60px; border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, var(--rose-l), var(--rose));
+      border:3px solid rgba(255,255,255,.5); box-shadow:2px 2px 8px rgba(192,115,106,.4);
+      display:flex; align-items:center; justify-content:center;
+      font-size:9px; letter-spacing:.05em; color:rgba(255,255,255,.9);
+      text-align:center; line-height:1.3; font-family:'Courier New',monospace; text-transform:uppercase; z-index:2;
+    }
+
+    /* ── COMPATIBILITY ── */
+    .compat-block {
+      display:flex; align-items:center; gap:14px; margin-bottom:36px;
+      padding:16px 18px; border:1px solid var(--bdr); background:var(--paper);
+    }
+    .compat-icon { font-size:32px; flex-shrink:0; }
+    .compat-txt  { flex:1; }
+    .compat-label { font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:var(--ink2); font-family:'Courier New',monospace; margin-bottom:4px; }
+    .compat-name  { font-size:15px; font-family:'Hiragino Mincho ProN','Yu Mincho',serif; color:var(--ink); margin-bottom:4px; }
+    .compat-note  { font-size:11.5px; color:var(--ink2); line-height:1.6; }
+
+    /* ── PILLARS ── */
+    .pillars { margin-bottom:40px; }
+    .pillar { background:var(--paper); border:1px solid var(--bdr); border-top:none; padding:20px 22px; position:relative; }
+    .pillar:first-child { border-top:1px solid var(--bdr); }
+    .pillar-tab { position:absolute; left:0; top:0; bottom:0; width:4px; }
+    .pillar.s .pillar-tab { background:var(--rose); }
+    .pillar.p .pillar-tab { background:var(--slate); }
+    .pillar.a .pillar-tab { background:var(--sage); }
+    .pillar-head { font-size:9px; letter-spacing:.3em; text-transform:uppercase; margin:0 0 8px 12px; display:flex; align-items:center; gap:8px; }
+    .pillar.s .pillar-head { color:var(--rose); }
+    .pillar.p .pillar-head { color:var(--slate); }
+    .pillar.a .pillar-head { color:var(--sage); }
+    .pillar-body { font-size:13.5px; line-height:1.9; color:var(--ink2); margin-left:12px; }
+    /* ── 特徴タグ ── */
+    .feat-block { margin-bottom:28px; }
+    .feat-head {
+      font-size:9px; letter-spacing:.3em; text-transform:uppercase;
+      color:var(--rose); margin-bottom:12px; display:flex; align-items:center; gap:8px;
+    }
+    .feat-head::after { content:''; flex:1; height:1px; background:var(--bdr); }
+    .feat-tags { display:flex; flex-wrap:wrap; gap:7px; }
+    .feat-tag {
+      padding:5px 11px; font-size:11.5px; line-height:1.6; cursor:default;
+      border:1.5px solid var(--bdr); background:var(--paper); color:var(--ink2);
+      transition:all .15s; position:relative;
+    }
+    .feat-tag:hover { border-color:var(--rose); color:var(--ink); transform:translateY(-1px); }
+    .feat-tag.pos { border-color:rgba(180,100,90,.3); background:rgba(180,100,90,.04); }
+    .feat-tag.neg { border-color:rgba(100,120,140,.3); background:rgba(100,120,140,.04); }
+
+    /* ── AXES ── */
+    .sec-label { font-size:9px; letter-spacing:.3em; color:var(--ink2); text-transform:uppercase; font-family:'Courier New',monospace; margin-bottom:18px; display:flex; align-items:center; gap:12px; }
+    .sec-label::after { content:''; flex:1; height:1px; background:var(--bdr); }
+    .axis-wrap { margin-bottom:40px; }
+    .ax-row { display:grid; grid-template-columns:40px 1fr 40px; align-items:center; gap:14px; margin-bottom:16px; }
+    .ax-name { font-size:11px; color:var(--ink2); text-align:right; }
+    .ax-track { height:8px; background:rgba(43,32,24,.07); overflow:hidden; }
+    .ax-fill { height:100%; width:0%; transition:width 1s cubic-bezier(.4,0,.2,1); }
+    .ax-fill.rose  { background:linear-gradient(90deg,var(--rose-l),var(--rose)); }
+    .ax-fill.slate { background:linear-gradient(90deg,var(--slate-l),var(--slate)); }
+    .ax-fill.sage  { background:linear-gradient(90deg,var(--sage-l),var(--sage)); }
+    .ax-val { font-size:10px; color:var(--ink2); font-family:'Courier New',monospace; }
+
+    /* ── FACTOR GRID ── */
+    .factor-wrap { margin-bottom:40px; }
+    .factor-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .fc-card {
+      background:var(--paper); border:1px solid var(--bdr); padding:14px;
+      cursor:pointer; position:relative;
+    }
+    .fc-card:hover { border-color:rgba(43,32,24,.22); }
+    .fc-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .fc-name { font-size:10.5px; color:var(--ink); font-weight:bold; }
+    .fc-info-btn {
+      width:16px; height:16px; border-radius:50%;
+      background:rgba(43,32,24,.08); border:none; cursor:pointer;
+      font-size:10px; color:var(--ink2); display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; transition:background .15s;
+    }
+    .fc-info-btn:hover { background:rgba(43,32,24,.18); }
+    .fc-track { height:4px; background:rgba(43,32,24,.07); margin-bottom:8px; overflow:hidden; }
+    .fc-fill  { height:100%; width:0%; transition:width .8s cubic-bezier(.4,0,.2,1); }
+    .fc-tend  { font-size:10px; font-weight:bold; }
+    .fc-tooltip {
+      display:none; font-size:11px; color:var(--ink2); line-height:1.7; margin-top:10px;
+      padding-top:10px; border-top:1px solid var(--bdr);
+    }
+    .fc-card.open .fc-tooltip { display:block; }
+    .fc-card.open .fc-info-btn { background:rgba(43,32,24,.18); }
+
+    /* ── 取扱説明書 ── */
+    .manual-wrap {
+      border:1.5px solid var(--ink); background:var(--paper);
+      margin-bottom:36px; position:relative;
+    }
+    .manual-header {
+      background:var(--ink); color:var(--paper); padding:10px 16px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .manual-header-title { font-size:9px; letter-spacing:.35em; font-family:'Courier New',monospace; }
+    .manual-header-ver   { font-size:9px; font-family:'Courier New',monospace; opacity:.55; }
+    .manual-name { padding:16px 18px 12px; border-bottom:1px dashed var(--bdr); }
+    .manual-name-label { font-size:8px; letter-spacing:.3em; color:var(--ink2); font-family:'Courier New',monospace; margin-bottom:4px; }
+    .manual-name-val { font-family:'Hiragino Mincho ProN','Yu Mincho',serif; font-size:18px; font-weight:400; color:var(--ink); }
+    .manual-rows { padding:12px 18px 16px; }
+    .manual-row { display:flex; gap:10px; margin-bottom:10px; align-items:flex-start; font-size:12.5px; line-height:1.75; }
+    .manual-row:last-child { margin-bottom:0; }
+    .manual-key { flex-shrink:0; width:72px; font-size:8.5px; letter-spacing:.18em; color:var(--ink2); font-family:'Courier New',monospace; padding-top:3px; text-transform:uppercase; }
+    .manual-val { flex:1; color:var(--ink); }
+    .manual-val b { color:var(--rose); font-weight:normal; }
+    .manual-caution { margin:0 18px 16px; padding:10px 14px; background:var(--rose-l); border-left:3px solid var(--rose); font-size:11.5px; color:var(--ink); line-height:1.8; }
+    .manual-caution::before { content:'⚠ '; }
+    /* ── ガチャ（取扱説明書内） ── */
+
+/* ===== ガチャ・モーダル（スクロールさせない） ===== */
+.gacha-modal{
+  position:fixed; inset:0; z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background: rgba(43,32,24,.55);
+  backdrop-filter: blur(6px);
+}
+.gacha-modal.on{ display:flex; }
+
+.gacha-sheet{
+  width:min(520px, 100%);
+  background: var(--paper);
+  border:1px solid var(--bdr);
+  box-shadow: 8px 8px 0 var(--bdr);
+  padding:14px;
+  position:relative;
+}
+
+.gacha-top{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:4px 2px 10px;
+}
+.gacha-top .ttl{
+  font-size:11px; letter-spacing:.22em;
+  font-family:'Courier New',monospace;
+  color: var(--ink2);
+}
+.gacha-close{
+  appearance:none;
+  border:1px solid var(--bdr);
+  background:#fff;
+  color:var(--ink);
+  cursor:pointer;
+  padding:8px 12px;
+  font-size:12px;
+  letter-spacing:.08em;
+}
+.gacha-close:hover{ box-shadow:3px 3px 0 var(--bdr); transform:translate(-1px,-1px); }
+.gacha-close:active{ transform:none; box-shadow:none; }
+
+.gacha-body{ padding:8px 0 0; }
+
+body.modal-lock{
+  overflow:hidden;
+  touch-action: none;
+}
+    .mgacha-wrap {
+      border-top:1px dashed var(--bdr); padding:18px 18px 20px;
+    }
+    .mgacha-label {
+      font-size:8px; letter-spacing:.35em; color:var(--ink2);
+      font-family:'Courier New',monospace; text-transform:uppercase; margin-bottom:14px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .mgacha-label::after { content:''; flex:1; height:1px; background:var(--bdr); }
+    .mgacha-btn {
+      width:100%; padding:18px 10px; border:none; cursor:pointer;
+      font-family:inherit; font-size:14px; letter-spacing:.1em;
+      background:linear-gradient(135deg,#c0736a,#8B6BAE);
+      color:#fff; transition:all .2s; position:relative; overflow:hidden;
+    }
+    .mgacha-btn:active { transform:scale(.97); }
+    .mgacha-btn::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);
+      opacity:0; transition:opacity .2s;
+    }
+    .mgacha-btn:hover::after { opacity:1; }
+    .mgacha-btn:disabled { background:#999; cursor:not-allowed; opacity:.7; }
+    /* スロット演出 */
+    .mgacha-slot {
+      margin-bottom:12px;
+      text-align:center; padding:14px 10px;
+      background:var(--ink); color:var(--paper);
+      font-size:16px; font-family:'Courier New',monospace; letter-spacing:.4em;
+      font-weight:bold; visibility:hidden; height:0; overflow:hidden;
+      transition:none;
+    }
+    .mgacha-slot.spinning {
+      visibility:visible; height:auto; overflow:visible;
+      animation:slotPulse .15s linear infinite;
+    }
+    @keyframes slotPulse {
+      0%,100%{ opacity:1; } 50%{ opacity:.6; }
+    }
+    /* カード */
+    .mgacha-card {
+      margin-bottom:12px; display:none;
+      animation:cardReveal .6s cubic-bezier(.2,.8,.3,1.2) both;
+    }
+    .mgacha-card.reveal { display:block; }
+    @keyframes cardReveal {
+      0%  { opacity:0; transform:scale(.6) rotateY(-180deg); }
+      70% { opacity:1; transform:scale(1.05) rotateY(6deg); }
+      100%{ opacity:1; transform:scale(1) rotateY(0deg); }
+    }
+    /* レア度バナー */
+    .mgacha-rarity-banner {
+      text-align:center; padding:14px 10px; margin-bottom:0;
+      font-size:13px; font-family:'Courier New',monospace; letter-spacing:.4em;
+      font-weight:bold; text-transform:uppercase; position:relative;
+    }
+    .rarity-N  { background:#e8e4df; color:#888; }
+    .rarity-R  { background:#dce8ef; color:#4a7a8a; }
+    .rarity-SR {
+      background:linear-gradient(135deg,#e8dff5,#d5eaef); color:#6b5b8a;
+      animation:glowSR 2s ease-in-out infinite;
+    }
+    .rarity-SSR{
+      background:linear-gradient(135deg,#f5ecd5,#f8e8a0,#f0ddc8); color:#7a5a10;
+      font-size:15px; animation:shimmerSSR 1.2s linear infinite;
+    }
+    .rarity-UR {
+      background:linear-gradient(135deg,#fde8ef,#e8d5f5,#d5e8fd,#fde8ef);
+      background-size:300% 100%;
+      color:#7a1a5a; font-size:16px; letter-spacing:.5em;
+      animation:rainbowUR 1s linear infinite, glowUR 1.5s ease-in-out infinite;
+    }
+    @keyframes glowSR {
+      0%,100%{ box-shadow:none; } 50%{ box-shadow:0 0 12px rgba(107,91,138,.4); }
+    }
+    @keyframes shimmerSSR {
+      0%{ background-position:0% 50%; filter:brightness(1); }
+      50%{ background-position:100% 50%; filter:brightness(1.2); }
+      100%{ background-position:0% 50%; filter:brightness(1); }
+    }
+    @keyframes rainbowUR {
+      0%{ background-position:0% 50%; }
+      100%{ background-position:200% 50%; }
+    }
+    @keyframes glowUR {
+      0%,100%{ box-shadow:0 0 10px rgba(200,100,200,.4); }
+      50%{ box-shadow:0 0 30px rgba(200,100,200,.8),0 0 60px rgba(100,150,255,.4); }
+    }
+    /* 画像・テキスト */
+    .mgacha-doll-img {
+      display:block; width:160px; height:160px; object-fit:contain;
+      margin:12px auto 8px;
+    }
+    .mgacha-card.reveal .mgacha-doll-img { animation:imgPop .5s cubic-bezier(.2,.8,.3,1.4) .2s both; }
+    @keyframes imgPop {
+      0%  { transform:scale(0) rotate(-10deg); opacity:0; }
+      80% { transform:scale(1.12) rotate(2deg); opacity:1; }
+      100%{ transform:scale(1) rotate(0); opacity:1; }
+    }
+    .mgacha-doll-name {
+      text-align:center; font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+      font-size:15px; color:var(--ink); padding:8px 0 12px;
+      border-bottom:1px dashed var(--bdr);
+    }
+    .mgacha-care-label {
+      font-size:8px; letter-spacing:.3em; color:var(--ink2);
+      font-family:'Courier New',monospace; text-transform:uppercase;
+      margin:12px 0 8px;
+    }
+    .mgacha-type{
+  margin:8px 0 6px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.06em;
+  color:var(--ink2);
+  padding:6px 8px;
+  border:1px dashed rgba(0,0,0,.18);
+  border-radius:10px;
+  background:rgba(255,255,255,.72);
+  display:inline-block;
+}
+    .mgacha-care-text {
+      font-size:13px; line-height:1.9; color:var(--ink);
+      padding:12px 14px; background:var(--bg); border-left:3px solid var(--rose);
+    }
+    .mgacha-again {
+      display:block; margin-top:14px; width:100%;
+      padding:13px; background:transparent; border:1.5px solid var(--bdr);
+      font-family:inherit; font-size:11px; letter-spacing:.15em;
+      color:var(--ink2); cursor:pointer; transition:all .18s;
+    }
+    .mgacha-again:hover { border-color:var(--rose); color:var(--rose); }
+    /* フラッシュ */
+    .gacha-flash {
+      position:fixed; inset:0; background:#fff; opacity:0; pointer-events:none;
+      z-index:999; transition:opacity .05s;
+    }
+    .gacha-flash.on { opacity:.7; }
+    /* スクリーン揺れ */
+    @keyframes screenShake {
+      0%,100%{ transform:translateX(0); }
+      20%{ transform:translateX(-8px); }
+      40%{ transform:translateX(8px); }
+      60%{ transform:translateX(-5px); }
+      80%{ transform:translateX(5px); }
+    }
+    .wrap.shaking { animation:screenShake .4s ease both; }
+    /* スパーク・コンフェッティ */
+    .mgacha-sparks { position:relative; overflow:visible; pointer-events:none; }
+    .spark {
+      position:fixed; border-radius:50%;
+      animation:sparkFly var(--dur,.8s) ease both;
+      z-index:998; pointer-events:none;
+    }
+    @keyframes sparkFly {
+      0%  { transform:translate(0,0) scale(1) rotate(0deg); opacity:1; }
+      100%{ transform:translate(var(--tx),var(--ty)) scale(0) rotate(var(--rot,360deg)); opacity:0; }
+    }
+
+    /* ── EXTRAS ── */
+    .extras-block { border:1px solid var(--bdr); margin-bottom:18px; background:var(--paper); }
+    .extras-summary {
+      padding:14px 18px; font-size:11px; letter-spacing:.2em; color:var(--ink2);
+      cursor:pointer; text-transform:uppercase; font-family:'Courier New',monospace;
+      user-select:none; list-style:none; display:block;
+    }
+    .extras-summary::-webkit-details-marker { display:none; }
+    .extras-summary::before { content:'▸  '; color:var(--rose); }
+    details[open] > .extras-summary::before { content:'▾  '; }
+    .extras-body { padding:0 18px 18px; font-size:12px; line-height:1.9; color:var(--ink2); }
+    .extras-body p { margin-bottom:10px; }
+    .extras-body ul { padding-left:18px; }
+    .extras-body li { margin-bottom:6px; }
+    .gallery-grid {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:8px; padding:4px 14px 14px; box-sizing:border-box;
+    }
+    .gal-item { margin:0; min-width:0; overflow:hidden; }
+    .gal-item img {
+      width:100%; aspect-ratio:1/1; object-fit:cover;
+      display:block; border:1px solid var(--bdr); box-sizing:border-box;
+    }
+    .gal-item figcaption {
+      font-size:9px; text-align:center; color:var(--ink2);
+      margin-top:4px; letter-spacing:.05em;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .ans-list { padding:0 18px 16px; }
+    .ans-row {
+      display:grid; grid-template-columns:auto 1fr auto;
+      gap:8px 12px; align-items:start;
+      padding:10px 0; border-bottom:1px solid var(--bdr); font-size:12px;
+    }
+    .ans-row:last-child { border-bottom:none; }
+    .ans-q-num { font-size:9px; color:var(--rose); font-family:'Courier New',monospace; padding-top:2px; white-space:nowrap; }
+    .ans-q-text { color:var(--ink2); line-height:1.6; }
+    .ans-choice {
+      font-size:10px; font-family:'Courier New',monospace;
+      background:var(--ink); color:var(--paper);
+      padding:2px 8px; white-space:nowrap; align-self:start;
+    }
+
+    /* ── RESULT NAV BUTTONS ── */
+    .result-nav { display:flex; gap:10px; margin-top:32px; }
+    .btn-restart {
+      flex:1; padding:15px; background:transparent; border:1.5px solid var(--bdr);
+      color:var(--ink2); font-family:inherit; font-size:12px; letter-spacing:.15em;
+      cursor:pointer; transition:all .18s;
+    }
+    .btn-restart:hover { border-color:var(--rose); color:var(--rose); }
+    .btn-index {
+      flex:1; padding:15px; background:var(--ink); border:none;
+      color:var(--paper); font-family:inherit; font-size:12px; letter-spacing:.15em;
+      cursor:pointer; transition:all .18s; text-decoration:none; display:flex; align-items:center; justify-content:center;
+    }
+    .btn-index:hover { background:#4a3828; }
+
+    .disclaimer {
+      border-top:1px solid var(--bdr); padding-top:22px; margin-top:16px;
+      font-size:11px; color:var(--ink2); line-height:1.9;
+    }
+    /* ===== rmX: Result Panel UI (single source of truth) ===== */
+.rmX{
+  --rm-ink: var(--ink);
+  --rm-ink2: var(--ink2);
+  --rm-bdr: var(--bdr);
+  --rm-paper: var(--paper);
+  --rm-card: var(--card);
+  --rm-rose: var(--rose);
+  --rm-roseL: var(--rose-l);
+  --rm-gold: var(--gold);
+  --rm-goldL: var(--gold-l);
+  --rm-purple: var(--purple);
+  --rm-purpleL: var(--purple-l);
+}
+
+/* header = result banner on paper */
+.rmX-head{
+  border:1px solid var(--rm-bdr);
+  border-radius:18px;
+  padding:14px 14px 12px;
+  background:
+    radial-gradient(900px 280px at 10% 0%, rgba(192,115,106,.14), transparent 60%),
+    radial-gradient(700px 240px at 90% 35%, rgba(139,107,174,.14), transparent 55%),
+    linear-gradient(180deg, rgba(255,253,248,.92), rgba(250,247,241,.78));
+  box-shadow:
+    0 14px 34px rgba(43,32,24,.10),
+    0 1px 0 rgba(255,255,255,.75) inset;
+  margin: 8px 0 12px;
+  position:relative;
+  overflow:hidden;
+}
+
+.rmX-head::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:5px;
+  background: linear-gradient(180deg, var(--rm-rose), var(--rm-gold));
+  opacity:.85;
+}
+
+.rmX-headTitle{ display:grid; gap:6px; padding-left:6px; }
+
+.rmX-badge{
+  width:fit-content;
+  font-size:.72em;
+  letter-spacing:.16em;
+  padding:.22em .6em;
+  border-radius:999px;
+  border:1px solid rgba(43,32,24,.16);
+  background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.42));
+  color: var(--rm-ink2);
+  font-family:'Courier New',monospace;
+}
+
+.rmX-h3{ margin:0; font-size:1.06em; color:var(--rm-ink); }
+.rmX-sub{ margin:0; color:var(--rm-ink2); line-height:1.6; }
+
+/* 4-type mini list */
+.rmX-mini4{
+  margin:10px 0 0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  gap:7px;
+}
+.rmX-mini4 li{
+  border:1px solid var(--rm-bdr);
+  background: rgba(255,255,255,.60);
+  border-radius:14px;
+  padding:8px 10px;
+  color:var(--rm-ink2);
+  line-height:1.5;
+}
+.rmX-mini4 b{
+  color:var(--rm-ink);
+  font-weight:700;
+  margin-right:6px;
+}
+
+.rmX-note{
+  margin:10px 0 0;
+  color:rgba(43,32,24,.62);
+  line-height:1.6;
+  padding-left:6px;
+}
+
+/* grid */
+.rmX-grid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+
+/* card */
+.rmX-card{
+  border:1px solid var(--rm-bdr);
+  border-radius:12px;
+  background:#fdf9f5;
+  overflow:hidden;
+  position:relative;
+}
+
+.rmX-card::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:3px;
+  background: var(--rm-rose);
+  opacity:.7;
+}
+
+/* top */
+.rmX-cardTop{
+  padding:12px 14px 8px 16px;
+  display:grid;
+  gap:7px;
+}
+.rmX-title{
+  margin:0;
+  font-size:.95em;
+  line-height:1.45;
+  color:var(--rm-ink);
+}
+
+/* pills */
+.rmX-pills{ display:flex; flex-wrap:wrap; gap:5px; }
+.rmX-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:.15em .55em;
+  border-radius:4px;
+  border:1px solid rgba(43,32,24,.12);
+  background:rgba(43,32,24,.04);
+  color: rgba(43,32,24,.58);
+  font-size:.78em;
+  font-family:'Courier New',monospace;
+  letter-spacing:.02em;
+}
+
+/* body */
+.rmX-body{
+  padding:0 14px 13px 16px;
+  display:grid;
+  gap:8px;
+}
+
+/* result line */
+.rmX-kv{
+  border-left:2px solid rgba(192,115,106,.4);
+  padding:4px 0 4px 10px;
+  display:grid;
+  gap:3px;
+}
+
+/* "RESULT" label */
+.rmX-kvLabel{
+  font-size:.72em;
+  letter-spacing:.14em;
+  color: rgba(192,115,106,.9);
+  font-family:'Courier New',monospace;
+}
+
+.rmX-kvValue{
+  color:var(--rm-ink);
+  line-height:1.6;
+  font-size:.93em;
+}
+
+/* details table */
+.rmX-dl{ margin:0; display:grid; gap:6px; }
+.rmX-row{
+  display:grid;
+  grid-template-columns: 4.2em 1fr;
+  gap:8px;
+  align-items:start;
+  font-size:.88em;
+}
+.rmX-row dt{
+  margin:0;
+  padding:.1em .4em;
+  border-radius:3px;
+  background:rgba(43,32,24,.06);
+  color:rgba(43,32,24,.6);
+  white-space:nowrap;
+  font-family:'Courier New',monospace;
+}
+.rmX-row dd{
+  margin:0;
+  color:rgba(43,32,24,.72);
+  line-height:1.6;
+}
+
+/* warning block */
+.rmX-warn{
+  border-top:1px dashed rgba(43,32,24,.14);
+  padding:7px 0 0;
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  font-size:.85em;
+}
+.rmX-warnKey{
+  color:rgba(43,32,24,.45);
+  white-space:nowrap;
+  font-family:'Courier New',monospace;
+  padding-top:1px;
+}
+.rmX-warnVal{ color:rgba(43,32,24,.55); line-height:1.55; }
+
+.rmX-note.note{
+  margin:.75em 0 0;
+  color:var(--rm-ink2);
+}
+
+/* responsive */
+@media (max-width: 420px){
+  .rmX-row{ grid-template-columns: 3.8em 1fr; gap:6px; }
+  .rmX-cardTop{ padding:11px 12px 7px 14px; }
+  .rmX-body{ padding:0 12px 12px 14px; }
+}
+  </style>
+</head>
+<body data-id="attachment-plush">
+
+<div id="progressWrap">
+  <div class="film">
+    <div class="film-bar" id="pFill"></div>
+    <div class="film-txt" id="pLabel">Attachment Archive</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ① PROLOGUE -->
+  <section id="prologueSection" class="screen">
+    <div style="height:12px"></div>
+    <div class="hero-frame">
+      <img src="/shindan/assets/results/attachment-plush/t00.webp" alt="愛着の入口" class="hero-img">
+      <div class="tape tl"></div><div class="tape tr"></div>
+      <div class="tape bl"></div><div class="tape br"></div>
+    </div>
+    <div class="pro-body">
+      <div class="stamp-row">
+        <span class="stamp rose">Attachment Style</span>
+        <span class="stamp ink">24 Questions</span>
+      </div>
+      <h1 class="main-t">あなたの<em>愛し方</em>、<br>ちょっとおかしくない？</h1>
+      <div class="ruled"><span>♦</span></div>
+
+      <p class="pro-text">好きな人からの返信が遅いと、もう嫌われたのかと思う。<br>
+      別れてないのに頭の中で何度も別れてる。<br>
+      仲良くなってきた頃に急に引いてしまう。<br>
+      「一人でいたい」と言いつつ、本当は寂しい。<br>
+      <em style="color:var(--rose);font-style:normal">——性格じゃなくて「愛し方の癖」の話。</em></p>
+
+      <p class="pro-text">人間には<strong>幼いころに覚えた「安心の作り方」</strong>があって、大人になった今も、気づかないうちにそれが動いてる。好きな人ができるたびに同じことを繰り返す理由は、たいていそこにある。</p>
+
+      <p class="pro-text">この診断は、あなたの「愛し方の癖」を24問で特定します。<br>
+      
+
+     
+
+      <div class="note-tape">
+        <b>A・B・C・D の中でいちばん近いもの</b>を選ぶだけ。「完璧には当てはまらない」でもOK。<br>所要時間：約5〜8分
+      </div>
+      <button class="btn-start" id="startBtn">
+        <span>ぬいぐるみと話す &nbsp;→</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ② QUIZ -->
+  <section id="quizSection" class="screen">
+    <div class="bear-widget">
+      <span class="bear-face" id="bearFace">🧸</span>
+      <div class="bear-msg">
+        <strong id="bearTitle">ぬいぐるみが見ている</strong>
+        <span id="bearMsg">一番近いと感じる答えを選んでね。正解はないよ。</span>
+      </div>
+    </div>
+    <div id="qInner">
+      <div class="q-deco-num" id="qDecoNum">01</div>
+      <div class="q-meta">
+        <span class="q-n" id="qNum">Q01 / 24</span>
+        <span class="q-tag" id="qFactor"></span>
+      </div>
+      <div id="qText"></div>
+      <div class="choices" id="choicesWrap"></div>
+      <div class="q-nav">
+        <button class="btn-prev" id="prevBtn" disabled>← もどる</button>
+        <button class="btn-next" id="nextBtn" disabled>つぎへ →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ RESULT -->
+  <section id="resultSection" class="screen">
+
+    <!-- RANK -->
+    <div class="rank-block" id="rankBlock">
+      <div class="rank-tier" id="rankTier"></div>
+      <div class="rank-info">
+        <div class="rank-label">あなたのランク</div>
+        <div class="rank-name" id="rankName"></div>
+        <div class="rank-desc" id="rankDesc"></div>
+      </div>
+    </div>
+
+    <div class="r-en" id="rEn"></div>
+    <h2 class="r-title" id="rTitle"></h2>
+
+    <div class="polaroid">
+      <img id="rImg" src="" alt="">
+      <div class="polaroid-caption" id="rCaption"></div>
+      <div class="wax-seal" id="rSeal"></div>
+    </div>
+
+    <!-- COMPATIBILITY -->
+    <div class="compat-block">
+      <div class="compat-icon" id="compatIcon"></div>
+      <div class="compat-txt">
+        <div class="compat-label">あなたと仲良くなりやすいタイプ</div>
+        <div class="compat-name" id="compatName"></div>
+        <div class="compat-note" id="compatNote"></div>
+      </div>
+    </div>
+
+    <!-- TRAITS -->
+    <div class="feat-block">
+      <div class="feat-head">✦ こんな傾向がある</div>
+      <div class="feat-tags" id="featTags"></div>
+    </div>
+
+    <!-- PILLARS -->
+    <div class="pillars">
+      <div class="pillar s"><div class="pillar-tab"></div><div class="pillar-head">✦ 強み</div><div class="pillar-body" id="rStr"></div></div>
+      <div class="pillar p"><div class="pillar-tab"></div><div class="pillar-head">◆ 弱点</div><div class="pillar-body" id="rPit"></div></div>
+      <div class="pillar a"><div class="pillar-tab"></div><div class="pillar-head">◈ 今日の一手</div><div class="pillar-body" id="rAct"></div></div>
+    </div>
+
+    <!-- AXES -->
+    <div class="axis-wrap">
+      <div class="sec-label">3軸スコア</div>
+      <div class="ax-row"><div class="ax-name">不安</div><div class="ax-track"><div class="ax-fill rose" id="aAnx"></div></div><div class="ax-val" id="vAnx"></div></div>
+      <div class="ax-row"><div class="ax-name">回避</div><div class="ax-track"><div class="ax-fill slate" id="aAvo"></div></div><div class="ax-val" id="vAvo"></div></div>
+      <div class="ax-row"><div class="ax-name">安定</div><div class="ax-track"><div class="ax-fill sage" id="aStb"></div></div><div class="ax-val" id="vStb"></div></div>
+    </div>
+
+    <!-- FACTOR GRID -->
+    <div class="factor-wrap">
+      <div class="sec-label">8因子プロファイル <span style="font-size:9px;color:var(--ink2);letter-spacing:.05em;text-transform:none">▸ タップで説明</span></div>
+      <div class="factor-grid" id="factorGrid"></div>
+    </div>
+
+    <!-- 取扱説明書 -->
+    <div class="manual-wrap" id="manualWrap"></div>
+
+    <!-- PREV ANSWERS -->
+    <details class="extras-block">
+      <summary class="extras-summary">前回の回答を見る</summary>
+      <div class="ans-list" id="ansList"></div>
+    </details>
+
+    <!-- GALLERY -->
+    <details class="extras-block">
+      <summary class="extras-summary">ギャラリー（結果画像一覧）</summary>
+      <div class="gallery-grid">
+        <figure class="gal-item"><img src="/shindan/assets/results/attachment-plush/t01.webp" alt="安定型" loading="lazy"><figcaption>安定型</figcaption></figure>
+        <figure class="gal-item"><img src="/shindan/assets/results/attachment-plush/t02.webp" alt="回避型（ほどよい）" loading="lazy"><figcaption>回避型（ほどよい）</figcaption></figure>
+        <figure class="gal-item"><img src="/shindan/assets/results/attachment-plush/t03.webp" alt="回避型（強い）" loading="lazy"><figcaption>回避型（強い）</figcaption></figure>
+        <figure class="gal-item"><img src="/shindan/assets/results/attachment-plush/t04.webp" alt="不安型（繊細）" loading="lazy"><figcaption>不安型（繊細）</figcaption></figure>
+        <figure class="gal-item"><img src="/shindan/assets/results/attachment-plush/t05.webp" alt="不安型（強い）" loading="lazy"><figcaption>不安型（強い）</figcaption></figure>
+        <figure class="gal-item"><img src="/shindan/assets/results/attachment-plush/t06.webp" alt="恐れ回避型" loading="lazy"><figcaption>恐れ回避型</figcaption></figure>
+      </div>
+    </details>
+
+    <!-- RESEARCH MEMO -->
+    <details class="extras-block">
+      <summary class="extras-summary">研究メモ</summary>
+      <div class="extras-body rmX">
+  <header class="rmX-head" aria-label="研究メモ概要">
+    <div class="rmX-headTitle">
+      <div class="rmX-badge" aria-hidden="true">EVIDENCE</div>
+      <h3 class="rmX-h3">研究メモ</h3>
+      <p class="rmX-sub">不安（見捨てられ不安）× 回避（親密さ回避）の2軸を、現代行動の言葉に翻訳しています。</p>
+      <ul class="rmX-mini4" aria-label="4タイプの目安">
+        <li><b>安定</b>：心配も少なく、距離も取りすぎない。</li>
+        <li><b>不安</b>：心配が強く、確かめたくなりやすい。</li>
+        <li><b>回避</b>：近いのが負担で、距離を取りやすい。</li>
+        <li><b>恐れ回避</b>：近づきたいのに怖くて引きやすい。</li>
+      </ul>
+      <p class="rmX-note">※点数は本来連続（グラデーション）ですが、表示は読みやすさのため4タイプにまとめています。</p>
+    </div>
+
+    
+  </header>
+
+  <!-- ▼研究カード：1枚＝1トピック（必要な分だけ複製） -->
+  <section class="rmX-grid" aria-label="研究メモ一覧">
+
+    <article class="rmX-card" aria-label="メタ分析：愛着と関係満足">
+      <div class="rmX-cardTop">
+        <h4 class="rmX-title">不安・回避が高いほど、平均的に「関係満足」は下がりやすい</h4>
+        <div class="rmX-pills" aria-label="研究の属性">
+          <span class="rmX-pill">メタ分析</span>
+          <span class="rmX-pill">恋愛・夫婦</span>
+          <span class="rmX-pill">適格研究132</span>
+        </div>
+      </div>
+
+      <div class="rmX-body">
+        <div class="rmX-kv" aria-label="結果の要点">
+          <div class="rmX-kvLabel">結果</div>
+          <div class="rmX-kvValue">「不安↑・回避↑ → 満足↓」の方向が出やすい（平均の話）。</div>
+        </div>
+
+        <dl class="rmX-dl" aria-label="研究詳細">
+          <div class="rmX-row">
+            <dt>規模</dt>
+            <dd>適格研究132（＋整理：73研究・118サンプル N=21,602／別メタ 57 effect sizes N=14,340）</dd>
+          </div>
+          <div class="rmX-row">
+            <dt>解釈</dt>
+            <dd>「確定で不幸」ではなく、トラブルが増えやすい方向の“傾向”。相手の性格や生活ストレスで強さは上下。</dd>
+          </div>
+        </dl>
+
+        <div class="rmX-foot">
+          <div class="rmX-warn">
+            <span class="rmX-warnKey">限界</span>
+            <span class="rmX-warnVal">文化・年齢・関係段階で関連の強さは変わる（平均の話）。</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="rmX-card" aria-label="会話パターン：要求と撤退">
+      <div class="rmX-cardTop">
+        <h4 class="rmX-title">「追う（要求）↔黙る（撤退）」が固定化すると、こじれやすい</h4>
+        <div class="rmX-pills" aria-label="研究の属性">
+          <span class="rmX-pill">観察/会話研究</span>
+          <span class="rmX-pill">カップル</span>
+          <span class="rmX-pill">相互作用</span>
+        </div>
+      </div>
+
+      <div class="rmX-body">
+        <div class="rmX-kv">
+          <div class="rmX-kvLabel">結果</div>
+          <div class="rmX-kvValue">回避が高いほど撤退（沈黙・距離）が出やすく、相手の追及と噛み合うと悪循環になりやすい。</div>
+        </div>
+
+        <dl class="rmX-dl">
+          <div class="rmX-row">
+            <dt>補足</dt>
+            <dd>撤退が「一時退避」か「戻らない撤退」かで意味が違う。後者が固定化するとダメージが大きい。</dd>
+          </div>
+        </dl>
+
+        <div class="rmX-foot">
+          <div class="rmX-warn">
+            <span class="rmX-warnKey">限界</span>
+            <span class="rmX-warnVal">タイムアウト（戻る前提）と慢性的撤退（戻らない）は別物。</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="rmX-card" aria-label="縦断：SNS嫉妬と監視">
+      <div class="rmX-cardTop">
+        <h4 class="rmX-title">SNS嫉妬は、監視（見に行く）を増やし、満足度を下げやすい方向</h4>
+        <div class="rmX-pills">
+          <span class="rmX-pill">縦断 2年</span>
+          <span class="rmX-pill">18–29歳</span>
+          <span class="rmX-pill">N=322</span>
+        </div>
+      </div>
+
+      <div class="rmX-body">
+        <div class="rmX-kv">
+          <div class="rmX-kvLabel">結果</div>
+          <div class="rmX-kvValue">SNS嫉妬が強いほど、後に監視（確認）が増え、嫉妬は後の満足低下とも関連。</div>
+        </div>
+
+        <dl class="rmX-dl">
+          <div class="rmX-row">
+            <dt>注意</dt>
+            <dd>SNSの種類・使い方で出方は変わる。自己報告中心の研究が多い。</dd>
+          </div>
+        </dl>
+
+        <div class="rmX-foot">
+          <div class="rmX-warn">
+            <span class="rmX-warnKey">限界</span>
+            <span class="rmX-warnVal">自己報告中心。因果は断定しない。</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="rmX-card" aria-label="ゴースティングと愛着不安">
+      <div class="rmX-cardTop">
+        <h4 class="rmX-title">ゴースティング（突然の音信不通）と愛着不安は関連が出る報告がある</h4>
+        <div class="rmX-pills">
+          <span class="rmX-pill">複数研究</span>
+          <span class="rmX-pill">成人</span>
+          <span class="rmX-pill">N=165/247/863</span>
+        </div>
+      </div>
+
+      <div class="rmX-body">
+        <div class="rmX-kv">
+          <div class="rmX-kvLabel">結果</div>
+          <div class="rmX-kvValue">「される側」で不安が高めと関連する報告がある（平均的傾向）。</div>
+        </div>
+
+        <dl class="rmX-dl">
+          <div class="rmX-row">
+            <dt>解釈</dt>
+            <dd>相手要因・元の関係の質も混ざるので「理由の断定」はしない。</dd>
+          </div>
+        </dl>
+
+        <div class="rmX-foot">
+          <div class="rmX-warn">
+            <span class="rmX-warnKey">限界</span>
+            <span class="rmX-warnVal">因果は断定できない。</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="rmX-card" aria-label="位置情報共有と侵入感">
+      <div class="rmX-cardTop">
+        <h4 class="rmX-title">位置情報共有は「安心」にも「侵入」にもなる（合意と範囲がカギ）</h4>
+        <div class="rmX-pills">
+          <span class="rmX-pill">質的+質問紙</span>
+          <span class="rmX-pill">カップル</span>
+          <span class="rmX-pill">境界線</span>
+        </div>
+      </div>
+
+      <div class="rmX-body">
+        <div class="rmX-kv">
+          <div class="rmX-kvLabel">結果</div>
+          <div class="rmX-kvValue">安全目的なら安心になりやすいが、管理・監視に寄ると侵入感が増えやすい。</div>
+        </div>
+
+        <dl class="rmX-dl">
+          <div class="rmX-row">
+            <dt>要点</dt>
+            <dd>目的（安全/管理）と範囲（いつ・どこまで）が曖昧だと揉めやすい。</dd>
+          </div>
+        </dl>
+
+        <div class="rmX-foot">
+          <div class="rmX-warn">
+            <span class="rmX-warnKey">限界</span>
+            <span class="rmX-warnVal">治安・文化・合意の有無で意味が変わる。</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <p class="note rmX-note">※研究は平均の傾向を示すもので、個人の恋愛の正解を決めるものではありません。</p>
+</div>
+</details>
+    <!-- NAV BUTTONS -->
+    <div class="result-nav">
+      <button class="btn-restart" id="retryBtn">↩ 最初から</button>
+      <a href="/shindan/" class="btn-index">診断一覧へ →</a>
+    </div>
+
+    <div class="disclaimer">
+      ※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var SLUG    = 'attachment-plush';
+  var LS_ANS  = 'shindan:' + SLUG + ':answers';
+  var LS_IDX  = 'shindan:' + SLUG + ':index';
+  var LS_DONE = 'shindan:' + SLUG + ':done';
+
+  var FACTOR_LABELS = ['返信耐性','確認ループ','SNS依存','関係確定','境界線','コミュ密度','自立性','葛藤対処'];
+  var FACTOR_TIPS = [
+    '既読スルーされても平気でいられるか。高いと「まあいいか」、低いとスマホが手放せなくなる。',
+    '「届いてる？」「怒ってる？」と確認したくなる頻度。高いほど追いLINEしがち。',
+    'いいね・ストーリー既読で感情が揺れる度合い。高いと、SNSの反応で今日の気分が決まる。',
+    '「私たち何？」と白黒つけたくなる衝動。高いほど曖昧な関係が苦手。',
+    '「スマホ見せて」などへの抵抗感。高いほど自分の領域を守りたい意識が強い。',
+    '連絡の頻度へのこだわり。高いと毎日やりとりしたい、低いと用件だけでもOK。',
+    '困ったとき一人で抱えるか人に頼れるか。高いほど「助けて」が言いにくい。',
+    '揉めたとき話し合えるか。高いと詰め寄るか逃げるかの二択になりやすい。'
+  ];
+
+  var BEAR_MSGS = {
+    default: { face:'🧸', title:'ぬいぐるみが見ている', msg:'一番近いと感じる答えを選んでね。正解はないよ。' },
+    A:       { face:'😰', title:'…（ぬいをぎゅっとする）', msg:'そっか、不安になることあるんだね。' },
+    B:       { face:'🧊', title:'（距離をとって、静かにしている）', msg:'ひとりでいる方が楽なときもあるよね。' },
+    C:       { face:'🥰', title:'（ぬいを2人の間にそっと置く）', msg:'それができるの、すごいことだよ。' }
+  };
+
+  var Qs = [
+    {f:0,q:'既読がついたのに、返信が来ない。このとき、あなたは？',c:[{t:'A',l:'スマホを何度も確認してしまう',anx:3,avo:0},{t:'B',l:'相手にも都合があると全く気にしない',anx:0,avo:3},{t:'C',l:'気になるし連絡したくなるけど、なぜか送れない',anx:2,avo:2},{t:'D',l:'少し気になるが、自分の時間を過ごしながら待てる',anx:0,avo:0}]},
+    {f:0,q:'返信が3時間来ていない。最初に頭をよぎることは？',c:[{t:'A',l:'嫌われたかも、と不安になる',anx:3,avo:0},{t:'B',l:'用事があるんだろうと全く気にしない',anx:0,avo:3},{t:'C',l:'嫌われたかもと思いつつ、もう返信しなくていいかとも思う',anx:2,avo:2},{t:'D',l:'少し遅いなと思うが、落ち着いていられる',anx:0,avo:0}]},
+    {f:0,q:'「後で連絡する」と言われた。どう受け取る？',c:[{t:'A',l:'「後でっていつ？」と具体的な時間が知りたくなる',anx:3,avo:0},{t:'B',l:'わかった、とラクに受け取れる。急がせない',anx:0,avo:3},{t:'C',l:'わかったと言いつつ、催促もできずもやもやする',anx:2,avo:2},{t:'D',l:'わかった、と素直に受け取り穏やかに待てる',anx:0,avo:0}]},
+    {f:1,q:'送ったメッセージへの反応がない。どうする？',c:[{t:'A',l:'追いメッセを送ってしまう',anx:3,avo:0},{t:'B',l:'何もしない。相手のタイミングでいい',anx:0,avo:3},{t:'C',l:'追いたいけど引いた方がいいかな、と結局何もできない',anx:2,avo:2},{t:'D',l:'少し待ってから穏やかに一言確認する',anx:0,avo:0}]},
+    {f:1,q:'「ちゃんと届いてる？」と確認したくなることは？',c:[{t:'A',l:'よくある',anx:3,avo:0},{t:'B',l:'ほぼない。届いてなければ向こうから言ってくる',anx:0,avo:3},{t:'C',l:'確認したいけど「しつこいかな」と思ってできないことも多い',anx:2,avo:2},{t:'D',l:'たまにあるが、状況を見て判断できる',anx:0,avo:0}]},
+    {f:1,q:'関係が不安定に感じるとき、連絡は？',c:[{t:'A',l:'電話や追いLINEが増える',anx:3,avo:0},{t:'B',l:'むしろ距離を置いて静かにしている',anx:0,avo:3},{t:'C',l:'連絡したい、でも怖くて送れない、の繰り返し',anx:2,avo:2},{t:'D',l:'「最近どう？」と自然に声をかけられる',anx:0,avo:0}]},
+    {f:2,q:'相手がSNSにいいねしているのに、LINEの返信がない。',c:[{t:'A',l:'傷つく。無視されていると感じる',anx:3,avo:0},{t:'B',l:'SNSとLINEは別物と割り切れる',anx:0,avo:3},{t:'C',l:'傷つくけど既読スルーよりはいいか、と複雑な気持ち',anx:2,avo:2},{t:'D',l:'少し気になるが、後で軽く声をかける',anx:0,avo:0}]},
+    {f:2,q:'相手が異性と一緒の投稿をあげていた。',c:[{t:'A',l:'嫉妬や不安が強く湧いてくる',anx:3,avo:0},{t:'B',l:'「ふーん」で終わる。深追いしない',anx:0,avo:3},{t:'C',l:'モヤモヤするけど聞いたら重いかなと思い何も言えない',anx:2,avo:2},{t:'D',l:'少し気になるが、自分の感情として処理できる',anx:0,avo:0}]},
+    {f:2,q:'相手のSNSをさかのぼって確認することは？',c:[{t:'A',l:'よくある',anx:3,avo:0},{t:'B',l:'ほぼしない。見る理由がない',anx:0,avo:3},{t:'C',l:'ついやってしまうが、見た後に後悔することも多い',anx:2,avo:2},{t:'D',l:'気になるときはあるが、やりすぎないよう意識できる',anx:0,avo:0}]},
+    {f:3,q:'付き合い始めてすぐ「私たちって付き合ってるよね？」と確認したくなる？',c:[{t:'A',l:'かなり確認したくなる',anx:3,avo:0},{t:'B',l:'相手から言ってくるまで待てる。ラベルは気にしない',anx:0,avo:3},{t:'C',l:'確認したいけど、重いと思われそうで言い出せない',anx:2,avo:2},{t:'D',l:'少し確認したいが、自然なタイミングを待てる',anx:0,avo:0}]},
+    {f:3,q:'「友達以上恋人未満」の曖昧な関係、どう感じる？',c:[{t:'A',l:'曖昧なまま続けるのがしんどい',anx:3,avo:0},{t:'B',l:'むしろ好き、ラク。確定しなくていい',anx:0,avo:3},{t:'C',l:'しんどいけど、確定させて断られるのも怖い',anx:2,avo:2},{t:'D',l:'少し落ち着かないが、関係を育てながら見守れる',anx:0,avo:0}]},
+    {f:3,q:'相手の元カノ/元カレの話が出た。',c:[{t:'A',l:'比べてしまい、不安になる',anx:3,avo:0},{t:'B',l:'過去は過去、気にしない',anx:0,avo:3},{t:'C',l:'比べてしまうし、聞きたくもないけど無反応もできない',anx:2,avo:2},{t:'D',l:'少し動揺するが「今」を大事にしようと思い直せる',anx:0,avo:0}]},
+    {f:4,q:'相手から「今どこにいるの？」と聞かれると？',c:[{t:'A',l:'素直に答えて、もっと気にしてほしい気持ちになる',anx:3,avo:0},{t:'B',l:'監視されてる感じがして、しんどい',anx:0,avo:3},{t:'C',l:'答えるけど「なんで聞くの？」という気持ちも少しある',anx:2,avo:2},{t:'D',l:'状況によるが、自然に答えられる',anx:0,avo:0}]},
+    {f:4,q:'「スマホを見せて」と言われたら？',c:[{t:'A',l:'安心してほしいから見せたい',anx:3,avo:0},{t:'B',l:'プライバシーだから断る',anx:0,avo:3},{t:'C',l:'見せたいけど、何かを見られるのが怖い気持ちもある',anx:2,avo:2},{t:'D',l:'内容による、信頼できるならOK',anx:0,avo:0}]},
+    {f:4,q:'SNSのフォロワーや投稿について聞かれた。',c:[{t:'A',l:'全部話したくなる（知ってほしい）',anx:3,avo:0},{t:'B',l:'自分のことは自分のもの、詮索は苦手',anx:0,avo:3},{t:'C',l:'話したい気持ちもあるし、知られたくない気持ちもある',anx:2,avo:2},{t:'D',l:'聞かれれば答えるが、自分から全開示はしない',anx:0,avo:0}]},
+    {f:5,q:'連絡の理想ペースは？',c:[{t:'A',l:'毎日こまめにやりとりしたい',anx:3,avo:0},{t:'B',l:'必要なときだけでいい。用件のみ',anx:0,avo:3},{t:'C',l:'毎日したいけど、頻度を求めると引かれそうで言えない',anx:2,avo:2},{t:'D',l:'程よい頻度がいい。お互いのペースを尊重できる',anx:0,avo:0}]},
+    {f:5,q:'電話についてどう思う？',c:[{t:'A',l:'声を聞きたいから積極的にかけたい',anx:3,avo:0},{t:'B',l:'電話は苦手、LINEで十分',anx:0,avo:3},{t:'C',l:'したいけど「急にかけたら迷惑かな」と思ってかけられない',anx:2,avo:2},{t:'D',l:'用件次第、たまになら好き',anx:0,avo:0}]},
+    {f:5,q:'会話に沈黙が続いたら？',c:[{t:'A',l:'不安になって何か言ってしまう',anx:3,avo:0},{t:'B',l:'無理に埋めなくていい、自然体でいい',anx:0,avo:3},{t:'C',l:'不安だけど何を言えばいいかわからず、黙ってしまう',anx:2,avo:2},{t:'D',l:'少し気になるが、タイミングを待てる',anx:0,avo:0}]},
+    {f:6,q:'何か困ったとき、相手に相談する？',c:[{t:'A',l:'すぐ相談する（サポートされたい）',anx:3,avo:0},{t:'B',l:'基本自分で解決する、相談はしない',anx:0,avo:3},{t:'C',l:'相談したいが、重く見られそうで言い出せない',anx:2,avo:2},{t:'D',l:'大きな問題だけ話す。普段は自分でやる',anx:0,avo:0}]},
+    {f:6,q:'相手に頼ることについて？',c:[{t:'A',l:'頼りたいし、頼られたい',anx:3,avo:0},{t:'B',l:'頼るのが苦手（負い目を感じる）',anx:0,avo:3},{t:'C',l:'頼りたいけど、重いと思われたら、と考えると頼れない',anx:2,avo:2},{t:'D',l:'適度に頼り合える関係が理想',anx:0,avo:0}]},
+    {f:6,q:'将来の計画を一緒に立てることについて？',c:[{t:'A',l:'早めに決めたい、将来を確認したい',anx:3,avo:0},{t:'B',l:'先の話は苦手、自分のペースでいきたい',anx:0,avo:3},{t:'C',l:'話したいけど、重いと思われそうで提案できない',anx:2,avo:2},{t:'D',l:'楽しいが、押し付けにならない程度がいい',anx:0,avo:0}]},
+    {f:7,q:'喧嘩やすれ違いがあったとき、どうする？',c:[{t:'A',l:'すぐ解決したくて詰めてしまう',anx:3,avo:0},{t:'B',l:'冷却期間が必要、しばらく距離を置く',anx:0,avo:3},{t:'C',l:'解決したいけど、話しかけたら怒られそうで動けない',anx:2,avo:2},{t:'D',l:'少し落ち着いてから話し合いたい',anx:0,avo:0}]},
+    {f:7,q:'関係がうまくいっていないと感じたとき？',c:[{t:'A',l:'相手に何度も連絡して確かめる',anx:3,avo:0},{t:'B',l:'「もういいか」と引いてしまう',anx:0,avo:3},{t:'C',l:'確かめたいけど、引いた方が楽かもとも思う',anx:2,avo:2},{t:'D',l:'「一度ちゃんと話そう」と提案できる',anx:0,avo:0}]},
+    {f:7,q:'相手がそっけない日が続いたら？',c:[{t:'A',l:'自分のせいだと責めてしまう',anx:3,avo:0},{t:'B',l:'相手の問題だと割り切り、自分の時間を過ごす',anx:0,avo:3},{t:'C',l:'自分のせいかもと思うが、聞けないし距離も取りたくなる',anx:2,avo:2},{t:'D',l:'「最近何かあった？」と静かに聞ける',anx:0,avo:0}]}
+  ];
+
+  var RESULTS = {
+    stable: {
+      title:'安定型', badge:'安定', en:'SECURE', img:'t01.webp', caption:'ぬいを、ふたりのあいだに置く',
+      rank:{ tier:'S', name:'人類の希望', desc:'この診断を受けた全員に見せてほしい。あなたが存在しているだけで人間関係が平和になる。マジで。', color:'var(--sage)' },
+      compat:{ icon:'🤝', name:'みんな（本当に）', note:'不安型の人があなたのそばに来ると、なんか落ち着く。なんでか分かる？あなたが「急に消えない」から。それだけで、ものすごい価値がある。' },
+      str:'既読スルー3時間で「あ、忙しいんだろ」で終われる。これ普通じゃないから。夜中にスマホ握りしめてる人間、世界中にいる。あなたはそのループに入らない。感情が安定してるんじゃなくて、土台の材質が違う。',
+      pit:'「みんなもこのくらい平気でしょ」——これが事故の元。あなたが気にしてない間に、相手は静かに「この人、私のことどうでもいいんだ」って思ってる。あなたは悪意ゼロ。なのに気づいたら関係が終わってた、が起きる。',
+      act:'今日「実はちょっとしんどかった」って誰かに言ってみ。いつも平気な人が弱音を言うと、相手は嬉しくなる。頼られると人間嬉しいんよ、本当に。',
+      manual:{
+        name:'　無条件肯定体【MODEL-YES-MY-LOADER】',
+        symptoms:'返信3時間なし → 「まあ生きてるでしょ」で完全再起動',
+        accessories:'謎の安心感（非売品）、鎮静フィールド（常時放出中）',
+        caution:'バグではありません。そういう設計です。'
+      }
+    },
+    avoid_low: {
+      title:'回避型（ほどよい距離感）', badge:'回避−', en:'AVOIDANT / MILD', img:'t02.webp', caption:'ぬいは隣に、距離は適切に',
+      rank:{ tier:'B', name:'おしゃれな一人時間', desc:'ひとりでいる時間を「充電」と呼べる人。それができない人間が世の中の半分くらいいる。', color:'var(--slate)' },
+      compat:{ icon:'☕', name:'安定型 or 不安型（軽め）', note:'べたべたしすぎない安定型と組むと、お互いの空気感がちょうどいい。ただ不安型の人には「なんか最近そっけない？」って思われてる。気づいたら連絡してみて。' },
+    str:'一人でいても全然平気。「暇な時間」を「充電」に変換できる人間、思ってる以上に少ない。感情で動かない、巻き込まれない、流されない。これを自然にやってるの、普通じゃないから。',
+      pit:'相手が「もっと来て」って思ってるサインを「元気そうだからいいか」で処理してる。あなたに悪意はない。でも「気にしてない側は温度差に気づかない」——これがそのまま起きてる。',
+      act:'今日だけ先に「最近どう？」って聞いてみ。聞くだけでいい、自分の話しなくていい。それだけで相手のあなたへの見方が変わる。',
+      manual:{
+        name:'　孤独充電式生命体【MODEL-SOLO-RECHARGE】',
+        symptoms:'連絡0日 → 向こうから来た → 「そんなもんか」で完結',
+        accessories:'孤独（燃料）、境界線（自動展開）、温度差（無自覚）',
+        caution:'冷たい仕様ではありません。ただ「察して」センサーが非搭載です。'
+      }
+    },
+    avoid_high: {
+      title:'回避型（強い距離感）', badge:'回避+', en:'AVOIDANT / STRONG', img:'t03.webp', caption:'ぬいは、遠くに置いておく',
+      rank:{ tier:'A', name:'壁の化身', desc:'心の壁、鍵が二重。本人は「自立してる」と思っている。周りは「なんか近づけない」と思っている。全員正解。', color:'var(--slate)' },
+      compat:{ icon:'🏔️', name:'同じ回避型 or 安定型', note:'同じ回避型と組むと「干渉しない」という暗黙の平和条約で仲良くなれる。ただ2人とも話し合いが苦手なので、揉めたとき誰も何も言わないまま自然消滅しがち。' },
+      str:'感情で動かない。巻き込まれない。「あの人に言えば大げさにならない」という安心感、知らないうちに周りに与えてる。壁があるけど、壁の内側にちゃんと感情がある。それを知ってる人はあなたのことが好き。',
+      pit:'好きな人にほど壁が高くなって、相手が「脈なし」と判断して去る——これがあなたのあるある。あなたは全然そんなつもりじゃない。でも外から見えない設計になってる。もったいない。',
+      act:'「ちょっといい？」って今日1回だけ言ってみ。頼られると人間嬉しい。壁の外に一言だけ出すだけで、関係の温度が変わる。',
+      manual:{
+        name:'　照隠滅殺要塞【MODEL-SHY-ANNIHILATION】',
+        symptoms:'好きな人に冷たくした → 一人で「なんでだろ」→ 解決なし',
+        accessories:'二重鍵（常備）、内側の感情（施錠中・要許可）',
+        caution:'故障ではありません。取扱説明書が内側にしかありません。'
+      }
+    },
+    anxiety_low: {
+      title:'不安型（繊細な確認）', badge:'不安−', en:'ANXIOUS / MILD', img:'t04.webp', caption:'ぬいを、そっと確かめながら抱く',
+      rank:{ tier:'B', name:'繊細な確認魔', desc:'返信のトーンで相手の気分を読み取れる。顔文字のあるなしで「今日機嫌いいかも」って分かる。愛情の解像度が人の1.5倍ある。', color:'var(--rose)' },
+      compat:{ icon:'🌻', name:'安定型', note:'安定型といると「この人は急に消えない」が体でわかっていく。じわじわ安心感が育つ感じ、それが大事。あなたの繊細さを「敏感だね」と言ってくれる人と一緒にいてください。' },
+      str:'返信のトーンで相手の気分がわかる。句読点の変化で「今日なんかあった？」がわかる。これ、安定型には一生わからない感度。もらった言葉を何週間も覚えてる。あなたに愛されてる人、気づいてないだけでかなり恵まれてる。',
+      pit:'「既読2時間…怒ってる？いや違う？でも昨日の私の発言が…」——相手はまだ昼ごはん食べてるだけ。まだ起きてないことで消耗するのが得意すぎる。その消耗、じわじわ体に出てくる。',
+      act:'返信待ちの間、30分だけ好きなことをやってみ。「待つ」と不安は増えるが「別のことをする」と脳が切り替わる。返信来たときのテンションも落ち着く。',
+      manual:{
+        name:'　微愛粘着子【MODEL-MICRO-CLING】',
+        symptoms:'既読だけ → 0.3秒で全解釈ルート起動 → 消耗',
+        accessories:'変化検知センサー（常時稼働）、脳内ドラマ制作キット（自動起動）',
+        caution:'高感度すぎてノイズを本気の信号として受信します。'
+      }
+    },
+    anxiety_high: {
+      title:'不安型（強い執着）', badge:'不安+', en:'ANXIOUS / STRONG', img:'t05.webp', caption:'ぬいを、胸に引き寄せて放さない',
+      rank:{ tier:'A', name:'愛が重力を超えた', desc:'既読無視から「もう終わり」まで所要時間3分。脳内で何回別れを経験した？愛の量がバグってる。', color:'var(--rose)' },
+      compat:{ icon:'💌', name:'安定型（必須）', note:'あなたの「好き」の密度は普通の3倍くらいある。それを「重い」と言う人じゃなく「ありがたい」と受け取れる人と一緒にいてください。回避型との組み合わせは、お互いが消耗する。' },
+      str:'3週間前の「あのとき言ってたやつ」を覚えてる。相手の好きなもの嫌いなもの全部把握してる。「そんなことまで気にしてくれてたの？」ってびっくりされること、あるでしょ。愛情の密度が他のタイプの比じゃない。',
+      pit:'「返信こない→嫌われた→もうだめ→でも好き→やっぱ嫌われた」——1日何周してる、これ。しかも確認が増えると逆に信頼が下がる。知ってても止まれないのが一番きつい。',
+      act:'スマホ伏せて3時間だけ「確認しない」をやってみ。最初の1時間が一番きつい。3時間後に何もなかったとき「大丈夫だった自分」に気づく。それだけでいい。できたら全力で自分を褒めて。',
+      manual:{
+        name:'　愛過積載過負荷機【MODEL-MENHE-RA】',
+        symptoms:'既読3時間 → 脳内で別れ・復縁・再別れを2周 → まだ昼ごはん食べてただけ',
+        accessories:'追いLINE衝動（常時発動）、Wi-Fi圏外言い訳（緊急用）',
+        caution:'愛の出力が入力の3倍です。調整機能は未実装です。'
+      }
+    },
+    fearful: {
+      title:'恐れ回避型', badge:'恐避', en:'FEARFUL-AVOIDANT', img:'t06.webp', caption:'抱きたいのに、少しだけ引いてしまう',
+      rank:{ tier:'S', name:'矛盾の詩人', desc:'「近づきたい、でも怖い」を全身で生きてる。これ、かなりエモい生き方です。複雑度MAX。人間として深い。', color:'var(--purple)' },
+      compat:{ icon:'🌒', name:'安定型（一択）', note:'あなたの「来たり引いたり」を「気まぐれ」じゃなく「傷ついてきたんだね」って読み取ってくれる人が必要。それができるのは安定型だけ。見つけたら離さないで。' },
+      str:'「近づきたい、でも怖い」を同時に感じてる。これ毎日やってるあなた、相当タフ。人の痛みや矛盾に誰より共感できる、「この人わかってくれる」ってなる理由がそこにある。そばにいると救われる人間が絶対にいる。',
+      pit:'仲良くなってきた頃に急に引く。相手は「なんかした？」と混乱する。あなたは「怖くなっただけ」。その説明が言葉にできないから、また引く。「近づく→怖い→離れる→寂しい」のループ、自分でも気づいてるよね。',
+      act:'「近づきたいと思っている」を今日紙に書いてみ。声に出さなくていい、誰にも見せなくていい。感情は名前をつけると少し落ち着く。「怖い」と「近づきたい」は両方本物。どっちかを消そうとしなくていい。',
+      manual:{
+        name:'　恐愛零化体【MODEL-DREAD-NULL】',
+        symptoms:'好きな人から連絡 → 嬉しい → 返信できない → 理由不明 → 翌日謝る',
+        accessories:'近づきたい気持ち（未開封）、防衛反応（オートで発動）',
+        caution:'矛盾は仕様です。近づくと起爆します。'
+      }
+    }
+  };
+
+  var answers = new Array(Qs.length).fill(null);
+  var cur = 0;
+  var busy = false;
+
+  function g(id){ return document.getElementById(id); }
+
+  /* ── SCREENS ── */
+  function showScreen(id){
+    ['prologueSection','quizSection','resultSection'].forEach(function(sid){
+      var el = g(sid); el.style.display='none'; el.classList.remove('screen-on');
+    });
+    var t = g(id); t.style.display='block'; void t.offsetWidth; t.classList.add('screen-on');
+  }
+
+  /* ── PROGRESS ── */
+  function updateProgress(done, total){
+    var pct = total>0 ? Math.round(done/total*100) : 0;
+    g('pFill').style.width = pct+'%';
+    g('pLabel').textContent = total>0 ? 'Q'+done+' / '+total+' — '+pct+'%' : 'Attachment Archive';
+  }
+
+  /* ── BEAR ── */
+  function setBear(state){
+    var b = BEAR_MSGS[state] || BEAR_MSGS.default;
+    var face = g('bearFace');
+    face.textContent = b.face;
+    face.classList.remove('wiggle','shiver','float');
+    void face.offsetWidth;
+    if(state==='A') face.classList.add('shiver');
+    else if(state==='B') face.classList.add('float');
+    else if(state==='C') face.classList.add('wiggle');
+    g('bearTitle').textContent = b.title;
+    g('bearMsg').textContent   = b.msg;
+  }
+
+  /* ── RIPPLE ── */
+  function addRipple(btn, e){
+    var r = document.createElement('span');
+    r.className='ripple';
+    var rect=btn.getBoundingClientRect();
+    var size=Math.max(rect.width,rect.height)*1.5;
+    r.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(e.clientX-rect.left-size/2)+'px;top:'+(e.clientY-rect.top-size/2)+'px';
+    btn.appendChild(r);
+    setTimeout(function(){r.remove();},450);
+  }
+
+  /* ── RENDER QUESTION ── */
+  function renderQ(idx, dir){
+    if(busy) return; busy=true;
+    var inner=g('qInner');
+    inner.style.transition='opacity .18s ease, transform .18s ease';
+    inner.style.opacity='0';
+    inner.style.transform=dir==='prev'?'translateY(8px)':'translateY(-8px)';
+    setTimeout(function(){
+      var q=Qs[idx];
+      var num=(idx<9?'0':'')+(idx+1);
+      g('qDecoNum').textContent=num;
+      g('qNum').textContent='Q'+num+' / '+Qs.length;
+      g('qFactor').textContent=FACTOR_LABELS[q.f];
+      g('qText').textContent=q.q;
+      var wrap=g('choicesWrap'); wrap.innerHTML='';
+      var shuffled=q.c.slice();
+      for(var si=shuffled.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=shuffled[si];shuffled[si]=shuffled[sj];shuffled[sj]=st;}
+      shuffled.forEach(function(ch){
+        var btn=document.createElement('button');
+        btn.type='button'; btn.className='choice-btn';
+        btn.setAttribute('aria-pressed',answers[idx]===ch.t?'true':'false');
+        btn.innerHTML='<div class="choice-inner"><span class="choice-abc">'+ch.t+'</span><span class="choice-text">'+ch.l+'</span><span class="choice-check">✓</span></div>';
+        btn.addEventListener('click',function(e){ addRipple(btn,e); onChoice(idx,ch.t,wrap); });
+        wrap.appendChild(btn);
+      });
+      g('prevBtn').disabled=idx===0;
+      g('nextBtn').disabled=answers[idx]===null;
+      setBear(answers[idx]||'default');
+      inner.style.transition='none'; inner.style.opacity='0';
+      inner.style.transform=dir==='prev'?'translateY(-8px)':'translateY(16px)';
+      void inner.offsetWidth;
+      inner.style.transition='opacity .3s ease, transform .3s cubic-bezier(.4,0,.2,1)';
+      inner.style.opacity='1'; inner.style.transform='translateY(0)';
+      busy=false;
+    },200);
+  }
+
+  function onChoice(idx, val, wrap){
+    answers[idx]=val; saveState();
+    wrap.querySelectorAll('.choice-btn').forEach(function(b){
+      b.setAttribute('aria-pressed', b.querySelector('.choice-abc').textContent===val?'true':'false');
+    });
+    g('nextBtn').disabled=false;
+    setBear(val);
+    updateProgress(answers.filter(function(a){return a!==null;}).length, Qs.length);
+    setTimeout(function(){
+      if(idx<Qs.length-1){ cur=idx+1; saveIdx(); renderQ(cur,'next'); }
+      else showResult();
+    },420);
+  }
+
+  /* ── RESULT ── */
+  function computeScores(){
+    var anx=0,avo=0,fa=[],fb=[];
+    for(var i=0;i<8;i++){fa.push(0);fb.push(0);}
+    answers.forEach(function(ans,i){
+      if(ans===null||ans===undefined)return;
+      var ch=Qs[i].c.find(function(c){return c.t===ans;});
+      if(!ch)return;
+      var f=Qs[i].f;
+      anx+=ch.anx; avo+=ch.avo;
+      fa[f]+=ch.anx; fb[f]+=ch.avo;
+    });
+    return{anx:anx,avo:avo,fa:fa,fb:fb};
+  }
+  function getType(anx,avo){
+    // MAX=72(24問×3点)。50%=36、75%=54
+    if(anx>=36&&avo>=36)return'fearful';
+    if(anx>=54)return'anxiety_high';
+    if(anx>=36)return'anxiety_low';
+    if(avo>=54)return'avoid_high';
+    if(avo>=36)return'avoid_low';
+    return'stable';
+  }
+
+  function showResult(){
+    var sc=computeScores(); var type=getType(sc.anx,sc.avo); var res=RESULTS[type];
+
+    // rank
+    g('rankTier').textContent=res.rank.tier;
+    g('rankTier').style.color=res.rank.color;
+    g('rankName').textContent=res.rank.name;
+    g('rankDesc').textContent=res.rank.desc;
+
+    // header
+    g('rEn').textContent=res.en;
+    g('rTitle').textContent=res.title;
+    g('rImg').src='/shindan/assets/results/attachment-plush/'+res.img;
+    g('rImg').alt=res.title;
+    g('rCaption').textContent=res.caption;
+    g('rSeal').textContent=res.badge;
+
+    // compat
+    g('compatIcon').textContent=res.compat.icon;
+    g('compatName').textContent=res.compat.name;
+    g('compatNote').textContent=res.compat.note;
+
+    // traits
+    var TRAITS = {
+  stable:[
+        {t:'治安担当（無報酬）',p:true},
+        {t:'感情がブレない怪物',p:true},
+        {t:'揉めても翌日には普通',p:true},
+        {t:'曖昧でも死なない',p:true},
+        {t:'そばにいると場が鎮まる',p:true},
+        {t:'なんか知らんが信頼される',p:true},
+        {t:'大丈夫が本当に大丈夫',p:true},
+        {t:'生活ごと崩れない設計',p:true},
+        {t:'相手の「助けて」を見逃して事故',p:false},
+        {t:'「みんなこのくらい平気でしょ」幻想',p:false},
+        {t:'大丈夫の裏に本音が詰まってる',p:false},
+        {t:'気づいたら一人で全部抱えてた',p:false},
+      ],
+      avoid_low:[
+        {t:'一人でいても困らない人',p:true},
+        {t:'感情で動かない（称賛）',p:true},
+        {t:'境界線を自然に引ける',p:true},
+        {t:'巻き込まれない達人',p:true},
+        {t:'ひとりの夜を楽しめる',p:true},
+        {t:'静かに誠実',p:true},
+        {t:'依存しない自立感',p:true},
+        {t:'「なんか最近そっけない」定期便',p:false},
+        {t:'サインを見てるが処理しない',p:false},
+        {t:'熱くなるほど静かになる',p:false},
+        {t:'温度差に本人だけ気づいてない',p:false},
+        {t:'連絡は向こうからが基本設定',p:false},
+      ],
+      avoid_high:[
+        {t:'感情を持て余さない機能',p:true},
+        {t:'一人で完結できる',p:true},
+        {t:'巻き込まれ耐性MAX',p:true},
+        {t:'壁の職人（無自覚）',p:true},
+        {t:'信頼感はある、温度はない',p:true},
+        {t:'省エネで最大限やってる',p:true},
+        {t:'好きになるほど冷たくなる謎',p:false},
+        {t:'「脈ないな」って思われて消える',p:false},
+        {t:'揉めたら沈黙→自然消滅',p:false},
+        {t:'助けてが言えなくて気づいたら限界',p:false},
+        {t:'感情は全部内部保管中',p:false},
+        {t:'「そっけない人」として定着',p:false},
+      ],
+      anxiety_low:[
+        {t:'句読点で気分を読む',p:true},
+        {t:'異変に一番最初に気づく',p:true},
+        {t:'もらった言葉を金庫保存',p:true},
+        {t:'ケアが呼吸レベルで出る',p:true},
+        {t:'誕生日より前から考えてる',p:true},
+        {t:'観察眼が人の3倍',p:true},
+        {t:'愛のレーダー常時稼働',p:true},
+        {t:'起きてもない未来で消耗',p:false},
+        {t:'既読2時間→脳内会議始まる',p:false},
+        {t:'曖昧な返事を拒絶に変換',p:false},
+        {t:'自分への反省会が長すぎる',p:false},
+      ],
+      anxiety_high:[
+        {t:'愛の密度が人の3倍',p:true},
+        {t:'3週間前の発言を覚えてる',p:true},
+        {t:'尽くすことに才能がある',p:true},
+        {t:'感情の解像度が異常に高い',p:true},
+        {t:'愛されてる人間は恵まれてる',p:true},
+        {t:'道化になっても笑わせにいく',p:true},
+        {t:'既読→3分で脳内別れ完走',p:false},
+        {t:'確認するほど逆効果（知ってる）',p:false},
+        {t:'最悪のシナリオを毎日全力制作',p:false},
+        {t:'SNSの反応で今日の気分が決まる',p:false},
+        {t:'「好き」が重くなって相手が疲れる',p:false},
+        {t:'寝る前に反省会フル開催',p:false},
+      ],
+      fearful:[
+        {t:'痛みの解像度が人の3倍',p:true},
+        {t:'複雑な感情をそのまま抱えられる',p:true},
+        {t:'危険を誰より早く察知',p:true},
+        {t:'表面で人を切らない',p:true},
+        {t:'共感が深すぎて相手が泣く',p:true},
+        {t:'矛盾を生きる力がある',p:true},
+        {t:'近づいたら怖くなって逃げる',p:false},
+        {t:'仲良くなった頃に急に消える',p:false},
+        {t:'「なんかした？」って言わせがち',p:false},
+        {t:'安心を感じた瞬間に警戒する',p:false},
+        {t:'「読めない人」として有名',p:false},
+        {t:'自分でもループに気づいてる',p:false},
+      ]
+    };
+    var ft=g('featTags');
+    if(ft){
+      ft.innerHTML='';
+      (TRAITS[type]||[]).forEach(function(item){
+        var span=document.createElement('span');
+        span.className='feat-tag '+(item.p?'pos':'neg');
+        span.textContent=(item.p?'◎ ':'▲ ')+item.t;
+        ft.appendChild(span);
+      });
+    }
+
+    // pillars
+    g('rStr').textContent=res.str;
+    g('rPit').textContent=res.pit;
+    g('rAct').textContent=res.act;
+
+    // axes
+    g('vAnx').textContent=sc.anx+'/72'; g('vAvo').textContent=sc.avo+'/72'; g('vStb').textContent=Math.round((144-sc.anx-sc.avo)/144*100)+'%';
+
+    // factor grid
+    var grid=g('factorGrid'); grid.innerHTML='';
+    FACTOR_LABELS.forEach(function(name,i){
+      var label='安定',pct=Math.round((27-sc.fa[i]-sc.fb[i])/27*100),color='var(--sage)';
+      if(sc.fa[i]>sc.fb[i]){label='不安寄り';pct=Math.round(sc.fa[i]/9*100);color='var(--rose)';}
+      else if(sc.fb[i]>sc.fa[i]){label='回避寄り';pct=Math.round(sc.fb[i]/9*100);color='var(--slate)';}
+      else if(sc.fa[i]>0){label='恐れ回避寄り';pct=Math.round(sc.fa[i]/9*100);color='var(--purple)';}
+      var card=document.createElement('div');
+      card.className='fc-card';
+      card.innerHTML='<div class="fc-top"><span class="fc-name">'+name+'</span><button class="fc-info-btn" aria-label="説明">?</button></div><div class="fc-track"><div class="fc-fill" style="background:'+color+'" data-pct="'+pct+'"></div></div><div class="fc-tend" style="color:'+color+'">'+label+'</div><div class="fc-tooltip">'+FACTOR_TIPS[i]+'</div>';
+      card.addEventListener('click',function(){ card.classList.toggle('open'); });
+      grid.appendChild(card);
+    });
+
+    // 前回の回答
+    var al=g('ansList');
+    if(al){
+      al.innerHTML='';
+      Qs.forEach(function(q,i){
+        var ans=answers[i];
+        if(!ans) return;
+        var chosen=q.c.find(function(c){return c.t===ans;});
+        var row=document.createElement('div');
+        row.className='ans-row';
+        row.innerHTML=
+          '<span class="ans-q-num">Q'+(i<9?'0':'')+(i+1)+'</span>'+
+          '<span class="ans-q-text">'+q.q+'</span>'+
+          '<span class="ans-choice">'+ans+' : '+(chosen?chosen.l:'')+'</span>';
+        al.appendChild(row);
+      });
+    }
+
+    // ── セルフケアガチャデータ ──
+    var SELFCARE = {
+  stable:[
+    {t:'返信する前に、ゆっくり呼吸してから返す。急がなくていい。',s:'★★☆'},
+    {t:'今日は誰かに「今ちょっとしんどい」とだけ言ってみる。',s:'★☆☆'},
+    {t:'揉めた後は「○時に続き話そう」と一言だけ残す。',s:'★★☆'},
+    {t:'通知は30分まとめて見る（常に追わない）にしてみる。',s:'★★☆'},
+    {t:'感情を1語で言う。「焦り」「寂しさ」それで十分。',s:'★☆☆'},
+    {t:'相手が不安そうなら「大事。今日は○時に話せる」と短く送る。',s:'★★☆'}
+  ],
+  anxiety_low:[
+    {t:'送る前にゆっくり呼吸を5回。まだ必要なら短文で送る。',s:'★☆☆'},
+    {t:'「返信速度＝愛情じゃない」をメモして固定する。',s:'★☆☆'},
+    {t:'返信待ち30分は監視しない。代わりに行動を1つやる。',s:'★☆☆'},
+    {t:'不安が出たら「怖い」と命名→呼吸→次の行動、の順。',s:'★★☆'},
+    {t:'「好き？」より「今日会える？」など事実で聞く。',s:'★★☆'},
+    {t:'既読・最終オンライン表示をオフにして刺激を減らす。',s:'★☆☆'}
+  ],
+  anxiety_high:[
+    {t:'下書き保存→3分待つ→読み直す→短くする。これだけ。',s:'★☆☆'},
+    {t:'送るならテンプレ：「今ちょい不安。○時に10分話せる？」',s:'★★☆'},
+    {t:'スマホを伏せて15分だけ見ない。できたら自分を褒める。',s:'★★☆'},
+    {t:'代替説明を3つ作る（忙しい/寝てる/通信など）。結論は保留。',s:'★★☆'},
+    {t:'落ち着く行動を10個メモ。迷ったら1番から実行。',s:'★☆☆'},
+    {t:'3文で立て直す：「つらい／誰でもある／今できる一歩」。',s:'★☆☆'}
+  ],
+  avoid_low:[
+    {t:'今日は先に「最近どう？」だけ聞く。自分の話は短くでOK。',s:'★☆☆'},
+    {t:'用件＋「今日はちょっと疲れてる」1文を足してみる。',s:'★☆☆'},
+    {t:'小さなお願いを1つだけ出す（店選びなど）。',s:'★★☆'},
+    {t:'感情の話の前に、肩・首を3分ゆっくりほぐす。',s:'★☆☆'},
+    {t:'撤退するなら「○時に戻る」を一言残す（消えない）。',s:'★★☆'},
+    {t:'通話が重いならボイスメッセで短く送ってみる。',s:'★★☆'}
+  ],
+  avoid_high:[
+    {t:'今日は「ちょっといい？」を1回だけ言う。入口を作る。',s:'★★☆'},
+    {t:'感情の話の前に5分呼吸して、先に体を落ち着かせる。',s:'★☆☆'},
+    {t:'「苦手。代わりに○○ならOK」と条件で返す（拒否だけにしない）。',s:'★★☆'},
+    {t:'「怖い」「圧がある」と1語で言ってから動く。',s:'★★☆'},
+    {t:'10分話す→終了宣言→次回の予約。容器を作る。',s:'★★☆'},
+    {t:'罪悪感が来たら2文だけ：「つらい／人間ならある」。',s:'★☆☆'}
+  ],
+  fearful:[
+    {t:'「近づきたい。でも今は10分休憩、○時に戻る」両方言う。',s:'★★★'},
+    {t:'呼吸→「怖い/寂しい」を命名→短文返信、の順で。',s:'★★☆'},
+    {t:'撤退するなら「戻る時刻」を必ずセット（断絶にしない）。',s:'★★☆'},
+    {t:'紙に2列で書く：「欲しい3つ」「怖い3つ」。',s:'★★☆'},
+    {t:'テンプレ保存：「さっきは整理してた。今から10分話せる？」',s:'★★☆'},
+    {t:'監視したくなったら3文：「つらい／人間ならある／今できる一歩」。',s:'★☆☆'}
+  ]
+};
+
+    
+    // ── ガチャデータ（レア度つき） ──
+    var RARITY=[
+  // 低レアほどボロい → Rで新品 → SR以降は派手に
+  {id:'UR', label:'✦ UR ✦',  dollLvl:5, dollName:'ゴージャスぬい', cls:'rarity-UR'},
+  {id:'SSR',label:'★ SSR ★', dollLvl:4, dollName:'超キラキラぬい',     cls:'rarity-SSR'},
+  {id:'SR', label:'◆ SR ◆',  dollLvl:3, dollName:'キラ盛りぬい',     cls:'rarity-SR'},
+  {id:'R',  label:'R',        dollLvl:2, dollName:'新品ピカピカ',     cls:'rarity-R'},
+  {id:'N',  label:'N',        dollLvl:1, dollName:'ボロボロ', cls:'rarity-N'}
+];
+    var instability=sc.anx+sc.avo;
+    var dollPct=Math.round(instability/144*100);
+    // スコアからレア度決定（不安定なほど高レア）
+    var myRarity=dollPct>=80?RARITY[0]:dollPct>=60?RARITY[1]:dollPct>=40?RARITY[2]:dollPct>=20?RARITY[3]:RARITY[4];
+    // セルフケアリスト
+    var selfcareList=SELFCARE[type]||SELFCARE.stable;
+    // スパーク生成
+    function spawnSparks(el,count,colors){
+      for(var i=0;i<count;i++){
+        var s=document.createElement('div');
+        s.className='spark';
+        var angle=Math.random()*Math.PI*2;
+        var dist=40+Math.random()*60;
+        s.style.setProperty('--tx',Math.cos(angle)*dist+'px');
+        s.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+        s.style.background=colors[Math.floor(Math.random()*colors.length)];
+        s.style.left='50%'; s.style.top='40%';
+        s.style.animationDelay=(Math.random()*.3)+'s';
+        el.appendChild(s);
+        setTimeout(function(x){x.remove();},1200,s);
+      }
+    }
+    // 取扱説明書
+    var mw=g('manualWrap');
+    if(mw){
+      var m=res.manual;
+      mw.innerHTML=
+        '<div class="manual-header"><span class="manual-header-title">取扱説明書</span><span class="manual-header-ver">REV.'+res.badge+'</span></div>'+
+        '<div class="manual-name"><div class="manual-name-label">品名</div><div class="manual-name-val">'+m.name+'</div></div>'+
+        '<div class="manual-rows">'+
+        '<div class="manual-row"><div class="manual-key">主な症状</div><div class="manual-val">'+m.symptoms+'</div></div>'+
+        '<div class="manual-row"><div class="manual-key">付属品</div><div class="manual-val">'+m.accessories+'</div></div>'+
+        '</div>'+
+        '<div class="manual-caution">'+m.caution+'</div>'+
+        '<div class="mgacha-wrap" id="mgachaWrap">'+
+        '<div class="mgacha-label">セルフケアガチャ</div>'+
+        '<div class="mgacha-slot" id="mgachaSlot"></div>'+
+        '<div class="mgacha-card mgacha-sparks" id="mgachaCard"></div>'+
+        '<button class="mgacha-btn" id="mgachaBtn">🎴 &nbsp;ぬいの状態とセルフケアを引く</button>'+
+        '</div>';
+
+      // ── ガチャボタン（DOM生成直後に登録）──
+      var mb=g('mgachaBtn');
+      var mc=g('mgachaCard');
+      // フラッシュ要素をbodyに追加
+      var flashEl=document.createElement('div');
+      flashEl.className='gacha-flash'; flashEl.id='gachaFlash';
+      document.body.appendChild(flashEl);
+
+      function doFlash(){
+        flashEl.classList.add('on');
+        setTimeout(function(){ flashEl.classList.remove('on'); },80);
+      }
+      function doShake(){
+        var w=document.querySelector('.wrap');
+        if(!w) return;
+        w.classList.add('shaking');
+        setTimeout(function(){ w.classList.remove('shaking'); },450);
+      }
+      function spawnConfetti(count,colors){
+        var cx=window.innerWidth/2, cy=window.innerHeight/2;
+        for(var i=0;i<count;i++){
+          (function(){
+            var s=document.createElement('div');
+            s.className='spark';
+            var angle=Math.random()*Math.PI*2;
+            var dist=80+Math.random()*160;
+            var size=4+Math.random()*8;
+            s.style.setProperty('--tx',Math.cos(angle)*dist+'px');
+            s.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+            s.style.setProperty('--dur',(0.6+Math.random()*.6)+'s');
+            s.style.setProperty('--rot',(Math.random()*720-360)+'deg');
+            s.style.background=colors[Math.floor(Math.random()*colors.length)];
+            s.style.width=size+'px'; s.style.height=size+'px';
+            s.style.borderRadius=Math.random()>.5?'50%':'2px';
+            s.style.left=cx+'px'; s.style.top=cy+'px';
+            s.style.animationDelay=(Math.random()*.25)+'s';
+            document.body.appendChild(s);
+            setTimeout(function(){ s.remove(); },1500);
+          })();
+        }
+      }
+
+      var ms=g('mgachaSlot');
+      if(mb&&mc){
+        var slotLabels=['N','R','SR','SSR','UR','SSR','SR','R','N','R','SR'];
+        var slotColors={'N':'#aaa','R':'#4a7a8a','SR':'#6b5b8a','SSR':'#8a6a2a','UR':'#8a1a6a'};
+
+        // レア度抽選（スコアで確率に重みをつける・毎回ランダム）
+        // dollPct高い=不安定=高レアが出やすい
+        function drawRarity(){
+          var roll=Math.random()*100;
+          var pct=dollPct;
+          // UR: pctが高いほど出やすい（最大15%）
+          var urRate   = pct>=80?15:pct>=60?8:pct>=40?3:pct>=20?1:0;
+          var ssrRate  = pct>=60?25:pct>=40?18:pct>=20?10:5;
+          var srRate   = pct>=40?35:pct>=20?30:20;
+          var rRate    = 30;
+          // 合計100に正規化
+          var total=urRate+ssrRate+srRate+rRate;
+          var nRate=100-total; if(nRate<5)nRate=5;
+          var t2=urRate+ssrRate+srRate+rRate+nRate;
+          urRate=urRate/t2*100; ssrRate=(urRate+ssrRate/t2*100);
+          var srTop=ssrRate+srRate/t2*100;
+          var rTop=srTop+rRate/t2*100;
+          if(roll<urRate)  return RARITY[0];
+          if(roll<ssrRate) return RARITY[1];
+          if(roll<srTop)   return RARITY[2];
+          if(roll<rTop)    return RARITY[3];
+          return RARITY[4];
+        }
+
+        // セルフケア重複回避
+        var lastCareIdx=-1;
+        function pickCare(){
+          if(selfcareList.length<=1) return selfcareList[0];
+          var idx;
+          do{ idx=Math.floor(Math.random()*selfcareList.length); }while(idx===lastCareIdx);
+          lastCareIdx=idx;
+          return selfcareList[idx];
+        }
+
+        function runGacha(){
+          mb.disabled=true;
+          mb.textContent='✦  引いてる…';
+          var btnTop=mb.getBoundingClientRect().top+window.pageYOffset-window.innerHeight+mb.offsetHeight+20;
+          if(window.pageYOffset<btnTop) window.scrollTo({top:btnTop,behavior:'smooth'});
+          mc.classList.remove('reveal');
+          mc.innerHTML='';
+
+          // 毎回抽選
+          var r=drawRarity();
+          var isUR=(r.id==='UR');
+          var isSSR=(r.id==='SSR');
+          var isHighRare=isSSR||isUR;
+          var isSR=(r.id==='SR');
+
+          doFlash();
+
+          // スロット回転
+          if(ms){ ms.classList.add('spinning'); ms.textContent=slotLabels[0]; ms.style.color='#fff'; }
+          var si=0;
+          var slotSpeed=80;
+          var slotTotal=isUR?36:isSSR?26:isSR?18:12;
+          var slotTimer=setInterval(function(){
+            si++;
+            var lbl=slotLabels[si%slotLabels.length];
+            if(ms){ ms.textContent=lbl; ms.style.color=slotColors[lbl]||'#fff'; }
+            if(si>slotTotal-6){
+              slotSpeed+=50;
+              clearInterval(slotTimer);
+              slotTimer=setInterval(arguments.callee,slotSpeed);
+            }
+            if(si>=slotTotal){
+              clearInterval(slotTimer);
+              if(ms){ ms.textContent=r.id; ms.style.color=slotColors[r.id]||'#fff'; }
+              var revealDelay=isUR?600:isSSR?400:200;
+              setTimeout(function(){
+                if(ms){ ms.classList.remove('spinning'); }
+                doFlash();
+                if(isHighRare){ setTimeout(doFlash,100); }
+                if(isSSR){ setTimeout(doFlash,200); }
+                if(isUR){ setTimeout(doFlash,200); setTimeout(doFlash,350); doShake(); }
+
+               var item=pickCare();
+var TYPE_LABEL={
+  stable:'安定（維持）',
+  anxiety_low:'不安：低め',
+  anxiety_high:'不安：高め',
+  avoid_low:'回避：低め',
+  avoid_high:'回避：高め',
+  fearful:'恐れ回避'
+};
+var typeName=TYPE_LABEL[type]||'タイプ不明';
+
+mc.innerHTML=
+  '<div class="mgacha-rarity-banner '+r.cls+'">'+r.label+'</div>'+
+  '<img class="mgacha-doll-img" src="/shindan/assets/results/attachment-plush/d0'+r.dollLvl+'.webp" alt="'+r.dollName+'">'+
+  '<div class="mgacha-doll-name">'+r.dollName+'</div>'+
+  '<div class="mgacha-type">タイプ：'+typeName+'</div>'+
+  '<div class="mgacha-care-label">今日のセルフケア</div>'+
+  '<div class="mgacha-care-text">'+item.t+'</div>'+
+  '<div style="font-size:10px;color:var(--ink2);font-family:\'Courier New\',monospace;margin-top:10px">難易度 '+item.s+'</div>';
+                mc.classList.add('reveal');
+
+                if(isUR)       spawnConfetti(50,['#f0a','#a0f','#0af','#fa0','#0fa','#fff','#ff0']);
+                else if(isSSR) spawnConfetti(25,['#f0c060','#f8e080','#e0a030','#fff','#ffd700']);
+                else if(isSR)  spawnConfetti(10,['#b0a0d0','#d0c0f0','#9988cc']);
+
+                mb.disabled=false;
+                mb.textContent='🎴 もう一回引く';
+              }, revealDelay);
+            }
+          }, slotSpeed);
+        }
+        mb.addEventListener('click', runGacha);
+      }
+    }
+
+    showScreen('resultSection');
+    updateProgress(Qs.length, Qs.length);
+    
+
+    // animate bars
+    setTimeout(function(){
+      g('aAnx').style.width=(sc.anx/72*100)+'%';
+      g('aAvo').style.width=(sc.avo/72*100)+'%';
+      g('aStb').style.width=Math.round((144-sc.anx-sc.avo)/144*100)+'%';
+    },150);
+    setTimeout(function(){
+      grid.querySelectorAll('.fc-fill').forEach(function(b){b.style.width=b.dataset.pct+'%';});
+      
+    },300);
+
+    // persist
+    try{localStorage.setItem(LS_DONE,'1');}catch(_){}
+    document.dispatchEvent(new Event('result:ready'));
+  }
+
+  function saveState(){try{localStorage.setItem(LS_ANS,JSON.stringify(answers));}catch(_){}}
+  function saveIdx(){try{localStorage.setItem(LS_IDX,String(cur));}catch(_){}}
+
+  /* ── INIT ── */
+  function init(){
+    document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';});
+    try{
+      var done=localStorage.getItem(LS_DONE), rawAns=localStorage.getItem(LS_ANS);
+      if(done&&rawAns){answers=JSON.parse(rawAns);showResult();return;}
+      if(rawAns){
+        var parsed=JSON.parse(rawAns);
+        if(parsed.some(function(a){return a!==null;})){
+          answers=parsed;
+          var first=parsed.findIndex(function(a){return a===null;}); cur=first!==-1?first:0;
+          updateProgress(parsed.filter(function(a){return a!==null;}).length,Qs.length);
+          showScreen('quizSection'); renderQ(cur,'next'); return;
+        }
+      }
+    }catch(_){}
+    showScreen('prologueSection');
+  }
+
+  /* ── EVENTS ── */
+  g('startBtn').addEventListener('click',function(){showScreen('quizSection');renderQ(cur,'next');window.scrollTo({top:0});});
+  g('prevBtn').addEventListener('click',function(){if(cur>0&&!busy){cur--;saveIdx();renderQ(cur,'prev');}});
+  g('nextBtn').addEventListener('click',function(){
+    if(busy||g('nextBtn').disabled)return;
+    if(cur<Qs.length-1){cur++;saveIdx();renderQ(cur,'next');}else showResult();
+  });
+  g('retryBtn').addEventListener('click',function(){
+    answers=new Array(Qs.length).fill(null); cur=0; busy=false;
+    ['answers','index','done'].forEach(function(k){try{localStorage.removeItem('shindan:'+SLUG+':'+k);}catch(_){}});
+    updateProgress(0,Qs.length); showScreen('prologueSection'); window.scrollTo({top:0});
+  });
+
+  init();
+})();
+
+/* ── こころLv IIFE ── */
+(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'attachment-plush';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1;
+      localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready', mark);
+  setTimeout(mark, 2000);
+}());
+</script>
+</body>
+</html>
