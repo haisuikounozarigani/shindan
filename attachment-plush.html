@@ -175,69 +175,26 @@
     .ripple { position:absolute; border-radius:50%; background:rgba(192,115,106,.2); transform:scale(0); animation:rippleA .4s ease-out; pointer-events:none; }
     @keyframes rippleA { to{transform:scale(4);opacity:0} }
 
-    /* ── BWS 2-PHASE UI ── */
-
-    .bws-instruction {
-      margin-bottom:10px;
-    }
-    .bws-instruction-step {
-      font-size:10px; letter-spacing:.18em; color:var(--ink2);
-      font-family:'Courier New',monospace; margin-bottom:5px;
-    }
-    .bws-instruction-text {
-      font-size:15px; font-weight:700; color:var(--ink);
-      font-family:'Hiragino Mincho ProN','Yu Mincho','YuMincho',serif;
-      letter-spacing:.04em; line-height:1.4;
-    }
-    .bws-instruction-text em { color:var(--rose); font-style:normal; }
-    .bws-instruction-text.phase-least em { color:var(--slate); }
-
-    .bws-slots {
-      display:grid; grid-template-columns:1fr 1fr; gap:6px;
-      margin-bottom:10px;
-    }
-    .bws-slot {
-      border:1px dashed rgba(43,32,24,.18); padding:7px 10px;
-      min-height:48px; display:flex; flex-direction:column; gap:2px;
-      transition:border-color .2s, background .2s;
-    }
-    .bws-slot.filled-most { border:1px solid var(--rose); background:rgba(192,115,106,.05); }
-    .bws-slot.filled-least { border:1px solid var(--slate); background:rgba(110,143,174,.05); }
-    .bws-slot-label {
-      font-size:9px; letter-spacing:.14em; font-family:'Courier New',monospace;
-      color:var(--ink2); display:flex; align-items:center; gap:4px;
-    }
-    .bws-slot.filled-most .bws-slot-label { color:var(--rose); }
-    .bws-slot.filled-least .bws-slot-label { color:var(--slate); }
-    .bws-slot-dot { width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; }
-    .bws-slot-text {
-      font-size:10.5px; line-height:1.4; color:var(--ink2);
-      font-style:italic; opacity:.4;
-    }
-    .bws-slot.filled-most .bws-slot-text,
-    .bws-slot.filled-least .bws-slot-text {
-      font-style:normal; color:var(--ink); opacity:1;
-    }
-
-    .bws-cards { display:flex; flex-direction:column; gap:5px; }
-    .bws-card {
+    /* ── 6件法 UI ── */
+    .likert-wrap { display:flex; flex-direction:column; gap:7px; margin-bottom:4px; }
+    .likert-opt {
+      display:flex; align-items:stretch; cursor:pointer;
       background:var(--paper); border:1px solid var(--bdr); border-left:3px solid transparent;
-      display:flex; align-items:stretch; cursor:pointer; overflow:hidden;
-      transition:border-color .15s, transform .15s, box-shadow .15s;
+      overflow:hidden; transition:border-color .15s, transform .15s, box-shadow .15s;
+      position:relative;
     }
-    .bws-card:hover { border-left-color:var(--rose); transform:translateX(2px); box-shadow:2px 2px 0 var(--bdr); }
-    .bws-card-num {
-      flex-shrink:0; width:32px; display:flex; align-items:center; justify-content:center;
-      font-size:9px; font-family:'Courier New',monospace; color:var(--ink2);
-      border-right:1px solid var(--bdr); background:rgba(43,32,24,.03); letter-spacing:.1em;
-    }
-    .bws-card-body { flex:1; padding:10px 12px; font-size:12.5px; line-height:1.55; color:var(--ink); }
-    .bws-card-num {
+    .likert-opt:hover:not(.selected) { border-left-color:var(--rose); transform:translateX(2px); box-shadow:2px 2px 0 var(--bdr); }
+    .likert-opt.selected { border-left-color:var(--rose); border-color:var(--rose); box-shadow:4px 4px 0 var(--rose); transform:translate(-2px,-2px); }
+    .likert-num {
       flex-shrink:0; width:40px; display:flex; align-items:center; justify-content:center;
-      font-size:10px; font-family:'Courier New',monospace; color:var(--ink2);
+      font-size:12px; font-family:'Courier New',monospace; font-weight:bold; color:var(--ink2);
       border-right:1px solid var(--bdr); background:rgba(43,32,24,.03);
-      letter-spacing:.1em;
+      transition:background .18s, color .18s;
     }
+    .likert-opt.selected .likert-num { background:var(--rose); color:#fff; border-right-color:var(--rose); }
+    .likert-label { flex:1; padding:13px 14px; font-size:13px; line-height:1.6; color:var(--ink); }
+    .likert-check { flex-shrink:0; width:34px; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--rose); opacity:0; transition:opacity .2s; }
+    .likert-opt.selected .likert-check { opacity:1; }
 
     .q-nav { display:flex; gap:10px; margin-top:10px; }
     .btn-prev {
@@ -489,10 +446,19 @@ body.modal-lock{
     }
     /* カード */
     .mgacha-card {
-      margin-bottom:12px; display:none;
+      margin-bottom:12px;
+      display:block;
+      min-height:340px;
+      visibility:hidden;
+      opacity:0;
+      pointer-events:none;
+    }
+    .mgacha-card.reveal {
+      visibility:visible;
+      opacity:1;
+      pointer-events:auto;
       animation:cardReveal .6s cubic-bezier(.2,.8,.3,1.2) both;
     }
-    .mgacha-card.reveal { display:block; }
     @keyframes cardReveal {
       0%  { opacity:0; transform:scale(.6) rotateY(-180deg); }
       70% { opacity:1; transform:scale(1.05) rotateY(6deg); }
@@ -915,7 +881,7 @@ body.modal-lock{
     <div class="pro-body">
       <div class="stamp-row">
         <span class="stamp rose">Attachment Style</span>
-        <span class="stamp ink">24 Questions</span>
+        <span class="stamp ink">28 Questions</span>
       </div>
       <h1 class="main-t">あなたの<em>愛し方</em>、<br>ちょっとおかしくない？</h1>
       <div class="ruled"><span>♦</span></div>
@@ -928,13 +894,10 @@ body.modal-lock{
 
       <p class="pro-text">人間には<strong>幼いころに覚えた「安心の作り方」</strong>があって、大人になった今も、気づかないうちにそれが動いてる。好きな人ができるたびに同じことを繰り返す理由は、たいていそこにある。</p>
 
-      <p class="pro-text">この診断は、あなたの「愛し方の癖」を24問で特定します。<br>
-      
-
-     
+      <p class="pro-text">この診断は、あなたの「愛し方の癖」を28問で特定します。</p>
 
       <div class="note-tape">
-        各問に4択が出ます。<b>「最も近いもの」→「最も遠いもの」</b>の順にタップ。<br>「完璧には当てはまらない」でもOK。所要時間：約5〜8分
+        各問に6段階の選択肢が出ます。<b>「まったくない」〜「とてもある」</b>で一番近い段階をタップ。<br>「完璧には当てはまらない」でもOK。所要時間：約5分
       </div>
       <button class="btn-start" id="startBtn">
         <span>ぬいぐるみと話す &nbsp;→</span>
@@ -954,14 +917,13 @@ body.modal-lock{
     <div id="qInner">
       <div class="q-deco-num" id="qDecoNum">01</div>
       <div class="q-meta">
-        <span class="q-n" id="qNum">Q01 / 24</span>
+        <span class="q-n" id="qNum">Q01 / 28</span>
         <span class="q-tag" id="qFactor"></span>
       </div>
       <div id="qText"></div>
       <div class="choices" id="choicesWrap"></div>
       <div class="q-nav">
         <button class="btn-prev" id="prevBtn" disabled>← もどる</button>
-        <button class="btn-next" id="nextBtn" disabled>つぎへ →</button>
       </div>
     </div>
   </section>
@@ -1013,10 +975,9 @@ body.modal-lock{
 
     <!-- AXES -->
     <div class="axis-wrap">
-      <div class="sec-label">3軸スコア</div>
+      <div class="sec-label">2軸スコア</div>
       <div class="ax-row"><div class="ax-name">不安</div><div class="ax-track"><div class="ax-fill rose" id="aAnx"></div></div><div class="ax-val" id="vAnx"></div></div>
       <div class="ax-row"><div class="ax-name">回避</div><div class="ax-track"><div class="ax-fill slate" id="aAvo"></div></div><div class="ax-val" id="vAvo"></div></div>
-      <div class="ax-row"><div class="ax-name">安定</div><div class="ax-track"><div class="ax-fill sage" id="aStb"></div></div><div class="ax-val" id="vStb"></div></div>
     </div>
 
     <!-- FACTOR GRID -->
@@ -1273,183 +1234,71 @@ body.modal-lock{
   ];
 
   var BEAR_MSGS = {
-    default: { face:'🧸', title:'ぬいぐるみが見ている', msg:'一番近いと感じるものをタップしてね。' },
-    most:    { face:'🧸', title:'（うんうん、と頷いている）', msg:'次は、一番遠いものを選んで。' },
-    least:   { face:'🥰', title:'（ぬいをそっと置く）', msg:'ありがとう、記録したよ。' },
-    A:       { face:'😰', title:'…（ぬいをぎゅっとする）', msg:'そっか、不安になることあるんだね。' },
-    B:       { face:'🧊', title:'（距離をとって、静かにしている）', msg:'ひとりでいる方が楽なときもあるよね。' },
-    C:       { face:'🥰', title:'（ぬいを2人の間にそっと置く）', msg:'それができるの、すごいことだよ。' }
+    default:  { face:'🧸', title:'ぬいぐるみが見ている', msg:'一番近いと感じる段階をタップしてね。正解はないよ。' },
+    answered: { face:'🥰', title:'（うんうん、と頷いている）', msg:'記録したよ。つぎへ進んでね。' },
+    anx:      { face:'😰', title:'…（ぬいをぎゅっとする）', msg:'そっか、不安になることあるんだね。' },
+    avo:      { face:'🧊', title:'（距離をとって、静かにしている）', msg:'ひとりでいる方が楽なときもあるよね。' },
+    stable:   { face:'🥰', title:'（ぬいを2人の間にそっと置く）', msg:'それができるの、すごいことだよ。' }
   };
 
+  // 6件法ラベル
+  var LIKERT = [
+    {v:1, l:'まったくない'},
+    {v:2, l:'あまりない'},
+    {v:3, l:'すこしある'},
+    {v:4, l:'わりとある'},
+    {v:5, l:'かなりある'},
+    {v:6, l:'とてもある'}
+  ];
+
+  // axis: "anx" | "avo" | "mix"
+  // reverse: true → 7-回答値で反転（高得点 = 低スコア方向）
   var Qs = [
-  {f:0,q:'既読はついたのに、返事が来ない。そんなときは？',c:[
-    {t:'A',l:'スマホを何度も開いてしまう',anx:3,avo:0},
-    {t:'B',l:'連絡しない。来たら来たでいい',anx:0,avo:3},
-    {t:'C',l:'気になるのに、連絡できないまま放置してしまう',anx:2,avo:2},
-    {t:'D',l:'少し気になるが、他のことをしながら待てる',anx:0,avo:0}
-  ]},
+  // f:0 返信耐性
+{f:0, axis:'anx', reverse:false, q:'既読がついているのに返事がないと、嫌われたかもと不安になる'},
+{f:0, axis:'anx', reverse:false, q:'返事が数時間来ないと、自分が何かしたのかと考え続けてしまう'},
+{f:0, axis:'anx', reverse:true,  q:'「あとで連絡する」と言われたら、そのまま素直に待てる'},
 
-  {f:0,q:'3時間たっても返事が来ない。最初に思うのは？',c:[
-    {t:'A',l:'嫌われたかな、何かしたかな、と頭が回り続ける',anx:3,avo:0},
-    {t:'B',l:'用事があるんだろうと、気にせず自分のことをする',anx:0,avo:3},
-    {t:'C',l:'不安なのに確かめられず、モヤモヤを一人で抱える',anx:2,avo:2},
-    {t:'D',l:'少し気になるが、特に行動は変わらず過ごせる',anx:0,avo:0}
-  ]},
+// f:1 確認ループ
+{f:1, axis:'anx', reverse:false, q:'返信がないとき、もう一度メッセージを送りたくなる'},
+{f:1, axis:'anx', reverse:false, q:'送ったあと、既読がついたか何度も確認したくなる'},
+{f:1, axis:'mix', reverse:false, q:'関係が不安になると、距離を取るより先に連絡したくなる'},
 
-  {f:0,q:'「あとで連絡するね」と言われたら？',c:[
-    {t:'A',l:'いつ頃か確認したくて、そわそわしてしまう',anx:3,avo:0},
-    {t:'B',l:'向こうのタイミングで来るまで、とくに気にしない',anx:0,avo:3},
-    {t:'C',l:'確認したいのに、催促したら悪いかなと思って聞けない',anx:2,avo:2},
-    {t:'D',l:'その言葉をそのまま受け取って、自然に待てる',anx:0,avo:0}
-  ]},
+// f:2 SNS依存
+{f:2, axis:'anx', reverse:false, q:'相手がSNSは動かしているのに返事がないと、傷ついて頭から離れなくなる'},
+{f:2, axis:'anx', reverse:false, q:'相手が異性と写っている投稿を見ると、嫉妬や不安が止まらなくなる'},
+{f:2, axis:'anx', reverse:false, q:'気づくと相手のSNSやプロフィールをさかのぼって見てしまう'},
 
-  {f:1,q:'送ったメッセージに反応がない。どうしがち？',c:[
-    {t:'A',l:'追いメッセを送りたくなる（実際に送ることも多い）',anx:3,avo:0},
-    {t:'B',l:'追加では何も送らない。向こうが動くのを待つ',anx:0,avo:3},
-    {t:'C',l:'送りたいけど、しつこいと思われそうで止まってしまう',anx:2,avo:2},
-    {t:'D',l:'少し待ってから、状況を見て軽く確認できる',anx:0,avo:0}
-  ]},
+// f:3 関係確定
+{f:3, axis:'anx', reverse:false, q:'付き合い始めの時期に、「ちゃんと付き合ってるよね？」と確かめたくなる'},
+{f:3, axis:'anx', reverse:false, q:'友達とも恋人とも言えない曖昧な関係は、かなりしんどい'},
+{f:3, axis:'anx', reverse:false, q:'相手の元交際相手の話が出ると、自分と比べて不安になる'},
 
-  {f:1,q:'「ちゃんと届いてるかな」と確認したくなることは？',c:[
-    {t:'A',l:'よくある',anx:3,avo:0},
-    {t:'B',l:'ほとんどない。届いてなければ向こうが気づく',anx:0,avo:3},
-    {t:'C',l:'気になるけど、確認すると重くなりそうでできない',anx:2,avo:2},
-    {t:'D',l:'たまにあるが、大体は気にせずいられる',anx:0,avo:0}
-  ]},
+// f:4 境界線
+{f:4, axis:'avo', reverse:false, q:'「今どこにいるの？」と聞かれると、監視されているようで嫌だ'},
+{f:4, axis:'avo', reverse:false, q:'「スマホを見せて」と言われると、仲が良くてもそこは断りたい'},
+{f:4, axis:'avo', reverse:false, q:'SNSのフォロワーや投稿についてあれこれ聞かれると、少し窮屈に感じる'},
+{f:4, axis:'avo', reverse:false, q:'仲良くなるほど、自分の弱い部分を見せるのが怖くなる'},
 
-  {f:1,q:'関係が少し不安定かも、と感じたときは？',c:[
-    {t:'A',l:'連絡が増えたり、つながろうとしてしまう',anx:3,avo:0},
-    {t:'B',l:'しんどくなる前に、少し距離を取る',anx:0,avo:3},
-    {t:'C',l:'近づきたいのに、怖くて引いてしまう',anx:2,avo:2},
-    {t:'D',l:'「最近どう？」と自然に声をかけられる',anx:0,avo:0}
-  ]},
+// f:5 コミュ密度
+{f:5, axis:'anx', reverse:false, q:'毎日やりとりしたいし、連絡が途絶えると不安になる'},
+{f:5, axis:'avo', reverse:false, q:'電話より、文字でのやりとりの方が気持ち的に楽だ'},
+{f:5, axis:'anx', reverse:false, q:'会話が途切れると不安になって、何か話題を探してしまう'},
 
-  {f:2,q:'相手はSNSを動かしているのに、LINEの返事がない。',c:[
-    {t:'A',l:'無視されてる気がして、傷ついて引きずってしまう',anx:3,avo:0},
-    {t:'B',l:'SNSとLINEは別だと思って、あまり気にしない',anx:0,avo:3},
-    {t:'C',l:'傷つくのに何も言えないまま、一人で消化しようとする',anx:2,avo:2},
-    {t:'D',l:'少し気になるが、後で落ち着いて声をかけられる',anx:0,avo:0}
-  ]},
+// f:6 自立性
+{f:6, axis:'avo', reverse:false, q:'困ったことは、まず自分で解決しようとする'},
+{f:6, axis:'avo', reverse:false, q:'人に頼るのが苦手で、できる限り自分でなんとかしたい'},
+{f:6, axis:'avo', reverse:false, q:'将来の話を一緒にするのは、縛られる感じがして少し苦手だ'},
+{f:6, axis:'avo', reverse:false, q:'相手に頼られるのは平気でも、自分が頼るのはなんとなく苦手だ'},
+{f:6, axis:'avo', reverse:false, q:'親しくなるほど、ひとりの時間が必要になる'},
 
-  {f:2,q:'相手が異性と一緒の投稿をしていたら？',c:[
-    {t:'A',l:'不安や嫉妬がかなり出て、気になって止まらない',anx:3,avo:0},
-    {t:'B',l:'相手の交流には関与しないスタンスで、流せる',anx:0,avo:3},
-    {t:'C',l:'気になるし聞きたいのに、引かれそうで何もできない',anx:2,avo:2},
-    {t:'D',l:'少し気になるが、気持ちを落ち着けて受け止められる',anx:0,avo:0}
-  ]},
-
-  {f:2,q:'相手のSNSをさかのぼって見てしまうことは？',c:[
-    {t:'A',l:'よくある。見ないと不安になることもある',anx:3,avo:0},
-    {t:'B',l:'ほとんどしない。見に行く理由がない',anx:0,avo:3},
-    {t:'C',l:'つい見てしまうが、後悔することも多い',anx:2,avo:2},
-    {t:'D',l:'気になるときもあるが、やりすぎないようにできる',anx:0,avo:0}
-  ]},
-
-  {f:3,q:'付き合い始めに「私たちって付き合ってるよね？」と確認したくなる？',c:[
-    {t:'A',l:'かなりしたくなる。はっきりしないとそわそわする',anx:3,avo:0},
-    {t:'B',l:'曖昧でも構わない。向こうから言ってくれるまで待てる',anx:0,avo:3},
-    {t:'C',l:'したいのに、重いと思われそうで聞けない',anx:2,avo:2},
-    {t:'D',l:'気になるけれど、自然なタイミングを待てる',anx:0,avo:0}
-  ]},
-
-  {f:3,q:'「友達以上恋人未満」みたいな関係をどう感じる？',c:[
-    {t:'A',l:'曖昧なままが続くのはかなりしんどい',anx:3,avo:0},
-    {t:'B',l:'近づきすぎなくて、むしろ楽だと感じる',anx:0,avo:3},
-    {t:'C',l:'しんどいけど、はっきりさせるのが怖くて動けない',anx:2,avo:2},
-    {t:'D',l:'少し落ち着かないが、関係を見ながら考えられる',anx:0,avo:0}
-  ]},
-
-  {f:3,q:'相手の元カノ・元カレの話が出たら？',c:[
-    {t:'A',l:'自分と比べてしまって、かなり不安になる',anx:3,avo:0},
-    {t:'B',l:'過去の話と割り切って、あまり動じない',anx:0,avo:3},
-    {t:'C',l:'不安なのに、平気なふりをしてやり過ごしてしまう',anx:2,avo:2},
-    {t:'D',l:'少し動揺しても「今」を大事にしようと思い直せる',anx:0,avo:0}
-  ]},
-
-  {f:4,q:'相手から「今どこにいるの？」と聞かれたら？',c:[
-    {t:'A',l:'素直に答えながら、もっと気にしてほしくなる',anx:3,avo:0},
-    {t:'B',l:'少し監視されてる感じがしてしんどい',anx:0,avo:3},
-    {t:'C',l:'答えながらも、なんとなく身構えてしまう',anx:2,avo:2},
-    {t:'D',l:'状況によって、自然に答えられる',anx:0,avo:0}
-  ]},
-
-  {f:4,q:'「スマホを見せて」と言われたら？',c:[
-    {t:'A',l:'安心してほしくて、すすんで見せたい',anx:3,avo:0},
-    {t:'B',l:'仲良くても、そこは分けたいと思う',anx:0,avo:3},
-    {t:'C',l:'断りたいけど嫌われたくなくて、固まってしまう',anx:2,avo:2},
-    {t:'D',l:'嫌なら嫌だと、落ち着いて伝えられる',anx:0,avo:0}
-  ]},
-
-  {f:4,q:'SNSのフォロワーや投稿について聞かれたら？',c:[
-    {t:'A',l:'全部話したくなる。知ってほしいと思う',anx:3,avo:0},
-    {t:'B',l:'自分のことをあれこれ聞かれるのは少し苦手',anx:0,avo:3},
-    {t:'C',l:'話したい気持ちはあるが、知られすぎるのが怖い',anx:2,avo:2},
-    {t:'D',l:'聞かれれば答えるが、必要以上には広げない',anx:0,avo:0}
-  ]},
-
-  {f:5,q:'連絡のちょうどいいペースは？',c:[
-    {t:'A',l:'毎日こまめにやりとりしたい',anx:3,avo:0},
-    {t:'B',l:'用件があるときだけで十分',anx:0,avo:3},
-    {t:'C',l:'本当は毎日したいけど、求めすぎるのが怖くて言えない',anx:2,avo:2},
-    {t:'D',l:'お互いのペースを大事にしながら、自然にやりとりできる',anx:0,avo:0}
-  ]},
-
-  {f:5,q:'電話についてどう思う？',c:[
-    {t:'A',l:'声を聞きたくて、自分からかけたくなる',anx:3,avo:0},
-    {t:'B',l:'電話は少し負担。メッセージの方が楽',anx:0,avo:3},
-    {t:'C',l:'したい気持ちはあるのに、迷惑かもと思ってためらう',anx:2,avo:2},
-    {t:'D',l:'必要なときや話したいときに、自然にかけられる',anx:0,avo:0}
-  ]},
-
-  {f:5,q:'会話に沈黙が続いたら？',c:[
-    {t:'A',l:'不安になって、何か言葉で埋めようとしてしまう',anx:3,avo:0},
-    {t:'B',l:'無理に埋めなくていいと思う。沈黙は別に平気',anx:0,avo:3},
-    {t:'C',l:'不安だけど、何を言えばいいかわからず黙ってしまう',anx:2,avo:2},
-    {t:'D',l:'少し気になっても、自然に待てる',anx:0,avo:0}
-  ]},
-
-  {f:6,q:'何か困ったとき、相手に相談する？',c:[
-    {t:'A',l:'わりとすぐ相談したくなる。そばにいてほしい',anx:3,avo:0},
-    {t:'B',l:'なるべく自分で解決する。相談は最終手段',anx:0,avo:3},
-    {t:'C',l:'相談したいのに、迷惑かなと思って言えないことが多い',anx:2,avo:2},
-    {t:'D',l:'必要なことは相談できる。一人で抱えすぎない',anx:0,avo:0}
-  ]},
-
-  {f:6,q:'相手に頼ることについては？',c:[
-    {t:'A',l:'頼りたいし、頼られたい。そのくらいの距離感が安心',anx:3,avo:0},
-    {t:'B',l:'頼るのが苦手。できる限り自分で何とかしたい',anx:0,avo:3},
-    {t:'C',l:'頼りたいけど、近づきすぎる感じがして怖くなる',anx:2,avo:2},
-    {t:'D',l:'適度に頼り合える関係が理想',anx:0,avo:0}
-  ]},
-
-  {f:6,q:'将来の計画を一緒に話すことについては？',c:[
-    {t:'A',l:'早めに確認しておきたい。先が見えないのが不安',anx:3,avo:0},
-    {t:'B',l:'先の話はあまりしたくない。縛られたくない感じがある',anx:0,avo:3},
-    {t:'C',l:'話したいけど、重いと思われそうで切り出せない',anx:2,avo:2},
-    {t:'D',l:'今の関係に合ったペースで、前向きに話せる',anx:0,avo:0}
-  ]},
-
-  {f:7,q:'けんかやすれ違いがあったとき、どうしがち？',c:[
-    {t:'A',l:'すぐ解決したくて、相手に何度も連絡してしまう',anx:3,avo:0},
-    {t:'B',l:'少し距離を置いて、一人で冷静になりたい',anx:0,avo:3},
-    {t:'C',l:'仲直りしたいのに、怖くて話しかけられない',anx:2,avo:2},
-    {t:'D',l:'少し落ち着いてから、話し合いの場を作れる',anx:0,avo:0}
-  ]},
-
-  {f:7,q:'関係がうまくいっていない気がするときは？',c:[
-    {t:'A',l:'何度も連絡して、大丈夫か確かめたくなる',anx:3,avo:0},
-    {t:'B',l:'傷つく前に、自分から少し引いてしまう',anx:0,avo:3},
-    {t:'C',l:'確かめたいのに、しんどくて自分でも少し離れてしまう',anx:2,avo:2},
-    {t:'D',l:'「一度ちゃんと話そう」と提案できる',anx:0,avo:0}
-  ]},
-
-  {f:7,q:'相手がそっけない日が続いたら？',c:[
-    {t:'A',l:'自分のせいかも、と強く不安になって頭から離れない',anx:3,avo:0},
-    {t:'B',l:'相手にも事情があると割り切り、自分の時間に戻る',anx:0,avo:3},
-    {t:'C',l:'気になるし寂しいのに、聞くのも怖くて動けない',anx:2,avo:2},
-    {t:'D',l:'「最近何かあった？」と落ち着いて聞ける',anx:0,avo:0}
-  ]}
+// f:7 葛藤対処
+{f:7, axis:'mix', reverse:false, q:'喧嘩になると、早く仲直りしたくて何度も連絡してしまう'},
+{f:7, axis:'avo', reverse:false, q:'関係がぎくしゃくしてきたとき、傷つく前に自分から少し引いてしまう'},
+{f:7, axis:'anx', reverse:false, q:'相手のそっけない日が続くと、自分のせいかもと不安が頭から離れなくなる'},
+{f:7, axis:'avo', reverse:false, q:'関係が深まってくると、なんとなく距離を取りたくなる'}
 ];
+
 
   var RESULTS = {
     stable: {
@@ -1538,7 +1387,7 @@ body.modal-lock{
     }
   };
 
-  var answers = Array.from({length:Qs.length}, function(){ return {most:null,least:null}; });
+  var answers = Array.from({length:Qs.length}, function(){ return null; });
   var cur = 0;
   var busy = false;
 
@@ -1599,135 +1448,52 @@ body.modal-lock{
       g('qFactor').textContent=FACTOR_LABELS[q.f];
       g('qText').textContent=q.q;
       var wrap=g('choicesWrap'); wrap.innerHTML='';
-      var ans=answers[idx]||{most:null,least:null};
+      var curAns=answers[idx]; // null or 1-6
 
-      // シャッフル（表示順のみ、キーtは不変）
-      var shuffled=q.c.slice();
-      for(var si=shuffled.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=shuffled[si];shuffled[si]=shuffled[sj];shuffled[sj]=st;}
+      // 6件法UI
+      var listWrap=document.createElement('div');
+      listWrap.className='likert-wrap';
+      wrap.appendChild(listWrap);
 
-      // 今やること見出し
-      var instrEl=document.createElement('div');
-      instrEl.className='bws-instruction';
-      wrap.appendChild(instrEl);
+      LIKERT.forEach(function(item){
+        var opt=document.createElement('div');
+        opt.className='likert-opt'+(curAns===item.v?' selected':'');
+        opt.innerHTML=
+          '<div class="likert-num">'+item.v+'</div>'+
+          '<div class="likert-label">'+item.l+'</div>'+
+          '<div class="likert-check">✓</div>';
+        opt.addEventListener('click',function(){
+          answers[idx]=item.v; saveState();
+          // bear reaction
+          var bearState='answered';
+          if(q.axis==='anx'){ bearState=item.v>=4?'anx':'stable'; }
+          else if(q.axis==='avo'){ bearState=item.v>=4?'avo':'stable'; }
+          setBear(bearState);
+          updateProgress(answers.filter(function(x){return x!==null;}).length,Qs.length);
 
-      // 選択済み2枠
-      var slotsEl=document.createElement('div');
-      slotsEl.className='bws-slots';
-      wrap.appendChild(slotsEl);
+          // 選択状態を更新
+          listWrap.querySelectorAll('.likert-opt').forEach(function(o){o.classList.remove('selected');});
+          opt.classList.add('selected');
+          
 
-      // 候補カード領域
-      var cardWrap=document.createElement('div');
-      cardWrap.className='bws-cards';
-      wrap.appendChild(cardWrap);
-
-      function buildCards(){
-        var a=answers[idx]||{most:null,least:null};
-        var phase=a.most?'least':'most';
-
-        // 今やること見出し更新
-        instrEl.innerHTML=
-          '<div class="bws-instruction-step">STEP '+(phase==='most'?'1':'2')+' / 2</div>'+
-          '<div class="bws-instruction-text'+(phase==='least'?' phase-least':'')+'">'+
-            (phase==='most'
-              ? '一番自分に<em>近いもの</em>を1つ選ぶ'
-              : '一番自分に<em>遠いもの</em>を1つ選ぶ')+
-          '</div>';
-
-        // 選択済み2枠の更新
-        var mostCh=a.most?shuffled.find(function(c){return c.t===a.most;}):null;
-        var leastCh=a.least?shuffled.find(function(c){return c.t===a.least;}):null;
-
-        function makeSlot(filled, labelText, chObj, colorClass){
-          var slot=document.createElement('div');
-          slot.className='bws-slot'+(filled?' '+colorClass:'');
-          var top=document.createElement('div');
-          top.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:4px;';
-          var lbl=document.createElement('div');
-          lbl.className='bws-slot-label';
-          lbl.innerHTML='<span class="bws-slot-dot"></span>'+labelText;
-          top.appendChild(lbl);
-          if(filled){
-            var clr=document.createElement('button');
-            clr.type='button';
-            clr.textContent='× 変更';
-            clr.style.cssText='background:none;border:none;font-size:9px;letter-spacing:.1em;font-family:"Courier New",monospace;cursor:pointer;color:var(--ink2);padding:2px 4px;';
-            clr.onmouseenter=function(){clr.style.color='var(--ink)';};
-            clr.onmouseleave=function(){clr.style.color='var(--ink2)';};
-            top.appendChild(clr);
-          }
-          slot.appendChild(top);
-          var txt=document.createElement('div');
-          txt.className='bws-slot-text';
-          txt.textContent=chObj?chObj.l:'まだ選んでいない';
-          slot.appendChild(txt);
-          return {slot:slot, clrBtn:filled?top.querySelector('button'):null};
-        }
-
-        slotsEl.innerHTML='';
-        var mostSlot=makeSlot(!!mostCh,'いちばん近い',mostCh,'filled-most');
-        var leastSlot=makeSlot(!!leastCh,'いちばん遠い',leastCh,'filled-least');
-        slotsEl.appendChild(mostSlot.slot);
-        slotsEl.appendChild(leastSlot.slot);
-
-        if(mostSlot.clrBtn){
-          mostSlot.clrBtn.addEventListener('click',function(){
-            answers[idx]={most:null,least:null}; saveState();
-            setBear('default'); buildCards();
-          });
-        }
-        if(leastSlot.clrBtn){
-          leastSlot.clrBtn.addEventListener('click',function(){
-            answers[idx].least=null; saveState();
-            setBear('most'); buildCards();
-          });
-        }
-
-        // カード描画（フェーズ2ではmostを除外して3枚）
-        cardWrap.innerHTML='';
-        var nums=['A','B','C','D'];
-        var ni=0;
-        shuffled.forEach(function(ch){
-          if(phase==='least'&&ch.t===a.most) return;
-          var card=document.createElement('div');
-          card.className='bws-card';
-          var numEl=document.createElement('div');
-          numEl.className='bws-card-num';
-          numEl.textContent=nums[ni++];
-          var body=document.createElement('div');
-          body.className='bws-card-body';
-          body.textContent=ch.l;
-          card.appendChild(numEl);
-          card.appendChild(body);
-          cardWrap.appendChild(card);
-
-          card.addEventListener('click',function(){
-            var a=answers[idx]||{most:null,least:null};
-            if(phase==='most'){
-              a.most=ch.t; a.least=null;
-              answers[idx]=a; saveState();
-              setBear('most');
-              updateProgress(answers.filter(function(x){return x&&x.most&&x.least;}).length,Qs.length);
-              cardWrap.style.opacity='0'; cardWrap.style.transform='translateY(-8px)';
-              setTimeout(function(){
-                cardWrap.style.transition='opacity .2s,transform .2s';
-                buildCards();
-                cardWrap.style.opacity='1'; cardWrap.style.transform='translateY(0)';
-              },160);
-            } else {
-              a.least=ch.t;
-              answers[idx]=a; saveState();
-              setBear('least');
-              updateProgress(answers.filter(function(x){return x&&x.most&&x.least;}).length,Qs.length);
-              g('nextBtn').disabled=false;
-              buildCards();
-              
+          // 少しだけ選択感を見せてから自動で次へ
+          setTimeout(function(){
+            if(cur < Qs.length - 1){
+              cur++;
+              saveIdx();
+              saveState();
+              renderQ(cur,'next');
+              setBear('default');
+            }else{
+              localStorage.setItem(LS_DONE,'1');
+              showResult();
+              showScreen('resultSection');
+              updateProgress(Qs.length,Qs.length);
             }
-          });
+          }, 140);
         });
-
-        g('nextBtn').disabled=!(a.most&&a.least);
-      }
-      buildCards();
+        listWrap.appendChild(opt);
+      });
 
       g('prevBtn').disabled=idx===0;
       inner.style.transition='none'; inner.style.opacity='0';
@@ -1741,37 +1507,74 @@ body.modal-lock{
 
   /* ── RESULT ── */
   function computeScores(){
-    var anx=0,avo=0,fa=[],fb=[];
+    var anx=0, avo=0;
+    var fa=[], fb=[];
     for(var i=0;i<8;i++){fa.push(0);fb.push(0);}
+    var fCount=[];
+    for(var i=0;i<8;i++){fCount.push(0);}
+
     answers.forEach(function(ans,i){
-      if(!ans||!ans.most||!ans.least)return;
-      var f=Qs[i].f;
-      var most=Qs[i].c.find(function(c){return c.t===ans.most;});
-      var least=Qs[i].c.find(function(c){return c.t===ans.least;});
-      if(!most||!least)return;
-      // most: フル加算、least: ハーフ減算
-      anx += most.anx - least.anx * 0.5;
-      avo += most.avo - least.avo * 0.5;
-      fa[f] += most.anx - least.anx * 0.5;
-      fb[f] += most.avo - least.avo * 0.5;
+      if(ans===null||ans===undefined)return;
+      var q=Qs[i];
+      var val=q.reverse?(7-ans):ans; // 1-6 (reverseなら反転)
+      var f=q.f;
+
+      if(q.axis==='anx'){
+        anx+=val; fa[f]+=val;
+      } else if(q.axis==='avo'){
+        avo+=val; fb[f]+=val;
+      } else { // mix
+        anx+=val*0.5; avo+=val*0.5;
+        fa[f]+=val*0.5; fb[f]+=val*0.5;
+      }
+      fCount[f]++;
     });
-    // 1問の範囲[-1.5, 3]×24問=[-36, 72] を [0,100] に正規化
-    function norm(v){ return Math.round(Math.max(0, Math.min(100, (v+36)/108*100))); }
-    // 因子は3問分: [-4.5, 9] を [0,100] に正規化
-    function normF(v){ return Math.round(Math.max(0, Math.min(100, (v+4.5)/13.5*100))); }
-    var anxPct=norm(anx), avoPct=norm(avo);
-    var faN=fa.map(normF), fbN=fb.map(normF);
+
+    // 各軸の回答数を計算
+    var anxCount=0, avoCount=0;
+    Qs.forEach(function(q){
+      if(q.axis==='anx') anxCount++;
+      else if(q.axis==='avo') avoCount++;
+      else { anxCount+=0.5; avoCount+=0.5; }
+    });
+
+    // 0-100正規化: 最小1×問数, 最大6×問数
+    function norm(v, cnt){
+      if(cnt===0)return 50;
+      return Math.round(Math.max(0,Math.min(100,(v-cnt)/(cnt*5)*100)));
+    }
+    // 因子ごと: 3問 × ほぼ anx or avo
+    function normF(v, cnt){
+      if(cnt===0)return 50;
+      return Math.round(Math.max(0,Math.min(100,(v-cnt)/(cnt*5)*100)));
+    }
+
+    var anxPct=norm(anx,anxCount), avoPct=norm(avo,avoCount);
+
+    // 因子スコア：各因子の問数から正規化
+    var fAnxCount=[0,0,0,0,0,0,0,0], fAvoCount=[0,0,0,0,0,0,0,0];
+    Qs.forEach(function(q){
+      var f=q.f;
+      if(q.axis==='anx') fAnxCount[f]++;
+      else if(q.axis==='avo') fAvoCount[f]++;
+      else { fAnxCount[f]+=0.5; fAvoCount[f]+=0.5; }
+    });
+    var faN=fa.map(function(v,i){ return normF(v,fAnxCount[i]||0.5); });
+    var fbN=fb.map(function(v,i){ return normF(v,fAvoCount[i]||0.5); });
+
     return{anx:anxPct, avo:avoPct, fa:faN, fb:fbN};
   }
   function getType(anx,avo){
-    // 0-100スケール。中央=50、高=67（旧75%相当）
-    if(anx>=55&&avo>=55)return'fearful';
-    if(anx>=72)return'anxiety_high';
-    if(anx>=55)return'anxiety_low';
-    if(avo>=72)return'avoid_high';
-    if(avo>=55)return'avoid_low';
-    return'stable';
-  }
+  // 0-100スケール
+  var diff = Math.abs(anx - avo);
+
+  if(anx >= 65 && avo >= 65 && diff <= 15) return 'fearful';
+  if(anx >= 68) return 'anxiety_high';
+  if(avo >= 68) return 'avoid_high';
+  if(anx >= 52) return 'anxiety_low';
+  if(avo >= 52) return 'avoid_low';
+  return 'stable';
+}
 
   function showResult(){
     var sc=computeScores(); var type=getType(sc.anx,sc.avo); var res=RESULTS[type];
@@ -1897,23 +1700,47 @@ body.modal-lock{
     g('rPit').textContent=res.pit;
     g('rAct').textContent=res.act;
 
-    // axes（computeScores内で既に0-100に正規化済み）
+    // axes（2軸のみ）
     var anxPct = sc.anx;
     var avoPct = sc.avo;
-    var stbPct = Math.max(0, 100 - Math.round((anxPct + avoPct) / 2));
 
     g('vAnx').textContent = anxPct + '%';
     g('vAvo').textContent = avoPct + '%';
-    g('vStb').textContent = stbPct + '%';
 
-    // factor grid（computeScores内で既に0-100正規化済み）
+    // factor grid（2軸表示に合わせて、安定は出さない）
     var grid=g('factorGrid'); grid.innerHTML='';
     FACTOR_LABELS.forEach(function(name,i){
       var fAnx=sc.fa[i], fAvo=sc.fb[i];
-      var label='安定', pct=Math.max(0,100-Math.round((fAnx+fAvo)/2)), color='var(--sage)';
-      if(fAnx>fAvo+10){label='不安寄り';pct=fAnx;color='var(--rose)';}
-      else if(fAvo>fAnx+10){label='回避寄り';pct=fAvo;color='var(--slate)';}
-      else if(fAnx>50&&fAvo>50){label='恐れ回避寄り';pct=Math.round((fAnx+fAvo)/2);color='var(--purple)';}
+      var label='', pct=0, color='var(--gold)';
+      var maxScore = Math.max(fAnx, fAvo);
+      var diff = Math.abs(fAnx - fAvo);
+
+      if(fAnx < 35 && fAvo < 35){
+        label='安定';
+        pct=maxScore;
+        color='var(--sage)';
+      } else if(fAnx < 45 && fAvo < 45 && diff <= 12){
+        label='やや安定';
+        pct=maxScore;
+        color='var(--sage)';
+      } else if(fAnx >= 50 && fAvo >= 50){
+        label='恐れ回避寄り';
+        pct=Math.round((fAnx+fAvo)/2);
+        color='var(--purple)';
+      } else if(fAnx > fAvo){
+        label='不安寄り';
+        pct=fAnx;
+        color='var(--rose)';
+      } else if(fAvo > fAnx){
+        label='回避寄り';
+        pct=fAvo;
+        color='var(--slate)';
+      } else {
+        label='やや安定';
+        pct=maxScore;
+        color='var(--sage)';
+      }
+
       var card=document.createElement('div');
       card.className='fc-card';
       card.innerHTML='<div class="fc-top"><span class="fc-name">'+name+'</span><button class="fc-info-btn" aria-label="説明">?</button></div>'+
@@ -1933,14 +1760,14 @@ body.modal-lock{
       al.innerHTML='';
       Qs.forEach(function(q,i){
         var ans=answers[i];
-        if(!ans) return;
-        var chosen=q.c.find(function(c){return c.t===ans;});
+        if(ans===null||ans===undefined) return;
+        var lkItem=LIKERT.find(function(l){return l.v===ans;});
         var row=document.createElement('div');
         row.className='ans-row';
         row.innerHTML=
           '<span class="ans-q-num">Q'+(i<9?'0':'')+(i+1)+'</span>'+
           '<span class="ans-q-text">'+q.q+'</span>'+
-          '<span class="ans-choice">'+ans+' : '+(chosen?chosen.l:'')+'</span>';
+          '<span class="ans-choice">'+ans+' : '+(lkItem?lkItem.l:'')+'</span>';
         al.appendChild(row);
       });
     }
@@ -2008,7 +1835,7 @@ body.modal-lock{
   {id:'N',  label:'N',        dollLvl:1, dollName:'ボロボロ', cls:'rarity-N'}
 ];
     var instability=sc.anx+sc.avo;
-    var dollPct=Math.round(instability/144*100);
+    var dollPct=Math.round(instability/200*100);
     // スコアからレア度決定（不安定なほど高レア）
     var myRarity=dollPct>=80?RARITY[0]:dollPct>=60?RARITY[1]:dollPct>=40?RARITY[2]:dollPct>=20?RARITY[3]:RARITY[4];
     // セルフケアリスト
@@ -2213,7 +2040,6 @@ mc.innerHTML=
     setTimeout(function(){
       g('aAnx').style.width = anxPct + '%';
       g('aAvo').style.width = avoPct + '%';
-      g('aStb').style.width = stbPct + '%';
     },150);
     setTimeout(function(){
       grid.querySelectorAll('.fc-fill').forEach(function(b){b.style.width=b.dataset.pct+'%';});
@@ -2235,18 +2061,17 @@ mc.innerHTML=
       var done=localStorage.getItem(LS_DONE), rawAns=localStorage.getItem(LS_ANS);
       if(done&&rawAns){
         var parsed=JSON.parse(rawAns);
-        // BWS形式チェック（most/leastを持つオブジェクト配列か確認）
-        if(Array.isArray(parsed)&&parsed[0]&&typeof parsed[0]==='object'&&'most' in parsed[0]){
+        // 旧BWS形式（most/least）は捨ててリセット
+        if(Array.isArray(parsed)&&parsed.length===Qs.length&&(parsed[0]===null||typeof parsed[0]==='number')){
           answers=parsed;
         }else{
-          // 旧形式データは捨ててリセット
-          answers=Array.from({length:Qs.length},function(){return{most:null,least:null};});
+          answers=Array.from({length:Qs.length},function(){return null;});
         }
         showResult();return;
       }
       if(rawAns){
         var parsed=JSON.parse(rawAns);
-        if(parsed.some(function(a){return a!==null;})){
+        if(Array.isArray(parsed)&&parsed.length===Qs.length&&parsed.some(function(a){return a!==null;})){
           answers=parsed;
           var first=parsed.findIndex(function(a){return a===null;}); cur=first!==-1?first:0;
           updateProgress(parsed.filter(function(a){return a!==null;}).length,Qs.length);
@@ -2260,22 +2085,9 @@ mc.innerHTML=
   /* ── EVENTS ── */
   g('startBtn').addEventListener('click',function(){showScreen('quizSection');renderQ(cur,'next');window.scrollTo({top:0});});
   g('prevBtn').addEventListener('click',function(){if(cur>0&&!busy){cur--;saveIdx();renderQ(cur,'prev');}});
-  g('nextBtn').addEventListener('click',function(){
-    if(busy||g('nextBtn').disabled)return;
-
-    var a=answers[cur]||{most:null,least:null};
-    if(!(a.most&&a.least)) return;
-
-    if(cur<Qs.length-1){
-      cur++;
-      saveIdx();
-      renderQ(cur,'next');
-    }else{
-      showResult();
-    }
-  });
+  
   g('retryBtn').addEventListener('click',function(){
-    answers=Array.from({length:Qs.length},function(){return{most:null,least:null};}); cur=0; busy=false;
+    answers=Array.from({length:Qs.length},function(){return null;}); cur=0; busy=false;
     ['answers','index','done'].forEach(function(k){try{localStorage.removeItem('shindan:'+SLUG+':'+k);}catch(_){}});
     updateProgress(0,Qs.length); showScreen('prologueSection'); window.scrollTo({top:0});
   });
