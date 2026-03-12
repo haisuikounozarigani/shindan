@@ -1507,72 +1507,77 @@ body.modal-lock{
 
   /* ── RESULT ── */
   function computeScores(){
-    var anx=0, avo=0;
-    var fa=[], fb=[];
-    for(var i=0;i<8;i++){fa.push(0);fb.push(0);}
-    var fCount=[];
-    for(var i=0;i<8;i++){fCount.push(0);}
+  var anxSum = 0, avoSum = 0;
+  var anxCnt = 0, avoCnt = 0;
 
-    answers.forEach(function(ans,i){
-      if(ans===null||ans===undefined)return;
-      var q=Qs[i];
-      var val=q.reverse?(7-ans):ans; // 1-6 (reverseなら反転)
-      var f=q.f;
+  var fa = Array.from({length:8}, function(){ return 0; });
+  var fb = Array.from({length:8}, function(){ return 0; });
+  var fAnxCnt = Array.from({length:8}, function(){ return 0; });
+  var fAvoCnt = Array.from({length:8}, function(){ return 0; });
 
-      if(q.axis==='anx'){
-        anx+=val; fa[f]+=val;
-      } else if(q.axis==='avo'){
-        avo+=val; fb[f]+=val;
-      } else { // mix
-        anx+=val*0.5; avo+=val*0.5;
-        fa[f]+=val*0.5; fb[f]+=val*0.5;
-      }
-      fCount[f]++;
-    });
-
-    // 各軸の回答数を計算
-    var anxCount=0, avoCount=0;
-    Qs.forEach(function(q){
-      if(q.axis==='anx') anxCount++;
-      else if(q.axis==='avo') avoCount++;
-      else { anxCount+=0.5; avoCount+=0.5; }
-    });
-
-    // 0-100正規化: 最小1×問数, 最大6×問数
-    function norm(v, cnt){
-      if(cnt===0)return 50;
-      return Math.round(Math.max(0,Math.min(100,(v-cnt)/(cnt*5)*100)));
-    }
-    // 因子ごと: 3問 × ほぼ anx or avo
-    function normF(v, cnt){
-      if(cnt===0)return 50;
-      return Math.round(Math.max(0,Math.min(100,(v-cnt)/(cnt*5)*100)));
-    }
-
-    var anxPct=norm(anx,anxCount), avoPct=norm(avo,avoCount);
-
-    // 因子スコア：各因子の問数から正規化
-    var fAnxCount=[0,0,0,0,0,0,0,0], fAvoCount=[0,0,0,0,0,0,0,0];
-    Qs.forEach(function(q){
-      var f=q.f;
-      if(q.axis==='anx') fAnxCount[f]++;
-      else if(q.axis==='avo') fAvoCount[f]++;
-      else { fAnxCount[f]+=0.5; fAvoCount[f]+=0.5; }
-    });
-    var faN=fa.map(function(v,i){ return normF(v,fAnxCount[i]||0.5); });
-    var fbN=fb.map(function(v,i){ return normF(v,fAvoCount[i]||0.5); });
-
-    return{anx:anxPct, avo:avoPct, fa:faN, fb:fbN};
+  function toPct(mean){
+    // 1-6平均 → 0-100
+    return Math.round(((mean - 1) / 5) * 100);
   }
-  function getType(anx,avo){
-  // 0-100スケール
-  var diff = Math.abs(anx - avo);
 
-  if(anx >= 65 && avo >= 65 && diff <= 15) return 'fearful';
-  if(anx >= 68) return 'anxiety_high';
-  if(avo >= 68) return 'avoid_high';
-  if(anx >= 52) return 'anxiety_low';
-  if(avo >= 52) return 'avoid_low';
+  answers.forEach(function(ans, i){
+    if(ans == null) return;
+
+    var q = Qs[i];
+    var val = q.reverse ? (7 - ans) : ans;
+    var f = q.f;
+
+    if(q.axis === 'anx'){
+      anxSum += val;
+      anxCnt += 1;
+      fa[f] += val;
+      fAnxCnt[f] += 1;
+    } else if(q.axis === 'avo'){
+      avoSum += val;
+      avoCnt += 1;
+      fb[f] += val;
+      fAvoCnt[f] += 1;
+    } else { // mix
+      anxSum += val * 0.5;
+      avoSum += val * 0.5;
+      anxCnt += 0.5;
+      avoCnt += 0.5;
+      fa[f] += val * 0.5;
+      fb[f] += val * 0.5;
+      fAnxCnt[f] += 0.5;
+      fAvoCnt[f] += 0.5;
+    }
+  });
+
+  var anxMean = anxCnt ? (anxSum / anxCnt) : 1;
+  var avoMean = avoCnt ? (avoSum / avoCnt) : 1;
+
+  var faN = fa.map(function(sum, i){
+    if(!fAnxCnt[i]) return 0;
+    return toPct(sum / fAnxCnt[i]);
+  });
+
+  var fbN = fb.map(function(sum, i){
+    if(!fAvoCnt[i]) return 0;
+    return toPct(sum / fAvoCnt[i]);
+  });
+
+  return {
+    anx: toPct(anxMean),
+    avo: toPct(avoMean),
+    anxMean: anxMean,
+    avoMean: avoMean,
+    fa: faN,
+    fb: fbN
+  };
+}
+  function getType(anx, avo){
+  // 0-100
+  if(anx >= 60 && avo >= 60) return 'fearful';
+  if(anx >= 60) return 'anxiety_high';
+  if(avo >= 60) return 'avoid_high';
+  if(anx >= 40) return 'anxiety_low';
+  if(avo >= 40) return 'avoid_low';
   return 'stable';
 }
 
@@ -1707,52 +1712,57 @@ body.modal-lock{
     g('vAnx').textContent = anxPct + '%';
     g('vAvo').textContent = avoPct + '%';
 
-    // factor grid（2軸表示に合わせて、安定は出さない）
-    var grid=g('factorGrid'); grid.innerHTML='';
-    FACTOR_LABELS.forEach(function(name,i){
-      var fAnx=sc.fa[i], fAvo=sc.fb[i];
-      var label='', pct=0, color='var(--gold)';
-      var maxScore = Math.max(fAnx, fAvo);
-      var diff = Math.abs(fAnx - fAvo);
+    // factor grid
+var grid = g('factorGrid'); 
+grid.innerHTML = '';
 
-      if(fAnx < 35 && fAvo < 35){
-        label='安定';
-        pct=maxScore;
-        color='var(--sage)';
-      } else if(fAnx < 45 && fAvo < 45 && diff <= 12){
-        label='やや安定';
-        pct=maxScore;
-        color='var(--sage)';
-      } else if(fAnx >= 50 && fAvo >= 50){
-        label='恐れ回避寄り';
-        pct=Math.round((fAnx+fAvo)/2);
-        color='var(--purple)';
-      } else if(fAnx > fAvo){
-        label='不安寄り';
-        pct=fAnx;
-        color='var(--rose)';
-      } else if(fAvo > fAnx){
-        label='回避寄り';
-        pct=fAvo;
-        color='var(--slate)';
-      } else {
-        label='やや安定';
-        pct=maxScore;
-        color='var(--sage)';
-      }
+FACTOR_LABELS.forEach(function(name, i){
+  var fAnx = sc.fa[i];
+  var fAvo = sc.fb[i];
+  var label = '';
+  var pct = 0;
+  var color = 'var(--sage)';
+  var maxScore = Math.max(fAnx, fAvo);
 
-      var card=document.createElement('div');
-      card.className='fc-card';
-      card.innerHTML='<div class="fc-top"><span class="fc-name">'+name+'</span><button class="fc-info-btn" aria-label="説明">?</button></div>'+
-        '<div class="fc-track"><div class="fc-fill" style="background:'+color+'" data-pct="'+pct+'"></div></div>'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">'+
-          '<div class="fc-tend" style="color:'+color+'">'+label+'</div>'+
-          '<div style="font-size:11px;font-family:\'Courier New\',monospace;color:'+color+';font-weight:bold;">'+pct+'%</div>'+
-        '</div>'+
-        '<div class="fc-tooltip">'+FACTOR_TIPS[i]+'</div>';
-      card.addEventListener('click',function(){ card.classList.toggle('open'); });
-      grid.appendChild(card);
-    });
+  if(fAnx >= 60 && fAvo >= 60){
+    label = '恐れ回避寄り';
+    pct = Math.round((fAnx + fAvo) / 2);
+    color = 'var(--purple)';
+  } else if(fAnx >= 40 && fAvo >= 40){
+    label = '両方やや高め';
+    pct = Math.round((fAnx + fAvo) / 2);
+    color = 'var(--gold)';
+  } else if(fAnx >= fAvo && fAnx >= 40){
+    label = '不安寄り';
+    pct = fAnx;
+    color = 'var(--rose)';
+  } else if(fAvo > fAnx && fAvo >= 40){
+    label = '回避寄り';
+    pct = fAvo;
+    color = 'var(--slate)';
+  } else {
+    label = '安定寄り';
+    pct = maxScore; // 低いほど安定。バーの文法を崩さない
+    color = 'var(--sage)';
+  }
+
+  var card = document.createElement('div');
+  card.className = 'fc-card';
+  card.innerHTML =
+    '<div class="fc-top"><span class="fc-name">'+name+'</span><button class="fc-info-btn" aria-label="説明">?</button></div>'+
+    '<div class="fc-track"><div class="fc-fill" style="background:'+color+'" data-pct="'+pct+'"></div></div>'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">'+
+      '<div class="fc-tend" style="color:'+color+'">'+label+'</div>'+
+      '<div style="font-size:11px;font-family:\'Courier New\',monospace;color:'+color+';font-weight:bold;">'+pct+'%</div>'+
+    '</div>'+
+    '<div class="fc-tooltip">'+FACTOR_TIPS[i]+'</div>';
+
+  card.addEventListener('click', function(){
+    card.classList.toggle('open');
+  });
+
+  grid.appendChild(card);
+});
 
     // 前回の回答
     var al=g('ansList');
