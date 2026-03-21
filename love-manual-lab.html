@@ -1,0 +1,2275 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>天使と悪魔の恋愛審判 | こころの標本</title>
+  <meta name="description" content="24問で恋愛相性を審判。天使と悪魔があなたの2人を採点する。">
+  <meta property="og:title" content="天使と悪魔の恋愛審判">
+  <meta property="og:description" content="24問で恋愛相性を審判。天使と悪魔があなたの2人を採点する。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/shindan/assets/results/love-manual-lab/t00.webp">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --bg:        #F7F0E3;
+  --bg2:       #EDE3CC;
+  --paper:     #FFFDF7;
+  --paper2:    #FDF8EE;
+
+  --ink:       #1C0C04;
+  --ink2:      #3A1A0C;
+  --ink3:      #6A3820;
+  --ink4:      #9A6040;
+
+  --gold:      #BF7300;
+  --gold2:     #D9980A;
+  --gold3:     #F0C840;
+  --glt:       #FEF5D8;
+  --gmid:      #F5E090;
+  --gbd:       #D4A030;
+
+  --red:       #8A0A18;
+  --red2:      #B01C2C;
+  --rlt:       #FFF0F0;
+  --rmid:      #F4CACA;
+  --rbd:       #CC5060;
+
+  --vio:       #4830A0;
+  --vlt:       #EEEAFF;
+
+  --good:  #14532d;
+  --warn:  #92400e;
+  --bad:   #991b1b;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 120% 50% at 50% 0%, rgba(191,115,0,.07), transparent 55%),
+    radial-gradient(ellipse 80% 40% at 0% 110%, rgba(138,10,24,.05), transparent 50%),
+    var(--bg);
+  color: var(--ink);
+  font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic","Meiryo",system-ui,sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  min-height: 100dvh;
+}
+button { font-family: inherit; cursor: pointer; }
+img    { display: block; max-width: 100%; }
+h1,h2,h3 { margin: 0; }
+p { margin: 0; }
+details > summary { cursor: pointer; list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.wrap { max-width: 480px; margin: 0 auto; padding: 10px 12px 28px; }
+
+/* ============================================================
+   STICKY PROGRESS (top, spans max-width)
+   ============================================================ */
+.prog-sticky {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--bg);
+  padding: 5px 0 3px;
+  margin-bottom: 12px;
+}
+.prog-rail {
+  height: 3px; border-radius: 999px;
+  background: var(--bg2); overflow: hidden;
+}
+.prog-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  width: 0%; transition: width .35s ease;
+}
+@media (prefers-reduced-motion: reduce) { .prog-fill { transition: none; } }
+
+/* ============================================================
+   SITE HEADER
+   ============================================================ */
+.site-hd { text-align: center; margin-bottom: 10px; }
+
+.hd-crown {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-bottom: 8px;
+}
+.hd-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gbd));
+}
+.hd-line.r { background: linear-gradient(90deg, var(--gbd), transparent); }
+.hd-ico { font-size: 20px; }
+
+.site-title {
+  font-family: Georgia,"游明朝","Yu Mincho","HG明朝E",serif;
+  font-size: 24px; font-weight: 700;
+  letter-spacing: .03em; line-height: 1.2; padding-bottom: 2px;
+  background: linear-gradient(130deg, var(--gold) 0%, var(--red) 55%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 6px;
+}
+.site-desc { font-size: 13px; color: var(--ink3); line-height: 1.65; }
+
+/* ============================================================
+   HERO FIGURE
+   ============================================================ */
+.hero-fig {
+  margin: 0 0 18px;
+  position: relative;
+  display: block;
+}
+.hero-fig::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--gbd);
+  border-radius: 6px;
+  opacity: .5;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-fig img {
+  width: 100%; aspect-ratio: 1/1; object-fit: cover;
+  border-radius: 3px;
+  border: 2px solid var(--gbd);
+  position: relative; z-index: 1;
+}
+
+/* ============================================================
+   ORNATE CARD
+   ============================================================ */
+.ocard {
+  background: var(--paper);
+  border: 1.5px solid var(--gbd);
+  border-radius: 3px;
+  padding: 20px 18px;
+  margin-bottom: 10px;  position: relative;
+  box-shadow: 0 2px 0 var(--gbd), 0 5px 22px rgba(0,0,0,.09);
+}
+.ocard::before, .ocard::after {
+  content: "✦"; position: absolute;
+  font-size: 9px; color: var(--gold2); pointer-events: none;
+}
+.ocard::before { top: 7px; left: 10px; }
+.ocard::after  { top: 7px; right: 10px; }
+
+/* corner bottom ornaments */
+.ocard-btm::before, .ocard-btm::after {
+  content: "✦"; position: absolute;
+  font-size: 9px; color: var(--gold2); pointer-events: none;
+}
+.ocard-btm::before { bottom: 7px; left: 10px; }
+.ocard-btm::after  { bottom: 7px; right: 10px; }
+
+/* ============================================================
+   DECORATIVE DIVIDER
+   ============================================================ */
+.div-orn {
+  display: flex; align-items: center; gap: 10px;
+  margin: 12px 0; color: var(--gbd); font-size: 11px;
+}
+.div-orn::before, .div-orn::after {
+  content: ""; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gbd), transparent);
+}
+
+/* ============================================================
+   PROLOGUE
+   ============================================================ */
+.verdict-seal {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 14px;
+  border: 1px solid var(--gbd); border-radius: 2px;
+  background: var(--glt);
+  font-size: 10px; font-weight: 900; letter-spacing: .18em; color: var(--gold);
+  margin-bottom: 14px;
+  box-shadow: 0 1px 0 var(--gbd);
+}
+.prologue-h {
+  font-family: Georgia,"游明朝","Yu Mincho",serif;
+  font-size: 17px; font-weight: 700;
+  line-height: 1.5; color: var(--ink); margin-bottom: 12px;
+}
+.prologue-p { font-size: 13.5px; color: var(--ink2); line-height: 1.75; margin-bottom: 8px; }
+.prologue-note {
+  font-size: 12px; color: var(--ink4); line-height: 1.65;
+  border-left: 3px solid var(--gbd); padding: 8px 12px;
+  background: var(--bg2); margin-top: 12px;
+}
+
+/* name grid */
+.name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.name-field {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  padding: 10px 12px; background: var(--paper2);
+}
+.name-field.angel { border-color: var(--gbd); background: var(--glt); }
+.name-field.demon { border-color: var(--rbd);  background: var(--rlt); }
+.name-field label { display: block; font-size: 11px; font-weight: 900; letter-spacing: .1em; color: var(--ink3); margin-bottom: 6px; }
+.name-field input {
+  width: 100%; padding: 7px 10px;
+  border: 1px solid rgba(0,0,0,.12); border-radius: 2px;
+  background: rgba(255,255,255,.9); font-size: 13.5px;
+  outline: none; font-family: inherit; color: var(--ink); transition: border-color .12s;
+}
+.name-field input:focus { border-color: var(--gold); }
+.name-field input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* CTA buttons */
+.start-btn {
+  width: 100%; padding: 14px 16px; border: none; border-radius: 3px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--red) 100%);
+  color: #FFF8E8;
+  font-family: Georgia,"游明朝","Yu Mincho",serif;
+  font-size: 16px; font-weight: 700; letter-spacing: .06em;
+  box-shadow: 0 3px 0 rgba(138,10,24,.55), 0 6px 20px rgba(138,10,24,.22);
+  position: relative; overflow: hidden;
+  transition: transform .12s, box-shadow .12s;
+}
+.start-btn::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.14) 0%, transparent 55%);
+  pointer-events: none;
+}
+.start-btn:hover { box-shadow: 0 3px 0 rgba(138,10,24,.55), 0 10px 28px rgba(138,10,24,.3); }
+.start-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(138,10,24,.55); }
+.start-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.resume-btn {
+  width: 100%; padding: 11px 14px; margin-top: 10px;
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  background: var(--paper2); color: var(--ink2);
+  font-size: 13.5px; font-weight: 900; letter-spacing: .04em;
+  transition: background .1s, border-color .1s;
+}
+.resume-btn:hover { background: var(--glt); border-color: var(--gold); }
+.resume-btn:active { transform: scale(.98); }
+.resume-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ============================================================
+   PREV ANSWER TOGGLE
+   ============================================================ */
+.prev-toggle {
+  width: 100%; padding: 9px 13px; margin-top: 8px;
+  border: 1px solid var(--gbd); border-radius: 3px;
+  background: var(--glt); color: var(--ink3);
+  font-size: 13px; font-weight: 900; text-align: left;
+  display: flex; align-items: center; gap: 6px;
+}
+.prev-toggle-arrow { margin-left: auto; transition: transform .2s; }
+.prev-toggle[aria-expanded="true"] .prev-toggle-arrow { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .prev-toggle-arrow { transition: none; } }
+.prev-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.prev-ans-list { display: none; border: 1px solid var(--gbd); border-top: none; background: var(--paper); }
+.prev-ans-list.open { display: block; }
+.prev-ans-item { padding: 9px 14px; border-bottom: 1px solid var(--bg2); font-size: 12.5px; }
+.prev-ans-item:last-child { border-bottom: none; }
+.prev-ans-q { color: var(--ink4); font-size: 12px; margin-bottom: 2px; }
+.prev-ans-v { color: var(--ink2); font-weight: 900; }
+
+/* ============================================================
+   QUIZ OVERLAY — LIGHT PARCHMENT COURT
+   ============================================================ */
+#quiz {
+  display: none; position: fixed; inset: 0; z-index: 50;
+  flex-direction: column; overflow: hidden;
+  background:
+    radial-gradient(ellipse 110% 45% at 50% -5%, rgba(191,115,0,.08), transparent 55%),
+    radial-gradient(ellipse 70% 40% at 100% 110%, rgba(138,10,24,.06), transparent 50%),
+    var(--bg);
+}
+#quiz.active { display: flex; }
+
+/* quiz top bar */
+.qbar {
+  flex-shrink: 0; padding: 10px 16px 0;
+  max-width: 480px; width: 100%; margin: 0 auto;
+}
+.qbar-prog {
+  height: 3px; border-radius: 999px;
+  background: var(--bg2); overflow: hidden; margin-bottom: 10px;
+}
+.qbar-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  width: 0%; transition: width .3s ease;
+}
+@media (prefers-reduced-motion: reduce) { .qbar-fill { transition: none; } }
+
+.qbar-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.qnav-btn {
+  background: var(--paper); border: 1.5px solid var(--gbd); border-radius: 3px;
+  color: var(--ink3); font-size: 12.5px; font-weight: 900; padding: 6px 14px;
+  letter-spacing: .04em; transition: background .1s, border-color .1s;
+}
+.qnav-btn:hover { background: var(--glt); border-color: var(--gold); }
+.qnav-btn:disabled { opacity: .3; cursor: default; background: none; }
+.qnav-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.q-counter {
+  font-family: Georgia, serif; font-size: 13px;
+  color: var(--ink3); letter-spacing: .08em;
+}
+
+/* scrollable quiz body */
+.qscroll {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 16px 0;
+  max-width: 480px; width: 100%; margin: 0 auto;
+}
+.qscroll::-webkit-scrollbar { width: 0; }
+
+/* question card */
+.qcard {
+  background: var(--paper);
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  padding: 20px 16px 14px; margin-bottom: 10px;
+  position: relative;
+  box-shadow: 0 2px 0 var(--gbd), 0 5px 20px rgba(0,0,0,.08);
+  animation: qin .24s ease both;
+}
+@keyframes qin { from { opacity:0; transform:translateY(13px); } to { opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .qcard { animation: none; } }
+
+.qcard::before, .qcard::after {
+  content: "✦"; position: absolute;
+  font-size: 8.5px; color: var(--gold2); pointer-events: none;
+}
+.qcard::before { top: 7px; left: 10px; }
+.qcard::after  { top: 7px; right: 10px; }
+
+/* bottom corner marks (inner wrapper) */
+.qcard-bot::before, .qcard-bot::after {
+  content: "✦"; position: absolute;
+  font-size: 8.5px; color: var(--gold2);
+}
+.qcard-bot::before { bottom: 7px; left: 10px; }
+.qcard-bot::after  { bottom: 7px; right: 10px; }
+
+/* tag */
+.qtag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 10px; border-radius: 2px;
+  font-size: 10px; font-weight: 900; letter-spacing: .12em;
+  border: 1px solid; margin-bottom: 12px;
+}
+.qtag.self  { border-color: var(--gbd);  background: var(--glt);  color: var(--gold); }
+.qtag.both  { border-color: rgba(72,48,160,.3); background: var(--vlt); color: var(--vio); }
+.qtag.other { border-color: var(--rbd);  background: var(--rlt);  color: var(--red2); }
+.qtag.flag  { border-color: var(--rbd);  background: var(--rlt);  color: var(--red); border-style: dashed; }
+
+/* question text */
+.qtext {
+  font-family: Georgia,"游明朝","Yu Mincho",serif;
+  font-size: 19px; font-weight: 700; line-height: 1.5;
+  color: var(--ink); margin-bottom: 14px; letter-spacing: .01em;
+}
+.qsub { font-size: 12.5px; color: var(--ink4); margin: -10px 0 14px; line-height: 1.6; }
+
+/* stage label */
+.stage-lbl {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; font-weight: 900; letter-spacing: .16em; color: var(--ink4);
+  margin-bottom: 9px;
+}
+.stage-lbl::after { content: ""; flex: 1; height: 1px; background: var(--bg2); }
+
+/* ============================================================
+   OPTION BUTTONS
+   ============================================================ */
+.opts-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 8px; }
+
+.optbtn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 12px 13px; border: 1.5px solid var(--gbd); border-radius: 3px;
+  background: var(--paper2); text-align: left; width: 100%;
+  position: relative; overflow: hidden;
+  transition: border-color .1s, background .1s, transform .08s;
+}
+.optbtn::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.55) 0%, transparent 65%);
+  pointer-events: none;
+}
+.optbtn:hover { border-color: var(--gold); background: var(--glt); }
+.optbtn:active { transform: scale(.97); }
+.optbtn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.optbtn[aria-pressed="true"] {
+  border-color: var(--gold); background: var(--gmid);
+  box-shadow: 0 2px 0 var(--gbd), inset 0 0 0 1px rgba(191,115,0,.18);
+}
+.optbtn[aria-pressed="true"].red-v {
+  border-color: var(--red2); background: var(--rmid);
+  box-shadow: 0 2px 0 var(--rbd), inset 0 0 0 1px rgba(138,10,24,.15);
+}
+
+.opt-emo   { font-size: 20px; line-height: 1; margin-bottom: 2px; }
+.opt-label { font-weight: 900; font-size: 13.5px; color: var(--ink); line-height: 1.35; }
+.opt-desc  { font-size: 11.5px; color: var(--ink4); line-height: 1.45; }
+
+/* str stage */
+.str-stage { overflow: hidden; max-height: 0; opacity: 0; transition: max-height .32s ease, opacity .28s ease; }
+.str-stage.open { max-height: 260px; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .str-stage { transition: none; } }
+.str-inner { padding-top: 6px; }
+
+.str-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 11px 14px; border: 1.5px solid var(--gbd); border-radius: 3px;
+  background: var(--paper2); width: 100%; margin-bottom: 8px;
+  transition: border-color .1s, background .1s;
+}
+.str-btn:last-child { margin-bottom: 0; }
+.str-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.str-btn:hover { border-color: var(--gold); background: var(--glt); }
+.str-btn[aria-pressed="true"] { border-color: var(--gold); background: var(--gmid); box-shadow: 0 2px 0 var(--gbd); }
+.str-lbl   { font-weight: 900; font-size: 14px; color: var(--ink); }
+.str-badge {
+  padding: 3px 10px; border: 1px solid var(--gbd); border-radius: 2px;
+  font-size: 10px; font-weight: 900; letter-spacing: .1em;
+  color: var(--ink3); background: var(--paper); white-space: nowrap;
+}
+
+/* freq */
+.freq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 8px; }
+.freq-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 14px 8px; border: 1.5px solid var(--rbd); border-radius: 3px;
+  background: var(--rlt); width: 100%;
+  transition: border-color .1s, background .1s;
+}
+.freq-btn:hover { border-color: var(--red2); background: var(--rmid); }
+.freq-btn:active { transform: scale(.97); }
+.freq-btn:focus-visible { outline: 2px solid var(--red2); outline-offset: 2px; }
+.freq-btn[aria-pressed="true"] { border-color: var(--red); background: var(--rmid); box-shadow: 0 2px 0 var(--rbd); }
+.freq-emo  { font-size: 22px; }
+.freq-lbl  { font-weight: 900; font-size: 13px; color: var(--ink); text-align: center; }
+.freq-lvl  { font-size: 10px; font-weight: 900; letter-spacing: .1em; color: var(--ink4); }
+
+/* ============================================================
+   QUIZ FOOTER
+   ============================================================ */
+.qfoot {
+  flex-shrink: 0; padding: 10px 16px 16px;
+  max-width: 480px; width: 100%; margin: 0 auto;
+}
+.qfoot-row {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 8px;
+  align-items: stretch;
+}
+.qfoot-prev {
+  padding: 12px 10px;
+  font-size: 13px;
+  min-height: 48px;
+}
+.next-btn {
+  width: 100%; padding: 14px 16px; border: none; border-radius: 3px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--red) 100%);
+  color: #FFF8E8;
+  font-family: Georgia,"游明朝","Yu Mincho",serif;
+  font-size: 15px; font-weight: 700; letter-spacing: .07em;
+  box-shadow: 0 3px 0 rgba(138,10,24,.5), 0 6px 20px rgba(138,10,24,.18);
+  position: relative; overflow: hidden;
+  transition: transform .1s, box-shadow .1s;
+}
+.next-btn::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.16) 0%, transparent 52%);
+  pointer-events: none;
+}
+.next-btn:disabled {
+  opacity: .35; cursor: default; box-shadow: none;
+  background: var(--bg2); color: var(--ink4);
+}
+.next-btn:not(:disabled):active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(138,10,24,.5); }
+.next-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.next-btn.finish { background: linear-gradient(135deg, var(--gold) 0%, var(--vio) 100%); }
+
+/* ============================================================
+   RESULT PAGE
+   ============================================================ */
+#result { display: none; }
+
+/* decree header */
+.decree-hd { text-align: center; margin-bottom: 10px; }
+.decree-eyebrow {
+  font-size: 10px; font-weight: 900; letter-spacing: .2em;
+  color: var(--ink4); margin-bottom: 5px;
+}
+.decree-names {
+  font-family: Georgia,"游明朝","Yu Mincho",serif;
+  font-size: 16px; color: var(--ink2); line-height: 1.4;
+}
+
+/* WAX SEAL SCORE */
+.wax-wrap { display: flex; justify-content: center; margin-bottom: 10px; }
+.wax-seal {
+  width: 124px; height: 124px; border-radius: 50%;
+  background: radial-gradient(circle at 33% 28%, #E8A820, var(--gold) 50%, #7C5000);
+  border: 3px solid var(--gbd);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,.6),
+    0 0 0 5px var(--gbd),
+    0 8px 28px rgba(191,115,0,.3),
+    inset 0 2px 8px rgba(255,255,255,.25);
+  position: relative;
+}
+.wax-seal::before {
+  content: "";
+  position: absolute; inset: -9px; border-radius: 50%;
+  background: repeating-conic-gradient(rgba(191,115,0,.16) 0deg, transparent 6deg, transparent 12deg);
+  pointer-events: none;
+}
+.wax-score {
+  font-family: Georgia, serif; font-size: 42px; font-weight: 700;
+  color: #FFF8D0; line-height: 1;
+  text-shadow: 0 1px 4px rgba(0,0,0,.45);
+  font-variant-numeric: tabular-nums;
+  position: relative; z-index: 1;
+}
+.wax-unit {
+  font-size: 11px; font-weight: 900; letter-spacing: .12em;
+  color: #FFE888; text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  position: relative; z-index: 1;
+}
+
+/* rank card */
+.rank-card {
+  background: var(--paper);
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  padding: 12px; margin-bottom: 10px; text-align: center;
+  position: relative;
+  box-shadow: 0 2px 0 var(--gbd), 0 5px 16px rgba(0,0,0,.08);
+}
+.rank-card::before, .rank-card::after {
+  content: "✦"; position: absolute;
+  font-size: 9px; color: var(--gold2); pointer-events: none;
+}
+.rank-card::before { top: 7px; left: 10px; }
+.rank-card::after  { top: 7px; right: 10px; }
+.rank-letter {
+  font-family: Georgia, serif; font-size: 56px; font-weight: 700;
+  line-height: 1; color: var(--gold);
+  text-shadow: 0 2px 0 rgba(191,115,0,.3); margin-bottom: 6px;
+}
+.rank-pill {
+  display: inline-flex; align-items: center;
+  padding: 3px 13px; border: 1px solid var(--gbd); border-radius: 2px;
+  background: var(--paper2); font-size: 11px; font-weight: 900;
+  letter-spacing: .1em; color: var(--gold); margin-bottom: 10px;
+  box-shadow: 0 1px 0 var(--gbd);
+}
+.rank-title {
+  font-family: Georgia,"游明朝","Yu Mincho",serif;
+  font-size: 16px; font-weight: 700; line-height: 1.5;
+  color: var(--ink); margin-bottom: 6px;
+}
+.rank-banter { font-size: 13px; color: var(--ink3); line-height: 1.6; }
+
+
+
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+.acc {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 8px; background: var(--paper);
+  box-shadow: 0 1px 0 var(--gbd);
+}
+.acc > summary {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px; font-weight: 900; font-size: 13.5px;
+  color: var(--ink3); background: var(--paper2);
+  border-bottom: 1.5px solid transparent;
+  user-select: none; letter-spacing: .02em;
+}
+.acc[open] > summary { border-color: var(--gbd); }
+.acc > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+.acc > summary::after { content: "▾"; margin-left: auto; font-size: 12px; color: var(--ink4); transition: transform .2s; }
+.acc[open] > summary::after { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .acc > summary::after { transition: none; } }
+.acc-body { padding: 14px 16px 16px; }
+.acc-hdg {
+  font-size: 10.5px; font-weight: 900; letter-spacing: .14em;
+  color: var(--ink4); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.acc-hdg::after { content: ""; flex: 1; height: 1px; background: var(--bg2); }
+
+/* ============================================================
+   FACTOR BARS
+   ============================================================ */
+.fbar-list { display: grid; gap: 12px; }
+.fbar-hdr { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.fbar-name { font-size: 13px; font-weight: 900; color: var(--ink2); }
+.fbar-pct  { font-size: 11.5px; font-weight: 900; color: var(--ink4); font-variant-numeric: tabular-nums; }
+.fbar-track {
+  height: 8px; border-radius: 999px; background: var(--bg2); overflow: hidden;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.fbar-fill { height: 100%; border-radius: 999px; width: 0%; transition: width .65s ease; }
+@media (prefers-reduced-motion: reduce) { .fbar-fill { transition: none; } }
+.fbar-fill.hi { background: linear-gradient(90deg, #14532d, #22c55e); }
+.fbar-fill.md { background: linear-gradient(90deg, #92400e, #f59e0b); }
+.fbar-fill.lo { background: linear-gradient(90deg, #991b1b, #ef4444); }
+.fbar-desc { font-size: 11.5px; color: var(--ink4); margin-top: 3px; }
+
+/* ============================================================
+   RED FLAG
+   ============================================================ */
+.rf-bar-row { margin: 6px 0 10px; }
+.rf-track { width: 100%; height: 8px; border-radius: 999px; background: var(--bg2); overflow: hidden; border: 1px solid rgba(0,0,0,.06); }
+.rf-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #991b1b, #ef4444); width: 0%; transition: width .65s ease; }
+@media (prefers-reduced-motion: reduce) { .rf-fill { transition: none; } }
+.rf-pct   { font-size: 11.5px; font-weight: 900; color: var(--red); }
+.rf-judge { font-size: 14px; font-weight: 900; color: var(--ink); margin-top: 8px; }
+.rf-guide { font-size: 13px; color: var(--ink3); margin-top: 4px; line-height: 1.65; }
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+.gallery-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+.gallery-item { text-align: center; }
+.gallery-thumb {
+  width: 100%; aspect-ratio: 1/1; object-fit: cover;
+  border: 1.5px solid var(--gbd); border-radius: 2px;
+  display: block; margin-bottom: 4px;
+}
+.gallery-thumb.cur { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold3), 0 0 0 3px var(--gbd); }
+.gallery-lbl   { font-size: 9.5px; font-weight: 900; color: var(--ink4); line-height: 1.3; }
+.gallery-range { font-size: 9px; color: var(--ink4); opacity: .7; }
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+.actions-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+.action-btn {
+  flex: 1; min-width: 120px; padding: 10px 14px;
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  background: var(--paper2); color: var(--ink2);
+  font-size: 13px; font-weight: 900; text-align: center;
+  text-decoration: none;
+  transition: background .1s, border-color .1s;
+}
+.action-btn:hover { background: var(--glt); border-color: var(--gold); }
+.action-btn:active { transform: scale(.98); }
+.action-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ============================================================
+   DISCLAIMER
+   ============================================================ */
+.disclaimer {
+  font-size: 12px; color: var(--ink4); line-height: 1.7;
+  border-left: 3px solid var(--gbd); padding: 10px 14px;
+  background: var(--bg2); margin-top: 14px;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed; right: 14px; bottom: 14px; z-index: 100;
+  background: var(--paper); border: 1.5px solid var(--gbd); border-radius: 3px;
+  padding: 9px 16px; font-weight: 900; font-size: 13px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.14);
+  opacity: 0; transform: translateY(10px); pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+.toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+
+/* UTILS */
+.hide { display: none !important; }
+.card-h { font-size: 12px; font-weight: 900; letter-spacing: .1em; color: var(--ink3); margin-bottom: 8px; }
+.small  { font-size: 12.5px; color: var(--ink4); line-height: 1.65; }
+
+/* COURT COMMENT */
+.court-comment {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.cc-col { padding: 11px 11px 13px; }
+.cc-col.angel { background: linear-gradient(160deg, var(--glt), var(--paper)); border-right: 1.5px solid var(--gbd); }
+.cc-col.demon  { background: linear-gradient(160deg, var(--rlt), var(--paper)); }
+.cc-head {
+  font-size: 10px; font-weight: 900; letter-spacing: .1em;
+  margin-bottom: 7px; display: flex; align-items: center; gap: 4px;
+}
+.cc-col.angel .cc-head { color: var(--gold); }
+.cc-col.demon  .cc-head { color: var(--red2); }
+.cc-text { font-size: 12px; color: var(--ink2); line-height: 1.7; }
+
+/* FATE NUMBER */
+.fate-card {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.fate-head {
+  background: var(--ink); color: var(--paper);
+  padding: 6px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.fate-head-txt { font-size: 10px; font-weight: 900; letter-spacing: .14em; }
+.fate-num-badge { font-family: Georgia, serif; font-size: 13px; font-weight: 700; color: var(--gold2); }
+.fate-body { background: var(--paper2); padding: 10px 14px; }
+.fate-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.fate-big { font-family: Georgia, serif; font-size: 36px; font-weight: 700; line-height: 1; color: var(--gold); }
+.fate-label { font-size: 13px; font-weight: 900; color: var(--ink2); }
+.fate-desc { font-size: 12.5px; color: var(--ink3); line-height: 1.65; }
+.fate-calc { font-size: 10.5px; color: var(--ink4); margin-top: 5px; font-family: Georgia, serif; letter-spacing: .03em; }
+
+/* COMPAT TYPE */
+.compat-type {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.ct-head {
+  background: var(--bg2); padding: 6px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ct-head-lbl { font-size: 10px; font-weight: 900; letter-spacing: .12em; color: var(--ink3); }
+.ct-name-badge {
+  padding: 2px 9px; border: 1px solid var(--gbd); border-radius: 2px;
+  background: var(--paper); font-size: 11px; font-weight: 900; color: var(--ink2);
+}
+.ct-body { background: var(--paper); padding: 10px 14px 12px; }
+.ct-type-name {
+  font-family: Georgia, "游明朝", serif;
+  font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 5px; line-height: 1.3;
+}
+.ct-desc { font-size: 13px; color: var(--ink2); line-height: 1.7; }
+.ct-axes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.ct-axis-tag {
+  padding: 2px 8px; border: 1px solid var(--gbd); border-radius: 2px;
+  background: var(--paper2); font-size: 10.5px; font-weight: 900; color: var(--ink3);
+}
+
+/* STRENGTH / WEAKNESS */
+.sw-card {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.sw-head {
+  background: var(--bg2); padding: 6px 14px;
+  font-size: 10px; font-weight: 900; letter-spacing: .12em; color: var(--ink3);
+}
+.sw-body { background: var(--paper); padding: 10px 14px 12px; }
+.sw-section { margin-bottom: 10px; }
+.sw-section:last-child { margin-bottom: 0; }
+.sw-section-lbl {
+  font-size: 10px; font-weight: 900; letter-spacing: .1em;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.sw-section-lbl.good { color: var(--good); }
+.sw-section-lbl.bad  { color: var(--bad); }
+.sw-section-lbl::after { content: ''; flex: 1; height: 1px; background: var(--bg2); }
+.sw-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 7px 10px; border-radius: 2px;
+  margin-bottom: 5px; border: 1px solid;
+}
+.sw-item:last-child { margin-bottom: 0; }
+.sw-item.good { background: #f0fdf4; border-color: #bbf7d0; }
+.sw-item.bad  { background: #fff1f2; border-color: #fecdd3; }
+.sw-item-name { font-size: 12px; font-weight: 900; color: var(--ink); min-width: 78px; flex-shrink: 0; }
+.sw-item-desc { font-size: 11.5px; color: var(--ink3); line-height: 1.6; }
+
+/* DATE VERDICT */
+.date-card {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.date-head {
+  background: var(--bg2); padding: 6px 14px;
+  font-size: 10px; font-weight: 900; letter-spacing: .12em; color: var(--ink3);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.date-head-sub { font-size: 9px; font-weight: 400; letter-spacing: .04em; opacity: .7; }
+.date-body { background: var(--paper); padding: 10px 14px 12px; display: grid; gap: 8px; }
+
+/* 天使・悪魔共通ブロック */
+.date-proposal {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 11px; border-radius: 2px; border: 1px solid;
+}
+.date-proposal.angel {
+  background: linear-gradient(135deg, var(--glt), var(--paper));
+  border-color: var(--gbd);
+}
+.date-proposal.demon {
+  background: linear-gradient(135deg, var(--rlt), var(--paper));
+  border-color: var(--rbd);
+}
+.date-prop-icon { font-size: 18px; flex-shrink: 0; line-height: 1.35; }
+.date-prop-inner { flex: 1; min-width: 0; }
+.date-prop-label {
+  font-size: 9px; font-weight: 900; letter-spacing: .12em;
+  margin-bottom: 2px;
+}
+.angel .date-prop-label { color: var(--gold); }
+.demon .date-prop-label { color: var(--red2); }
+.date-prop-name { font-size: 13px; font-weight: 900; color: var(--ink); line-height: 1.35; margin-bottom: 2px; }
+.date-prop-desc { font-size: 11.5px; color: var(--ink3); line-height: 1.6; }
+
+/* 最終判決 */
+.date-verdict {
+  border: 1.5px solid var(--gbd); border-radius: 2px;
+  overflow: hidden; margin-top: 2px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.date-verdict-head {
+  background: var(--ink); color: var(--paper);
+  padding: 5px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 9.5px; font-weight: 900; letter-spacing: .14em;
+}
+.date-verdict-badge {
+  font-family: Georgia, serif; font-size: 11px; color: var(--gold2);
+}
+.date-verdict-body {
+  background: linear-gradient(135deg, var(--glt), var(--paper));
+  padding: 10px 12px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.date-verdict-img {
+  width: 72px; height: 72px; object-fit: cover;
+  border-radius: 6px; flex-shrink: 0; display: block;
+}
+.date-verdict-emo { font-size: 22px; flex-shrink: 0; line-height: 1.3; }
+.date-verdict-name { font-size: 14px; font-weight: 900; color: var(--ink); margin-bottom: 3px; }
+.date-verdict-reason { font-size: 12px; color: var(--ink2); line-height: 1.7; }
+
+/* 今は避けたい案 */
+.date-avoid {
+  margin-top: 2px;
+  border: 1px dashed var(--gbd);
+  border-radius: 2px;
+  padding: 9px 11px;
+  display: flex; align-items: flex-start; gap: 8px;
+  background: linear-gradient(135deg, var(--paper2), var(--paper));
+}
+.date-avoid-label {
+  font-size: 9px; font-weight: 900; letter-spacing: .1em; color: var(--ink4);
+  white-space: nowrap; flex-shrink: 0;
+  padding-top: 1px;
+}
+.date-avoid-name { font-size: 11.5px; font-weight: 900; color: var(--ink3); margin-bottom: 2px; }
+.date-avoid-note { font-size: 11px; color: var(--ink4); line-height: 1.55; }
+
+/* ADVICE */
+.advice-card {
+  border: 1.5px solid var(--gbd); border-radius: 3px;
+  overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 2px 0 var(--gbd);
+}
+.advice-head {
+  background: var(--ink2); color: var(--paper); padding: 6px 14px;
+  font-size: 10px; font-weight: 900; letter-spacing: .14em;
+}
+.advice-body { background: var(--paper); padding: 10px 14px 12px; }
+.advice-list { display: grid; gap: 7px; }
+.advice-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 10px; border: 1px solid var(--gbd); border-radius: 2px;
+  background: var(--paper2);
+}
+.advice-num {
+  font-family: Georgia, serif; font-size: 18px; font-weight: 700;
+  color: var(--gold); line-height: 1.2; flex-shrink: 0; min-width: 18px;
+}
+.advice-txt { font-size: 12.5px; color: var(--ink2); line-height: 1.7; }
+
+.diag-note {
+  display: grid;
+  gap: 10px;
+}
+
+.diag-note-block {
+  border: 1px solid var(--gbd);
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--paper2), var(--paper));
+  padding: 10px 12px;
+}
+
+.diag-note-h {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  color: var(--ink3);
+  margin-bottom: 6px;
+}
+
+.diag-note-p {
+  font-size: 12.5px;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+
+.diag-note-foot {
+  font-size: 11.5px;
+  color: var(--ink4);
+  line-height: 1.7;
+  padding: 2px 2px 0;
+}
+.diag-note {
+  display: grid;
+  gap: 10px;
+}
+
+.diag-note-block {
+  border: 1px solid var(--gbd);
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--paper2), var(--paper));
+  padding: 10px 12px;
+}
+
+.diag-note-h {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  color: var(--ink3);
+  margin-bottom: 6px;
+}
+
+.diag-note-p {
+  font-size: 12.5px;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+
+.diag-note-foot {
+  font-size: 11.5px;
+  color: var(--ink4);
+  line-height: 1.7;
+  padding: 2px 2px 0;
+}
+</style>
+</head>
+<body data-id="love-manual-lab">
+
+<!-- ============================================================
+     MAIN WRAP
+     ============================================================ -->
+<div class="wrap" id="mainWrap">
+
+  <header class="site-hd">
+    <div class="hd-crown">
+      <div class="hd-line"></div>
+      <div class="hd-ico">⚖️</div>
+      <div class="hd-line r"></div>
+    </div>
+    <h1 class="site-title">天使と悪魔の恋愛審判</h1>
+    <p class="site-desc">24問で2人の相性を採点。<br>天使と悪魔が下す、辛口の判決。</p>
+  </header>
+
+  <!-- sticky progress -->
+  <div class="prog-sticky">
+    <div class="prog-rail"
+         role="progressbar" aria-label="診断の進捗"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+         id="progRail">
+      <div class="prog-fill" id="progFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- hero -->
+  <figure class="hero-fig" id="heroFig">
+    <img id="heroImg"
+         src="/shindan/assets/results/love-manual-lab/t00.webp"
+         alt="天使と悪魔の恋愛審判 ヒーロー画像" loading="lazy">
+  </figure>
+
+  <!-- ======== PROLOGUE ======== -->
+  <section id="prologue">
+    <div class="ocard ocard-btm">
+      <div class="verdict-seal">⚜ &nbsp;THE CELESTIAL COURT</div>
+      <h2 class="prologue-h">相性は「好きの量」より<br>「運用のクセ」で決まる。</h2>
+      <div class="div-orn">✦</div>
+      <p class="prologue-p">これを開いたということは、今誰かのことを考えている。</p>
+      <p class="prologue-p">付き合っている人かもしれない。まだ付き合っていない人かもしれない。もうとっくに終わった人を、なぜかまだ引きずっているのかもしれない。</p>
+      <p class="prologue-p">どの理由でも動く。24問に答えると、2人の相性が数字で出る。<b>納得いく結果が出るまで何度でも試せるが、答えを変えるのは数字ではなく自分自身だ。</b></p>
+      <div class="prologue-note">※本診断は娯楽目的の簡易テストです。専門的な心理診断の代替にはなりません。</div>
+    </div>
+
+    <div class="ocard">
+      <p class="card-h">▶ 審判を受ける2人の名前</p>
+      <div class="name-grid">
+        <div class="name-field angel">
+          <label for="nameA">👼 自分（あなた）</label>
+          <input id="nameA" type="text" inputmode="text" autocomplete="name" placeholder="名前（省略OK）" maxlength="20">
+        </div>
+        <div class="name-field demon">
+          <label for="nameB">😈 相手（想像でもOK）</label>
+          <input id="nameB" type="text" inputmode="text" autocomplete="off" placeholder="名前（省略OK）" maxlength="20">
+        </div>
+      </div>
+      <button type="button" id="startBtn" class="start-btn">⚔ &ensp;審判を開始する</button>
+      <button type="button" id="resumeBtn" class="resume-btn hide">▶ &ensp;前回の途中から再開する</button>
+    </div>
+
+    <div id="prevAnswersCard" class="ocard hide">
+      <p class="card-h">🗒 前回の回答を確認する</p>
+      <button type="button" class="prev-toggle" id="prevToggle" aria-expanded="false" aria-controls="prevList">
+        <span>回答一覧を開く</span><span class="prev-toggle-arrow">▾</span>
+      </button>
+      <div class="prev-ans-list" id="prevList" role="list"></div>
+    </div>
+  </section>
+
+  <!-- ======== RESULT ======== -->
+  <section id="result">
+
+    <div class="decree-hd">
+      <p class="decree-eyebrow">VERDICT — THE COURT HAS RULED</p>
+      <p class="decree-names" id="decreeNames">— 審判中 —</p>
+    </div>
+
+    <div class="wax-wrap">
+      <div class="wax-seal" role="img" id="waxSeal" aria-label="相性スコア">
+        <div class="wax-score" id="scoreNum">0</div>
+        <div class="wax-unit">POINT</div>
+      </div>
+    </div>
+
+    <div class="rank-card" id="rankCard">
+      <div class="rank-letter" id="rankLetter">B</div>
+      <div class="rank-pill" id="rankPill">B ランク</div>
+      <p class="rank-title" id="resultTitle">—</p>
+      <p class="rank-banter" id="banterLine">—</p>
+    </div>
+
+    <figure class="hero-fig" style="margin-bottom:16px">
+      <img id="resultImg" src="/shindan/assets/results/love-manual-lab/t03.webp" alt="結果画像" loading="lazy">
+    </figure>
+
+    <!-- 相性タイプ -->
+    <div class="compat-type">
+      <div class="ct-head">
+        <span class="ct-head-lbl">COMPATIBILITY TYPE</span>
+        <span class="ct-name-badge" id="ctNameBadge">? × ?</span>
+      </div>
+      <div class="ct-body">
+        <p class="ct-type-name" id="ctTypeName">—</p>
+        <p class="ct-desc" id="ctDesc">—</p>
+        <div class="ct-axes" id="ctAxes"></div>
+      </div>
+    </div>
+
+    <!-- 天使 vs 悪魔コメント -->
+    <div class="court-comment">
+      <div class="cc-col angel">
+        <div class="cc-head">👼&ensp;ANGEL</div>
+        <p class="cc-text" id="angelComment">—</p>
+      </div>
+      <div class="cc-col demon">
+        <div class="cc-head">😈&ensp;DEMON</div>
+        <p class="cc-text" id="demonComment">—</p>
+      </div>
+    </div>
+
+    <!-- 強みと弱み -->
+    <div class="sw-card">
+      <div class="sw-head">STRENGTH &amp; WEAKNESS — 相性の強みと課題</div>
+      <div class="sw-body">
+        <div class="sw-section">
+          <div class="sw-section-lbl good">✦ 強み</div>
+          <div id="swStrong"></div>
+        </div>
+        <div class="sw-section">
+          <div class="sw-section-lbl bad">▲ 課題</div>
+          <div id="swWeak"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- デート勧告 -->
+    <div class="date-card">
+      <div class="date-head">
+        <span>DATE VERDICT — デート勧告</span>
+        <span class="date-head-sub">診断結果に基づく判定</span>
+      </div>
+      <div class="date-body" id="dateBody">
+        <!-- JS で生成 -->
+      </div>
+    </div>
+
+    <!-- 改善アドバイス -->
+    <div class="advice-card">
+      <div class="advice-head">IMPROVEMENT — この相性をもっと良くするには</div>
+      <div class="advice-body">
+        <div class="advice-list" id="adviceList"></div>
+      </div>
+    </div>
+
+    <!-- 運命数 -->
+    <div class="fate-card" id="fateCard">
+      <div class="fate-head">
+        <span class="fate-head-txt">FATE NUMBER — 運命数</span>
+        <span class="fate-num-badge" id="fateNumBadge">No.?</span>
+      </div>
+      <div class="fate-body">
+        <div class="fate-row">
+          <span class="fate-big" id="fateNumBig">?</span>
+          <span class="fate-label" id="fateLabel">—</span>
+        </div>
+        <p class="fate-desc" id="fateDesc">—</p>
+        <p class="fate-calc" id="fateCalc">—</p>
+      </div>
+    </div>
+
+    
+
+    
+
+    <div class="acc">
+      <div class="acc-body">
+        <div class="acc-hdg">FACTOR SCORE — 5つの採点軸</div>
+        <div class="fbar-list" id="factorBars"></div>
+
+        <div class="acc-hdg" style="margin-top:16px">RISK LEVEL — レッドフラグ</div>
+        <p class="small" style="margin-bottom:12px">相性の良し悪しとは別に見た、関係の危険信号です。高いほど慎重な運転が必要です。</p>
+        <div class="fbar-hdr" style="margin-top:2px">
+          <span class="fbar-name">レッドフラグ</span>
+          <span class="fbar-pct" id="rfPctTxt">—</span>
+        </div>
+        <div class="rf-bar-row">
+          <div class="rf-track"><div class="rf-fill" id="rfBarFill"></div></div>
+        </div>
+        <p class="rf-judge" id="rfJudge">—</p>
+        <p class="rf-guide" id="rfGuide">—</p>
+      </div>
+    </div>
+
+    <details class="acc"><summary>🖼 ギャラリー — 全結果パターン</summary>
+      <div class="acc-body">
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </div>
+    </details>
+
+    <details class="acc"><summary>📘 恋愛の相性とは</summary>
+      <div class="acc-body">
+        <div class="diag-note">
+          <div class="diag-note-block">
+            <div class="diag-note-h">相性って、結局なんのこと？</div>
+            <p class="diag-note-p">
+              「相性が良い」というとき、多くの人は「強く惹かれ合っている」とか「一緒にいて楽しい」をイメージする。でもそれは相性というより、引力や楽しさの話だ。どちらも大切だけど、関係が長続きするかどうかとは、少し別の話になる。<br><br>
+              心理学的に相性に近いのは、「一緒にいるために、お互いが無理をしていない状態」。連絡のペース、距離の取り方、本音の出しやすさ、もめたあとの戻り方——こういう日常の感覚が近いほど、消耗が少なく、関係が続きやすい。地味に聞こえるかもしれないけど、これが相性の正体に一番近い。
+            </p>
+          </div>
+
+          <div class="diag-note-block">
+            <div class="diag-note-h">好きなのにうまくいかないのはなぜ？</div>
+            <p class="diag-note-p">
+              「気持ちがあれば乗り越えられる」とよく言われるけど、実際にはそうならないことも多い。好意があっても関係がしんどくなるとき、そこにはたいてい「普通の基準のズレ」がある。<br><br>
+              たとえば、片方は「返信が遅いと不安になる」、もう片方は「放っておくのが思いやり」だと思っている。どちらも悪意はない。ただ、ルールが違う。このズレは話し合えばほとんどの場合解決できるのに、「察してほしい」「言わなくても分かるはず」のまま放置されると、少しずつ積み重なって関係を壊していく。相性が悪いんじゃなくて、すれ違いを言葉にしなかっただけ——というケースは思っている以上に多い。
+            </p>
+          </div>
+
+          <div class="diag-note-block">
+            <div class="diag-note-h">喧嘩が少ない＝相性が良い、は本当？</div>
+            <p class="diag-note-p">
+              喧嘩が少ないことは必ずしも相性の良さを示さない。お互いが言いたいことを言わずに、表面的な平和を保っているだけでも喧嘩は起きないからだ。<br><br>
+              関係研究者のゴットマンは、離婚を予測する要因として「喧嘩の回数」よりも「喧嘩中の態度」の方が重要だと指摘している。見下し、冷笑、黙り込み——これらが習慣化している関係は、喧嘩が少なくても壊れやすい。逆に、ちゃんとぶつかって、修復できる関係は時間が経つほど強くなる。「仲が良いから喧嘩しない」より、「喧嘩しても戻ってこられる」方が、相性の良さに近い。
+            </p>
+          </div>
+
+          <div class="diag-note-block">
+            <div class="diag-note-h">実際に関係が良くなるためにできること</div>
+            <p class="diag-note-p">
+              研究で効果が確認されていることをいくつか。難しいことはひとつもない。<br><br>
+              まず、感謝を言葉にすること。「ありがとう」を日常的に言えている関係は、満足度が高いという結果が繰り返し出ている。「分かってるはず」では伝わらない。言葉にしないと存在しないのと同じだ。<br><br>
+              次に、もめたあとを放置しないこと。感情が落ち着いたら、できるだけ早く「あのときどう感じたか」を話す。謝罪より先に、確認が来る関係は修復が速い。<br><br>
+              最後に、「一緒に新しいことをする」こと。慣れた関係に刺激を戻す一番シンプルな方法は、2人にとって初めての体験を作ることだ。脳は新しい体験を一緒にした相手に、好意を感じやすい。
+            </p>
+          </div>
+
+          <div class="diag-note-block">
+            <div class="diag-note-h">相性は変わるのか</div>
+            <p class="diag-note-p">
+              相性は出会った瞬間に決まる固定値ではなく、2人の関わり方によって動くものだ。最初は噛み合っていなくても、言葉を重ねるうちに合ってくることがある。逆に、最初は良くても、確認をさぼったり慢心が続いたりすると、静かに壊れていく。<br><br>
+              だからこの診断の点数は「今この瞬間のスナップショット」として読んでほしい。良い点数が出たなら、その状態を維持する理由にする。低い点数が出たなら、どこがズレているかを考えるヒントにする。どちらにしても、結果を見て終わりにするより、それを誰かと話してみる方が、ずっと意味がある。
+            </p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="acc"><summary>🗒 今回の回答を振り返る</summary>
+      <div class="acc-body">
+        <div id="prevListResult" role="list"></div>
+      </div>
+    </details>
+
+    <div class="actions-row">
+      <button type="button" class="action-btn" id="restartBtn">🔄 もう一度やる</button>
+      <a class="action-btn" href="/shindan/">← 診断一覧に戻る</a>
+    </div>
+
+    <div class="disclaimer">
+      <strong>免責事項：</strong>本診断は娯楽目的のコンテンツです。心理学・医学的な根拠を保証するものではなく、専門的な診断やカウンセリングの代替にはなりません。恋愛・人間関係に関する重要な判断は、信頼できる人や専門家にご相談ください。
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================
+     QUIZ FULL-SCREEN OVERLAY (LIGHT PARCHMENT COURT)
+     ============================================================ -->
+<div id="quiz" role="main" aria-label="恋愛審判 診断">
+  <div class="qbar">
+    <div class="qbar-prog" role="progressbar" aria-label="問題の進捗"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="qProgRail">
+      <div class="qbar-fill" id="qProgFill" style="width:0%"></div>
+    </div>
+    <div class="qbar-row" style="justify-content:center">
+      <span class="q-counter" id="qCounter">問 1 / 24</span>
+    </div>
+  </div>
+
+  <div class="qscroll" id="qScroll">
+    <div id="qArea"></div>
+  </div>
+
+  <div class="qfoot qfoot-row">
+    <button type="button" class="qnav-btn qfoot-prev" id="prevBtn" disabled>← 戻る</button>
+    <button type="button" class="next-btn" id="nextBtn" disabled>次の問へ →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ============================================================
+     SCRIPT
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'love-manual-lab-v3';
+  var IMG_BASE    = '/shindan/assets/results/love-manual-lab/';
+  var TOTAL_Q     = 24;
+
+  /* ------ QUESTIONS ------ */
+  var QS = [
+    { id:'Q1', type:'hybrid', tag:'self', tagLabel:'自分について',
+      text:'返信や連絡のペースは、どちら寄り？',
+      dir:[
+        {id:'fast', emo:'⚡', label:'早め返信タイプ',   desc:'気になったらすぐ返したい'},
+        {id:'slow', emo:'🌙', label:'マイペースタイプ', desc:'返信は自分のリズムで'}
+      ],
+      strength:[
+        {id:'mild',   badge:'MILD',   label:'少しそう',   desc:'状況によって変わる'},
+        {id:'strong', badge:'STRONG', label:'かなりそう', desc:'これが自分のスタイル'}
+      ],
+      scoreMap:{'fast:mild':{F1:3},'fast:strong':{F1:2},'slow:mild':{F1:3},'slow:strong':{F1:1}}
+    },
+    { id:'Q2', type:'hybrid', tag:'self', tagLabel:'自分について',
+      text:'一人の時間と、一緒にいる時間、どちら重視？',
+      dir:[
+        {id:'alone',    emo:'🌿', label:'ひとり時間が大事', desc:'定期的にひとりの時間が必要'},
+        {id:'together', emo:'🤝', label:'一緒にいたい派',   desc:'好きな人のそばにいると落ち着く'}
+      ],
+      strength:[
+        {id:'mild',   badge:'MILD',   label:'少しそう',   desc:'両方のバランスを取れる'},
+        {id:'strong', badge:'STRONG', label:'かなりそう', desc:'かなりこっち寄り'}
+      ],
+      scoreMap:{'alone:mild':{F3:3},'alone:strong':{F3:2},'together:mild':{F3:3},'together:strong':{F3:2}}
+    },
+    { id:'Q3', type:'hybrid', tag:'self', tagLabel:'自分について',
+      text:'自分の本音や弱さを、相手にどこまで話せている？',
+      dir:[
+        {id:'open',   emo:'📖', label:'かなり話せている派',  desc:'不安や失敗も含め、自分のことを伝えてきた'},
+        {id:'closed', emo:'🔒', label:'あまり話せていない派', desc:'表面的なことは話すが、深い部分は出せていない'}
+      ],
+      strength:[
+        {id:'mild',   badge:'MILD',   label:'少しそう',   desc:'話せる部分とそうでない部分がある'},
+        {id:'strong', badge:'STRONG', label:'かなりそう', desc:'かなりこのタイプだと思う'}
+      ],
+      scoreMap:{'open:mild':{F2:4},'open:strong':{F2:5},'closed:mild':{F2:2},'closed:strong':{F2:1}}
+    },
+    { id:'Q4', type:'scene', tag:'self', tagLabel:'自分について',
+      text:'もめたあと、自分が取りやすい行動は？',
+      sub:'正直に、一番近いものを選んでください',
+      opts:[
+        {emo:'🤝', label:'謝罪や歩み寄りを先にする',      desc:'関係を修復することを最優先にする'},
+        {emo:'🧊', label:'少し冷静になってから話し合う',   desc:'感情が落ち着いてから向き合う'},
+        {emo:'🌀', label:'責任転嫁や言い訳が先に出る',    desc:'自分を守ることが先になりやすい'},
+        {emo:'🚪', label:'黙り込む・その場から離れる',    desc:'言葉が出なくなる、話せなくなる'}
+      ],
+      scoreMap:[{F4:5},{F4:3},{F4:1},{F4:0}]
+    },
+    { id:'Q5', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'デートや外出の計画スタイル、2人に近いのは？',
+      opts:[
+        {emo:'🗺️', label:'どちらかが全部決める',  desc:'決めてもらうと楽'},
+        {emo:'🔄', label:'大枠だけ決めて臨機応変', desc:'ゆる計画で動く'},
+        {emo:'📅', label:'事前に細かく計画',       desc:'予定通りに動きたい'},
+        {emo:'🌀', label:'計画はほぼしない',        desc:'どこでも何でもOK'}
+      ],
+      scoreMap:[{F3:1,F5:1},{F3:3,F5:3},{F3:2,F5:2},{F3:2,F5:1}]
+    },
+    { id:'Q6', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'2人の好意の伝え方、いちばん近いのは？',
+      opts:[
+        {emo:'🤗', label:'スキンシップで表現', desc:'触れることで伝え合う'},
+        {emo:'💬', label:'言葉をかけ合う',     desc:'「好き」を言葉にする'},
+        {emo:'🎁', label:'行動や贈り物で示す', desc:'そっと動いて伝える'},
+        {emo:'🌙', label:'干渉しないことが愛情', desc:'そっとしておくことで示す'}
+      ],
+      scoreMap:[{F2:3},{F2:4},{F2:3},{F2:1}]
+    },
+    { id:'Q7', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'価値観が合うと感じるのは、どんな場面？',
+      opts:[
+        {emo:'🍽️', label:'お金・食の好み',       desc:'生活習慣や趣味が似ている'},
+        {emo:'🛖',  label:'将来の暮らし・家族観', desc:'未来のイメージが重なる'},
+        {emo:'📰',  label:'社会・ニュースの見方', desc:'世界観や正義感が近い'},
+        {emo:'💭',  label:'あまり重ならない',      desc:'価値観の重なりを感じにくい'}
+      ],
+      scoreMap:[{F5:2},{F5:4},{F5:2},{F5:0}]
+    },
+    { id:'Q8', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'将来の話（仕事・住まい・家族）をするとき、どんな感じ？',
+      opts:[
+        {emo:'✨', label:'自然と盛り上がる',         desc:'同じ方向を向いている感覚がある'},
+        {emo:'🤔', label:'話せるが温度差がある',     desc:'少し温度が違う気がする'},
+        {emo:'😅', label:'なんとなく避けがちになる', desc:'重くなるから避けている'},
+        {emo:'🌫️', label:'まだそこまで話していない', desc:'将来話は未到達ゾーン'}
+      ],
+      scoreMap:[{F1:2,F5:4},{F1:1,F5:2},{F1:0,F5:1},{F1:1,F5:1}]
+    },
+    { id:'Q9', type:'scene', tag:'other', tagLabel:'相手について',
+      text:'「相手が自分の気持ちを分かってくれた」と感じる場面、どれが近い？',
+      opts:[
+        {emo:'🪞', label:'言わなくても察してくれる',         desc:'表情や雰囲気から汲み取ってくれる'},
+        {emo:'💬', label:'ちゃんと聞いて言葉で返してくれる', desc:'話したことを受けとめ、返してくれる'},
+        {emo:'🎯', label:'行動で示してくれるが言語化は少ない', desc:'そばにいたり、動いてくれる'},
+        {emo:'😶', label:'あまり共感を感じられていない',      desc:'どれだけ伝えても響いていない感がある'}
+      ],
+      scoreMap:[{F2:3,F4:2},{F2:4,F4:3},{F2:2,F4:2},{F2:0,F4:0}]
+    },
+    { id:'Q10', type:'scene', tag:'other', tagLabel:'相手について',
+      text:'2人の「関係への熱量」、温度差はある？',
+      opts:[
+        {emo:'🔥', label:'自分の方が明らかに熱い',    desc:'かなり温度差を感じる'},
+        {emo:'🌡️', label:'少し自分の方が熱い',        desc:'ちょっとだけ温度差あり'},
+        {emo:'🤝', label:'ほぼ同じくらい',            desc:'温度はだいたい揃っている'},
+        {emo:'🧊', label:'相手の方が熱いか、冷めている', desc:'相手の方向が分からない'}
+      ],
+      scoreMap:[{F1:1,F4:1},{F1:2,F4:2},{F1:4,F4:4},{F1:2,F4:2}]
+    },
+    { id:'Q11', type:'scene', tag:'other', tagLabel:'相手について',
+      text:'相手といるとき「安心」を感じるのはいつ？',
+      opts:[
+        {emo:'💬', label:'ちゃんと返事をもらえるとき',        desc:'連絡が繋がっていると安心'},
+        {emo:'🤗', label:'物理的に近くにいるとき',            desc:'一緒にいると落ち着く'},
+        {emo:'🔮', label:'先のことを一緒に考えてもらえるとき', desc:'未来を見てもらえている感覚'},
+        {emo:'😮‍💨', label:'安心感をあまり感じられていない',  desc:'正直、落ち着けない場面が多い'}
+      ],
+      scoreMap:[{F2:3},{F2:2},{F2:4},{F2:0}]
+    },
+    { id:'Q12', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'会えない日が続いたとき、2人の空気に近いのは？',
+      opts:[
+        {emo:'📨', label:'軽く連絡し合えれば落ち着く', desc:'頻度は多くなくても繋がりを感じられる'},
+        {emo:'⏳', label:'少し不安になるが待てる',     desc:'気にはなるが、ある程度は平気'},
+        {emo:'🌀', label:'かなり不安になりやすい',     desc:'返事がないと気持ちが揺れやすい'},
+        {emo:'🌫️', label:'お互いに放置気味になりやすい', desc:'会わないと接点がかなり減る'}
+      ],
+      scoreMap:[{F1:4},{F1:3},{F1:1},{F1:0}]
+    },
+    { id:'Q13', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'一緒にいて疲れたとき、2人の距離の取り方に近いのは？',
+      opts:[
+        {emo:'🌿', label:'少し離れて、また自然に戻れる', desc:'距離を取っても関係が不安定にならない'},
+        {emo:'🛋️', label:'同じ空間で静かに過ごせる',     desc:'会話がなくても気まずくなりにくい'},
+        {emo:'😵', label:'どちらかが重く感じやすい',      desc:'近すぎる・遠すぎるでズレやすい'},
+        {emo:'🚪', label:'距離を取ると不穏になりやすい',   desc:'少し離れるだけでも不安や不満が出やすい'}
+      ],
+      scoreMap:[{F3:4},{F3:3},{F3:1},{F3:0}]
+    },
+    { id:'Q14', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'相手が傷ついているとき、2人のやり取りに近いのは？',
+      opts:[
+        {emo:'🫶', label:'落ち着いて話を聞き、立て直せる', desc:'感情が動いても戻ってこられる'},
+        {emo:'🧩', label:'不器用だが向き合おうとはする', desc:'うまくはないが逃げない'},
+        {emo:'🛡️', label:'説明や正しさの主張が先に出る', desc:'気持ちの受け止めより理屈が先'},
+        {emo:'🧊', label:'触れずに流してしまいやすい',   desc:'気まずさを避けて処理を後回しにする'}
+      ],
+      scoreMap:[{F4:4},{F4:3},{F4:1},{F4:0}]
+    },
+    { id:'Q15', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'約束や時間に対する感覚、2人に近いのは？',
+      opts:[
+        {emo:'🕰️', label:'だいたい守る。ズレても一言ある', desc:'誠実さの感覚が近い'},
+        {emo:'📌', label:'片方はきっちり、片方はゆるめ',   desc:'小さなズレはあるが調整できる'},
+        {emo:'😅', label:'約束の感覚がけっこう違う',        desc:'時間や段取りで引っかかりやすい'},
+        {emo:'🙃', label:'その場のノリで流れやすい',        desc:'誠実さや見通しが不安定'}
+      ],
+      scoreMap:[{F5:4},{F5:3},{F5:1},{F5:0}]
+    },
+    { id:'Q16', type:'scene', tag:'other', tagLabel:'相手について',
+      text:'相手が忙しいときの反応として、一番近いのは？',
+      opts:[
+        {emo:'📮', label:'短くても返してくれる',         desc:'忙しくても繋がりを切らさない'},
+        {emo:'🕯️', label:'遅れるが、あとで丁寧に返る', desc:'ペースは遅くても誠意はある'},
+        {emo:'🌫️', label:'読めない時間が長くなりやすい', desc:'どう考えているのか分かりにくい'},
+        {emo:'🧊', label:'忙しいとほぼ切れる',           desc:'関係の優先度がかなり下がりやすい'}
+      ],
+      scoreMap:[{F1:4},{F1:3},{F1:1},{F1:0}]
+    },
+    { id:'Q17', type:'scene', tag:'self', tagLabel:'自分について',
+      text:'悩みやしんどさを打ち明けるとき、自分に近いのは？',
+      opts:[
+        {emo:'🫂', label:'比較的そのまま言える',       desc:'弱さも含めて出しやすい'},
+        {emo:'📝', label:'少し整えてからなら言える',   desc:'時間があれば伝えられる'},
+        {emo:'😶', label:'軽い話に変えてしまいやすい', desc:'重い話は飲み込みやすい'},
+        {emo:'🔒', label:'ほとんど言えない',           desc:'深い部分は見せにくい'}
+      ],
+      scoreMap:[{F2:4},{F2:3},{F2:1},{F2:0}]
+    },
+    { id:'Q18', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'沈黙が流れたとき、2人の空気に近いのは？',
+      opts:[
+        {emo:'🌙', label:'静かでも気まずくない',         desc:'一緒に黙っていても落ち着く'},
+        {emo:'☕', label:'少し気まずいが保てる',         desc:'沈黙はあるがすぐ壊れない'},
+        {emo:'😬', label:'どちらかが焦って埋めがち',     desc:'間が持たない感じになりやすい'},
+        {emo:'📵', label:'黙ると一気に距離が出る',       desc:'沈黙がそのまま不安や切断感になる'}
+      ],
+      scoreMap:[{F3:4},{F3:3},{F3:1},{F3:0}]
+    },
+    { id:'Q19', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'気まずくなったあと、自然に戻るまでの流れに近いのは？',
+      opts:[
+        {emo:'🔧', label:'どちらかがちゃんと戻しにいく', desc:'修復のきっかけを作れる'},
+        {emo:'🙂', label:'少し時間を置けば戻れる',       desc:'すぐではないが回復はする'},
+        {emo:'🌀', label:'曖昧なまま長引きやすい',       desc:'何となく尾を引く'},
+        {emo:'🧱', label:'気まずさが蓄積しやすい',       desc:'一度こじれると戻りにくい'}
+      ],
+      scoreMap:[{F4:4},{F4:3},{F4:1},{F4:0}]
+    },
+    { id:'Q20', type:'scene', tag:'both', tagLabel:'2人について',
+      text:'お金の使い方や優先順位について、2人に近いのは？',
+      opts:[
+        {emo:'💳', label:'かなり感覚が近い',           desc:'使うところ・締めるところが似ている'},
+        {emo:'🧾', label:'違いはあるが話し合える',     desc:'調整すれば大きく困らない'},
+        {emo:'🛍️', label:'ちょくちょく引っかかる',     desc:'金銭感覚のズレが見える'},
+        {emo:'💥', label:'けっこう不安がある',         desc:'浪費・節約・優先順位で不信が出やすい'}
+      ],
+      scoreMap:[{F5:4},{F5:3},{F5:1},{F5:0}]
+    },
+    { id:'Q21', type:'freq', rfOnly:true, tag:'flag', tagLabel:'⚠ レッドフラグ',
+      text:'相手をバカにしたり、見下すような言い方をした（された）ことは？',
+      sub:'皮肉・嘲笑・冷笑なども含みます。自分・相手どちらでもかまいません',
+      opts:[
+        {emo:'😇', label:'ほぼない',      freq:'RARE'},
+        {emo:'🙈', label:'たまにある',    freq:'SOME'},
+        {emo:'😬', label:'しばしばある',  freq:'OFTEN'},
+        {emo:'🔥', label:'日常的にある',  freq:'HIGH'}
+      ],
+      rfScore:[0,1,2,3]
+    },
+    { id:'Q22', type:'freq', rfOnly:true, tag:'flag', tagLabel:'⚠ レッドフラグ',
+      text:'言い合いになったとき、黙り込んで話を打ち切ったことは？',
+      sub:'相手を無視する・話題を変える・その場を離れるなども含みます',
+      opts:[
+        {emo:'😇', label:'ほぼない',      freq:'RARE'},
+        {emo:'😶', label:'たまにある',    freq:'SOME'},
+        {emo:'😔', label:'しばしばある',  freq:'OFTEN'},
+        {emo:'🚪', label:'よくある',      freq:'HIGH'}
+      ],
+      rfScore:[0,1,2,3]
+    },
+    { id:'Q23', type:'freq', rfOnly:true, tag:'flag', tagLabel:'⚠ レッドフラグ',
+      text:'相手が自分の行動・交友関係・考えをコントロールしようとしていると感じた？',
+      sub:'「なんでそんな人と会うの」「それはやめて」など、制限・操作的な言動も含みます',
+      opts:[
+        {emo:'😇', label:'ほぼない',      freq:'RARE'},
+        {emo:'🤨', label:'たまにある',    freq:'SOME'},
+        {emo:'😟', label:'しばしばある',  freq:'OFTEN'},
+        {emo:'😰', label:'よくある',      freq:'HIGH'}
+      ],
+      rfScore:[0,1,2,3]
+    },
+    { id:'Q24', type:'freq', rfOnly:true, tag:'flag', tagLabel:'⚠ レッドフラグ',
+      text:'もめたとき、責任がいつもどちらか一方のせいにされやすい？',
+      sub:'言い訳・責任転嫁・話のすり替えが続く状態も含みます',
+      opts:[
+        {emo:'😇', label:'ほぼない',       freq:'RARE'},
+        {emo:'🤷', label:'たまにある',     freq:'SOME'},
+        {emo:'😓', label:'しばしばある',   freq:'OFTEN'},
+        {emo:'🧨', label:'かなりよくある', freq:'HIGH'}
+      ],
+      rfScore:[0,1,2,3]
+    }
+  ];
+
+  var FACTORS = [
+    {id:'F1', name:'連絡リズム',     desc:'返信ペースと関係への熱量の一致度', max:17},
+    {id:'F2', name:'自己開示と共感', desc:'本音を開き、受け取り合える深さ',   max:19},
+    {id:'F3', name:'距離感センス',   desc:'個の時間と密着のバランス感覚',     max:14},
+    {id:'F4', name:'修復力',         desc:'衝突後の建設的な立て直し能力',     max:18},
+    {id:'F5', name:'価値観の重なり', desc:'将来観・誠実性・生活観の一致',     max:19}
+  ];
+  var SCORE_MAX = 87;
+
+  var TIERS = [
+    {key:'t01', file:'t01.webp', min:0,  max:39,  label:'試練の相性',   rank:'D'},
+    {key:'t02', file:'t02.webp', min:40, max:59,  label:'要調整の相性', rank:'C'},
+    {key:'t03', file:'t03.webp', min:60, max:74,  label:'普通の相性',   rank:'B'},
+    {key:'t04', file:'t04.webp', min:75, max:89,  label:'上々の相性',   rank:'A'},
+    {key:'t05', file:'t05.webp', min:90, max:100, label:'奇跡の相性',   rank:'S'}
+  ];
+
+  /* ------ STATE ------ */
+  var S = { nameA:'', nameB:'', ans:{}, idx:0, completed:false };
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({v:3,nameA:S.nameA,nameB:S.nameB,ans:S.ans,idx:S.idx,completed:S.completed,ts:Date.now()})); } catch(e){}
+  }
+  function load() {
+    try {
+      var d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+      if(!d||d.v!==3) return false;
+      S.nameA=d.nameA||''; S.nameB=d.nameB||''; S.ans=d.ans||{}; S.idx=d.idx||0; S.completed=!!d.completed;
+      return true;
+    } catch(e){ return false; }
+  }
+  function clearStorage() {
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    S.nameA=S.nameB=''; S.ans={}; S.idx=0; S.completed=false;
+  }
+
+  function countDone() {
+    var n=0;
+    QS.forEach(function(q){ var a=S.ans[q.id]; if(a===undefined||a===null) return; if(q.type==='hybrid'){if(a.dir!==undefined&&a.str!==undefined) n++;}else if(typeof a==='number') n++; });
+    return n;
+  }
+  function updateProg() {
+    var p=Math.round(countDone()/TOTAL_Q*100);
+    var f=document.getElementById('progFill'), r=document.getElementById('progRail');
+    if(f) f.style.width=p+'%';
+    if(r) r.setAttribute('aria-valuenow',String(p));
+  }
+
+  /* ------ MODE ------ */
+  var $prologue=document.getElementById('prologue'), $result=document.getElementById('result');
+  var $quiz=document.getElementById('quiz'), $heroFig=document.getElementById('heroFig');
+  function setMode(m) {
+    $prologue.style.display='none'; $result.style.display='none';
+    $quiz.classList.remove('active'); $heroFig.style.display='none';
+    document.body.style.overflow='';
+    if(m==='prologue'){ $prologue.style.display='block'; $heroFig.style.display='block'; }
+    else if(m==='quiz'){ $quiz.classList.add('active'); document.body.style.overflow='hidden'; }
+    else if(m==='result'){ $result.style.display='block'; }
+  }
+
+  function $$(id){ return document.getElementById(id); }
+  var $nameA=$$('nameA'), $nameB=$$('nameB');
+  var $startBtn=$$('startBtn'), $resumeBtn=$$('resumeBtn');
+  var $prevBtn=$$('prevBtn'), $nextBtn=$$('nextBtn');
+  var $qArea=$$('qArea'), $qCounter=$$('qCounter'), $qProgFill=$$('qProgFill'), $qProgRail=$$('qProgRail'), $qScroll=$$('qScroll');
+  var $restartBtn=$$('restartBtn'), $toast=$$('toast');
+  var $prevAnswersCard=$$('prevAnswersCard'), $prevToggle=$$('prevToggle'), $prevList=$$('prevList');
+  var toastTimer=null;
+
+  /* ------ RENDER Q ------ */
+  function renderQ() {
+    var q=QS[S.idx];
+    $qCounter.textContent='問 '+(S.idx+1)+' / '+TOTAL_Q;
+    var pct=Math.round(S.idx/TOTAL_Q*100);
+    $qProgFill.style.width=pct+'%';
+    $qProgRail.setAttribute('aria-valuenow',String(pct));
+    $prevBtn.disabled=(S.idx===0);
+    $qScroll.scrollTop=0;
+    $qArea.innerHTML=buildQ(q);
+    attachH(q);
+    updateNxt(q);
+  }
+
+  function buildQ(q) {
+    var h='<div class="qcard"><div class="qcard-bot" style="position:relative">';
+    h+='<div class="qtag '+q.tag+'">'+esc(q.tagLabel)+'</div>';
+    h+='<p class="qtext">'+esc(q.text)+'</p>';
+    if(q.sub) h+='<p class="qsub">'+esc(q.sub)+'</p>';
+    if(q.type==='hybrid') h+=buildHybrid(q);
+    else if(q.type==='scene') h+=buildScene(q);
+    else h+=buildFreq(q);
+    h+='</div></div>';
+    return h;
+  }
+
+  function buildHybrid(q) {
+    var a=S.ans[q.id]||{}, sd=a.dir, ss=a.str;
+    var h='<div class="stage-lbl">STEP 1 — どちら寄り？</div>';
+    h+='<div class="opts-2col" id="dirOpts">';
+    q.dir.forEach(function(o,i){
+      var p=(sd===o.id)?'true':'false', rc=(i>0)?'red-v':'';
+      h+='<button type="button" class="optbtn '+rc+'" aria-pressed="'+p+'" data-dir="'+o.id+'">';
+      h+='<span class="opt-emo">'+o.emo+'</span><span class="opt-label">'+esc(o.label)+'</span><span class="opt-desc">'+esc(o.desc)+'</span></button>';
+    });
+    h+='</div>';
+    var s2=(sd!==undefined)?'str-stage open':'str-stage';
+    h+='<div class="'+s2+'" id="stage2"><div class="str-inner">';
+    h+='<div class="stage-lbl">STEP 2 — どのくらい？</div>';
+    q.strength.forEach(function(s){
+      var p=(ss===s.id)?'true':'false';
+      h+='<button type="button" class="str-btn" aria-pressed="'+p+'" data-str="'+s.id+'">';
+      h+='<span class="str-lbl">'+esc(s.label)+'</span><span class="str-badge">'+s.badge+'</span></button>';
+    });
+    h+='</div></div>';
+    return h;
+  }
+  function buildScene(q) {
+    var a=S.ans[q.id];
+    var h='<div class="opts-2col" id="sceneOpts">';
+    q.opts.forEach(function(o,i){
+      var p=(a===i)?'true':'false';
+      h+='<button type="button" class="optbtn" aria-pressed="'+p+'" data-scene="'+i+'">';
+      h+='<span class="opt-emo">'+o.emo+'</span><span class="opt-label">'+esc(o.label)+'</span>';
+      if(o.desc) h+='<span class="opt-desc">'+esc(o.desc)+'</span>';
+      h+='</button>';
+    });
+    h+='</div>';
+    return h;
+  }
+  function buildFreq(q) {
+    var a=S.ans[q.id];
+    var h='<div class="freq-grid" id="freqOpts">';
+    q.opts.forEach(function(o,i){
+      var p=(a===i)?'true':'false';
+      h+='<button type="button" class="freq-btn" aria-pressed="'+p+'" data-freq="'+i+'">';
+      h+='<span class="freq-emo">'+o.emo+'</span><span class="freq-lbl">'+esc(o.label)+'</span><span class="freq-lvl">'+o.freq+'</span></button>';
+    });
+    h+='</div>';
+    return h;
+  }
+
+  function attachH(q) {
+    if(q.type==='hybrid'){
+      var db=$qArea.querySelectorAll('[data-dir]');
+      db.forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var did=this.getAttribute('data-dir');
+          if(!S.ans[q.id]) S.ans[q.id]={};
+          S.ans[q.id].dir=did; delete S.ans[q.id].str; save();
+          db.forEach(function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-dir')===did?'true':'false'); });
+          var s2=document.getElementById('stage2');
+          if(s2){ s2.classList.add('open'); s2.querySelectorAll('[data-str]').forEach(function(b){ b.setAttribute('aria-pressed','false'); }); }
+          updateNxt(q);
+        });
+      });
+      var sb=$qArea.querySelectorAll('[data-str]');
+      sb.forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var sid=this.getAttribute('data-str');
+          if(!S.ans[q.id]) S.ans[q.id]={};
+          S.ans[q.id].str=sid; save();
+          sb.forEach(function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-str')===sid?'true':'false'); });
+          updateNxt(q); updateProg();
+        });
+      });
+    } else if(q.type==='scene'){
+      var sc=$qArea.querySelectorAll('[data-scene]');
+      sc.forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var i=parseInt(this.getAttribute('data-scene'),10);
+          S.ans[q.id]=i; save();
+          sc.forEach(function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-scene')===String(i)?'true':'false'); });
+          updateNxt(q); updateProg();
+        });
+      });
+    } else {
+      var fc=$qArea.querySelectorAll('[data-freq]');
+      fc.forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var i=parseInt(this.getAttribute('data-freq'),10);
+          S.ans[q.id]=i; save();
+          fc.forEach(function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-freq')===String(i)?'true':'false'); });
+          updateNxt(q); updateProg();
+        });
+      });
+    }
+  }
+
+  function isAnswered(q){ var a=S.ans[q.id]; if(a===undefined||a===null) return false; if(q.type==='hybrid') return a.dir!==undefined&&a.str!==undefined; return typeof a==='number'; }
+  function updateNxt(q){
+    var ok=isAnswered(q), last=(S.idx===TOTAL_Q-1);
+    $nextBtn.disabled=!ok;
+    $nextBtn.textContent=last?'判決を下す ✦':'次の問へ →';
+    $nextBtn.className='next-btn'+(last?' finish':'');
+  }
+
+  function goNext(){
+    var q=QS[S.idx];
+    if(!isAnswered(q)){ showToast('選択してから進んでください'); return; }
+    if(S.idx<TOTAL_Q-1){ S.idx++; save(); renderQ(); }
+    else { save(); try{ renderResult(); updateProg(); setMode('result'); window.scrollTo(0,0); }catch(e){ showToast('結果の描画に失敗しました'); } }
+  }
+  function goPrev(){ if(S.idx>0){ S.idx--; save(); renderQ(); } }
+
+  /* ------ SCORE ------ */
+  function calcScore(){
+    var f={F1:0,F2:0,F3:0,F4:0,F5:0}, rfRaw=0, rfCnt=0, mainCnt=0;
+    QS.forEach(function(q){
+      var a=S.ans[q.id]; if(a===undefined||a===null) return;
+      if(q.type==='hybrid'){
+        if(a.dir===undefined||a.str===undefined) return;
+        var pts=q.scoreMap[a.dir+':'+a.str]||{};
+        Object.keys(pts).forEach(function(k){ f[k]=(f[k]||0)+pts[k]; }); mainCnt++;
+      } else if(q.type==='scene'){
+        if(typeof a!=='number') return;
+        var pts2=q.scoreMap[a]||{};
+        Object.keys(pts2).forEach(function(k){ f[k]=(f[k]||0)+pts2[k]; }); mainCnt++;
+      } else if(q.rfOnly){
+        if(typeof a!=='number') return;
+        rfRaw+=(q.rfScore[a]||0); rfCnt++;
+      }
+    });
+    FACTORS.forEach(function(fc){ f[fc.id]=Math.min(f[fc.id],fc.max); });
+    var raw=f.F1+f.F2+f.F3+f.F4+f.F5;
+    var totalMain=QS.filter(function(q){return !q.rfOnly;}).length;
+    var score=mainCnt===0?0:Math.max(0,Math.min(100,Math.round(raw/SCORE_MAX*100)));
+    
+    var rfPct=rfCnt===0?null:Math.round(rfRaw/12*100);
+    var facPct={};
+    FACTORS.forEach(function(fc){ facPct[fc.id]=Math.round((f[fc.id]||0)/fc.max*100); });
+    return {score:score,rfPct:rfPct,factors:f,facPct:facPct};
+  }
+  function tierFor(s){ for(var i=TIERS.length-1;i>=0;i--){ if(s>=TIERS[i].min) return TIERS[i]; } return TIERS[0]; }
+
+  /* ------ RESULT ------ */
+  function renderResult(){
+    var c=calcScore(), tier=tierFor(c.score);
+    var nA=S.nameA||'自分A', nB=S.nameB||'相手B';
+
+    animateCount($$('scoreNum'), c.score, 900);
+    $$('decreeNames').textContent='─ '+nA+' × '+nB+' ─';
+
+    /* wax seal color */
+    var ws=$$('waxSeal');
+    if(c.score>=75){ ws.style.background='radial-gradient(circle at 33% 28%, #E8A820, var(--gold) 50%, #7C5000)'; ws.style.borderColor='var(--gbd)'; }
+    else if(c.score>=40){ ws.style.background='radial-gradient(circle at 33% 28%, #C0A070, #9A7840 50%, #5A3810)'; ws.style.borderColor='var(--bg2)'; }
+    else { ws.style.background='radial-gradient(circle at 33% 28%, #D04060, #901030 50%, #580010)'; ws.style.borderColor='var(--rbd)'; }
+
+    var rl=$$('rankLetter');
+    rl.textContent=tier.rank;
+    rl.style.color=(c.score>=75)?'var(--gold)':(c.score>=40)?'var(--ink3)':'var(--red2)';
+
+    var pillTxt=tier.rank+' ランク — '+tier.label;
+    $$('rankPill').textContent=pillTxt;
+
+    var title=(c.score>=90)?(nA+'と'+nB+'、この2人は本物。')
+      :(c.score>=75)?(nA+'と'+nB+'、一緒にいると何か起きそう。')
+      :(c.score>=60)?(nA+'と'+nB+'、悪くない。というかかなり良い。')
+      :(c.score>=40)?(nA+'と'+nB+'、ぶつかり方次第で化ける。')
+      :(nA+'と'+nB+'、好きな気持ちは本物。でも運用が鍵。');
+    $$('resultTitle').textContent=title;
+
+    var banter=(c.score>=90)?c.score+'点。もはや言い訳できない相性。'
+      :(c.score>=75)?c.score+'点。これを活かさないともったいない。'
+      :(c.score>=60)?c.score+'点。「普通」じゃなくて「ちゃんと良い」。'
+      :(c.score>=40)?c.score+'点。伸びしろで殴れる点数。'
+      :c.score+'点。法廷は正直。でも好きは別の話。';
+    $$('banterLine').textContent=banter;
+
+    
+    
+
+    $$('resultImg').src=IMG_BASE+tier.file;
+    $$('resultImg').alt=tier.label+'の結果画像';
+
+    /* rank card color */
+    var rc=$$('rankCard');
+    rc.style.background=(c.score>=75)?'linear-gradient(135deg,var(--glt),var(--paper))'
+      :(c.score>=40)?'var(--paper)'
+      :'linear-gradient(135deg,var(--rlt),var(--paper))';
+    rc.style.borderColor=(c.score>=75)?'var(--gbd)':(c.score>=40)?'var(--bg2)':'var(--rbd)';
+    rc.style.boxShadow=(c.score>=75)?'0 2px 0 var(--gbd),0 5px 16px rgba(0,0,0,.08)':(c.score>=40)?'none':'0 2px 0 var(--rbd),0 5px 16px rgba(0,0,0,.08)';
+
+    renderFbars(c);
+    renderRF(c);
+    renderGallery(tier.key);
+    renderPrevList($$('prevListResult'));
+
+    /* new features */
+    renderCourtComment(c);
+    renderFateNum(S.nameA, S.nameB);
+    renderCompatType(c);
+    renderStrengthWeak(c);
+    renderDateRec(c);
+    renderAdvice(c);
+
+    S.completed=true; save();
+    document.dispatchEvent(new Event('result:ready'));
+  }
+
+  
+
+  /* ── カウントアップ ── */
+  function animateCount(el, target, duration) {
+    if(!el) return;
+    var start=null;
+    function step(ts){
+      if(!start) start=ts;
+      var p=Math.min((ts-start)/duration,1);
+      var e=1-Math.pow(1-p,3);
+      el.textContent=String(Math.round(e*target));
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── 天使 vs 悪魔コメント ── */
+  var ANGEL_COMMENTS = [
+    'あなたが今感じている不安は、本物の感情です。それだけ、この人のことを大切に思っている。その気持ちは、きっと伝わります。',
+    'うまくいかない日があっても、大丈夫です。この2人の間にあるものは、そんなことで消えるほど軽くありません。',
+    'あなたはちゃんと、相手のことを見ています。その丁寧さが、この関係をここまで育ててきました。自信を持ってください。',
+    'この人と一緒にいる時間は、あなたにとって特別なものになっています。相手も、きっと同じです。',
+    'この相性は、本物です。2人がここまで来られたのは、どちらかが諦めなかったから。それだけで、十分です。'
+  ];
+  var DEMON_COMMENTS = [
+    'へえ、この点数で満足ですか。ずいぶん低い天井ですね。——まあ、まだ動けるうちに動いた方が賢明ですよ。',
+    'その「もう少し様子を見てから」、何回目ですか。私には分かります。さっさと次の手を打った方が、後悔が少ない。',
+    '「普通に良い」と思いましたか。普通で良かったんですか。——まあ、この相性はあなたが思っている以上のものを持っています。使わないのは勿体ない。',
+    'まだ見せていない本音がありますよね。隠している間は、相手もあなたの本当の値を測れない。出し惜しみは損ですよ。',
+    'この点数を見て何も動かないなら、それはそれで一つの選択です。でも——本当にそれで良いんですか。私には、あなたがまだ諦めていない顔に見えますが。'
+  ];
+  function commentIdx(score){ return score>=90?4:score>=75?3:score>=60?2:score>=40?1:0; }
+
+  function renderCourtComment(c){
+    var idx=commentIdx(c.score);
+    var ae=$$('angelComment'), de=$$('demonComment');
+    if(ae) ae.textContent=ANGEL_COMMENTS[idx];
+    if(de) de.textContent=DEMON_COMMENTS[idx];
+  }
+
+  /* ── 運命数 ── */
+  var FATE_DATA = {
+    1:{ label:'先導の数', desc:'2人のうちどちらかが「先に動く」タイプ。どちらがリードしても、ついていく側が文句を言わないのがこの数字の条件。主導権の綱引きが始まったら要注意。' },
+    2:{ label:'対話の数', desc:'言葉で繋がれる2人。沈黙が怖くなくて、話しているうちに気持ちが整理できるタイプ。「もっと話したい」と思わせるのが、この数字の得意技。' },
+    3:{ label:'創造の数', desc:'一緒にいると何か作りたくなる。料理でも旅行計画でも、共同作業が一番楽しい2人。ノリが合ったときの爆発力は全数字中トップクラス。' },
+    4:{ label:'安定の数', desc:'派手なことは少ないが、じわじわ強くなる関係。5年後に「あのとき続けてよかった」と思えるタイプ。ドラマより日常が似合う2人。' },
+    5:{ label:'変化の数', desc:'飽きない2人。正確には、変化し続けるから飽きる暇がない。「この前と違う」を楽しめるかどうかが、この関係を面白くするかどうかの全て。' },
+    6:{ label:'思いやりの数', desc:'相手をケアしたい気持ちが自然に出てくる組み合わせ。ただし、お互い気を使いすぎて本音が出にくくなることがある。遠慮のしすぎには気をつけて。' },
+    7:{ label:'内省の数', desc:'言葉より空気で分かり合える2人。説明しなくても「なんか分かる」が起きやすい。ただし、分かったつもりで実はズレている、ということも同じ確率で起きる。' },
+    8:{ label:'意志の数', desc:'どちらも芯が強い。ぶつかると派手だが、認め合ったときの信頼は本物。折れない者同士が折れる必要のない関係を作れたら、それは最強。' },
+    9:{ label:'完成の数', desc:'包容力が高い組み合わせ。相手の変なところも「まあそういう人だし」と受け入れられる。長く続く関係の多くは、この数字に落ち着いていく。' }
+  };
+  function digitalRoot(str){
+    if(!str) return null;
+    var sum=0;
+    for(var i=0;i<str.length;i++) sum+=str.charCodeAt(i);
+    while(sum>9){ var s2=0; String(sum).split('').forEach(function(c){ s2+=parseInt(c,10)||0; }); sum=s2; }
+    return sum||9;
+  }
+  function renderFateNum(nameA, nameB){
+    var fc=$$('fateCard'); if(!fc) return;
+    var combined=(nameA+nameB).replace(/\s/g,'');
+    if(!combined){ fc.classList.add('hide'); return; }
+    fc.classList.remove('hide');
+    var n=digitalRoot(combined);
+    var d=FATE_DATA[n]||FATE_DATA[9];
+    var numA=digitalRoot(nameA)||'—', numB=digitalRoot(nameB)||'—';
+    $$('fateNumBadge').textContent='No.'+n;
+    $$('fateNumBig').textContent=String(n);
+    $$('fateLabel').textContent=d.label;
+    $$('fateDesc').textContent=d.desc;
+    $$('fateCalc').textContent='[ '+nameA+'('+numA+') + '+nameB+'('+numB+') → 運命数 '+n+' ]';
+  }
+
+  /* ── 相性タイプ ── */
+  var COMPAT_TYPES = {
+    'F1:F3':{ name:'自律型', desc:'久しぶりに話しても、普通に前の続きから始まれる2人。\n傍から見ると「仲良いの？」ってなる。本人たちは「全然仲良い」と思っている。実際仲良い。\n\nただし、これが「放っておいても大丈夫」という謎の自信に変わると終わる。関係が壊れるとき、この2人は喧嘩しない。静かに温度が下がって、気づいたら「まあいっか」になっている。\n自律型の終わり方はいつも静かなので、自分でも気づかない。', axes:['連絡リズム','距離感センス'] },
+    'F1:F4':{ name:'熱量修復型', desc:'喧嘩しても翌日にはケロっとしている2人。\n「もう仲直りしたの？」と周りから引かれるくらい回復が速い。\n\nただ、この「どうせ仲直りできる」という安心感が、言わなくていいことを言わせる方向にも働く。「傷ついたけどまあいいか」を積み重ねると、ある日突然「実はずっとしんどかった」が出てくる。\n修復が速いほど、たまった傷に気づきにくい。', axes:['連絡リズム','修復力'] },
+    'F1:F2':{ name:'開示リズム型', desc:'「ちゃんと返す」と「ちゃんと話す」が両立できている、かなり珍しい組み合わせ。\n多くの関係はどちらかが機能していない。これは当たり前に見えて、全然当たり前ではない。\n\nリスクを言うと、「安定しすぎてときめきが消える」こと。安心感が高いぶん、スリルがなくなったことを「冷めた」と誤解しやすい。実際は冷めていない。ただ慣れているだけ。その違いを、自分で判断できるかどうかが分岐点になる。', axes:['連絡リズム','自己開示と共感'] },
+    'F2:F4':{ name:'安全基地型', desc:'本音が言えて、もめても立て直せる。\nしんどいことがあって戻ってきたとき、そばにいると少し回復できる——そういう関係。\n\nただ、安全な場所はずっとそこにいると成長しない。居心地が良すぎると、2人でぬるま湯に浸かったまま何年も過ぎる。壊れない関係と、育つ関係は別物だ。', axes:['自己開示と共感','修復力'] },
+    'F2:F5':{ name:'同志型', desc:'説明しなくてもだいたい伝わる、価値観が近すぎる2人。\n「なんで分かるの？」が日常になっている。一緒にいると楽というより、いない時間が少しもったいなく感じる。\n\nただ、共鳴しすぎると相手の変化を見落とす。「どうせ同じ考えでしょ」と決めつけて、実はズレていたのに気づくのが遅れる。同志だと思っていたのに、気づいたら別の方向を向いていた——これがこのタイプの典型的なすれ違い方だ。', axes:['自己開示と共感','価値観の重なり'] },
+    'F3:F5':{ name:'自然体型', desc:'一緒にいるのに疲れない2人。\nこれは思っているより珍しい。\n\nただ、あまりにも「自然すぎる」と関係がインフラ化する。水道と同じで、あって当然すぎると止まるまで気づかない。「普通に一緒にいられること」に、意識的に目を向けてみて。それだけでこの関係の密度がかなり変わる。', axes:['距離感センス','価値観の重なり'] },
+    'F4:F5':{ name:'鍛錬型', desc:'ぶつかるたびに仲が深まる——そういう2人。\n揉めたあとに「なるほど、そういうことか」が来やすいのは、根っこの部分が近いからだ。\n\nただし、これが成立するのは「修復の目的が理解であるとき」に限る。ぶつかりながら相手を自分好みに変えていくことが目的になると、鍛錬ではなくなる。気づきにくいのは、やっている本人だ。', axes:['修復力','価値観の重なり'] },
+    'F1:F5':{ name:'方向性一致型', desc:'「将来どうしたい？」で揉めない2人。\nこれがどれだけ珍しいことか、揉めた経験がある人には分かる。\n\nただ、将来観は変わる。方向が一致していると安心して、互いの「最近どう思っている？」を確認しなくなる。気づいたら数年前の合意でずっと動いていた——ということが起きやすい。一致は資産だが、更新が必要だ。', axes:['連絡リズム','価値観の重なり'] },
+    'F2:F3':{ name:'安心距離型', desc:'近すぎず、遠すぎず——それが自然にできている2人。\n「一緒にいると落ち着く」と「適度に自分の時間もある」が両立している。\n\n難点は、このバランスが「なんとなく」で成立している点だ。崩れたときに原因が分からない。「最近少し遠い気がする」と感じたら、放置せずに言葉にしてみて。このタイプは口に出したら早い。', axes:['自己開示と共感','距離感センス'] },
+    'F3:F4':{ name:'尊重共存型', desc:'干渉しない、引きずらない、静かに強い2人。\n感情で相手を引っ張らないので、波に飲まれにくい。\n\nただ、「尊重」と「無関心」は外から見ると区別がつかない。干渉しないようにしているつもりが、相手には「気にしてもらえていない」と映っていることがある。このタイプは全員一度はそこで躓く。尊重は、小さな行動で示さないと伝わらない。', axes:['距離感センス','修復力'] }
+  };
+  /* ── 強みと弱み ── */
+  var FACTOR_SW = {
+    F1:{
+      strong:'連絡のリズムが近い。「返信が遅い/速い」で消耗しにくく、温度感が揃っている。',
+      weak:  '連絡ペースのズレが小さなストレスになりやすい。「普通」の基準を言葉にして確認する必要がある。'
+    },
+    F2:{
+      strong:'本音を話せる土台がある。自己開示と受け取りの回路が機能している。',
+      weak:  '本音を開く深さに差がある。片方が話しても受け取り側が追いつかない局面が出やすい。'
+    },
+    F3:{
+      strong:'距離感の取り方が似ている。「一人にしてほしい」「そばにいたい」でぶつかりにくい。',
+      weak:  '密着と自律のニーズにズレがある。どちらかが「近すぎる/遠すぎる」と感じやすい。'
+    },
+    F4:{
+      strong:'もめても立て直せる。衝突後の修復力が高く、関係が壊れにくい。',
+      weak:  'ぶつかったあとの処理が課題。黙り込む、または言い訳が先に出るパターンに注意。'
+    },
+    F5:{
+      strong:'将来観・価値観の方向性が近い。「どこへ向かうか」で大きくズレない。',
+      weak:  '生活観や将来像に温度差がある。表面的には合っていても長期で出てくるタイプ。'
+    }
+  };
+
+  function renderStrengthWeak(c){
+    var sorted=FACTORS.map(function(fc){ return {id:fc.id,name:fc.name,v:c.facPct[fc.id]||0}; });
+    sorted.sort(function(a,b){ return b.v-a.v; });
+    var strong=sorted.slice(0,2), weak=sorted.slice(-2).reverse();
+    var sEl=$$('swStrong'), wEl=$$('swWeak'); if(!sEl||!wEl) return;
+    sEl.innerHTML=strong.map(function(f){
+      return '<div class="sw-item good"><span class="sw-item-name">'+esc(f.name)+'</span><span class="sw-item-desc">'+esc(FACTOR_SW[f.id].strong)+'</span></div>';
+    }).join('');
+    wEl.innerHTML=weak.map(function(f){
+      return '<div class="sw-item bad"><span class="sw-item-name">'+esc(f.name)+'</span><span class="sw-item-desc">'+esc(FACTOR_SW[f.id].weak)+'</span></div>';
+    }).join('');
+  }
+
+  /* ── デート勧告 ── */
+  var DATE_VERDICT = {
+    F1:{
+      angel:{
+        emo:'☕', name:'行きつけのカフェ or 落ち着いた居酒屋',
+        desc:'連絡ペースが近い2人は「次また来よう」と自然に言える場所が合う。気張らず、次の話ができる場所を選ぶのが正解。'
+      },
+      demon:{
+        emo:'🎮', name:'謎解き or 軽いゲームイベント',
+        desc:'テンポよく動ける場所に行くと2人の熱量がかみ合う瞬間が分かる。うまくいけばそのまま夜まで延長できる。'
+      },
+      verdict:{
+        emo:'🎬', name:'映画 → そのまま飯', img:'d01.webp',
+        reason:'「今どう思った？」で自然に話が始まる構成が、連絡リズムの近い2人に最もフィットする。終わりの時間が決まっているので、適度に締まりもある。'
+      },
+      avoid:{
+        name:'ノープランの休日まるごと',
+        note:'「どこ行く？」が続くと温度差が出やすい。熱量が近くても方向性が決まらないと空回りしやすい。'
+      }
+    },
+    F2:{
+      angel:{
+        emo:'☕', name:'長居できる静かなカフェ',
+        desc:'自己開示が機能している2人は、話せる時間が取れる場所で力を発揮する。BGMが小さく、席が詰まっていない場所を選ぶだけで会話の質が上がる。'
+      },
+      demon:{
+        emo:'🌄', name:'日帰りで少し遠い場所',
+        desc:'いつもと違う景色は普段出てこない話を引き出す。移動中の会話が意外と本番になりやすい。遠すぎず、帰りが楽な距離がベスト。'
+      },
+      verdict:{
+        emo:'🍳', name:'一緒に料理するデート', img:'d02.webp',
+        reason:'同じ作業をしながら話す形式は、「伝えにくいこと」が出やすい環境を作る。自己開示が深い2人は、共同作業でさらに本音が出る。失敗しても笑えるのも良い。'
+      },
+      avoid:{
+        name:'大人数の飲み会やグループイベント',
+        note:'2人の会話が分断されやすい。自己開示の積み上げが途切れると、次が少し後退する。'
+      }
+    },
+    F3:{
+      angel:{
+        emo:'📚', name:'本屋 or 美術館を各自ぶらぶら',
+        desc:'一緒にいるけど干渉しない空間。好きなものを持ち寄って話す流れが距離感センスの高い2人に自然にフィットする。'
+      },
+      demon:{
+        emo:'🚂', name:'ゆるめの1泊旅行',
+        desc:'少し長い時間一緒にいる体験は、距離感の「上限」が分かる機会でもある。距離の調整ができる2人なら、むしろ安心感が増す。'
+      },
+      verdict:{
+        emo:'🌿', name:'公園や川沿いの散歩 → カフェ', img:'d03.webp',
+        reason:'適度に歩いて、適度に止まれる。密着も自律も選べる構造で、距離感センスが高い2人が一番リラックスできる形式。コースも決めすぎない方が良い。'
+      },
+      avoid:{
+        name:'終日密着型のテーマパーク',
+        note:'逃げ場がないと疲れやすい。お互い「一人の時間」を必要とするタイプには長時間の密着は重くなりやすい。'
+      }
+    },
+    F4:{
+      angel:{
+        emo:'🍜', name:'初めて行く飲食店',
+        desc:'「外れてもまあいっか」な空気を作れるかが鍵。修復力がある2人は、小さな失敗を笑えるかどうかを試せる場所が合う。'
+      },
+      demon:{
+        emo:'🎲', name:'ボードゲームカフェ or 協力型ゲーム',
+        desc:'対話しながら競うシチュエーションは、2人の関係修復力が試される。ぶつかっても戻れる2人は、むしろここで仲が深まる。'
+      },
+      verdict:{
+        emo:'🧗', name:'体験系アクティビティ（陶芸 / クライミング等）', img:'d04.webp',
+        reason:'一緒に課題を乗り越える構造が修復力の高い2人に最もフィットする。「うまくいかない瞬間」を一緒に経験することで、修復パターンが自然に身につく。'
+      },
+      avoid:{
+        name:'感情的になりやすい話題を持ち込むディナー',
+        note:'デートの場で「あのときのこと」を蒸し返すのは事故率が高い。修復力があっても、場の設定が悪いと無駄に消耗する。'
+      }
+    },
+    F5:{
+      angel:{
+        emo:'🏛', name:'歴史・文化スポット or 企画展',
+        desc:'価値観が揃っている2人は「意味のある場所」に行くと自然に話が続く。感想が似ていると確認し合えるのも良い。'
+      },
+      demon:{
+        emo:'🎭', name:'演劇 or ライブ → 感想を語る飲み',
+        desc:'感動体験を共有してから話す流れは、価値観の重なりを言語化する機会になる。「あそこが刺さった」が一致すると一気に近づく。'
+      },
+      verdict:{
+        emo:'🌅', name:'少し計画した小旅行（1泊でも可）', img:'d05.webp',
+        reason:'将来観が近い2人には「一緒に何かを計画して実行する」体験が最も相性良い。準備の段階から楽しめるのが価値観一致型の強み。'
+      },
+      avoid:{
+        name:'目的のない衝動的な外出',
+        note:'方向性が近い2人は、行き先が決まっていない方が逆に落ち着かない。「とりあえず」が続くと温度が下がりやすい。'
+      }
+    }
+  };
+
+  function renderDateRec(c){
+    var el=$$('dateBody'); if(!el) return;
+    var sorted=FACTORS.map(function(fc){ return {id:fc.id,v:c.facPct[fc.id]||0}; });
+    sorted.sort(function(a,b){ return b.v-a.v; });
+    var v=DATE_VERDICT[sorted[0].id]||DATE_VERDICT['F2'];
+    var h='';
+    h+='<div class="date-proposal angel">';
+    h+='<span class="date-prop-icon">'+v.angel.emo+'</span>';
+    h+='<div class="date-prop-inner">';
+    h+='<div class="date-prop-label">👼 ANGEL — 天使の提案</div>';
+    h+='<div class="date-prop-name">'+esc(v.angel.name)+'</div>';
+    h+='<div class="date-prop-desc">'+esc(v.angel.desc)+'</div>';
+    h+='</div></div>';
+    h+='<div class="date-proposal demon">';
+    h+='<span class="date-prop-icon">'+v.demon.emo+'</span>';
+    h+='<div class="date-prop-inner">';
+    h+='<div class="date-prop-label">😈 DEMON — 悪魔の提案</div>';
+    h+='<div class="date-prop-name">'+esc(v.demon.name)+'</div>';
+    h+='<div class="date-prop-desc">'+esc(v.demon.desc)+'</div>';
+    h+='</div></div>';
+    h+='<div class="date-verdict">';
+    h+='<div class="date-verdict-head"><span>⚖ FINAL VERDICT — 今回の2人への判決</span><span class="date-verdict-badge">本命案</span></div>';
+    h+='<div class="date-verdict-body">';
+    if(v.verdict.img) h+='<img class="date-verdict-img" src="/shindan/assets/results/love-manual-lab/'+esc(v.verdict.img)+'" alt="'+esc(v.verdict.name)+'" loading="lazy">';
+    h+='<span class="date-verdict-emo">'+v.verdict.emo+'</span>';
+    h+='<div><div class="date-verdict-name">'+esc(v.verdict.name)+'</div>';
+    h+='<div class="date-verdict-reason">'+esc(v.verdict.reason)+'</div></div>';
+    h+='</div></div>';
+    h+='<div class="date-avoid">';
+    h+='<span class="date-avoid-label">⚠ 今は避けたい案</span>';
+    h+='<div><div class="date-avoid-name">'+esc(v.avoid.name)+'</div><div class="date-avoid-note">'+esc(v.avoid.note)+'</div></div>';
+    h+='</div>';
+    el.innerHTML=h;
+  }
+
+  /* ── 改善アドバイス ── */
+  var ADVICE_BY_FACTOR = {
+    F1:'連絡ペースの「普通」を一度言葉にしておく。「忙しいときは一言入れる」など、ルールではなく目安として共有するだけで摩擦が減る。',
+    F2:'週1回、「最近ちょっとしんどかったこと」を話す習慣を作ってみる。自己開示は一気に深めるより、小さな本音を積み重ねる方が定着しやすい。',
+    F3:'「一人の時間が必要なとき」を責める空気なく言える合言葉を決める。「今日はひとりモード」など一言あるだけで距離感の摩擦が激減する。',
+    F4:'もめたあとに「責める」より「確認する」を先にする。「あのときどう感じた？」の一言が修復のスピードを上げる。謝罪より理解の確認が先。',
+    F5:'将来の話を「決める場」ではなく「方向を確認する場」として設ける。3ヶ月に1回「今どんな未来をイメージしてる？」の軽い確認が価値観のズレを早期に発見する。'
+  };
+  var ADVICE_RF = {
+    low: '侮蔑・石壁化の兆候が少ない今の状態を維持するには「相手が言いにくそうにしているとき」を見逃さないことが鍵。安全な対話の空気は意識的に守るものです。',
+    mid: '「黙り込む前に一言だけ言う」練習をしてみて。「今ちょっと整理したい、10分後に話そう」だけでも石壁化を防げる。小さな一言が修復の窓を開ける。',
+    high:'侮蔑や支配的な言動が習慣化している場合、2人だけでの解決には限界があることが多い。カップルカウンセリングや信頼できる第三者への相談を視野に入れることをまず検討してみてください。'
+  };
+
+  function renderAdvice(c){
+    var el=$$('adviceList'); if(!el) return;
+    var sorted=FACTORS.map(function(fc){ return {id:fc.id,v:c.facPct[fc.id]||0}; });
+    sorted.sort(function(a,b){ return a.v-b.v; });
+    var tips=[ADVICE_BY_FACTOR[sorted[0].id]];
+    if(sorted[1].id!==sorted[0].id) tips.push(ADVICE_BY_FACTOR[sorted[1].id]);
+    var rfTip=c.rfPct===null?null:c.rfPct<=29?ADVICE_RF.low:c.rfPct<=59?ADVICE_RF.mid:ADVICE_RF.high;
+    if(rfTip) tips.push(rfTip);
+    el.innerHTML=tips.map(function(t,i){
+      return '<div class="advice-item"><span class="advice-num">'+(i+1)+'</span><span class="advice-txt">'+esc(t)+'</span></div>';
+    }).join('');
+  }
+
+  function renderCompatType(c){
+    var scores=FACTORS.map(function(fc){ return {id:fc.id, v:c.facPct[fc.id]||0}; });
+    scores.sort(function(a,b){ return b.v-a.v; });
+    var nA=S.nameA||'自分A', nB=S.nameB||'相手B';
+    if($$('ctNameBadge')) $$('ctNameBadge').textContent=nA+' × '+nB;
+
+    var type=null;
+    var t1=scores[0].id, t2=scores[1].id;
+    var key=t1+':'+t2;
+    if(COMPAT_TYPES[key]) type=COMPAT_TYPES[key];
+    else if(COMPAT_TYPES[t2+':'+t1]) type=COMPAT_TYPES[t2+':'+t1];
+    if(!type){
+      for(var k in COMPAT_TYPES){ if(k.indexOf(t1)!==-1){ type=COMPAT_TYPES[k]; break; } }
+    }
+    if(!type){
+      if(c.score<40) type={name:'開拓型', desc:'まだ掘り起こせていないものが多い。伸びしろが一番大きい組み合わせかもしれない。', axes:['伸びしろ大']};
+      else type={name:'バランス型', desc:'どの軸も均等に発達。特定の突出した強みはないが、安定感がある。', axes:['総合力']};
+    }
+
+    if($$('ctTypeName')) $$('ctTypeName').textContent=type.name;
+    if($$('ctDesc')) $$('ctDesc').innerHTML=type.desc.replace(/\n/g,'<br>');
+    var axEl=$$('ctAxes');
+    if(axEl){ axEl.innerHTML=type.axes.map(function(a){ return '<span class="ct-axis-tag">'+esc(a)+'</span>'; }).join(''); }
+  }
+
+  function renderFbars(c){
+    var el=$$('factorBars'); if(!el) return;
+    var h='';
+    FACTORS.forEach(function(fc){
+      var p=c.facPct[fc.id]||0, lv=p>=70?'hi':p>=40?'md':'lo';
+      h+='<div class="fbar-row"><div class="fbar-hdr"><span class="fbar-name">'+esc(fc.name)+'</span><span class="fbar-pct">'+p+'%</span></div>';
+      h+='<div class="fbar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'" aria-label="'+esc(fc.name)+'">';
+      h+='<div class="fbar-fill '+lv+'" style="width:'+p+'%"></div></div>';
+      h+='<div class="fbar-desc">'+esc(fc.desc)+'</div></div>';
+    });
+    el.innerHTML=h;
+  }
+
+  function renderRF(c){
+    var pct=c.rfPct;
+    if(pct===null){ $$('rfBarFill').style.width='0%'; $$('rfPctTxt').textContent='未算出'; $$('rfJudge').textContent='Q21〜Q24に回答すると算出されます。'; $$('rfGuide').textContent=''; return; }
+    $$('rfBarFill').style.width=pct+'%'; $$('rfPctTxt').textContent=pct+'%';
+    var j,g;
+    if(pct<=20){ j='✅ 低リスク。侮蔑・石壁化・コントロールの兆候が少ない。'; g='この状態を維持するだけで関係の土台は守られます。「相手を尊重する」が自然にできている証拠。'; }
+    else if(pct<=45){ j='🟡 中リスク。気になるパターンがいくつかある。'; g='「黙り込んで終わる」「見下したような言い方になる」が習慣になっていないか確認を。小さなリペア（謝罪・歩み寄り）が効果的。'; }
+    else if(pct<=70){ j='🟠 やや高リスク。関係を壊す行動パターンが出やすい状態。'; g='侮蔑・無視・コントロールは、関係満足度を最も強く下げる行動です。「怒りをぶつける前に一歩止まる」練習が有効。'; }
+    else { j='🔴 高リスク。今すぐ関係の安全性を見直してほしい。'; g='見下し・支配・石壁化が常態化すると関係は修復困難になります。相性の問題より先に、2人の間の安全な対話環境を取り戻すことが最優先です。'; }
+    $$('rfJudge').textContent=j; $$('rfGuide').textContent=g;
+  }
+
+  function renderGallery(curKey){
+    var el=$$('galleryGrid'); if(!el) return;
+    var h='';
+    TIERS.forEach(function(t){
+      var cur=(t.key===curKey);
+      h+='<div class="gallery-item"><img class="gallery-thumb'+(cur?' cur':'')+'" src="'+IMG_BASE+t.file+'" alt="'+esc(t.label)+'" loading="lazy">';
+      h+='<div class="gallery-lbl">'+esc(t.label)+'</div><div class="gallery-range">'+t.min+'〜'+t.max+'</div></div>';
+    });
+    el.innerHTML=h;
+  }
+
+  function ansLabel(q){
+    var a=S.ans[q.id]; if(a===undefined||a===null) return '（未回答）';
+    if(q.type==='hybrid'){
+      if(a.dir===undefined) return '（未完了）';
+      var dO=q.dir.find(function(d){ return d.id===a.dir; });
+      var dL=dO?dO.label:a.dir;
+      if(a.str===undefined) return dL+'（強さ未選択）';
+      var sO=q.strength.find(function(s){ return s.id===a.str; });
+      return dL+' ／ '+(sO?sO.label:a.str);
+    }
+    var op=q.opts[a]; return op?op.label:'（不明）';
+  }
+
+  function renderPrevList(container){
+    if(!container) return;
+    var h='';
+    QS.forEach(function(q,i){
+      h+='<div class="prev-ans-item" role="listitem"><div class="prev-ans-q">Q'+(i+1)+'. '+esc(q.text)+'</div><div class="prev-ans-v">→ '+esc(ansLabel(q))+'</div></div>';
+    });
+    container.innerHTML=h;
+  }
+
+  function renderPrevPrologue(){
+    var has=Object.keys(S.ans).length>0;
+    if(!has){ $prevAnswersCard.classList.add('hide'); return; }
+    $prevAnswersCard.classList.remove('hide');
+    renderPrevList($prevList);
+  }
+
+  function showToast(msg){
+    $toast.textContent=msg; $toast.classList.add('show');
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){ $toast.classList.remove('show'); },2400);
+  }
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  /* ------ BOOT ------ */
+  function boot(){
+    var has=load(); updateProg();
+    if(has){ $nameA.value=S.nameA; $nameB.value=S.nameB; }
+    if(has&&S.completed){ renderPrevPrologue(); renderResult(); setMode('result'); return; }
+    if(has&&countDone()>0){ $resumeBtn.classList.remove('hide'); renderPrevPrologue(); }
+    setMode('prologue');
+  }
+
+  /* ------ EVENTS ------ */
+  $startBtn.addEventListener('click',function(){
+    S.nameA=$nameA.value.trim(); S.nameB=$nameB.value.trim();
+    S.ans={}; S.idx=0; S.completed=false;
+    save(); updateProg(); setMode('quiz'); renderQ();
+  });
+  $resumeBtn.addEventListener('click',function(){
+    S.nameA=$nameA.value.trim(); S.nameB=$nameB.value.trim();
+    var ri=0;
+    for(var i=0;i<TOTAL_Q;i++){ if(!isAnswered(QS[i])){ ri=i; break; } if(i===TOTAL_Q-1) ri=TOTAL_Q-1; }
+    S.idx=ri; save(); setMode('quiz'); renderQ();
+  });
+  $nextBtn.addEventListener('click',goNext);
+  $prevBtn.addEventListener('click',goPrev);
+  $restartBtn.addEventListener('click',function(){
+    clearStorage(); $nameA.value=''; $nameB.value='';
+    $resumeBtn.classList.add('hide'); $prevAnswersCard.classList.add('hide');
+    updateProg(); setMode('prologue');
+  });
+  
+  $nameA.addEventListener('input',function(){ S.nameA=this.value.trim(); save(); });
+  $nameB.addEventListener('input',function(){ S.nameB=this.value.trim(); save(); });
+  if($prevToggle){
+    $prevToggle.addEventListener('click',function(){
+      var ex=this.getAttribute('aria-expanded')==='true';
+      this.setAttribute('aria-expanded',ex?'false':'true');
+      $prevList.classList.toggle('open',!ex);
+    });
+  }
+  document.addEventListener('keydown',function(e){
+    if(!$quiz.classList.contains('active')) return;
+    if(e.key==='Enter'&&!$nextBtn.disabled) goNext();
+  });
+
+  boot();
+}());
+</script>
+
+<!-- Specimens IIFE -->
+<script>(function(){
+  var DONE_KEY='specimens:open:byid', TOTAL_KEY='specimens:open:total';
+  var MY_ID=document.body.getAttribute('data-id')||'love-manual-lab';
+  var marked=false;
+  function mark(){ if(marked) return; marked=true;
+    try{
+      var t=(+localStorage.getItem(TOTAL_KEY)||0)+1; localStorage.setItem(TOTAL_KEY,String(t));
+      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
+      map[MY_ID]=(map[MY_ID]||0)+1;
+      localStorage.setItem(DONE_KEY,JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    }catch(_){}
+  }
+  document.addEventListener('result:ready',mark);
+  setTimeout(mark,2000);
+}());</script>
+
+</body>
+</html>
