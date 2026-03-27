@@ -141,44 +141,146 @@ body{
 
 /* ───── PROLOGUE ───── */
 #prologue{max-width:540px;margin:0 auto;padding:0 1.2rem 5rem;}
-.prologue-frame{
-  border:1px solid var(--border);background:var(--cream);
-  padding:1.7rem 1.8rem 1.8rem;position:relative;
-  box-shadow:5px 5px 0 rgba(184,134,31,.15),var(--shadow);
-}
-.prologue-frame::before{
-  content:'口上';position:absolute;top:-1px;left:1.5rem;
-  background:var(--gold);color:#fff;
-  font-size:.68rem;letter-spacing:.25em;padding:.12rem .6rem;
-}
-.prologue-frame p{
-  font-size:clamp(.88rem,2.8vw,.96rem);
-  line-height:2.1;color:#3a2e20;margin-bottom:.8rem;
-}
-.prologue-frame .meta{
-  font-size:.76rem;color:var(--muted);
-  border-top:1px solid var(--border);
-  padding-top:.9rem;margin-top:1rem;line-height:1.9;
-}
-.prologue-frame .meta b{color:var(--gold);}
 
-.prologue-visual{
-  margin:-.2rem -.2rem 1.2rem;
-  border:1px solid rgba(184,134,31,.18);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0)),
-    var(--paper2);
-  box-shadow:0 0 0 1px rgba(255,255,255,.35) inset;
+/* 封筒ラッパー */
+.prologue-envelope{
+  position:relative;
+  background:var(--cream);
+  border:1px solid var(--border);
+  box-shadow:6px 6px 0 rgba(184,134,31,.18),var(--shadow);
   overflow:hidden;
 }
-
-.prologue-visual img{
+/* 上部：定式幕カラーの帯 */
+.prologue-envelope::before{
+  content:'';
   display:block;
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  object-position:center;
-  filter:saturate(.96) contrast(1.02);
+  height:8px;
+  background:linear-gradient(90deg,
+    var(--ink) 0%, var(--ink) 33.3%,
+    var(--red2) 33.3%, var(--red2) 66.6%,
+    var(--gold2) 66.6%, var(--gold2) 100%
+  );
+}
+
+.notice-inner{
+  padding:1.8rem 1.8rem 1.5rem;
+  position:relative;
+}
+
+/* 朱印 */
+.notice-stamp{
+  position:absolute;
+  top:1.6rem;right:1.6rem;
+  width:52px;height:52px;
+  border:2.5px solid var(--red2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--red2);
+  font-size:.72rem;
+  letter-spacing:.05em;
+  line-height:1.4;
+  text-align:center;
+  transform:rotate(-12deg);
+  opacity:.75;
+  font-weight:700;
+  padding:.2rem;
+  pointer-events:none;
+  user-select:none;
+}
+
+.notice-header{
+  margin-bottom:1.4rem;
+  padding-right:3.5rem;
+}
+.notice-doc-id{
+  font-size:.65rem;
+  color:var(--muted);
+  letter-spacing:.1em;
+  margin-bottom:.4rem;
+}
+.notice-title{
+  font-size:clamp(1.1rem,4vw,1.4rem);
+  font-weight:700;
+  letter-spacing:.2em;
+  line-height:1.3;
+  color:var(--ink);
+  border-bottom:2px solid var(--ink);
+  padding-bottom:.4rem;
+  margin-bottom:.3rem;
+}
+.notice-date{
+  font-size:.68rem;
+  color:var(--muted);
+  letter-spacing:.08em;
+  text-align:right;
+}
+
+.notice-body{
+  font-size:clamp(.82rem,2.6vw,.9rem);
+  line-height:2;
+  color:#3a2e20;
+  margin-bottom:1.2rem;
+}
+.notice-body b{color:var(--ink);}
+
+/* 条文スタイルの回答方法 */
+.notice-articles{
+  border-top:1px solid var(--border);
+  padding-top:1rem;
+  margin-top:.2rem;
+}
+.notice-article-title{
+  font-size:.7rem;
+  letter-spacing:.2em;
+  color:var(--gold);
+  margin-bottom:.6rem;
+  font-weight:700;
+}
+.notice-article{
+  display:grid;
+  grid-template-columns:1.8rem 1fr;
+  gap:.2rem .5rem;
+  margin-bottom:.5rem;
+  font-size:.76rem;
+  line-height:1.8;
+  color:var(--muted);
+}
+.notice-art-num{
+  color:var(--gold);
+  font-weight:700;
+  font-size:.72rem;
+  padding-top:.05rem;
+}
+.notice-article b{color:var(--ink);}
+
+.notice-seal-row{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:.6rem;
+  margin-top:1.2rem;
+  padding-top:.8rem;
+  border-top:1px dashed rgba(184,134,31,.2);
+}
+.notice-issuer{
+  font-size:.7rem;
+  color:var(--muted);
+  letter-spacing:.08em;
+  line-height:1.7;
+  text-align:right;
+}
+.notice-hanko{
+  width:36px;height:36px;
+  border:1.5px solid var(--red2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--red2);
+  font-size:.65rem;
+  font-weight:700;
+  transform:rotate(-8deg);
+  opacity:.7;
+  flex-shrink:0;
+  letter-spacing:.02em;
 }
 
 .btn-curtain{
@@ -206,8 +308,8 @@ body{
   content:'';
   position:fixed;
   inset:0;
-  background:url('/shindan/assets/results/kabuki-role/bg-sakura-soft.webp') right top / 55% auto no-repeat;
-  opacity:.13;
+  background:url('/shindan/assets/results/kabuki-role/bg-sakura-soft.webp') right -10px top -10px / 70% auto no-repeat;
+  opacity:.28;
   pointer-events:none;
   z-index:0;
 }
@@ -334,12 +436,11 @@ body{
   transform:scaleY(0);transform-origin:top;
   z-index:50;pointer-events:none;
 }
-.cDrop{animation:cD .65s cubic-bezier(.4,0,.2,1) forwards!important;}
-.cRise{animation:cR .38s cubic-bezier(.6,0,1,1) forwards!important;}
+.cDrop{animation:cD .42s cubic-bezier(.55,0,.2,1) forwards!important;}
+.cRise{animation:cR .3s cubic-bezier(.6,0,1,1) forwards!important;}
 @keyframes cD{
-  0%  {transform:scaleY(0) translateY(-4px);transform-origin:top;}
-  72% {transform:scaleY(1.04) translateY(0);transform-origin:top;}
-  86% {transform:scaleY(.98);transform-origin:top;}
+  0%  {transform:scaleY(0);transform-origin:top;}
+  80% {transform:scaleY(1.03);transform-origin:top;}
   100%{transform:scaleY(1);transform-origin:top;}
 }
 @keyframes cR{
@@ -964,25 +1065,66 @@ details.acc summary{
   <p class="sub">怒り方も、恋の仕方も、黙り方まで。<br>あなたの"型"はもう出ている。</p>
 </header>
 
+<div class="hero">
+  <img src="/shindan/assets/results/kabuki-role/t00.webp" alt="舞台中央の役者" loading="lazy">
+</div>
+
 <section id="prologue">
-  <div class="prologue-frame">
-    <div class="prologue-visual">
-      <img src="/shindan/assets/results/kabuki-role/t00.webp" alt="舞台中央の役者" loading="lazy">
-    </div>
-    <p>人は、ただ生きているだけの顔をして、<br>案外しっかり演じている。</p>
-    <p>怒るときの勢い。<br>黙るときの重さ。<br>惹かれたときの目線。<br>やり返すときの手つき。</p>
-    <div class="wari">◆ ◆ ◆</div>
-    <p>あなたにも、もう"型"がある。<br>では本日、その配役を出そう。</p>
-    <div class="meta">
-      <b>回答方法</b><br>
-      各場面の選択肢について<br>
-      左の ◉ = <b>いちばん出がちな役</b><br>
-      右の ✕ = <b>いちばんやらなそうな役</b><br>
-      をそれぞれ1つずつ選んでください。全20問です。
+  <div class="prologue-envelope">
+    <div class="notice-inner">
+      <div class="notice-stamp">配役<br>決定</div>
+
+      <div class="notice-header">
+        <div class="notice-doc-id" id="noticeDocId">第――号</div>
+        <div class="notice-title">配　役　通　知　書</div>
+        <div class="notice-date" id="noticeDate"></div>
+      </div>
+
+      <div class="notice-body">
+        このたび、あなたの<b>人生における配役</b>が確定しました。<br>
+        つきましては、下記の審査に出頭のうえ、<br>
+        速やかに配役の確認を受けてください。<br><br>
+        なお、審査結果に不服を申し立てることは<b>できません</b>。<br>
+        あなたはすでに、ずっとその役を演じています。
+      </div>
+
+      <div class="notice-articles">
+        <div class="notice-article-title">【 審 査 要 領 】</div>
+        <div class="notice-article">
+          <span class="notice-art-num">第一</span>
+          <span>全<b>20場面</b>を提示する。各場面につき選択を行うこと。</span>
+        </div>
+        <div class="notice-article">
+          <span class="notice-art-num">第二</span>
+          <span>左の <b>◉</b> は「いちばん出がちな行動」<br>右の <b>✕</b> は「いちばんやらなそうな行動」をそれぞれ選ぶこと。</span>
+        </div>
+        <div class="notice-article">
+          <span class="notice-art-num">第三</span>
+          <span>嘘の回答は無効とする。<b>本能で選べ。</b></span>
+        </div>
+      </div>
+
+      <div class="notice-seal-row">
+        <div class="notice-issuer">
+          発行：心の標本 配役審査局<br>
+          配役係
+        </div>
+        <div class="notice-hanko">審査<br>済</div>
+      </div>
     </div>
   </div>
-  <button class="btn-curtain" id="startBtn">幕を上げる</button>
+  <button class="btn-curtain" id="startBtn">出頭する</button>
 </section>
+
+<script>
+(function(){
+  const d=new Date();
+  const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
+  document.getElementById('noticeDate').textContent=`令和${y-2018}年${m}月${day}日付`;
+  const id=`第${String(y).slice(-2)}${String(m).padStart(2,'0')}${String(day).padStart(2,'0')}－${Math.floor(1000+Math.random()*9000)}号`;
+  document.getElementById('noticeDocId').textContent=id;
+})();
+</script>
 
 <section id="quiz">
   <p class="q-stage">第 <span id="sceneNum">1</span> 幕 ／ 20</p>
@@ -1101,125 +1243,125 @@ const FACTOR_META=[
 ];
 
 const Qs=[
-  {q:'嫌味を言われたとき',opts:[
-    ['その場で切り返す。引いたら負けな気がする',2,0],
-    ['笑って流すが、あとで効く形に整えて返す',3,4],
-    ['表には出さないが、かなり長く引きずる',1,4],
-    ['少し大げさに崩して、空気ごと別の方向へ持っていく',5,0],
+  {q:'会議中、誰も意見を言わず沈黙が5秒続いた',opts:[
+    ['とっさに喋る。沈黙に負けた気がして無理',2,0],
+    ['誰かが口を開くタイミングを計算しながら待つ',3,4],
+    ['喋れなかった自分を帰り道にずっと責める',1,4],
+    ['「あ、トイレ行きたい人いる？」とか言う',5,0],
   ]},
-  {q:'好きな相手が他の誰かを褒めていた',opts:[
-    ['さりげなく自分の見せ場を作る',0,4],
-    ['何でもない顔をするが、内心ではずっと残る',1,4],
-    ['その場では静かにして、相手の反応を観察する',3,1],
-    ['軽口で突っついて、その場の空気を試す',5,2],
+  {q:'好きな人が、自分ではない誰かの話を楽しそうにしている',opts:[
+    ['さりげなく話題を自分の土俵に引っ張る',0,4],
+    ['笑顔のまま心の中で静かに燃える',1,4],
+    ['相手がその人のどこを好きなのか分析し始める',3,1],
+    ['「それ私も知ってる！」と割り込んで空気を変える',5,2],
   ]},
-  {q:'集まりの空気が妙に冷えた',opts:[
-    ['前に出て場を動かす',0,2],
-    ['目立たず裏で配置を直す',3,4],
-    ['変な一言を入れて温度をずらす',5,4],
-    ['誰が何を抱えているのかを静かに読む',1,3],
+  {q:'飲み会で知らない人に「あなたって何タイプ？」と聞かれた',opts:[
+    ['「強いて言えば主役」と答える',0,2],
+    ['笑顔で「どう見えます？」と返して観察する',3,4],
+    ['「うーん…」と言いながら本気で悩む',1,3],
+    ['「タイプ？　ほのおかゴーストか」とかわす',5,4],
   ]},
-  {q:'誰かに誤解された',opts:[
-    ['すぐ説明して正面から解く',2,0],
-    ['焦って弁明するより、流れが変わるのを待つ',3,1],
-    ['誤解されたこと自体がかなり刺さる',1,4],
-    ['少し笑いに変えて、角を取る',5,4],
+  {q:'自分の悪口がまわりまわって耳に入った',opts:[
+    ['出どころを突き止めて正面から話をつける',2,0],
+    ['すぐ動かず、誰が言ったかを静かに絞り込む',3,1],
+    ['言った内容を3日間くらい頭の中で再生し続ける',1,4],
+    ['「それ私のこと？ウケる」と先に笑いにする',5,4],
   ]},
-  {q:'注目が集まった',opts:[
-    ['せっかくだから決めにいく',0,4],
-    ['堂々と受けるが、余計な感情は見せない',2,4],
-    ['嬉しいより、あとで反芻する',1,0],
-    ['いじられる前に自分で崩しておく',5,3],
+  {q:'発表のとき、急に全員の視線が自分に集中した',opts:[
+    ['ここぞとばかりに一段ギアを上げる',0,4],
+    ['顔には出さないが内心ちょっとニヤッとしている',2,4],
+    ['終わったあと「あのとき変じゃなかったかな」と思い返す',1,0],
+    ['「え、私ですか」と一回ずらしてから本番に入る',5,3],
   ]},
-  {q:'ライバルっぽい相手が現れた',opts:[
-    ['正面から勝ちにいく',2,0],
-    ['相手の癖や流れを見て、勝てる場所を選ぶ',3,2],
-    ['比較される感じがずっと心に残る',1,4],
-    ['競争そのものを少し面白がる',5,0],
+  {q:'同期に先を越された',opts:[
+    ['悔しいので今すぐ何か結果を出そうとする',2,0],
+    ['相手が何をしたか研究して、自分の戦略を練り直す',3,2],
+    ['「おめでとう」と言いながら夜中に一人でへこんでいる',1,4],
+    ['「私は私の道で頑張るわ〜」と笑いに変えて消化する',5,0],
   ]},
-  {q:'褒められたとき',opts:[
-    ['きれいに受け取って、さらに一段見せる',4,0],
-    ['うれしいが、顔にはあまり出さない',1,4],
-    ['相手が何を見てそう言ったのか考える',3,1],
-    ['冗談に逃がして照れを薄める',5,4],
+  {q:'「最近どう？」と聞かれて、実はあまりよくない',opts:[
+    ['「いや〜バタバタしてて！」と元気に返す',0,4],
+    ['「まあ、いろいろありますよ」と含みを持たせる',4,0],
+    ['「聞く？」と言いそうになって飲み込む',1,3],
+    ['「最悪！でも話すと長いわ」と笑って終わらせる',5,1],
   ]},
-  {q:'腹が立つのに、すぐ言えない場面',opts:[
-    ['無理でも一言は返す',2,0],
-    ['いまは黙って、後で有利な形にする',3,2],
-    ['何も言えず、あとで何度も思い返す',1,4],
-    ['その場を茶化して傷を浅くする',5,3],
+  {q:'理不尽なことを言われたのに反論できなかった',opts:[
+    ['後から「あのとき言えばよかった」台詞を考えてしまう',2,0],
+    ['今回は流して、次に同じことが起きたとき使える手を準備する',3,2],
+    ['1週間後もまだ根に持っている',1,4],
+    ['その場で変な顔して笑いに変換し、なんとかやり過ごす',5,3],
   ]},
-  {q:'誰かが落ち込んでいる',opts:[
-    ['まず前に出て声をかける',0,4],
-    ['その人が話しやすい流れをこっそり作る',3,4],
-    ['自分も引っ張られて気持ちが残る',1,4],
-    ['少し笑える逃げ道を作る',5,4],
+  {q:'友人が失恋した。深夜にLINEが来た',opts:[
+    ['すぐ「電話していい？」と返す',0,4],
+    ['相手が何を求めているか読んでから返す文章を考える',3,4],
+    ['友人の話を聞いているうちに自分も泣きそうになる',1,4],
+    ['「今から会う？ コンビニ行こ」と送る',5,4],
   ]},
-  {q:'好きな人に会う直前',opts:[
-    ['今日はちゃんと"映る"ようにしたい',4,0],
-    ['何を話すかより、どう転ぶかを読む',3,4],
-    ['会う前から気持ちがふくらみすぎる',1,0],
-    ['考えすぎると重いので、軽く構える',5,3],
+  {q:'好きな人と2人になれる状況が突然訪れた',opts:[
+    ['逃すわけにいかないので、動く',0,4],
+    ['偶然を装いながら場の流れをこっそり作る',3,4],
+    ['緊張で何もできないまま終わり、帰り道に後悔する',1,0],
+    ['「運命じゃん」とかふざけた一言で緊張をほぐす',5,3],
   ]},
-  {q:'誰かに裏切られた気がした',opts:[
-    ['そのままにせず、はっきりさせたい',2,1],
-    ['すぐ切らず、相手の出方を見て整理する',3,1],
-    ['関係が終わっても気持ちは残る',1,4],
-    ['深刻にしすぎないよう、自分の中で少し崩す',5,3],
+  {q:'信用していた人に、自分のことを話されていた',opts:[
+    ['直接「なんで言ったの」と聞きに行く',2,1],
+    ['怒りを表に出さず、その人との距離の取り方を変える',3,1],
+    ['裏切られたショックが長く続く。簡単には消えない',1,4],
+    ['「まあ秘密にしてとは言ってなかったし」と自分を笑わせる',5,3],
   ]},
-  {q:'みんなが遠慮して動かないとき',opts:[
-    ['じゃあ自分が行く',0,2],
-    ['誰が動けば自然かを見て促す',3,0],
-    ['迷う空気そのものに疲れてしまう',1,3],
-    ['ノリを作って動きやすくする',5,0],
+  {q:'グループLINEで誰も幹事をやりたがらない',opts:[
+    ['「じゃあ私やる」と送る。考えるより先に指が動く',0,2],
+    ['誰が動きやすいか見極めて「〇〇さんどう？」と促す',3,0],
+    ['やりたくないけど誰かがやらないといけないことへの葛藤が始まる',1,3],
+    ['「決め方決めようぜ」とゲーム化して場を動かす',5,0],
   ]},
-  {q:'秘密を抱えたとき',opts:[
-    ['それを抱えている自分に少し酔う',4,1],
-    ['使いどころを考える',3,4],
-    ['ずっと心の中で重みになる',1,4],
-    ['深刻すぎるとしんどいので、少し笑いに変える',5,1],
+  {q:'誰にも言えない、かなり重い秘密ができた',opts:[
+    ['秘密を持っている自分に、少しだけ酔っている',4,1],
+    ['これをいつ・誰に・どう使うか、じっくり考える',3,4],
+    ['抱えているだけで消耗する。でも言えない',1,4],
+    ['重すぎるので心の中でネタに変換してどうにかしている',5,1],
   ]},
-  {q:'自分の魅力を出すなら',opts:[
-    ['堂々と前に出る迫力',0,2],
-    ['余裕や色気のにじみ方',4,0],
-    ['一筋縄ではいかない含み',3,4],
-    ['油断できない軽やかさ',5,4],
+  {q:'「あなたの一番の魅力は何だと思う？」と聞かれた',opts:[
+    ['「存在感、かな」と間を置かずに言える',0,2],
+    ['「…雰囲気？」と言って少し目を細める',4,0],
+    ['「さあ……」と言いながら本当に分からなくて困る',3,4],
+    ['「顔？」とか言って笑いで逃げる',5,4],
   ]},
-  {q:'誰かと気まずくなった',opts:[
-    ['先に切り込んで片づけたい',2,0],
-    ['いまは触らず、戻せるタイミングを探す',3,1],
-    ['たぶん相手より自分の中で尾を引く',1,4],
-    ['まずは少し笑える形で橋をかける',5,4],
+  {q:'仲良い人と、なぜか気まずくなった',opts:[
+    ['「なんかあった？」と直接聞く',2,0],
+    ['原因を分析しながら、相手が話しやすくなるのを待つ',3,1],
+    ['自分が何かしたのかとずっと考えてしまう',1,4],
+    ['「なんか空気重くない？」とあえて口に出してほぐす',5,4],
   ]},
-  {q:'思い通りにいかなかった',opts:[
-    ['悔しさを燃料にして前へ出る',0,2],
-    ['原因と配置を見て次の手を作る',3,2],
-    ['しばらく気持ちが離れない',1,0],
-    ['いったんネタにして呼吸を戻す',5,1],
+  {q:'全力でやったのに、結果が出なかった',opts:[
+    ['悔しいのでもう一回やる。今すぐ',0,2],
+    ['何が足りなかったか冷静に分解して次の手を考える',3,2],
+    ['しばらく引きずる。ふとした瞬間に思い出す',1,0],
+    ['「まあ人生そんなもんか」とネタにして飲み込む',5,1],
   ]},
-  {q:'誰かに惹かれたとき',opts:[
-    ['相手の視界に入りたくなる',0,4],
-    ['すぐ動かず、相手の温度を読む',3,1],
-    ['自分の中だけで熱が育っていく',1,4],
-    ['軽くじゃれながら距離を見る',5,4],
+  {q:'ひと目見て「この人、好きかもしれない」と思った',opts:[
+    ['気づいたら相手の視界に入ろうとしている',0,4],
+    ['すぐ動かず、相手が何を求めているか静かに観察する',3,1],
+    ['心の中だけで熱が育ちすぎて、外には何も出ない',1,4],
+    ['とりあえず軽くいじってみて反応を見る',5,4],
   ]},
-  {q:'その場の主導権を握るなら',opts:[
-    ['声と勢いで持っていく',2,0],
-    ['段取りと流れで握る',3,0],
-    ['余韻と存在感で引く',4,1],
-    ['笑いとズレで自然に奪う',5,4],
+  {q:'場の空気を完全に掌握するとしたら',opts:[
+    ['声の大きさと勢いで持っていく',2,0],
+    ['誰が何を求めているか把握して、流れを設計する',3,0],
+    ['しゃべらなくても存在感で引きつける',4,1],
+    ['予想外の一言で笑わせて、自然に中心になる',5,4],
   ]},
-  {q:'自分の中で"負け"を感じる瞬間',opts:[
-    ['言い返せなかったとき',2,1],
-    ['盤面を読めなかったとき',3,1],
-    ['相手の心に残れなかった気がしたとき',4,1],
-    ['空気を変えられなかったとき',5,0],
+  {q:'「あなたって、ちょっとわかりにくい」と言われた',opts:[
+    ['「そうか？　俺はわかりやすいと思うけど」と返す',2,1],
+    ['「そう見せてるんで」とだけ言って終わる',3,1],
+    ['言われたことが夜になっても頭に残る',4,1],
+    ['「わかりにくい方が面白くない？」とかわす',5,0],
   ]},
-  {q:'最後に一番しっくりくる一手',opts:[
-    ['ここぞで見得を切る',0,2],
-    ['何も言わずに余韻を残す',4,1],
-    ['見えないところで筋を通す',3,2],
-    ['ひとひねり入れて場をさらう',5,4],
+  {q:'人生で一番"自分らしかった"瞬間を思い出すと',opts:[
+    ['何かに向かって全力で突っ込んでいたとき',0,2],
+    ['気づいたら誰かの心に残っていたとき',4,1],
+    ['誰も見ていないところで静かに動いていたとき',3,2],
+    ['場を壊しそうなのをギリギリで笑いに変えたとき',5,4],
   ]},
 ];
 
