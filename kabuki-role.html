@@ -197,7 +197,21 @@ body{
 .btn-curtain:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--gold);}
 
 /* ───── QUIZ ───── */
-#quiz{display:none;padding-bottom:5rem;}
+#quiz{
+  display:none;
+  padding-bottom:5rem;
+  position:relative;
+}
+#quiz::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:url('/shindan/assets/results/kabuki-role/bg-sakura-soft.webp') right top / 55% auto no-repeat;
+  opacity:.13;
+  pointer-events:none;
+  z-index:0;
+}
+#quiz > *{position:relative;z-index:1;}
 .q-stage{
   text-align:center;padding:1.8rem 0 .4rem;
   font-size:.72rem;letter-spacing:.3em;color:var(--gold);
@@ -208,21 +222,7 @@ body{
   animation:cardIn .35s cubic-bezier(.4,0,.2,1) both;
   position:relative;
 }
-.bws-card::before{
-  content:'';
-  position:absolute;
-  inset:.2rem .4rem auto auto;
-  width:42%;
-  height:58%;
-  background:url('/shindan/assets/results/kabuki-role/bg-sakura-soft.webp') right top / contain no-repeat;
-  opacity:.22;
-  pointer-events:none;
-  z-index:0;
-}
-.bws-card > *{
-  position:relative;
-  z-index:1;
-}
+
 @keyframes cardIn{
   from{opacity:0;transform:translateY(18px);}
   to{opacity:1;transform:none;}
@@ -334,10 +334,18 @@ body{
   transform:scaleY(0);transform-origin:top;
   z-index:50;pointer-events:none;
 }
-.cDrop{animation:cD .45s cubic-bezier(.7,0,.3,1) forwards!important;}
-.cRise{animation:cR .45s cubic-bezier(.7,0,.3,1) forwards!important;}
-@keyframes cD{0%{transform:scaleY(0);transform-origin:top;}100%{transform:scaleY(1);transform-origin:top;}}
-@keyframes cR{0%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+.cDrop{animation:cD .65s cubic-bezier(.4,0,.2,1) forwards!important;}
+.cRise{animation:cR .38s cubic-bezier(.6,0,1,1) forwards!important;}
+@keyframes cD{
+  0%  {transform:scaleY(0) translateY(-4px);transform-origin:top;}
+  72% {transform:scaleY(1.04) translateY(0);transform-origin:top;}
+  86% {transform:scaleY(.98);transform-origin:top;}
+  100%{transform:scaleY(1);transform-origin:top;}
+}
+@keyframes cR{
+  0%  {transform:scaleY(1);transform-origin:bottom;}
+  100%{transform:scaleY(0);transform-origin:bottom;}
+}
 
 /* ───── RESULT ───── */
 #result{
