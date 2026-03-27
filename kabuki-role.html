@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>人生、だいたい歌舞伎だった件</title>
+<style>
+/* ───── TOKENS ───── */
+:root{
+  --ink:#100c08;
+  --paper:#f4ede0;
+  --paper2:#ece3d0;
+  --gold:#b8861f;
+  --gold2:#d4a83a;
+  --gold3:#f0cb6a;
+  --red:#7a1212;
+  --red2:#a82020;
+  --cream:#faf5ea;
+  --muted:#8a7a65;
+  --border:rgba(184,134,31,.3);
+  --shadow:0 6px 40px rgba(16,12,8,.14);
+}
+
+/* ───── RESET ───── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+img{max-width:100%;height:auto;display:block}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Hiragino Mincho ProN','Yu Mincho','游明朝',Georgia,serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ───── PROGRESS ───── */
+.progress-fixed{
+  position:sticky;top:0;z-index:30;
+  height:5px;
+  background:rgba(184,134,31,.15);
+}
+.progress-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--gold),var(--gold3));
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 10px rgba(212,168,58,.7);
+}
+
+/* ───── HEADER ───── */
+.site-header{
+  text-align:center;
+  padding:clamp(2rem,6vw,3.5rem) 1.2rem 1.5rem;
+  position:relative;
+}
+.site-header::after{
+  content:'';display:block;
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin-top:1.5rem;opacity:.4;
+}
+
+/* 麻の葉風セパレーター */
+.wari{
+  text-align:center;
+  color:var(--gold);
+  font-size:.75rem;
+  letter-spacing:.5em;
+  padding:.3rem 0;
+  margin:.4rem 0;
+  opacity:.6;
+  user-select:none;
+}
+
+/* 問題カード 隈取り左ライン */
+.bws-card{
+  border-left:3px solid transparent;
+  border-image:linear-gradient(180deg,var(--red2),var(--gold),var(--red2)) 1;
+  padding-left:calc(clamp(.8rem,3vw,1.2rem) + 2px);
+}
+
+/* 結果 役名に朱印風アンダーライン */
+.result-role{
+  position:relative;
+  display:inline-block;
+}
+.result-role::after{
+  content:'';
+  display:block;
+  height:3px;
+  background:linear-gradient(90deg,transparent,var(--red2),transparent);
+  margin-top:.3rem;
+  opacity:.7;
+}
+
+
+
+/* 問い番号を朱で */
+.q-stage{
+  position:relative;
+}
+.q-stage::before,.q-stage::after{
+  content:'｜';
+  color:var(--red2);
+  opacity:.5;
+  margin:0 .5em;
+}
+.header-mon{
+  display:block;
+  width:72px;height:72px;
+  margin:0 auto .8rem;
+  position:relative;
+}
+/* SVG家紋は直接HTMLに埋め込み */
+.site-header h1{
+  font-size:clamp(1.25rem,5vw,1.9rem);
+  font-weight:700;letter-spacing:.18em;line-height:1.35;
+}
+.site-header .sub{
+  margin-top:.5rem;
+  font-size:clamp(.75rem,2.5vw,.85rem);
+  color:var(--muted);letter-spacing:.08em;line-height:1.7;
+}
+
+/* ───── HERO ───── */
+.hero{
+  display:flex;
+  justify-content:center;
+  padding:1.5rem 1.5rem 2rem;
+  overflow:hidden;
+}
+.hero img{
+  display:block;
+  width:min(100%,300px);
+  max-width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  background:var(--paper2);
+  box-shadow:6px 6px 0 var(--gold),var(--shadow);
+}
+
+/* ───── PROLOGUE ───── */
+#prologue{max-width:540px;margin:0 auto;padding:0 1.2rem 5rem;}
+.prologue-frame{
+  border:1px solid var(--border);background:var(--cream);
+  padding:1.7rem 1.8rem 1.8rem;position:relative;
+  box-shadow:5px 5px 0 rgba(184,134,31,.15),var(--shadow);
+}
+.prologue-frame::before{
+  content:'口上';position:absolute;top:-1px;left:1.5rem;
+  background:var(--gold);color:#fff;
+  font-size:.68rem;letter-spacing:.25em;padding:.12rem .6rem;
+}
+.prologue-frame p{
+  font-size:clamp(.88rem,2.8vw,.96rem);
+  line-height:2.1;color:#3a2e20;margin-bottom:.8rem;
+}
+.prologue-frame .meta{
+  font-size:.76rem;color:var(--muted);
+  border-top:1px solid var(--border);
+  padding-top:.9rem;margin-top:1rem;line-height:1.9;
+}
+.prologue-frame .meta b{color:var(--gold);}
+
+.prologue-visual{
+  margin:-.2rem -.2rem 1.2rem;
+  border:1px solid rgba(184,134,31,.18);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0)),
+    var(--paper2);
+  box-shadow:0 0 0 1px rgba(255,255,255,.35) inset;
+  overflow:hidden;
+}
+
+.prologue-visual img{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  object-position:center;
+  filter:saturate(.96) contrast(1.02);
+}
+
+.btn-curtain{
+  display:block;margin:1.8rem auto 0;width:fit-content;
+  background:var(--ink);color:var(--gold2);
+  font-family:inherit;
+  font-size:clamp(.9rem,3vw,1rem);
+  letter-spacing:.25em;
+  padding:.9rem 2.6rem;
+  border:none;cursor:pointer;
+  box-shadow:4px 4px 0 var(--gold);
+  transition:transform .15s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-curtain:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--gold);}
+.btn-curtain:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--gold);}
+
+/* ───── QUIZ ───── */
+#quiz{display:none;padding-bottom:5rem;}
+.q-stage{
+  text-align:center;padding:1.8rem 0 .4rem;
+  font-size:.72rem;letter-spacing:.3em;color:var(--gold);
+}
+.bws-card{
+  max-width:600px;margin:0 auto;
+  padding:0 clamp(.8rem,3vw,1.2rem);
+  animation:cardIn .35s cubic-bezier(.4,0,.2,1) both;
+  position:relative;
+}
+.bws-card::before{
+  content:'';
+  position:absolute;
+  inset:.2rem .4rem auto auto;
+  width:42%;
+  height:58%;
+  background:url('/shindan/assets/results/kabuki-role/bg-sakura-soft.webp') right top / contain no-repeat;
+  opacity:.22;
+  pointer-events:none;
+  z-index:0;
+}
+.bws-card > *{
+  position:relative;
+  z-index:1;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:none;}
+}
+.q-wrap{
+  display:flex;align-items:baseline;gap:.7rem;
+  margin-bottom:1.4rem;padding:0 .2rem;
+}
+.q-idx{
+  font-size:clamp(2rem,8vw,2.8rem);font-weight:700;
+  color:rgba(184,134,31,.2);line-height:1;
+  min-width:2.8rem;font-variant-numeric:tabular-nums;flex-shrink:0;
+}
+.q-body{font-size:clamp(.95rem,3.2vw,1.08rem);line-height:1.75;flex:1;}
+
+/* legend */
+.bws-legend{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:.5rem;margin-bottom:.8rem;
+}
+.legend-gold,.legend-red{
+  text-align:center;font-size:.68rem;letter-spacing:.08em;
+  padding:.3rem .5rem;
+}
+.legend-gold{background:rgba(184,134,31,.1);color:var(--gold);border:1px solid rgba(184,134,31,.25);}
+.legend-red{background:rgba(122,18,18,.08);color:var(--red2);border:1px solid rgba(122,18,18,.2);}
+
+/* option rows — 3 column: [tap-best][text][tap-worst] */
+.opts-list{display:grid;gap:.55rem;}
+.opt-row{
+  display:grid;
+  grid-template-columns:48px 1fr 48px;
+  align-items:stretch;
+  border:1.5px solid var(--border);
+  background:var(--cream);
+  transition:border-color .15s,background .15s;
+  min-height:54px;
+}
+.opt-row:hover{border-color:rgba(184,134,31,.55);}
+.opt-row.picked-best{border-color:var(--gold2);background:rgba(240,203,106,.07);}
+.opt-row.picked-worst{border-color:var(--red2);background:rgba(168,32,32,.05);}
+
+.tap-best,.tap-worst{
+  display:flex;align-items:center;justify-content:center;
+  border:none;background:transparent;
+  cursor:pointer;
+  min-width:48px;min-height:54px;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s;
+}
+.tap-best{border-right:1px solid var(--border);}
+.tap-worst{border-left:1px solid var(--border);}
+.tap-best:hover{background:rgba(184,134,31,.08);}
+.tap-worst:hover{background:rgba(168,32,32,.08);}
+
+.tap-ico{
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid rgba(184,134,31,.3);
+  font-size:.65rem;color:var(--muted);
+  transition:all .15s;pointer-events:none;
+  font-family:'Hiragino Mincho ProN','Yu Mincho',Georgia,serif;
+}
+.opt-row.picked-best .tap-best .tap-ico{
+  background:var(--gold2);border-color:var(--gold2);
+  color:#fff;box-shadow:0 0 8px rgba(212,168,58,.5);
+}
+.opt-row.picked-worst .tap-worst .tap-ico{
+  background:var(--red2);border-color:var(--red2);
+  color:#fff;box-shadow:0 0 8px rgba(168,32,32,.4);
+}
+
+.opt-text{
+  padding:.8rem .7rem;
+  font-size:clamp(.8rem,2.6vw,.88rem);
+  line-height:1.65;color:var(--ink);
+  display:flex;align-items:center;
+}
+
+/* hint + confirm */
+.bws-micro{
+  text-align:center;font-size:.68rem;letter-spacing:.08em;
+  color:var(--muted);margin:.7rem 0 .2rem;min-height:1.2em;
+}
+.bws-micro.ready{color:var(--gold);}
+.confirm-wrap{display:flex;justify-content:center;margin-top:1.2rem;}
+.btn-confirm{
+  background:var(--ink);color:var(--gold2);
+  font-family:inherit;
+  font-size:clamp(.85rem,3vw,.95rem);
+  letter-spacing:.2em;
+  padding:.8rem 2.6rem;
+  border:none;cursor:pointer;
+  box-shadow:3px 3px 0 var(--gold);
+  transition:transform .15s,box-shadow .15s,opacity .2s;
+  opacity:0;pointer-events:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-confirm.on{opacity:1;pointer-events:auto;}
+.btn-confirm:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--gold);}
+.btn-confirm:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--gold);}
+
+/* ───── CURTAIN TRANSITION ───── */
+#curtain{
+  position:fixed;inset:0;
+  background:
+    linear-gradient(rgba(16,12,8,.12), rgba(16,12,8,.12)),
+    url('/shindan/assets/results/kabuki-role/joshikimaku-wide.webp') center/cover no-repeat;
+  transform:scaleY(0);transform-origin:top;
+  z-index:50;pointer-events:none;
+}
+.cDrop{animation:cD .45s cubic-bezier(.7,0,.3,1) forwards!important;}
+.cRise{animation:cR .45s cubic-bezier(.7,0,.3,1) forwards!important;}
+@keyframes cD{0%{transform:scaleY(0);transform-origin:top;}100%{transform:scaleY(1);transform-origin:top;}}
+@keyframes cR{0%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+/* ───── RESULT ───── */
+#result{
+  display:none;
+  padding-bottom:5rem;
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+.result-stage{
+  text-align:center;
+  padding:2.3rem 1.2rem 1.1rem;
+}
+
+.result-stage::before{
+  content:'本日の配役';
+  display:inline-block;
+  font-size:.68rem;
+  letter-spacing:.35em;
+  color:var(--gold);
+  margin-bottom:.8rem;
+  padding:.12rem .55rem .12rem .75rem;
+  border:1px solid rgba(184,134,31,.28);
+  background:rgba(184,134,31,.06);
+}
+
+.result-role{
+  display:inline-block;
+  font-size:clamp(2.1rem,8vw,3.2rem);
+  font-weight:700;
+  letter-spacing:.16em;
+  line-height:1.18;
+  padding:0 .18em .15rem;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+}
+
+.result-role::after{
+  height:4px;
+  margin-top:.4rem;
+  opacity:.82;
+}
+
+.result-sub{
+  margin-top:.55rem;
+  font-size:.8rem;
+  color:var(--muted);
+  letter-spacing:.18em;
+  line-height:1.7;
+}
+.result-img-box{
+  display:flex;
+  justify-content:center;
+  padding:1.5rem 1.2rem 2rem;
+  overflow:hidden;
+}
+.result-img-box img{
+  width:min(100%,240px);
+  max-width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  background:var(--paper2);
+  box-shadow:8px 8px 0 var(--gold),var(--shadow);
+}
+.result-panels{max-width:560px;margin:0 auto;padding:0 1.2rem;}
+.r-panel{
+  position:relative;
+  background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,0)), var(--cream);
+  border:1px solid var(--border);
+  padding:1.55rem 1.4rem 1.25rem;
+  margin-bottom:.95rem;
+  box-shadow:4px 4px 0 rgba(184,134,31,.12);
+}
+
+.r-panel .tag{
+  position:absolute;
+  top:-1px;
+  left:1.1rem;
+  background:var(--ink);
+  color:var(--gold2);
+  font-size:.62rem;
+  letter-spacing:.22em;
+  padding:.12rem .55rem;
+}
+
+.r-panel .kojo{
+  font-size:clamp(.97rem,3vw,1.08rem);
+  line-height:1.82;
+  font-style:italic;
+  font-weight:600;
+  color:var(--ink);
+  margin-top:.18rem;
+}
+
+.r-panel p{
+  font-size:clamp(.83rem,2.8vw,.9rem);
+  line-height:1.9;
+  color:#33271d;
+  margin-top:.2rem;
+}
+
+/* factor bars */
+.factor-panel{max-width:560px;margin:.2rem auto .9rem;padding:0 1.2rem;}
+.factor-inner{
+  background:var(--cream);border:1px solid var(--border);
+  padding:1.4rem 1.4rem 1.2rem;position:relative;
+  box-shadow:4px 4px 0 rgba(184,134,31,.12);
+}
+.factor-inner .tag{
+  position:absolute;top:-1px;left:1.2rem;
+  background:var(--ink);color:var(--gold2);
+  font-size:.62rem;letter-spacing:.25em;padding:.1rem .55rem;
+}
+.factor-note{
+  font-size:.73rem;line-height:1.8;color:var(--muted);
+  margin:.15rem 0 1rem;
+}
+.frow{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:.35rem .7rem;
+  align-items:center;
+  margin-bottom:1rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid rgba(184,134,31,.12);
+}
+.frow:last-child{
+  margin-bottom:0;
+  padding-bottom:0;
+  border-bottom:none;
+}
+.fhead{
+  display:flex;
+  align-items:baseline;
+  gap:.5rem;
+  flex-wrap:wrap;
+}
+.fname{
+  font-size:.82rem;
+  letter-spacing:.05em;
+  font-weight:700;
+}
+.fwhat{
+  font-size:.7rem;
+  color:var(--muted);
+}
+.ftrack{
+  grid-column:1 / -1;
+  height:8px;
+  background:rgba(184,134,31,.13);
+  overflow:hidden;
+}
+.ffill{
+  height:100%;
+  background:linear-gradient(90deg,var(--gold),var(--gold3));
+  transition:width 1.3s cubic-bezier(.4,0,.2,1);
+  width:0;
+}
+.ffill.lo{background:linear-gradient(90deg,#b5a898,#c8bdb0);}
+.ffill.mi{background:linear-gradient(90deg,#7a9aab,#8bbbc8);}
+.fval{
+  font-size:.76rem;
+  color:var(--gold);
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.fdesc{
+  grid-column:1 / -1;
+  font-size:.72rem;
+  line-height:1.75;
+  color:#6b5a47;
+}
+
+/* previous answers */
+details.last-answers{max-width:560px;margin:1rem auto 0;padding:0 1.2rem;}
+details.last-answers summary{
+  cursor:pointer;list-style:none;
+  font-size:.75rem;letter-spacing:.12em;color:var(--gold);
+  text-align:center;border:1px solid var(--border);padding:.45rem;
+}
+details.last-answers summary::-webkit-details-marker{display:none;}
+.last-answers-body{
+  margin-top:.45rem;
+  border:1px solid var(--border);
+  background:var(--cream);
+  box-shadow:4px 4px 0 rgba(184,134,31,.12);
+  padding:1rem;
+}
+.last-empty{
+  font-size:.74rem;line-height:1.8;color:var(--muted);
+}
+.last-meta{
+  font-size:.72rem;line-height:1.8;color:var(--muted);
+  margin-bottom:.75rem;
+  border-bottom:1px solid rgba(184,134,31,.12);
+  padding-bottom:.55rem;
+}
+.last-list{
+  list-style:none;
+  display:grid;
+  gap:.7rem;
+}
+.last-item{
+  border-bottom:1px dashed rgba(184,134,31,.16);
+  padding-bottom:.7rem;
+}
+.last-item:last-child{
+  border-bottom:none;
+  padding-bottom:0;
+}
+.last-q{
+  font-size:.78rem;
+  line-height:1.7;
+  color:var(--ink);
+  margin-bottom:.3rem;
+}
+.last-a{
+  display:grid;
+  gap:.2rem;
+  font-size:.72rem;
+  line-height:1.7;
+  color:#6b5a47;
+}
+
+/* gallery */
+details.gallery{max-width:560px;margin:1.2rem auto 0;padding:0 1.2rem;}
+details.gallery summary{
+  cursor:pointer;list-style:none;
+  font-size:.75rem;letter-spacing:.12em;color:var(--gold);
+  text-align:center;border:1px solid var(--border);padding:.45rem;
+}
+details.gallery summary::-webkit-details-marker{display:none;}
+.gal-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.45rem;
+  margin-top:.45rem;
+  width:100%;
+  overflow:hidden;
+}
+.gal-grid > *{
+  min-width:0;
+}
+.gal-grid img{
+  width:100%;
+  max-width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border:1px solid var(--border);
+  background:var(--paper2);
+}
+
+@media(max-width:900px){
+  .costar-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:560px){
+  .gal-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+/* research note */
+details.acc{max-width:560px;margin:1rem auto 0;padding:0 1.2rem;}
+details.acc summary{
+  cursor:pointer;list-style:none;
+  font-size:.75rem;letter-spacing:.12em;color:var(--gold);
+  text-align:center;border:1px solid var(--border);padding:.45rem;
+}
+details.acc summary::-webkit-details-marker{display:none;}
+.acc-body{
+  margin-top:.45rem;
+  border:1px solid var(--border);
+  background:var(--cream);
+  box-shadow:4px 4px 0 rgba(184,134,31,.12);
+  padding:1rem;
+}
+.diag-lead{
+  display:grid;
+  gap:.3rem;
+  margin-bottom:1rem;
+  padding:.8rem .9rem;
+  background:linear-gradient(180deg, rgba(184,134,31,.08), rgba(184,134,31,.03));
+  border:1px solid rgba(184,134,31,.2);
+}
+.diag-lead-title{
+  font-size:.8rem;
+  letter-spacing:.08em;
+  color:var(--ink);
+  font-weight:700;
+}
+.diag-lead-p{
+  font-size:.74rem;
+  line-height:1.78;
+  color:#4e3f2f;
+}
+.diag-note{display:grid;gap:.9rem;}
+.diag-note-block{
+  border-bottom:1px dashed rgba(184,134,31,.16);
+  padding-bottom:.82rem;
+}
+.diag-note-block:last-child{
+  border-bottom:none;
+  padding-bottom:0;
+}
+.diag-note-h{
+  font-size:.84rem;
+  letter-spacing:.04em;
+  line-height:1.55;
+  color:var(--ink);
+  font-weight:700;
+  margin-bottom:.32rem;
+}
+.diag-note-p{
+  font-size:.75rem;
+  line-height:1.86;
+  color:#34281d;
+}
+.diag-note-p strong{
+  color:var(--ink);
+}
+.diag-mini{
+  margin-top:.34rem;
+  padding-left:.55rem;
+  border-left:2px solid rgba(184,134,31,.28);
+  font-size:.7rem;
+  line-height:1.72;
+  color:#74624d;
+}
+
+/* ── acc セクション改善 ── */
+details.acc summary{
+  font-size:.78rem;
+}
+.acc-intro{
+  font-size:.75rem;
+  line-height:1.85;
+  color:var(--muted);
+  margin-bottom:1.1rem;
+  padding-bottom:.9rem;
+  border-bottom:1px solid rgba(184,134,31,.15);
+}
+.diag-note-block{
+  position:relative;
+  padding-left:2.4rem;
+}
+.diag-note-num{
+  position:absolute;
+  left:0;top:.05rem;
+  width:1.6rem;height:1.6rem;
+  background:var(--ink);
+  color:var(--gold2);
+  font-size:.65rem;
+  letter-spacing:.05em;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.diag-note-h{
+  font-size:.84rem;
+  letter-spacing:.02em;
+  line-height:1.6;
+  color:var(--ink);
+  font-weight:700;
+  margin-bottom:.45rem;
+}
+.diag-note-p strong{
+  color:var(--red2);
+  font-weight:700;
+}
+.diag-cite{
+  display:inline-block;
+  margin-top:.5rem;
+  font-size:.68rem;
+  color:var(--muted);
+  letter-spacing:.04em;
+  border-left:2px solid rgba(184,134,31,.3);
+  padding-left:.5rem;
+  line-height:1.7;
+}
+
+.disclaimer{
+  max-width:560px;margin:1.5rem auto 0;padding:0 1.2rem;
+  font-size:.73rem;line-height:1.85;color:var(--muted);
+  border-top:1px solid rgba(184,134,31,.18);padding-top:1rem;
+}
+.result-actions{
+  max-width:560px;
+  margin:1.8rem auto;
+  padding:0 1.2rem;
+  display:flex;
+  justify-content:center;
+  gap:.75rem;
+  flex-wrap:wrap;
+}
+
+.result-action{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  margin:0;
+  font-size:.8rem;
+  letter-spacing:.18em;
+  color:var(--gold);
+  text-decoration:none;
+  background:transparent;
+  border:1px solid var(--border);
+  padding:.55rem 1.4rem;
+  min-width:12.5rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:background .15s,color .15s,transform .15s;
+}
+
+.result-action:hover{
+  background:var(--gold);
+  color:#fff;
+}
+
+.result-action-retry{
+  background:var(--ink);
+  color:var(--gold2);
+}
+
+.result-action-retry:hover{
+  background:var(--gold);
+  color:#fff;
+}
+
+@media(max-width:480px){
+  .result-actions{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .result-action{
+    width:100%;
+    max-width:320px;
+  }
+}
+
+/* ───── 客席の反応 ───── */
+.reactions-panel{max-width:560px;margin:.2rem auto .9rem;padding:0 1.2rem;}
+.reactions-inner{
+  background:var(--cream);border:1px solid var(--border);
+  padding:1.4rem 1.4rem 1rem;position:relative;
+  box-shadow:4px 4px 0 rgba(184,134,31,.12);
+}
+.reactions-inner .tag{
+  position:absolute;top:-1px;left:1.2rem;
+  background:var(--ink);color:var(--gold2);
+  font-size:.62rem;letter-spacing:.25em;padding:.1rem .55rem;
+}
+.reaction-list{display:grid;gap:.7rem;margin-top:.3rem;}
+.reaction-card{
+  display:grid;
+  grid-template-columns:2rem 1fr;
+  gap:.4rem .6rem;
+  align-items:start;
+  background:var(--paper);
+  border:1px solid rgba(184,134,31,.18);
+  padding:.75rem .75rem .75rem 1rem;
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+}
+.reaction-card::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:linear-gradient(180deg,var(--gold2),rgba(184,134,31,.2));
+}
+.reaction-ico{
+  font-size:1.3rem;line-height:1;
+  text-align:center;
+  padding-top:.15rem;
+  width:2rem;
+  flex-shrink:0;
+}
+.reaction-meta{display:grid;gap:.15rem;min-width:0;}
+.reaction-name{
+  font-size:.72rem;font-weight:700;
+  color:var(--ink);letter-spacing:.03em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.reaction-handle{
+  font-size:.65rem;color:var(--muted);letter-spacing:.03em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.reaction-body{
+  grid-column:2;
+  font-size:.78rem;line-height:1.75;
+  color:#3a2e20;
+  word-break:break-all;
+  overflow-wrap:anywhere;
+  min-width:0;
+}
+
+/* ───── 共演者 ───── */
+.costar-panel{max-width:560px;margin:.2rem auto .9rem;padding:0 1.2rem;}
+.costar-inner{
+  background:var(--cream);border:1px solid var(--border);
+  padding:1.4rem 1.4rem 1.2rem;position:relative;
+  box-shadow:4px 4px 0 rgba(184,134,31,.12);
+}
+.costar-inner .tag{
+  position:absolute;top:-1px;left:1.2rem;
+  background:var(--ink);color:var(--gold2);
+  font-size:.62rem;letter-spacing:.25em;padding:.1rem .55rem;
+}
+.costar-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.8rem;
+  margin-top:.4rem;
+  width:100%;
+  overflow:hidden;
+}
+.costar-grid > *{
+  min-width:0;
+}
+.costar-card{
+  border:1px solid var(--border);
+  background:var(--paper);
+  padding:.8rem .9rem .75rem;
+  position:relative;
+  min-width:0;
+  overflow:hidden;
+}
+.costar-card.best{border-color:rgba(184,134,31,.5);}
+.costar-card.worst{border-color:rgba(168,32,32,.35);}
+.costar-badge{
+  font-size:.6rem;letter-spacing:.18em;
+  padding:.1rem .5rem;
+  margin-bottom:.55rem;
+  display:inline-block;
+}
+.costar-card.best .costar-badge{background:var(--gold);color:#fff;}
+.costar-card.worst .costar-badge{background:var(--red2);color:#fff;}
+.costar-img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  background:var(--paper2);
+  margin-bottom:.5rem;
+}
+.costar-name{
+  font-size:.82rem;
+  font-weight:700;
+  letter-spacing:.05em;
+  color:var(--ink);
+  margin-bottom:.25rem;
+  line-height:1.55;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+.costar-reason{
+  font-size:.72rem;
+  line-height:1.7;
+  color:#6b5a47;
+  overflow-wrap:anywhere;
+}
+
+/* ───── TOAST ───── */
+#toast{
+  position:fixed;
+  bottom:max(1.5rem,env(safe-area-inset-bottom,1.5rem));
+  left:50%;transform:translateX(-50%) translateY(.5rem);
+  background:var(--ink);color:var(--gold3);
+  font-size:.78rem;letter-spacing:.1em;
+  padding:.5rem 1.3rem;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  z-index:60;white-space:nowrap;
+  box-shadow:3px 3px 0 var(--gold);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:360px){
+  .opt-text{font-size:.78rem;padding:.65rem .45rem;}
+  .tap-best,.tap-worst{min-width:40px;}
+}
+</style>
+</head>
+<body data-id="kabuki-role">
+
+<div id="curtain"></div>
+<div id="toast"></div>
+
+<div class="progress-fixed" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+</div>
+
+<header class="site-header">
+  <!-- 三つ巴 家紋 SVG -->
+  <svg class="header-mon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" fill="none" stroke="#b8861f" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(184,134,31,.3)" stroke-width=".8"/>
+    <!-- 三つ巴 -->
+    <g fill="none" stroke="#b8861f" stroke-width="1.8">
+      <!-- 巴1 上 -->
+      <path d="M50,18 A14,14 0 1,1 36,32 A7,7 0 1,0 50,18Z"/>
+      <!-- 巴2 右下 -->
+      <path d="M50,18 A14,14 0 1,1 36,32 A7,7 0 1,0 50,18Z" transform="rotate(120,50,50)"/>
+      <!-- 巴3 左下 -->
+      <path d="M50,18 A14,14 0 1,1 36,32 A7,7 0 1,0 50,18Z" transform="rotate(240,50,50)"/>
+    </g>
+  </svg>
+  <h1>人生、だいたい<br>歌舞伎だった件</h1>
+  <p class="sub">怒り方も、恋の仕方も、黙り方まで。<br>あなたの"型"はもう出ている。</p>
+</header>
+
+<section id="prologue">
+  <div class="prologue-frame">
+    <div class="prologue-visual">
+      <img src="/shindan/assets/results/kabuki-role/t00.webp" alt="舞台中央の役者" loading="lazy">
+    </div>
+    <p>人は、ただ生きているだけの顔をして、<br>案外しっかり演じている。</p>
+    <p>怒るときの勢い。<br>黙るときの重さ。<br>惹かれたときの目線。<br>やり返すときの手つき。</p>
+    <div class="wari">◆ ◆ ◆</div>
+    <p>あなたにも、もう"型"がある。<br>では本日、その配役を出そう。</p>
+    <div class="meta">
+      <b>回答方法</b><br>
+      各場面の選択肢について<br>
+      左の ◉ = <b>いちばん出がちな役</b><br>
+      右の ✕ = <b>いちばんやらなそうな役</b><br>
+      をそれぞれ1つずつ選んでください。全20問です。
+    </div>
+  </div>
+  <button class="btn-curtain" id="startBtn">幕を上げる</button>
+</section>
+
+<section id="quiz">
+  <p class="q-stage">第 <span id="sceneNum">1</span> 幕 ／ 20</p>
+  <div class="bws-card" id="bwsCard">
+    <div class="q-wrap">
+      <span class="q-idx" id="qIdx">01</span>
+      <span class="q-body" id="qBody"></span>
+    </div>
+    <div class="bws-legend">
+      <div class="legend-gold">◉ 出がちな役</div>
+      <div class="legend-red">✕ やらなそうな役</div>
+    </div>
+    <div class="opts-list" id="optsList"></div>
+    <p class="bws-micro" id="microHint">両方選ぶと次へ進めます</p>
+    <div class="confirm-wrap">
+      <button class="btn-confirm" id="confirmBtn">この配役で進む</button>
+    </div>
+  </div>
+</section>
+
+<section id="result">
+  <div class="result-stage">
+    <h2 class="result-role" id="resultRole"></h2>
+    <p class="result-sub" id="resultSub"></p>
+  </div>
+  <div class="result-img-box">
+    <img id="resultImg" src="" alt="">
+  </div>
+  <div class="result-panels" id="resultPanels"></div>
+  <div class="reactions-panel" id="reactionsPanel"></div>
+  <div class="costar-panel" id="costarPanel"></div>
+  <div class="factor-panel" id="factorPanel"></div>
+  <details class="gallery">
+    <summary>▼ 全配役を見る</summary>
+    <div class="gal-grid" id="galGrid"></div>
+  </details>
+
+  <details class="acc">
+  <summary>📘 役を持つと、なぜ少しうまく振る舞えるのか</summary>
+  <div class="acc-body">
+    <p class="acc-intro">役を「持つ」ことには、心理学的な根拠がある。4つの研究知見をまとめた。</p>
+    <div class="diag-note">
+
+      <div class="diag-note-block">
+        <span class="diag-note-num">01</span>
+        <div class="diag-note-h">役は、感情を消すより先に「自分ごと度」を下げる</div>
+        <p class="diag-note-p">
+          2014年の研究では、考えごとをするときに「自分」を一人称ではなく、自分の名前や非一人称で扱うだけで、社会的ストレス下の反応がかなり整いやすくなっていた。7研究・合計585人で、第一印象づくりやスピーチの場面でも、苦痛が下がり、外から見た振る舞いまで少し良くなっている。<br><br>
+          つまり役の利点は、格好よく見せることより、<strong>いまの自分を少し外側から扱えること</strong>にある。役は仮面というより、感情を直撃させすぎないための距離の装置に近い。
+        </p>
+        <span class="diag-cite">Moser et al., 2017 / Kross et al., 2014</span>
+      </div>
+
+      <div class="diag-note-block">
+        <span class="diag-note-num">02</span>
+        <div class="diag-note-h">その距離は、「我慢」ではなく、処理の仕方そのものを変える</div>
+        <p class="diag-note-p">
+          2017年の脳波研究では最終29人、fMRI研究では解析対象50人で、三人称セルフトークを使うと、嫌な感情に触れたときの自己関連的な反応が下がる一方で、「頑張って抑えている」感じの追加コストはあまり増えていなかった。さらに同年の別研究では、自己距離化した人の方が、批判のようなネガティブな内容でさえ、相手にとって<strong>より温かく、役に立つ形</strong>で伝えやすかった。<br><br>
+          役を持つメリットは、無理に飲み込むことではない。視点を引くことで、感情も言葉も少し整いやすくなることだ。
+        </p>
+        <span class="diag-cite">Kross et al., 2017（EEG / fMRI）; Grossman & Kross, 2017</span>
+      </div>
+
+      <div class="diag-note-block">
+        <span class="diag-note-num">03</span>
+        <div class="diag-note-h">役は、その場の目的に合う自分を早く呼び出す</div>
+        <p class="diag-note-p">
+          McCabe と Fleeson の研究では、10日間の経験サンプリング、45分の目標操作実験、さらに観察者評定を含む3研究で、外向性や誠実性のような特性の出方は、かなりの部分が「その瞬間に何を達成したいか」と結びついていた。実際、Study 1 では目標追求が外向性・誠実性状態の分散のかなり大きい部分を説明し、著者らは「特性は目標達成に役立つ」とまとめている。<br><br>
+          要するに役は、嘘の人格ではなく、<strong>いま必要な目標に合う行動モード</strong>だ。素の自分だけで毎回処理するより、役がある方が速い。
+        </p>
+        <span class="diag-cite">McCabe & Fleeson, 2012（経験サンプリング・実験・観察者評定）</span>
+      </div>
+
+      <div class="diag-note-block">
+        <span class="diag-note-num">04</span>
+        <div class="diag-note-h">演じた役は、見え方だけでなく、その場の気分まで少し動かす</div>
+        <p class="diag-note-p">
+          外向的に振る舞うよう求めた2012年の実験では、その場のポジティブ感情が上がっていた。さらに2019年のランダム化比較試験では、1週間「少し外向的に振る舞う」条件に147人を割り付け、追加の対照76人も合わせて検討したところ、全体としてポジティブ感情と真正感の押し上げが見られた。ただし、より内向的な人では利益が弱く、疲れや不自然さのコストも残った。<br><br>
+          つまり役は万能ではないが、少なくとも飾りではない。<strong>その場の主観的な体験そのもの</strong>にも触るから、人は役を使う。
+        </p>
+        <span class="diag-cite">Fleeson et al., 2002; Jacques-Hamilton et al., 2019（RCT, n=223）</span>
+      </div>
+
+    </div>
+  </div>
+</details>
+
+  <details class="last-answers" id="lastAnswers">
+    <summary>🗒 前回の回答を見る</summary>
+    <div class="last-answers-body" id="lastAnswersBody"></div>
+  </details>
+
+  <div class="disclaimer">※本ページは娯楽＋自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</div>
+
+  <div class="result-actions">
+    <button type="button" class="result-action result-action-retry" id="retryBtn">↺ もう一度やる</button>
+    <a href="/shindan/" class="result-action">← 診断一覧に戻る</a>
+  </div>
+</section>
+
+<script>
+const SLUG='kabuki-role';
+const SK_ANS=`shindan:${SLUG}:answers`;
+const SK_IDX=`shindan:${SLUG}:idx`;
+const SK_DONE=`shindan:${SLUG}:done`;
+const SK_LAST=`shindan:${SLUG}:last_completed`;
+const FN=['見得圧','情念','啖呵','策謀','艶','戯れ'];
+
+const FACTOR_META=[
+  {name:'見得圧',what:'前に出て場を取る力',desc:'注目を引き受ける、見せ場を作る、空気を自分側へ寄せる傾向。'},
+  {name:'情念',what:'感情が残り続ける深さ',desc:'気持ちが尾を引く、余韻が長い、心の中で反芻しやすい傾向。'},
+  {name:'啖呵',what:'正面から切る強さ',desc:'言い返す、押し返す、勝負どころで前へ出る直線的な迫力。'},
+  {name:'策謀',what:'盤面を読む裏回し力',desc:'流れを見る、先を読む、直接より配置で勝ちにいく傾向。'},
+  {name:'艶',what:'映り方と余韻の美意識',desc:'どう見えるかへの感覚、色気、自然に印象を残す力。'},
+  {name:'戯れ',what:'ずらしと崩しの軽やかさ',desc:'笑いに変える、空気をほぐす、重さを少し逸らす傾向。'}
+];
+
+const Qs=[
+  {q:'嫌味を言われたとき',opts:[
+    ['その場で切り返す。引いたら負けな気がする',2,0],
+    ['笑って流すが、あとで効く形に整えて返す',3,4],
+    ['表には出さないが、かなり長く引きずる',1,4],
+    ['少し大げさに崩して、空気ごと別の方向へ持っていく',5,0],
+  ]},
+  {q:'好きな相手が他の誰かを褒めていた',opts:[
+    ['さりげなく自分の見せ場を作る',0,4],
+    ['何でもない顔をするが、内心ではずっと残る',1,4],
+    ['その場では静かにして、相手の反応を観察する',3,1],
+    ['軽口で突っついて、その場の空気を試す',5,2],
+  ]},
+  {q:'集まりの空気が妙に冷えた',opts:[
+    ['前に出て場を動かす',0,2],
+    ['目立たず裏で配置を直す',3,4],
+    ['変な一言を入れて温度をずらす',5,4],
+    ['誰が何を抱えているのかを静かに読む',1,3],
+  ]},
+  {q:'誰かに誤解された',opts:[
+    ['すぐ説明して正面から解く',2,0],
+    ['焦って弁明するより、流れが変わるのを待つ',3,1],
+    ['誤解されたこと自体がかなり刺さる',1,4],
+    ['少し笑いに変えて、角を取る',5,4],
+  ]},
+  {q:'注目が集まった',opts:[
+    ['せっかくだから決めにいく',0,4],
+    ['堂々と受けるが、余計な感情は見せない',2,4],
+    ['嬉しいより、あとで反芻する',1,0],
+    ['いじられる前に自分で崩しておく',5,3],
+  ]},
+  {q:'ライバルっぽい相手が現れた',opts:[
+    ['正面から勝ちにいく',2,0],
+    ['相手の癖や流れを見て、勝てる場所を選ぶ',3,2],
+    ['比較される感じがずっと心に残る',1,4],
+    ['競争そのものを少し面白がる',5,0],
+  ]},
+  {q:'褒められたとき',opts:[
+    ['きれいに受け取って、さらに一段見せる',4,0],
+    ['うれしいが、顔にはあまり出さない',1,4],
+    ['相手が何を見てそう言ったのか考える',3,1],
+    ['冗談に逃がして照れを薄める',5,4],
+  ]},
+  {q:'腹が立つのに、すぐ言えない場面',opts:[
+    ['無理でも一言は返す',2,0],
+    ['いまは黙って、後で有利な形にする',3,2],
+    ['何も言えず、あとで何度も思い返す',1,4],
+    ['その場を茶化して傷を浅くする',5,3],
+  ]},
+  {q:'誰かが落ち込んでいる',opts:[
+    ['まず前に出て声をかける',0,4],
+    ['その人が話しやすい流れをこっそり作る',3,4],
+    ['自分も引っ張られて気持ちが残る',1,4],
+    ['少し笑える逃げ道を作る',5,4],
+  ]},
+  {q:'好きな人に会う直前',opts:[
+    ['今日はちゃんと"映る"ようにしたい',4,0],
+    ['何を話すかより、どう転ぶかを読む',3,4],
+    ['会う前から気持ちがふくらみすぎる',1,0],
+    ['考えすぎると重いので、軽く構える',5,3],
+  ]},
+  {q:'誰かに裏切られた気がした',opts:[
+    ['そのままにせず、はっきりさせたい',2,1],
+    ['すぐ切らず、相手の出方を見て整理する',3,1],
+    ['関係が終わっても気持ちは残る',1,4],
+    ['深刻にしすぎないよう、自分の中で少し崩す',5,3],
+  ]},
+  {q:'みんなが遠慮して動かないとき',opts:[
+    ['じゃあ自分が行く',0,2],
+    ['誰が動けば自然かを見て促す',3,0],
+    ['迷う空気そのものに疲れてしまう',1,3],
+    ['ノリを作って動きやすくする',5,0],
+  ]},
+  {q:'秘密を抱えたとき',opts:[
+    ['それを抱えている自分に少し酔う',4,1],
+    ['使いどころを考える',3,4],
+    ['ずっと心の中で重みになる',1,4],
+    ['深刻すぎるとしんどいので、少し笑いに変える',5,1],
+  ]},
+  {q:'自分の魅力を出すなら',opts:[
+    ['堂々と前に出る迫力',0,2],
+    ['余裕や色気のにじみ方',4,0],
+    ['一筋縄ではいかない含み',3,4],
+    ['油断できない軽やかさ',5,4],
+  ]},
+  {q:'誰かと気まずくなった',opts:[
+    ['先に切り込んで片づけたい',2,0],
+    ['いまは触らず、戻せるタイミングを探す',3,1],
+    ['たぶん相手より自分の中で尾を引く',1,4],
+    ['まずは少し笑える形で橋をかける',5,4],
+  ]},
+  {q:'思い通りにいかなかった',opts:[
+    ['悔しさを燃料にして前へ出る',0,2],
+    ['原因と配置を見て次の手を作る',3,2],
+    ['しばらく気持ちが離れない',1,0],
+    ['いったんネタにして呼吸を戻す',5,1],
+  ]},
+  {q:'誰かに惹かれたとき',opts:[
+    ['相手の視界に入りたくなる',0,4],
+    ['すぐ動かず、相手の温度を読む',3,1],
+    ['自分の中だけで熱が育っていく',1,4],
+    ['軽くじゃれながら距離を見る',5,4],
+  ]},
+  {q:'その場の主導権を握るなら',opts:[
+    ['声と勢いで持っていく',2,0],
+    ['段取りと流れで握る',3,0],
+    ['余韻と存在感で引く',4,1],
+    ['笑いとズレで自然に奪う',5,4],
+  ]},
+  {q:'自分の中で"負け"を感じる瞬間',opts:[
+    ['言い返せなかったとき',2,1],
+    ['盤面を読めなかったとき',3,1],
+    ['相手の心に残れなかった気がしたとき',4,1],
+    ['空気を変えられなかったとき',5,0],
+  ]},
+  {q:'最後に一番しっくりくる一手',opts:[
+    ['ここぞで見得を切る',0,2],
+    ['何も言わずに余韻を残す',4,1],
+    ['見えないところで筋を通す',3,2],
+    ['ひとひねり入れて場をさらう',5,4],
+  ]},
+];
+
+const TYPES=[
+  {id:'arago',    name:'荒事の主役',  sub:'見得圧 × 啖呵',      img:1,
+   kojo:'黙れ、俺が先に動く。——が口癖ではないにしても、体がそう言っている。',
+   body:'「誰か行きます？」の空白が0.3秒続くと、もう動いている。止まれない力士みたいに、場のすきまに突っ込んでいく生き物。本人は「普通にしてるだけ」と思っているが、周りはちゃんと圧を受けている。圧に無自覚なのがいちばん怖いところでもある。',
+   pitfall:'見得を切ったあと、周りがちょっと引いていても気づかない。「あれ、みんな静かだな」と思ったときはだいたい切りすぎている。',
+   step:'次に何か言う前に、ひと呼吸だけ待ってみる。その間に相手の顔を見る。それだけで舞台の景色がだいぶ変わる。'},
+  {id:'irolya',   name:'艶の色役',    sub:'艶 × 見得圧',         img:2,
+   kojo:'特に何もしていないのに、なぜか見られている。',
+   body:'爪先の角度、声のトーンを落とすタイミング、視線を外すタイミング——全部に無意識の演出が入っている。「天然でしょ？」と言われるが、天然ではない。かなり意識的に無意識を演じている。それを指摘されると少し照れる。照れた顔も映える。終わってる。',
+   pitfall:'いつも「よく見せモード」が入っているせいで、本当に疲れているときも隙を見せられない。完璧な幕が、逃げ道を塞いでいる。',
+   step:'今日だけ、だらしない格好で誰かと話してみる。崩れた自分を見せても、好きでいてくれる人がいるか確かめるのも悪くない。'},
+  {id:'koilyaku', name:'情念の恋役',  sub:'情念 × 艶',            img:3,
+   kojo:'もう終わったのに、心の中ではまだ上演中。',
+   body:'3年前に言われた一言を、ふとした瞬間に再生できる。いい意味でも悪い意味でも。感情の保存容量がバカでかく、感動も傷も長期保存される。「引きずってる」と言われるが、本人としては「まだ味わっている」感覚に近い。それが豊かさでもあり、重さでもある。',
+   pitfall:'次の幕が始まっているのに、前の幕の余韻を持ったまま入場する癖がある。過去の感情が現在のノイズになる。',
+   step:'「この気持ちは、今日で楽屋に置いていく」と一度だけ声に出してみる。儀式みたいで恥ずかしいが、意外と効く。'},
+  {id:'kuromaku', name:'黒幕の敵役',  sub:'策謀 × 情念',          img:4,
+   kojo:'何も言っていないのに、なぜか全部知っている人だと思われている。',
+   body:'会話しながら3手先の展開を読んでいる。感情はちゃんとあるのに、なぜか表に出てこない。「怒ってる？」「別に」のやりとりを人生で何百回やったかわからない。黙って動かしているつもりが、「あの人何考えてるの」という噂を静かに育てている。怖い。',
+   pitfall:'先を読みすぎて、シンプルに動けばよかった場面でも複雑な仕込みをする。3手先まで考えた結果、1手目を間違える。',
+   step:'今日は作戦なしで動いてみる。「なんとなくこうしたい」だけで動く練習。意外と世の中は仕込まなくても回る。'},
+  {id:'sanmaime', name:'道化の三枚目', sub:'戯れ × 艶',            img:5,
+   kojo:'重い空気が3秒続くと、もう何か言ってしまっている。',
+   body:'場が凍りそうになった瞬間に口が動く。本人も「なんで言ったんだろ」と思うことがあるが、結果として笑いが起きている。誰も笑わせようとしていないのに笑いが起きるのは才能だが、「こいつに本気の話をしていいのか」と相手に思わせてしまうことがある。道化は得をするが、主役とは見なされにくい。',
+   pitfall:'ふざけ続けると、真剣に怒ったときに「また冗談でしょ」と思われる。オオカミ少年ならぬオオカミ道化。',
+   step:'今日一度、オチのない話をしてみる。笑いに変換しなくていい。そのまま置いておく練習。'},
+  {id:'bakemono', name:'化け役の曲者', sub:'策謀 × 戯れ × 艶',   img:6,
+   kojo:'あなたの「本当の顔」を、あなた自身も把握していない。',
+   body:'職場での自分、友達といる自分、ひとりでいる自分が、別の人物みたいに違う。「キャラ使い分けてる」と言うと聞こえはいいが、実態は全部本物なのでタチが悪い。初対面の人に「意外と○○ですね」と言われる回数が、他のタイプより多い。どれが「意外」なのかも、自分ではわからない。',
+   pitfall:'多面的すぎて「この人に何を話していいか」と相手が迷う。つかみどころのなさが、距離を縮めにくくすることがある。',
+   step:'今日会う人に「自分について、一つだけ本当のこと」を話してみる。小さくていい。化け役が素を見せると、だいたい相手がびっくりする。'},
+];
+
+/* ── 客席データ ── */
+const REACTIONS={
+  arago:[
+    {ico:'😤',name:'前田観劇メモ',handle:'@maeda_kabuki_log',body:'圧がすごい。隣の席の人が無意識に少し避けてた。本人は気づいてない。'},
+    {ico:'🍿',name:'観劇初心者のさわ',handle:'@sawa_firsttime',body:'登場した瞬間に「あ、この人が主役だ」ってなった。セリフ言う前から。'},
+    {ico:'🎭',name:'歌舞伎評論・老松',handle:'@oimatsu_critic',body:'見得の切り方が雑。だが迫力で全部持っていく。腹が立つほど効いている。'},
+  ],
+  irolya:[
+    {ico:'😶',name:'前田観劇メモ',handle:'@maeda_kabuki_log',body:'何もしてないのに目がいく。退場したあとも「さっきの人…」ってなってた。'},
+    {ico:'🌸',name:'観劇初心者のさわ',handle:'@sawa_firsttime',body:'声のトーンが下がった瞬間だけで拍手したくなった。なんなの。'},
+    {ico:'🎭',name:'歌舞伎評論・老松',handle:'@oimatsu_critic',body:'技巧を技巧と感じさせない。それが最も難しく、最も反則だ。'},
+  ],
+  koilyaku:[
+    {ico:'💧',name:'前田観劇メモ',handle:'@maeda_kabuki_log',body:'泣いてないのに泣いてるみたいに見えた。目が乾いてないのに潤んでる。どういう仕組み？'},
+    {ico:'🫀',name:'観劇初心者のさわ',handle:'@sawa_firsttime',body:'終わってからも余韻が抜けない。帰り道ずっと反芻してた。感染する。'},
+    {ico:'🎭',name:'歌舞伎評論・老松',handle:'@oimatsu_critic',body:'静かな場面ほど熱量が上がる。沈黙の使い方が異常にうまい。'},
+  ],
+  kuromaku:[
+    {ico:'🤔',name:'前田観劇メモ',handle:'@maeda_kabuki_log',body:'ずっと何か考えてるのはわかるんだけど、何を考えてるかが最後まで分からなかった。'},
+    {ico:'😰',name:'観劇初心者のさわ',handle:'@sawa_firsttime',body:'笑顔が一回もなかったのに、なぜか一番印象に残ってる。怖い。'},
+    {ico:'🎭',name:'歌舞伎評論・老松',handle:'@oimatsu_critic',body:'動かないことで場を支配している。これは才能か修行の賜物か。おそらく両方だ。'},
+  ],
+  sanmaime:[
+    {ico:'😂',name:'前田観劇メモ',handle:'@maeda_kabuki_log',body:'笑いをこらえるのが大変だった。でも後から考えると全然笑える場面じゃなかった。なぜ笑ったのか。'},
+    {ico:'🎪',name:'観劇初心者のさわ',handle:'@sawa_firsttime',body:'重い場面で急に面白いことが起きて、泣きそうだったのに笑ってた。感情の処理が追いつかない。'},
+    {ico:'🎭',name:'歌舞伎評論・老松',handle:'@oimatsu_critic',body:'道化の仕事は場を救うことだ。この役者、救いすぎている。'},
+  ],
+  bakemono:[
+    {ico:'👁',name:'前田観劇メモ',handle:'@maeda_kabuki_log',body:'同じ人なのに場面によって全然違う人に見えた。パンフ確認したら確かに同じ人だった。'},
+    {ico:'🌀',name:'観劇初心者のさわ',handle:'@sawa_firsttime',body:'好きか嫌いかで言ったら好きなんだけど、なんで好きなのかが言語化できない。'},
+    {ico:'🎭',name:'歌舞伎評論・老松',handle:'@oimatsu_critic',body:'つかめない。35年評論をやってきて、これほど分類に困った役者はいない。褒めている。'},
+  ],
+};
+
+/* ── 相性データ ── */
+// [best役id, bestの理由, worst役id, worstの理由]
+const COSTAR={
+  arago:  ['sanmaime','荒事が突っ込んだあと、道化が崩して笑いに変える。テンポが奇跡的に合う。','koilyaku','どちらも「行く」タイプと「留まる」タイプ。勢いと余韻が真逆すぎて舞台が割れる。'],
+  irolya: ['kuromaku','艶が場を作り、黒幕が裏で整える。表と裏の分業が自然に決まる。','sanmaime','美意識で積み上げたものを道化がすぐ崩す。色役、毎回ため息をついている。'],
+  koilyaku:['kuromaku','情念と策謀は、感情の深さと読みの鋭さで補い合える。静かな最強コンビ。','arago','荒事のスピードに情念がついていけない。終わる前に幕が下りる。'],
+  kuromaku:['koilyaku','策謀と情念は、どちらも「見えないところで動く」タイプ。呼吸が合う。','arago','黒幕が3手先を仕込んでいるのに、荒事が0.3秒で全部ぶち壊す。'],
+  sanmaime:['arago','荒事が作った緊張を道化が一瞬で溶かす。観客が一番喜ぶ組み合わせ。','kuromaku','道化がふざけるたびに黒幕の目が細くなる。空気が悪い。'],
+  bakemono:['irolya','曲者の多面性と色役の余韻が重なると、舞台に奥行きが生まれる。','arago','荒事はシンプルに前へ出るのに、曲者がいると話が複雑になりすぎる。'],
+};
+
+/* ── 描画：客席の反応 ── */
+function renderReactions(typeId){
+  const list=REACTIONS[typeId]||[];
+  let html=`<div class="reactions-inner"><span class="tag">客席の反応（本日分）</span><div class="reaction-list">`;
+  list.forEach(r=>{
+    html+=`<div class="reaction-card">
+      <div class="reaction-ico">${r.ico}</div>
+      <div class="reaction-meta">
+        <span class="reaction-name">${r.name}</span>
+        <span class="reaction-handle">${r.handle}</span>
+      </div>
+      <p class="reaction-body">${r.body}</p>
+    </div>`;
+  });
+  html+=`</div></div>`;
+  document.getElementById('reactionsPanel').innerHTML=html;
+}
+
+/* ── 描画：共演者 ── */
+function renderCostar(typeId){
+  const c=COSTAR[typeId];
+  if(!c)return;
+  const [bestId,bestReason,worstId,worstReason]=c;
+  const bestType=TYPES.find(t=>t.id===bestId);
+  const worstType=TYPES.find(t=>t.id===worstId);
+  if(!bestType||!worstType)return;
+  document.getElementById('costarPanel').innerHTML=`
+    <div class="costar-inner"><span class="tag">今日の共演者</span>
+      <div class="costar-grid">
+        <div class="costar-card best">
+          <span class="costar-badge">最高の相手</span>
+          <img class="costar-img" src="/shindan/assets/results/kabuki-role/t0${bestType.img}.webp" alt="${bestType.name}">
+          <div class="costar-name">${bestType.name}</div>
+          <p class="costar-reason">${bestReason}</p>
+        </div>
+        <div class="costar-card worst">
+          <span class="costar-badge">組まない方がいい</span>
+          <img class="costar-img" src="/shindan/assets/results/kabuki-role/t0${worstType.img}.webp" alt="${worstType.name}">
+          <div class="costar-name">${worstType.name}</div>
+          <p class="costar-reason">${worstReason}</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ── STATE ── */
+let answers=[], currentQ=0, tempBest=null, tempWorst=null;
+
+/* ── STORAGE ── */
+function save(){try{localStorage.setItem(SK_ANS,JSON.stringify(answers));localStorage.setItem(SK_IDX,String(currentQ));}catch(_){}}
+function load(){try{const a=localStorage.getItem(SK_ANS),i=localStorage.getItem(SK_IDX);if(a)answers=JSON.parse(a);if(i)currentQ=parseInt(i)||0;}catch(_){answers=[];currentQ=0;}}
+function isDone(){return localStorage.getItem(SK_DONE)==='1';}
+function markDone(){try{localStorage.setItem(SK_DONE,'1');}catch(_){}}
+
+function saveLastCompleted(norm,type){
+  try{
+    const payload={
+      ts:Date.now(),
+      role:type.name,
+      sub:type.sub,
+      norm:norm,
+      entries:Qs.map((q,qi)=>{
+        const ans=answers[qi];
+        if(!ans)return null;
+        return {
+          q:q.q,
+          best:q.opts[ans.best][0],
+          worst:q.opts[ans.worst][0]
+        };
+      }).filter(Boolean)
+    };
+    localStorage.setItem(SK_LAST,JSON.stringify(payload));
+  }catch(_){}
+}
+
+function loadLastCompleted(){
+  try{
+    const raw=localStorage.getItem(SK_LAST);
+    return raw?JSON.parse(raw):null;
+  }catch(_){
+    return null;
+  }
+}
+
+function formatLastCompletedTime(ts){
+  try{
+    return new Date(ts).toLocaleString('ja-JP',{
+      year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit'
+    });
+  }catch(_){
+    return '';
+  }
+}
+
+function renderLastCompleted(){
+  const mount=document.getElementById('lastAnswersBody');
+  if(!mount)return;
+
+  const data=loadLastCompleted();
+  if(!data||!data.entries||!data.entries.length){
+    mount.innerHTML='<p class="last-empty">まだ記録はありません。</p>';
+    return;
+  }
+
+  let html='';
+  if(data.ts){
+    html+=`<p class="last-meta">記録日時：${formatLastCompletedTime(data.ts)} ／ 配役：${data.role}</p>`;
+  }
+
+  html+='<ol class="last-list">';
+  data.entries.forEach((item,idx)=>{
+    html+=`<li class="last-item"><p class="last-q">第${idx+1}幕　${item.q}</p><p class="last-a"><span>◉ ${item.best}</span><span>✕ ${item.worst}</span></p></li>`;
+  });
+  html+='</ol>';
+
+  mount.innerHTML=html;
+}
+function clearDone(){
+  try{
+    localStorage.removeItem(SK_DONE);
+    localStorage.removeItem(SK_ANS);
+    localStorage.removeItem(SK_IDX);
+  }catch(_){}
+}
+
+/* ── HELPERS ── */
+function updateProgress(p){const b=document.getElementById('progressBar');b.style.width=p+'%';b.parentElement.setAttribute('aria-valuenow',Math.round(p));}
+
+let toastT;
+function toast(msg,dur=2200){clearTimeout(toastT);const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');toastT=setTimeout(()=>e.classList.remove('show'),dur);}
+
+function curtain(){
+  return new Promise(res=>{
+    const el=document.getElementById('curtain');
+    el.className='';void el.offsetWidth;
+    el.classList.add('cDrop');
+    setTimeout(()=>{
+      el.classList.remove('cDrop');void el.offsetWidth;
+      el.classList.add('cRise');
+      setTimeout(()=>{el.className='';res();},460);
+    },460);
+  });
+}
+
+/* ── RENDER QUESTION ── */
+function renderQ(qi){
+  const q=Qs[qi];
+  document.getElementById('sceneNum').textContent=qi+1;
+  document.getElementById('qIdx').textContent=String(qi+1).padStart(2,'0');
+  document.getElementById('qBody').textContent=q.q;
+  tempBest=null;tempWorst=null;
+
+  const card=document.getElementById('bwsCard');
+  card.style.animation='none';void card.offsetWidth;
+  card.style.animation='cardIn .35s cubic-bezier(.4,0,.2,1) both';
+
+  const list=document.getElementById('optsList');
+  list.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const row=document.createElement('div');
+    row.className='opt-row';row.dataset.idx=i;
+
+    const bBtn=document.createElement('button');
+    bBtn.className='tap-best';bBtn.setAttribute('aria-pressed','false');
+    bBtn.dataset.role='best';bBtn.dataset.idx=i;
+    bBtn.innerHTML='<span class="tap-ico">◉</span>';
+    bBtn.addEventListener('click',onTap);
+
+    const txt=document.createElement('span');
+    txt.className='opt-text';txt.textContent=opt[0];
+
+    const wBtn=document.createElement('button');
+    wBtn.className='tap-worst';wBtn.setAttribute('aria-pressed','false');
+    wBtn.dataset.role='worst';wBtn.dataset.idx=i;
+    wBtn.innerHTML='<span class="tap-ico">✕</span>';
+    wBtn.addEventListener('click',onTap);
+
+    row.appendChild(bBtn);row.appendChild(txt);row.appendChild(wBtn);
+    list.appendChild(row);
+  });
+  syncVisuals();
+  document.getElementById('confirmBtn').className='btn-confirm';
+  updateProgress(qi/Qs.length*100);
+}
+
+function onTap(e){
+  const role=e.currentTarget.dataset.role;
+  const idx=parseInt(e.currentTarget.dataset.idx);
+  if(role==='best'){
+    if(tempBest===idx){tempBest=null;}
+    else if(idx===tempWorst){toast('出がちとやらなそうは別の選択肢にしてください');return;}
+    else{tempBest=idx;}
+  } else {
+    if(tempWorst===idx){tempWorst=null;}
+    else if(idx===tempBest){toast('出がちとやらなそうは別の選択肢にしてください');return;}
+    else{tempWorst=idx;}
+  }
+  syncVisuals();
+}
+
+function syncVisuals(){
+  document.querySelectorAll('.opt-row').forEach(row=>{
+    const i=parseInt(row.dataset.idx);
+    const iB=tempBest===i, iW=tempWorst===i;
+    row.classList.toggle('picked-best',iB);
+    row.classList.toggle('picked-worst',iW);
+    row.querySelector('.tap-best').setAttribute('aria-pressed',iB?'true':'false');
+    row.querySelector('.tap-worst').setAttribute('aria-pressed',iW?'true':'false');
+  });
+  const hint=document.getElementById('microHint');
+  const both=tempBest!==null&&tempWorst!==null;
+  if(tempBest===null&&tempWorst===null){hint.textContent='両方選ぶと次へ進めます';hint.className='bws-micro';}
+  else if(tempBest===null){hint.textContent='◉ 出がちな役も選んでください';hint.className='bws-micro';}
+  else if(tempWorst===null){hint.textContent='✕ やらなそうな役も選んでください';hint.className='bws-micro';}
+  else{hint.textContent='選択完了 — 確認して次へ';hint.className='bws-micro ready';}
+  document.getElementById('confirmBtn').className='btn-confirm'+(both?' on':'');
+}
+
+document.getElementById('confirmBtn').addEventListener('click',async()=>{
+  if(tempBest===null||tempWorst===null)return;
+  answers[currentQ]={best:tempBest,worst:tempWorst};save();
+  currentQ++;
+  if(currentQ>=Qs.length){markDone();updateProgress(100);await curtain();showResult();}
+  else{await curtain();renderQ(currentQ);}
+});
+
+/* ── SCORING ── */
+function calcNorm(){
+  const sc=[0,0,0,0,0,0];
+  answers.forEach((ans,qi)=>{
+    if(!ans)return;
+    const o=Qs[qi].opts;
+    sc[o[ans.best][1]]+=2;sc[o[ans.best][2]]+=1;
+    sc[o[ans.worst][1]]-=2;sc[o[ans.worst][2]]-=1;
+  });
+  return sc.map(s=>Math.max(0,Math.min(100,Math.round(((s+40)/80)*100))));
+}
+function pickType(n){
+  const top3=n.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).slice(0,3).map(x=>x.i);
+  if(top3.includes(3)&&top3.includes(5)&&top3.includes(4))return TYPES[5];
+  const pairs=[{t:TYPES[0],f:[0,2]},{t:TYPES[1],f:[4,0]},{t:TYPES[2],f:[1,4]},{t:TYPES[3],f:[3,1]},{t:TYPES[4],f:[5,4]}];
+  return pairs.reduce((best,p)=>(n[p.f[0]]+n[p.f[1]])>(n[best.f[0]]+n[best.f[1]])?p:best).t;
+}
+
+/* ── RESULT ── */
+function showResult(){
+  document.getElementById('prologue').style.display='none';
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('result').style.display='block';
+
+  const norm=calcNorm(), type=pickType(norm);
+
+  document.getElementById('resultRole').textContent=type.name;
+  document.getElementById('resultSub').textContent=type.sub;
+
+  const img=document.getElementById('resultImg');
+  img.src=`/shindan/assets/results/kabuki-role/t0${type.img}.webp`;
+  img.alt=type.name;
+
+  document.getElementById('resultPanels').innerHTML=`
+    <div class="r-panel"><span class="tag">口上</span><p class="kojo">${type.kojo}</p></div>
+    <div class="r-panel"><span class="tag">この役の正体</span><p>${type.body}</p></div>
+    <div class="r-panel"><span class="tag">うっかり過剰になると</span><p>${type.pitfall}</p></div>
+    <div class="r-panel"><span class="tag">次の一幕への一歩</span><p>${type.step}</p></div>`;
+
+  let bars=`<div class="factor-inner"><span class="tag">六因子</span><p class="factor-note">どの役柄で舞台に出やすいかを、6つの見どころに分けて表示しています。</p>`;
+  FACTOR_META.forEach((meta,i)=>{
+    const v=norm[i];
+    const c=v<40?'lo':v<70?'mi':'';
+    bars+=`<div class="frow">
+      <div class="fhead">
+        <span class="fname">${meta.name}</span>
+        <span class="fwhat">${meta.what}</span>
+      </div>
+      <span class="fval">${v}%</span>
+      <div class="ftrack"><div class="ffill ${c}" data-v="${v}" style="width:0%"></div></div>
+      <p class="fdesc">${meta.desc}</p>
+    </div>`;
+  });
+  bars+=`</div>`;
+  document.getElementById('factorPanel').innerHTML=bars;
+
+  setTimeout(()=>{
+    document.querySelectorAll('.ffill').forEach(el=>el.style.width=el.dataset.v+'%');
+  },200);
+
+  const gg=document.getElementById('galGrid');
+  gg.innerHTML='';
+  for(let i=1;i<=6;i++){
+    const im=document.createElement('img');
+    im.src=`/shindan/assets/results/kabuki-role/t0${i}.webp`;
+    im.alt=TYPES[i-1].name;
+    im.title=TYPES[i-1].name;
+    gg.appendChild(im);
+  }
+
+  renderReactions(type.id);
+  renderCostar(type.id);
+  saveLastCompleted(norm,type);
+  renderLastCompleted();
+
+  updateProgress(100);
+  setTimeout(()=>document.dispatchEvent(new Event('result:ready')),300);
+}
+
+/* ── INIT ── */
+function showPrologue(){
+  document.getElementById('result').style.display='none';
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('prologue').style.display='block';
+  updateProgress(0);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function startQuiz(){
+  document.getElementById('prologue').style.display='none';
+  document.getElementById('result').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  renderQ(currentQ);
+}
+
+function restartQuiz(){
+  clearDone();
+  answers = [];
+  currentQ = 0;
+  tempBest = null;
+  tempWorst = null;
+  showPrologue();
+}
+
+document.getElementById('startBtn').addEventListener('click', startQuiz);
+
+const retryBtn = document.getElementById('retryBtn');
+if(retryBtn){
+  retryBtn.addEventListener('click', async ()=>{
+    await curtain();
+    restartQuiz();
+  });
+}
+
+// Boot
+(function init(){
+  load();
+  if(isDone()){
+    showResult();
+  } else if(answers.length > 0 && currentQ > 0){
+    startQuiz();
+  } else {
+    showPrologue();
+  }
+})();
+
+/* ── LEVEL IIFE ── */
+(function(){
+  var DK='specimens:open:byid',TK='specimens:open:total';
+  var ID=document.body.getAttribute('data-id')||'kabuki-role';
+  var marked=false;
+  function mark(){if(marked)return;marked=true;try{var t=(+localStorage.getItem(TK)||0)+1;localStorage.setItem(TK,String(t));var m={};try{m=JSON.parse(localStorage.getItem(DK)||'{}');}catch(_){}m[ID]=(m[ID]||0)+1;localStorage.setItem(DK,JSON.stringify(Object.assign({},m,{_ts:Date.now()})));}catch(_){}}
+  document.addEventListener('result:ready',mark);setTimeout(mark,2000);
+}());
+</script>
+</body>
+</html>
