@@ -410,7 +410,14 @@ body{
   color:var(--muted);margin:.7rem 0 .2rem;min-height:1.2em;
 }
 .bws-micro.ready{color:var(--gold);}
-.confirm-wrap{display:flex;justify-content:center;margin-top:1.2rem;}
+.confirm-wrap{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.7rem;
+  margin-top:1.2rem;
+  flex-wrap:wrap;
+}
 .btn-confirm{
   background:var(--ink);color:var(--gold2);
   font-family:inherit;
@@ -426,6 +433,26 @@ body{
 .btn-confirm.on{opacity:1;pointer-events:auto;}
 .btn-confirm:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--gold);}
 .btn-confirm:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--gold);}
+
+.btn-back{
+  background:transparent;
+  color:var(--muted);
+  font-family:inherit;
+  font-size:clamp(.76rem,2.7vw,.84rem);
+  letter-spacing:.14em;
+  padding:.78rem 1.15rem;
+  border:1px solid var(--border);
+  cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-back:hover{
+  background:rgba(184,134,31,.08);
+  color:var(--ink);
+  border-color:rgba(184,134,31,.45);
+}
+
+
 
 /* ───── CURTAIN TRANSITION ───── */
 #curtain{
@@ -1140,8 +1167,10 @@ details.acc summary{
     <div class="opts-list" id="optsList"></div>
     <p class="bws-micro" id="microHint">両方選ぶと次へ進めます</p>
     <div class="confirm-wrap">
+      <button class="btn-back" id="backBtn" type="button">前へ戻る</button>
       <button class="btn-confirm" id="confirmBtn">この配役で進む</button>
     </div>
+    
   </div>
 </section>
 
@@ -1274,15 +1303,15 @@ const Qs=[
     ['「え、私ですか」と一回ずらしてから本番に入る',5,3],
   ]},
   {q:'同期に先を越された',opts:[
-    ['悔しいので今すぐ何か結果を出そうとする',2,0],
+    ['悔しいので今すぐ動く。じっとしてられない',2,0],
     ['相手が何をしたか研究して、自分の戦略を練り直す',3,2],
     ['「おめでとう」と言いながら夜中に一人でへこんでいる',1,4],
-    ['「私は私の道で頑張るわ〜」と笑いに変えて消化する',5,0],
+    ['「ま、あの人は別ルートってことで」と切り替える',5,4],
   ]},
   {q:'「最近どう？」と聞かれて、実はあまりよくない',opts:[
     ['「いや〜バタバタしてて！」と元気に返す',0,4],
     ['「まあ、いろいろありますよ」と含みを持たせる',4,0],
-    ['「聞く？」と言いそうになって飲み込む',1,3],
+    ['全部話したいのに言葉が出てこなくて「うん、まあ」と返す',1,3],
     ['「最悪！でも話すと長いわ」と笑って終わらせる',5,1],
   ]},
   {q:'理不尽なことを言われたのに反論できなかった',opts:[
@@ -1292,39 +1321,39 @@ const Qs=[
     ['その場で変な顔して笑いに変換し、なんとかやり過ごす',5,3],
   ]},
   {q:'友人が失恋した。深夜にLINEが来た',opts:[
-    ['すぐ「電話していい？」と返す',0,4],
-    ['相手が何を求めているか読んでから返す文章を考える',3,4],
-    ['友人の話を聞いているうちに自分も泣きそうになる',1,4],
-    ['「今から会う？ コンビニ行こ」と送る',5,4],
+    ['すぐ「電話していい？」と返す。話を聞かないと気が済まない',0,3],
+    ['相手が何を求めているか読んでから、返す文章を選ぶ',3,1],
+    ['友人の話を聞いているうちに自分も引きずられて泣きそうになる',1,5],
+    ['「今から会う？ コンビニ行こ」と送る',5,1],
   ]},
   {q:'好きな人と2人になれる状況が突然訪れた',opts:[
-    ['逃すわけにいかないので、動く',0,4],
-    ['偶然を装いながら場の流れをこっそり作る',3,4],
+    ['逃すわけにいかないので、とにかく動く',0,1],
+    ['偶然を装いながら、話が弾む流れをこっそり設計する',3,0],
     ['緊張で何もできないまま終わり、帰り道に後悔する',1,0],
-    ['「運命じゃん」とかふざけた一言で緊張をほぐす',5,3],
+    ['「運命じゃん」とふざけた一言で自分の緊張をほぐす',5,3],
   ]},
   {q:'信用していた人に、自分のことを話されていた',opts:[
     ['直接「なんで言ったの」と聞きに行く',2,1],
-    ['怒りを表に出さず、その人との距離の取り方を変える',3,1],
+    ['怒りを表に出さず、その人との距離の取り方を静かに変える',3,4],
     ['裏切られたショックが長く続く。簡単には消えない',1,4],
-    ['「まあ秘密にしてとは言ってなかったし」と自分を笑わせる',5,3],
+    ['「まあ秘密にしてとは言ってなかったし」と自分を笑わせる',5,2],
   ]},
   {q:'グループLINEで誰も幹事をやりたがらない',opts:[
     ['「じゃあ私やる」と送る。考えるより先に指が動く',0,2],
     ['誰が動きやすいか見極めて「〇〇さんどう？」と促す',3,0],
-    ['やりたくないけど誰かがやらないといけないことへの葛藤が始まる',1,3],
+    ['やりたくないし、誰かがやるのを待っているうちに罪悪感が出てくる',1,3],
     ['「決め方決めようぜ」とゲーム化して場を動かす',5,0],
   ]},
   {q:'誰にも言えない、かなり重い秘密ができた',opts:[
     ['秘密を持っている自分に、少しだけ酔っている',4,1],
     ['これをいつ・誰に・どう使うか、じっくり考える',3,4],
-    ['抱えているだけで消耗する。でも言えない',1,4],
+    ['誰かに話したいわけじゃないが、抱えているだけで消耗する',1,5],
     ['重すぎるので心の中でネタに変換してどうにかしている',5,1],
   ]},
   {q:'「あなたの一番の魅力は何だと思う？」と聞かれた',opts:[
     ['「存在感、かな」と間を置かずに言える',0,2],
     ['「…雰囲気？」と言って少し目を細める',4,0],
-    ['「さあ……」と言いながら本当に分からなくて困る',3,4],
+    ['「さあ……」と本当に分からなくて逆に質問で返す',3,5],
     ['「顔？」とか言って笑いで逃げる',5,4],
   ]},
   {q:'仲良い人と、なぜか気まずくなった',opts:[
@@ -1348,13 +1377,13 @@ const Qs=[
   {q:'場の空気を完全に掌握するとしたら',opts:[
     ['声の大きさと勢いで持っていく',2,0],
     ['誰が何を求めているか把握して、流れを設計する',3,0],
-    ['しゃべらなくても存在感で引きつける',4,1],
+    ['何も言わず、でも目線と間だけで場を引く',4,2],
     ['予想外の一言で笑わせて、自然に中心になる',5,4],
   ]},
   {q:'「あなたって、ちょっとわかりにくい」と言われた',opts:[
-    ['「そうか？　俺はわかりやすいと思うけど」と返す',2,1],
+    ['「そうか？　俺はわかりやすいと思うけど」と返す',2,5],
     ['「そう見せてるんで」とだけ言って終わる',3,1],
-    ['言われたことが夜になっても頭に残る',4,1],
+    ['言われたことが夜になっても頭に残る',1,3],
     ['「わかりにくい方が面白くない？」とかわす',5,0],
   ]},
   {q:'人生で一番"自分らしかった"瞬間を思い出すと',opts:[
@@ -1591,10 +1620,14 @@ function curtain(){
 /* ── RENDER QUESTION ── */
 function renderQ(qi){
   const q=Qs[qi];
+  const saved=answers[qi];
+
   document.getElementById('sceneNum').textContent=qi+1;
   document.getElementById('qIdx').textContent=String(qi+1).padStart(2,'0');
   document.getElementById('qBody').textContent=q.q;
-  tempBest=null;tempWorst=null;
+
+  tempBest=saved ? saved.best : null;
+  tempWorst=saved ? saved.worst : null;
 
   const card=document.getElementById('bwsCard');
   card.style.animation='none';void card.offsetWidth;
@@ -1624,8 +1657,10 @@ function renderQ(qi){
     row.appendChild(bBtn);row.appendChild(txt);row.appendChild(wBtn);
     list.appendChild(row);
   });
+
   syncVisuals();
-  document.getElementById('confirmBtn').className='btn-confirm';
+  document.getElementById('confirmBtn').className='btn-confirm'+((tempBest!==null&&tempWorst!==null)?' on':'');
+  document.getElementById('backBtn').textContent = qi===0 ? '口上へ戻る' : '前へ戻る';
   updateProgress(qi/Qs.length*100);
 }
 
@@ -1664,10 +1699,31 @@ function syncVisuals(){
 
 document.getElementById('confirmBtn').addEventListener('click',async()=>{
   if(tempBest===null||tempWorst===null)return;
-  answers[currentQ]={best:tempBest,worst:tempWorst};save();
+  answers[currentQ]={best:tempBest,worst:tempWorst};
+  save();
   currentQ++;
-  if(currentQ>=Qs.length){markDone();updateProgress(100);await curtain();showResult();}
-  else{await curtain();renderQ(currentQ);}
+  if(currentQ>=Qs.length){
+    markDone();
+    updateProgress(100);
+    await curtain();
+    showResult();
+  }else{
+    await curtain();
+    renderQ(currentQ);
+  }
+});
+
+document.getElementById('backBtn').addEventListener('click',async()=>{
+  if(currentQ===0){
+    document.getElementById('quiz').style.display='none';
+    document.getElementById('prologue').style.display='block';
+    updateProgress(0);
+    return;
+  }
+  currentQ--;
+  save();
+  await curtain();
+  renderQ(currentQ);
 });
 
 /* ── SCORING ── */
