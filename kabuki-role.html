@@ -1727,15 +1727,67 @@ document.getElementById('backBtn').addEventListener('click',async()=>{
 });
 
 /* ── SCORING ── */
+function getFactorRanges(){
+  const ranges = Array.from({length:6}, ()=>({min:0,max:0}));
+
+  for(let factor=0; factor<6; factor++){
+    let totalMin = 0;
+    let totalMax = 0;
+
+    Qs.forEach(q=>{
+      let qMin = Infinity;
+      let qMax = -Infinity;
+
+      q.opts.forEach((bestOpt, bestIdx)=>{
+        q.opts.forEach((worstOpt, worstIdx)=>{
+          if(bestIdx === worstIdx) return;
+
+          const plus =
+            (bestOpt[1] === factor ? 2 : 0) +
+            (bestOpt[2] === factor ? 1 : 0);
+
+          const minus =
+            (worstOpt[1] === factor ? 2 : 0) +
+            (worstOpt[2] === factor ? 1 : 0);
+
+          const val = plus - minus;
+
+          if(val < qMin) qMin = val;
+          if(val > qMax) qMax = val;
+        });
+      });
+
+      totalMin += qMin;
+      totalMax += qMax;
+    });
+
+    ranges[factor] = {min: totalMin, max: totalMax};
+  }
+
+  return ranges;
+}
+
 function calcNorm(){
   const sc=[0,0,0,0,0,0];
+
   answers.forEach((ans,qi)=>{
-    if(!ans)return;
-    const o=Qs[qi].opts;
-    sc[o[ans.best][1]]+=2;sc[o[ans.best][2]]+=1;
-    sc[o[ans.worst][1]]-=2;sc[o[ans.worst][2]]-=1;
+    if(!ans) return;
+    const o = Qs[qi].opts;
+    sc[o[ans.best][1]] += 2;
+    sc[o[ans.best][2]] += 1;
+    sc[o[ans.worst][1]] -= 2;
+    sc[o[ans.worst][2]] -= 1;
   });
-  return sc.map(s=>Math.max(0,Math.min(100,Math.round(((s+40)/80)*100))));
+
+  const ranges = getFactorRanges();
+
+  return sc.map((s,i)=>{
+    const min = ranges[i].min;
+    const max = ranges[i].max;
+    if(max === min) return 50;
+    const pct = ((s - min) / (max - min)) * 100;
+    return Math.max(0, Math.min(100, Math.round(pct)));
+  });
 }
 function pickType(n){
   const top3=n.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).slice(0,3).map(x=>x.i);
