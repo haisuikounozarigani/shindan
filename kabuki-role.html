@@ -708,21 +708,63 @@ details.gallery summary::-webkit-details-marker{display:none;}
 .gal-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:.45rem;
-  margin-top:.45rem;
+  gap:.5rem;
+  margin-top:.5rem;
   width:100%;
   overflow:hidden;
 }
 .gal-grid > *{
   min-width:0;
 }
-.gal-grid img{
+
+.gal-item{
+  position:relative;
+  min-width:0;
+  border:1px solid var(--border);
+  background:var(--cream);
+  padding:.3rem;
+  box-shadow:2px 2px 0 rgba(184,134,31,.08);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+
+.gal-item img{
   width:100%;
   max-width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
   border:1px solid var(--border);
   background:var(--paper2);
+}
+
+.gal-item figcaption{
+  font-size:.7rem;
+  line-height:1.55;
+  text-align:center;
+  color:#3a2e20;
+  padding:.38rem .2rem .08rem;
+  letter-spacing:.04em;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+
+.gal-item.is-current{
+  border-color:rgba(184,134,31,.58);
+  box-shadow:0 0 0 1px rgba(212,168,58,.28), 3px 3px 0 rgba(184,134,31,.12);
+}
+
+.gal-now{
+  display:inline-block;
+  position:static;
+  margin:0 0 .35rem;
+  font-size:.56rem;
+  letter-spacing:.12em;
+  line-height:1.2;
+  background:var(--gold);
+  color:#fff;
+  padding:.18rem .42rem;
+  box-shadow:2px 2px 0 rgba(16,12,8,.12);
 }
 
 @media(max-width:900px){
@@ -1841,11 +1883,15 @@ function showResult(){
   const gg=document.getElementById('galGrid');
   gg.innerHTML='';
   for(let i=1;i<=6;i++){
-    const im=document.createElement('img');
-    im.src=`/shindan/assets/results/kabuki-role/t0${i}.webp`;
-    im.alt=TYPES[i-1].name;
-    im.title=TYPES[i-1].name;
-    gg.appendChild(im);
+    const t=TYPES[i-1];
+    const fig=document.createElement('figure');
+    fig.className='gal-item'+(t.id===type.id?' is-current':'');
+    fig.innerHTML=`
+      ${t.id===type.id ? '<span class="gal-now">今回の配役</span>' : ''}
+      <img src="/shindan/assets/results/kabuki-role/t0${i}.webp" alt="${t.name}" loading="lazy">
+      <figcaption>${t.name}</figcaption>
+    `;
+    gg.appendChild(fig);
   }
 
   renderReactions(type.id);
