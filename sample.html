@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>心の標本</title>
+<meta name="description" content="こころを、解剖する。ゆめかわ心理診断の標本箱。">
+<meta name="theme-color" content="#faf4ff">
+<meta property="og:title" content="心の標本">
+<meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/hero/t01.webp">
+<style>
+:root{
+  --bg:#faf4ff; --ink:#1e0a2e; --fg:#34193e; --muted:#7a607e;
+  --card:#fff; --dark:#16102a; --darker:#0e0618;
+  --pk:#ff3d9a; --pu:#8b5cf6; --lv:#c4b5fd; --gr:#34d399;
+  --sci:#4f8ef0; --fun:#f97316;
+  --line:rgba(196,181,253,.28);
+  --sh1:0 2px 12px rgba(139,92,246,.08);
+  --sh2:0 8px 28px rgba(139,92,246,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--fg);min-height:100vh;
+  background:linear-gradient(155deg,#fdf2ff 0%,#faf4ff 40%,#f0f4ff 100%) fixed;}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+
+/* ── 魂の炎 ── */
+.soul-flame{
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  opacity:0;
+  /* 炎の形: 縦長の雫型 */
+  border-radius:50% 50% 30% 30% / 60% 60% 40% 40%;
+}
+/* 通常: 青紫の魂炎 */
+.soul-flame.normal{
+  background:
+    radial-gradient(ellipse at 45% 30%, #e0d4ff 0%, #7c3aed 40%, #4c1d95 70%, transparent 100%);
+  box-shadow:
+    0 0 18px 6px rgba(124,58,237,.55),
+    0 0 36px 12px rgba(139,92,246,.3),
+    0 0 60px 20px rgba(196,181,253,.15);
+}
+/* レア: 深紅〜ピンクの魂炎 */
+.soul-flame.rare{
+  background:
+    radial-gradient(ellipse at 45% 30%, #ffd6ec 0%, #ff3d9a 38%, #9d0055 68%, transparent 100%);
+  box-shadow:
+    0 0 22px 7px rgba(255,61,154,.65),
+    0 0 44px 14px rgba(255,61,154,.35),
+    0 0 70px 24px rgba(139,92,246,.2);
+}
+/* 超レア: 金〜白の神聖な炎 */
+.soul-flame.ultra{
+  background:
+    radial-gradient(ellipse at 45% 25%, #fffde0 0%, #ffd700 30%, #ff8c00 55%, #c026d3 75%, transparent 100%);
+  box-shadow:
+    0 0 28px 9px rgba(255,200,0,.7),
+    0 0 56px 18px rgba(255,140,0,.45),
+    0 0 90px 30px rgba(192,38,211,.3),
+    0 0 120px 40px rgba(139,92,246,.15);
+}
+@keyframes flame-rise{
+  0%  {opacity:0;  transform:translate(0,0) scale(1) rotate(0deg);}
+  10% {opacity:1;}
+  30% {transform:translate(calc(var(--dx)*.4),calc(var(--dy)*.4)) scale(var(--sm)) rotate(-3deg);}
+  55% {opacity:.9; transform:translate(var(--dx),var(--dy)) scale(var(--sm)) rotate(3deg);}
+  80% {opacity:.55;transform:translate(var(--dx2),var(--dy2)) scale(var(--sl)) rotate(-2deg);}
+  100%{opacity:0;  transform:translate(var(--dx2),var(--dy3)) scale(.15) rotate(5deg);}
+}
+
+/* ── SPLASH ── */
+.spl{position:fixed;inset:0;z-index:9999;display:grid;grid-template-columns:55fr 45fr;cursor:pointer;overflow:hidden;}
+.spl-img-panel{position:relative;overflow:hidden;background:var(--darker);}
+.spl-bg{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transform:scale(1.05);transition:opacity 1s ease,transform 9s ease;}
+.spl-bg.loaded{opacity:1;transform:scale(1);}
+.spl-img-fade{position:absolute;inset:0;background:linear-gradient(to right,transparent 70%,rgba(14,6,24,.4));pointer-events:none;}
+.spl-img-placeholder{position:absolute;inset:0;background:linear-gradient(155deg,#2a1050,#180830,#0e0618);transition:opacity .6s;}
+.spl-img-panel.img-loaded .spl-img-placeholder{opacity:0;}
+.spl-txt{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:44px 40px 44px 36px;background:var(--darker);}
+.spl-orb{position:absolute;width:340px;height:340px;border-radius:50%;top:-80px;right:-80px;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 65%);animation:orb 8s ease-in-out infinite;pointer-events:none;}
+.spl-orb2{position:absolute;width:260px;height:260px;border-radius:50%;bottom:-60px;left:-40px;background:radial-gradient(circle,rgba(255,61,154,.12),transparent 65%);animation:orb 11s ease-in-out infinite reverse;pointer-events:none;}
+@keyframes orb{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.06) translate(-8px,-16px)}}
+.spl-ey{font-size:.64rem;font-weight:700;letter-spacing:.32em;color:rgba(255,255,255,.25);margin-bottom:20px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.spl-ey::before{content:"";width:24px;height:1px;background:rgba(255,255,255,.22);}
+.spl-h{font-size:clamp(2.8rem,5vw,5rem);font-weight:900;color:#fff;line-height:.9;letter-spacing:-.03em;margin-bottom:16px;position:relative;z-index:1;}
+.spl-h em{font-style:normal;display:block;background:linear-gradient(90deg,#ff9ecf,#c4b5fd,#a5d8ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.spl-copy{font-size:.88rem;color:rgba(255,255,255,.38);line-height:1.8;margin-bottom:36px;position:relative;z-index:1;}
+.spl-btn{appearance:none;border:none;padding:14px 32px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;font-weight:900;font-size:.92rem;letter-spacing:.03em;box-shadow:0 4px 24px rgba(255,61,154,.35);position:relative;z-index:1;transition:transform .18s,box-shadow .18s;}
+.spl-btn:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(255,61,154,.5)}
+.spl-hint{margin-top:12px;font-size:.68rem;color:rgba(255,255,255,.2);letter-spacing:.12em;position:relative;z-index:1;}
+@media(max-width:580px){
+  .spl{grid-template-columns:1fr;grid-template-rows:42vh 1fr;}
+  .spl-img-panel{grid-row:1;}
+  .spl-img-fade{display:none}
+  .spl-img-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(14,6,24,.6));pointer-events:none;}
+  .spl-txt{grid-row:2;padding:28px 22px 36px;}
+  .spl-h{font-size:2.4rem;}
+}
+
+/* ── WRAP ── */
+.wrap{max-width:1020px;margin:0 auto;padding:0 16px max(40px,env(safe-area-inset-bottom));opacity:0;transition:opacity .38s ease,transform .38s ease;position:relative;}
+.wrap.show{opacity:1;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;border-bottom:1px solid var(--line);margin-bottom:18px;gap:12px;}
+.topbar-title{cursor:pointer;user-select:none;position:relative;}
+
+/* ── タイトル本体 ── */
+.topbar-name{
+  font-size:clamp(2.4rem,7vw,3.6rem);
+  font-weight:900;
+  letter-spacing:-.03em;line-height:1;
+  display:block;margin-bottom:6px;
+  /* 流れるシマーグラデ */
+  background:linear-gradient(
+    100deg,
+    var(--ink) 0%,
+    #6d28d9 25%,
+    var(--pk) 45%,
+    #a78bfa 55%,
+    var(--ink) 75%,
+    #3d1a5e 100%
+  );
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:title-shimmer 5s ease-in-out infinite;
+  filter:drop-shadow(0 2px 12px rgba(139,92,246,.2));
+}
+@keyframes title-shimmer{
+  0%,100%{background-position:100% 0}
+  50%{background-position:0% 0}
+}
+/* 「標本」はより鮮やか */
+.topbar-name .g{
+  background:linear-gradient(90deg,var(--pk),#c026d3,var(--pu));
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:title-shimmer 3.5s ease-in-out infinite reverse;
+  filter:drop-shadow(0 0 12px rgba(255,61,154,.35));
+}
+/* ホバーで輝き強化 */
+.topbar-title:hover .topbar-name{
+  filter:drop-shadow(0 3px 20px rgba(255,61,154,.4)) drop-shadow(0 0 30px rgba(139,92,246,.25));
+}
+/* タイトル横の小さいデコ */
+.topbar-name::after{
+  content:"✦";
+  font-size:.5em;
+  vertical-align:super;
+  margin-left:4px;
+  background:linear-gradient(90deg,var(--pk),var(--pu));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:star-twinkle 2s ease-in-out infinite;
+  filter:none;
+}
+
+/* サブテキスト */
+.topbar-sub{
+  font-size:.74rem;color:var(--muted);
+  display:flex;align-items:center;gap:5px;
+  letter-spacing:.02em;
+}
+.topbar-sub::before{
+  content:"✦";font-size:.58rem;color:var(--pk);opacity:.7;
+  animation:star-twinkle 2.4s ease-in-out infinite;
+}
+@keyframes star-twinkle{0%,100%{opacity:.3;transform:scale(.9)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes subpop{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.topbar-sub.pop{animation:subpop .2s ease both}
+
+/* ── ガチャ演出トースト ── */
+.gacha-wrap{
+  position:fixed;inset:0;z-index:600;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.gacha-wrap.active{pointer-events:all;}
+.gacha-bg{
+  position:absolute;inset:0;
+  background:rgba(10,4,24,.55);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .22s ease;
+}
+.gacha-wrap.active .gacha-bg{opacity:1;}
+.gacha-card{
+  position:relative;z-index:1;
+  min-width:240px;max-width:min(320px,80vw);
+  padding:28px 28px 22px;
+  background:linear-gradient(160deg,#1e0d38,#130824);
+  border:1.5px solid rgba(196,181,253,.25);
+  border-radius:20px;
+  box-shadow:0 0 0 1px rgba(196,181,253,.1) inset,
+             0 24px 64px rgba(0,0,0,.5),
+             0 0 80px rgba(139,92,246,.15);
+  text-align:center;
+  transform:scale(.7) translateY(20px);
+  opacity:0;
+  transition:transform .38s cubic-bezier(.34,1.56,.64,1),opacity .22s ease;
+}
+.gacha-wrap.active .gacha-card{
+  transform:scale(1) translateY(0);
+  opacity:1;
+}
+/* ── レアリティ帯: カード最上部をまるごと染める ── */
+.gacha-rarity-band{
+  margin:-28px -28px 20px; /* カードのpadding分を打ち消してフチまで届かせる */
+  padding:10px 20px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:18px 18px 0 0;
+  font-size:.72rem;font-weight:900;letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.gacha-rarity-band.r-ssr{
+  background:linear-gradient(90deg,#ff3d9a,#f59e0b,#ff3d9a);
+  background-size:200% 100%;
+  color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,.3);
+  animation:ssr-band 2s linear infinite;
+}
+@keyframes ssr-band{0%{background-position:0%}100%{background-position:200%}}
+.gacha-rarity-band.r-sr{
+  background:linear-gradient(90deg,#8b5cf6,#6366f1);
+  color:#fff;
+}
+.gacha-rarity-band.r-n{
+  background:rgba(255,255,255,.07);
+  color:rgba(255,255,255,.4);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.gacha-rarity-stars{font-size:.85rem;letter-spacing:2px;}
+
+/* 絵文字 */
+.gacha-emo{
+  font-size:3rem;line-height:1;
+  margin-bottom:14px;display:block;
+  animation:emo-pop .5s cubic-bezier(.34,1.56,.64,1) .12s both;
+}
+@keyframes emo-pop{from{transform:scale(0) rotate(-15deg)}to{transform:scale(1) rotate(0deg)}}
+
+/* 本文: 帯と絵文字と明確に区切る */
+.gacha-result{
+  font-size:.98rem;font-weight:600;
+  color:rgba(255,255,255,.88);line-height:1.6;
+  margin-bottom:18px;
+  padding:12px 14px;
+  background:rgba(255,255,255,.06);
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+/* 閉じるヒント */
+.gacha-hint{
+  font-size:.64rem;color:rgba(255,255,255,.2);letter-spacing:.08em;
+}
+/* 閉じるアニメ */
+.gacha-wrap.closing .gacha-bg{opacity:0;}
+.gacha-wrap.closing .gacha-card{
+  transform:scale(.9) translateY(-12px);
+  opacity:0;
+  transition:transform .22s ease,opacity .22s ease;
+}
+
+/* タイトルの押した感 */
+.topbar-title.gacha-tap .topbar-name{
+  animation:title-tap .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes title-tap{
+  0%{transform:scale(1)}
+  40%{transform:scale(.94)}
+  100%{transform:scale(1)}
+}
+.menu-btn{
+  /* 右下固定 */
+  position:fixed;
+  right:20px;
+  bottom:max(28px, env(safe-area-inset-bottom, 20px));
+  z-index:400;
+
+  width:52px;height:52px;
+  appearance:none;border:none;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--pk),var(--pu));
+  box-shadow:0 6px 24px rgba(139,92,246,.45), 0 2px 8px rgba(0,0,0,.2);
+  display:grid;place-items:center;
+  flex-shrink:0;
+  transition:transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .16s;
+}
+.menu-btn:hover{
+  transform:scale(1.1);
+  box-shadow:0 10px 32px rgba(255,61,154,.5), 0 4px 12px rgba(0,0,0,.25);
+}
+.menu-btn:active{transform:scale(.95);}
+/* ハンバーガー線 → 細いアイコンに */
+.menu-btn span{display:block;height:1.5px;border-radius:2px;background:#fff;}
+.menu-btn span:nth-child(1){width:18px;}
+.menu-btn span:nth-child(2){width:12px;margin-right:6px;}
+.menu-btn span:nth-child(3){width:18px;}
+/* ボタン内の縦並び */
+.menu-btn{flex-direction:column;align-items:center;justify-content:center;gap:4px;display:flex;}
+
+/* ── MENU OVERLAY + DRAWER ── */
+.menu-ov{position:fixed;inset:0;z-index:800;background:rgba(14,6,24,.45);opacity:0;pointer-events:none;transition:opacity .22s;}
+.menu-ov.open{opacity:1;pointer-events:all;}
+.menu-dr{
+  position:fixed;top:0;right:0;bottom:0;z-index:801;
+  width:min(300px,86vw);
+  /* 暗すぎない紫ベース */
+  background:linear-gradient(180deg,#2d1654 0%,#1e0e40 100%);
+  transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.menu-dr.open{transform:translateX(0);}
+.menu-dr-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 18px 14px;
+  border-bottom:1px solid rgba(196,181,253,.18);
+}
+.menu-dr-logo{
+  font-size:.72rem;font-weight:900;letter-spacing:.14em;
+  color:rgba(196,181,253,.7);text-transform:uppercase;
+}
+.menu-close{
+  appearance:none;border:none;background:rgba(255,255,255,.08);
+  border-radius:50%;width:28px;height:28px;
+  display:grid;place-items:center;
+  font-size:.95rem;color:rgba(255,255,255,.6);
+  transition:background .12s,color .12s;
+}
+.menu-close:hover{background:rgba(255,255,255,.16);color:#fff;}
+.menu-sec{padding:12px 18px 6px;}
+.menu-sec-lbl{
+  font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(196,181,253,.55);margin-bottom:8px;
+}
+.menu-item{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:11px 0;border-bottom:1px solid rgba(196,181,253,.1);
+  font-size:.88rem;font-weight:600;color:rgba(255,255,255,.88);
+  cursor:pointer;background:transparent;appearance:none;
+  border-top:none;border-left:none;border-right:none;
+  text-align:left;font-family:inherit;transition:color .12s,background .12s;
+}
+.menu-item:last-child{border-bottom:none;}
+.menu-item:hover{color:#fff;background:rgba(255,255,255,.05);}
+.mi-emo{font-size:.95rem;flex-shrink:0;width:22px;text-align:center;}
+.mi-ext{margin-left:auto;font-size:.64rem;color:rgba(255,255,255,.35);}
+.menu-div{height:1px;background:rgba(196,181,253,.15);margin:6px 18px;}
+
+/* 自動保存バナー */
+.menu-save-note{
+  margin:0 18px 4px;
+  padding:9px 12px;
+  background:rgba(52,211,153,.1);
+  border:1px solid rgba(52,211,153,.25);
+  border-radius:8px;
+  font-size:.75rem;color:rgba(52,211,153,.9);
+  display:flex;align-items:center;gap:7px;
+  line-height:1.4;
+}
+.menu-save-note::before{content:"✓";font-weight:900;flex-shrink:0;}
+/* 遊び方パネル */
+/* 遊び方モーダル（ドロワーとは独立） */
+.howto-modal{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:flex-end;
+  pointer-events:none;
+}
+.howto-modal.open{pointer-events:all;}
+.howto-modal-bg{
+  position:absolute;inset:0;
+  background:rgba(10,4,24,.6);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transition:opacity .22s;
+}
+.howto-modal.open .howto-modal-bg{opacity:1;}
+.howto-sheet{
+  position:relative;z-index:1;
+  width:100%;
+  background:linear-gradient(160deg,#1e0d38,#130824);
+  border-radius:20px 20px 0 0;
+  border:1px solid rgba(196,181,253,.2);
+  border-bottom:none;
+  padding:24px 22px max(28px,env(safe-area-inset-bottom,16px));
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -8px 40px rgba(0,0,0,.4);
+}
+.howto-modal.open .howto-sheet{transform:translateY(0);}
+
+/* ドラッグハンドル */
+.howto-handle{
+  width:36px;height:4px;border-radius:999px;
+  background:rgba(196,181,253,.3);
+  margin:0 auto 20px;
+}
+.howto-title{
+  font-size:1rem;font-weight:900;color:#fff;
+  margin-bottom:18px;
+  display:flex;align-items:center;gap:8px;
+}
+.howto-title::before{content:"✦";color:var(--pk);font-size:.7rem;}
+
+/* ステップ形式 */
+.howto-steps{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
+.howto-step{
+  display:flex;gap:12px;align-items:flex-start;
+}
+.howto-step-num{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--pk),var(--pu));
+  display:grid;place-items:center;
+  font-size:.72rem;font-weight:900;color:#fff;
+  box-shadow:0 2px 8px rgba(255,61,154,.3);
+}
+.howto-step-body{}
+.howto-step-title{
+  font-size:.86rem;font-weight:800;color:#fff;
+  margin-bottom:2px;
+}
+.howto-step-desc{
+  font-size:.78rem;color:rgba(255,255,255,.55);
+  line-height:1.65;
+}
+/* 閉じるボタン */
+.howto-close{
+  appearance:none;border:none;width:100%;
+  padding:12px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  font-size:.84rem;font-weight:700;color:rgba(255,255,255,.6);
+  transition:background .14s;
+}
+.howto-close:hover{background:rgba(255,255,255,.12);color:#fff;}
+
+/* ── SITENAV ── */
+.sitenav{display:flex;border:1px solid var(--line);background:rgba(255,255,255,.6);margin-bottom:20px;overflow:hidden;border-radius:12px;box-shadow:var(--sh1);}
+.sn-item{flex:1;padding:9px 6px;text-align:center;font-size:.77rem;font-weight:700;color:var(--muted);border-right:1px solid var(--line);transition:background .12s,color .12s;white-space:nowrap;}
+.sn-item:last-child{border-right:none}
+.sn-item:hover{background:rgba(255,255,255,.9);color:var(--fg)}
+.sn-item.on{background:linear-gradient(90deg,rgba(255,61,154,.1),rgba(139,92,246,.1));color:var(--pu);font-weight:900;}
+
+/* ================================================================
+   A. STATUS CARD — ゲームステータス風
+   ================================================================ */
+.status-card{
+  margin-bottom:20px;
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(196,181,253,.15);
+}
+
+/* 上段: 深すぎない紫ベース */
+.sc-top{
+  background:linear-gradient(160deg,#2d1654 0%,#1e0e40 60%,#26104a 100%);
+  padding:20px 20px 18px;
+  position:relative;overflow:hidden;
+}
+/* 背景グロー装飾 — 少し明るく */
+.sc-top::before{
+  content:"";position:absolute;
+  width:280px;height:280px;border-radius:50%;
+  right:-60px;top:-100px;pointer-events:none;
+  background:radial-gradient(circle,rgba(167,139,250,.22),transparent 65%);
+}
+.sc-top::after{
+  content:"";position:absolute;
+  width:200px;height:200px;border-radius:50%;
+  left:-40px;bottom:-80px;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,61,154,.14),transparent 65%);
+}
+
+/* ── ランクバッジ行 ── */
+.sc-rank-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;position:relative;z-index:1;
+}
+.sc-rank-badge{
+  display:flex;align-items:center;gap:10px;
+}
+.sc-emo-wrap{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(196,181,253,.15),rgba(255,61,154,.1));
+  border:1px solid rgba(196,181,253,.25);
+  display:grid;place-items:center;
+  font-size:1.6rem;
+  box-shadow:0 4px 16px rgba(0,0,0,.3), 0 0 0 1px rgba(196,181,253,.1) inset;
+  flex-shrink:0;
+}
+.sc-rank-info{}
+.sc-rank-lbl{
+  font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(196,181,253,.75);margin-bottom:3px;
+}
+.sc-name{
+  font-size:1.1rem;font-weight:900;color:#fff;line-height:1.1;
+  text-shadow:0 0 24px rgba(196,181,253,.5);
+}
+
+/* 右: % 大数字 */
+.sc-pct-big{
+  text-align:right;flex-shrink:0;
+}
+.sc-pct{
+  font-size:clamp(2.2rem,7vw,3.2rem);font-weight:900;
+  line-height:1;letter-spacing:-.04em;
+  background:linear-gradient(135deg,#ff9ecf,#c4b5fd 60%,#a5d8ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 12px rgba(196,181,253,.4));
+}
+.sc-pct-u{font-size:.38em;-webkit-text-fill-color:rgba(255,255,255,.4);font-weight:500;}
+.sc-rank-lbl-r{
+  font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);text-align:right;margin-top:2px;
+}
+
+/* ── EXPバー ── */
+.sc-bar-section{position:relative;z-index:1;}
+.sc-bar-labels{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:6px;
+}
+.sc-bar-label-l{
+  font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(196,181,253,.85);
+}
+.sc-next{
+  font-size:.62rem;color:rgba(255,255,255,.65);
+  display:flex;align-items:center;gap:4px;
+}
+.sc-next::before{content:"▶";font-size:.5rem;color:var(--pk);opacity:.7;}
+
+/* バー本体 */
+.sc-bar-track{
+  position:relative;
+  height:14px;
+  background:rgba(255,255,255,.12);
+  border-radius:4px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.15);
+}
+/* 塗り */
+.sc-bar-fill{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--pk),#a855f7,#60a5fa);
+  border-radius:4px;
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+  position:relative;
+}
+/* 光の流れ */
+.sc-bar-fill::after{
+  content:"";
+  position:absolute;top:0;left:-60%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+  animation:bar-shine 2.4s ease-in-out infinite;
+}
+@keyframes bar-shine{
+  0%{left:-60%}100%{left:120%}
+}
+/* 先端グロー */
+.sc-bar-tip{
+  position:absolute;right:0;top:0;bottom:0;width:4px;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 0 8px 3px rgba(255,255,255,.4);
+  border-radius:0 4px 4px 0;
+  transition:none;
+}
+/* マイルストーン刻み */
+.sc-bar-marks{
+  position:absolute;inset:0;
+  display:flex;pointer-events:none;
+}
+.sc-bar-mark{
+  position:absolute;top:0;bottom:0;width:1px;
+  background:rgba(255,255,255,.15);
+}
+
+/* NIRコメント */
+.sc-comment{
+  font-size:.77rem;color:rgba(255,255,255,.75);
+  line-height:1.6;margin-top:12px;
+  padding:9px 12px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;
+  position:relative;z-index:1;
+}
+.sc-comment::before{
+  content:"✦";margin-right:6px;
+  color:rgba(196,181,253,.5);font-size:.6rem;
+}
+
+/* 下段: ゲームステータス3列 */
+.sc-bottom{
+  background:linear-gradient(135deg,#261040,#1a0b34);
+  padding:12px 20px;
+  display:flex;
+  border-top:1px solid rgba(196,181,253,.2);
+  gap:0;
+}
+.sc-stat{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;
+  position:relative;
+}
+.sc-stat+.sc-stat{border-left:1px solid rgba(196,181,253,.1);}
+.sc-stat-icon{font-size:.9rem;margin-bottom:1px;line-height:1;}
+.sc-stat-val{
+  font-size:1.15rem;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#ff9ecf,#c4b5fd);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sc-stat-lbl{font-size:.6rem;color:rgba(255,255,255,.6);letter-spacing:.04em;}
+@media(max-width:480px){.sc-rank-row{flex-direction:column;align-items:flex-start;gap:10px;}.sc-pct-big{text-align:left;}}
+
+/* ================================================================
+   B. NIR OFFICIAL — 公式更新ログ（お知らせ専用）
+   ================================================================ */
+.nir{margin-bottom:20px;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);box-shadow:var(--sh1);}
+.nir-hd{display:flex;align-items:center;gap:11px;padding:11px 15px;background:linear-gradient(135deg,#1a1030,#120926);cursor:pointer;user-select:none;transition:filter .15s;border-bottom:1px solid rgba(196,181,253,.08);}
+.nir-hd:hover{filter:brightness(1.1);}
+.nir-hd-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 38% 38%,#3a1860,#0e0618);border:1.5px solid rgba(196,181,253,.4);display:grid;place-items:center;font-size:.85rem;position:relative;box-shadow:0 0 10px rgba(139,92,246,.25);}
+.nir-hd-av::after{content:"";position:absolute;bottom:0;right:0;width:8px;height:8px;border-radius:50%;background:#84ff6a;border:1.5px solid #1a1030;}
+.nir-hd-info{flex:1;}
+.nir-hd-name{font-size:.84rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:7px;}
+.nir-hd-tag{font-size:.54rem;font-weight:700;letter-spacing:.08em;padding:2px 6px;text-transform:uppercase;background:rgba(196,181,253,.15);border:1px solid rgba(196,181,253,.2);color:rgba(200,180,255,.8);}
+.nir-hd-sub{font-size:.66rem;color:rgba(255,255,255,.3);margin-top:1px;display:flex;align-items:center;gap:4px;}
+.nir-hd-sub::before{content:"";width:5px;height:5px;border-radius:50%;background:#84ff6a;}
+.nir-badge{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;font-size:.65rem;font-weight:900;display:grid;place-items:center;box-shadow:0 2px 6px rgba(255,61,154,.4);}
+.nir-badge:empty{display:none}
+.nir-chev{color:rgba(255,255,255,.3);font-size:.7rem;transition:transform .22s;flex-shrink:0;}
+.nir.coll .nir-chev{transform:rotate(-90deg);}
+/* ── NIR ログ：SNS投稿カード風 ── */
+.nir-log{
+  background:#f7f3ff;
+  padding:10px 12px 8px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.nir.coll .nir-log{display:none}
+
+/* 1投稿 = 1カード */
+.nir-entry{
+  background:#fff;
+  border-radius:12px;
+  border:1px solid rgba(196,181,253,.22);
+  padding:13px 14px 10px;
+  display:flex;gap:10px;
+  box-shadow:0 1px 6px rgba(139,92,246,.06);
+  transition:box-shadow .16s, border-color .16s;
+  animation:post-in .22s ease both;
+}
+@keyframes post-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.nir-entry:hover{
+  box-shadow:0 4px 18px rgba(139,92,246,.12);
+  border-color:rgba(196,181,253,.45);
+}
+
+/* 左: アバター列 */
+.nir-entry-l{
+  display:flex;flex-direction:column;align-items:center;
+  gap:0;flex-shrink:0;
+}
+.nir-entry-emo{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#2a1050,#0e0618);
+  border:1.5px solid rgba(196,181,253,.4);
+  display:grid;place-items:center;
+  font-size:1rem;line-height:1;
+  box-shadow:0 2px 8px rgba(139,92,246,.18);
+}
+/* アバター下の縦線（スレッド感） */
+.nir-entry:not(:last-of-type) .nir-entry-l::after{
+  content:"";
+  width:1.5px;flex:1;min-height:12px;
+  background:linear-gradient(to bottom,rgba(196,181,253,.3),transparent);
+  margin-top:4px;
+}
+
+/* 右: 本文列 */
+.nir-entry-r{flex:1;min-width:0;}
+
+/* 1行目: 名前 + タグ + 日付 */
+.nir-entry-meta{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:5px;flex-wrap:wrap;
+}
+.nir-entry-name{
+  font-size:.82rem;font-weight:800;color:var(--ink);
+}
+.nir-entry-handle{
+  font-size:.74rem;color:var(--muted);
+}
+/* タグ: SNSのバッジ風 */
+.nir-entry-tag{
+  font-size:.58rem;font-weight:700;letter-spacing:.05em;
+  padding:2px 7px;border-radius:999px;
+  white-space:nowrap;
+}
+.tag-UPDATE{background:rgba(220,252,231,.8);color:#15803d;}
+.tag-NOTICE{background:rgba(237,233,254,.8);color:#6d28d9;}
+.tag-FIX{background:rgba(254,249,195,.8);color:#b45309;}
+.nir-entry-date{
+  font-size:.68rem;color:var(--muted);
+  margin-left:auto;
+}
+/* NEW: SNSのライブバッジ風 */
+.nir-entry-new{
+  font-size:.58rem;font-weight:900;letter-spacing:.04em;
+  padding:2px 7px;border-radius:999px;
+  background:var(--pk);color:#fff;
+  box-shadow:0 2px 6px rgba(255,61,154,.3);
+  animation:newpop .35s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes newpop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* タイトル */
+.nir-entry-title{
+  font-weight:800;font-size:.9rem;
+  color:var(--ink);line-height:1.35;
+  margin-bottom:4px;
+}
+/* 本文 */
+.nir-entry-text{
+  font-size:.83rem;line-height:1.7;
+  color:var(--muted);
+}
+
+/* フッター（いいね・リプライ風のアクション行） */
+.nir-log-ft{
+  padding:4px 4px 4px;
+  display:flex;gap:8px;
+}
+.nir-more-btn{
+  appearance:none;border:none;font-size:.73rem;font-weight:700;
+  padding:6px 14px;border-radius:999px;
+  color:var(--pu);
+  background:rgba(139,92,246,.07);
+  border:1px solid rgba(139,92,246,.15);
+  transition:background .12s,transform .1s;
+}
+.nir-more-btn:hover{background:rgba(139,92,246,.15);transform:translateY(-1px);}
+
+/* ── FILTER ── */
+.filter{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;}
+.srow{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:10px;box-shadow:var(--sh1);overflow:hidden;}
+.srow:focus-within{border-color:rgba(139,92,246,.45);}
+.s-ico{padding:0 11px;font-size:.88rem;color:rgba(0,0,0,.28);flex-shrink:0;}
+.s-inp{flex:1;padding:11px 0;border:none;background:transparent;font-size:.9rem;color:var(--fg);outline:none;font-family:inherit;}
+.s-inp::placeholder{color:rgba(0,0,0,.27)}
+.s-clr{padding:0 12px;height:42px;appearance:none;border:none;background:transparent;font-size:.78rem;color:rgba(0,0,0,.24);transition:color .12s;}
+.s-clr:hover{color:var(--fg)}
+.statetabs{display:flex;border:1px solid rgba(0,0,0,.1);background:var(--card);overflow:hidden;border-radius:8px;}
+.stab{flex:1;padding:8px 4px;text-align:center;font-size:.76rem;font-weight:700;color:var(--muted);border-right:1px solid rgba(0,0,0,.07);appearance:none;border-top:none;border-bottom:none;background:transparent;transition:background .12s,color .12s;display:flex;align-items:center;justify-content:center;gap:4px;}
+.stab:last-child{border-right:none}
+.stab:hover{background:rgba(255,255,255,.9);color:var(--fg)}
+.stab.on{background:var(--ink);color:#fff;}
+.stab-n{font-size:.64rem;padding:1px 5px;background:rgba(255,255,255,.18);line-height:1.3;}
+.stab:not(.on) .stab-n{background:rgba(0,0,0,.06);color:var(--muted);}
+.cattabs{display:flex;gap:7px;flex-wrap:wrap;}
+.ctab{padding:6px 14px;font-size:.77rem;font-weight:700;appearance:none;border:1px solid rgba(0,0,0,.1);background:transparent;color:var(--muted);transition:all .13s;border-radius:6px;}
+.ctab:hover{background:rgba(255,255,255,.9);color:var(--fg)}
+.ctab.c-all{background:var(--ink);color:#fff;border-color:var(--ink);}
+.ctab.c-sci{background:var(--sci);color:#fff;border-color:var(--sci);}
+.ctab.c-fun{background:var(--fun);color:#fff;border-color:var(--fun);}
+.rc{font-size:.73rem;color:var(--muted);}
+.rc strong{font-weight:700;color:var(--fg)}
+
+/* ── SECTION ── */
+.sec{margin-bottom:28px;position:relative;}
+.sec::before{content:attr(data-n);position:absolute;left:-8px;top:-12px;font-size:clamp(6rem,14vw,10rem);font-weight:900;letter-spacing:-.06em;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(139,92,246,.09);pointer-events:none;z-index:0;user-select:none;}
+.sec[data-cat="fun"]::before{-webkit-text-stroke:1.5px rgba(249,115,22,.07);}
+.sec-hd{display:flex;align-items:baseline;gap:14px;padding-bottom:10px;border-bottom:2px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(90deg,var(--pk),var(--pu),var(--lv)) border-box;margin-bottom:14px;position:relative;z-index:1;}
+.sec-n{font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1;letter-spacing:-.04em;}
+.sec[data-cat="science"] .sec-n{background:linear-gradient(135deg,var(--sci),#a0c4ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sec[data-cat="fun"] .sec-n{background:linear-gradient(135deg,var(--fun),#ffd970);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sec-info{flex:1;}
+.sec-label{font-size:1rem;font-weight:900;color:var(--ink);letter-spacing:-.01em;}
+.sec-sub{font-size:.73rem;color:var(--muted);margin-top:2px;}
+.sec-done{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(52,211,153,.1);color:var(--gr);border:1px solid rgba(52,211,153,.28);flex-shrink:0;}
+
+/* ── CARDS ── */
+.grid{display:grid;grid-template-columns:1fr;gap:8px;}
+@media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr);}}
+.card{position:relative;background:#fff;border:1.5px solid rgba(196,181,253,.25);box-shadow:0 2px 12px rgba(139,92,246,.07),0 1px 3px rgba(0,0,0,.04);cursor:pointer;text-decoration:none;color:var(--fg);display:flex;flex-direction:row;align-items:stretch;border-radius:12px;transition:transform .16s cubic-bezier(.2,0,.4,1),box-shadow .16s,border-color .15s;overflow:hidden;animation:cdin .28s ease both;min-height:86px;}
+@keyframes cdin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(139,92,246,.14),0 4px 12px rgba(0,0,0,.07);border-color:rgba(196,181,253,.5);}
+.card:active{transform:translateY(0);}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.06s}
+.card:nth-child(3){animation-delay:.09s}.card:nth-child(4){animation-delay:.12s}
+.card:nth-child(5){animation-delay:.15s}.card:nth-child(6){animation-delay:.18s}
+.card.fav{border-color:rgba(255,61,154,.3);}
+.card[data-done="1"]{opacity:.72;}
+.c-emo-area{width:76px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative;overflow:hidden;background:linear-gradient(160deg,#ede0ff,#fcd8f0);border-right:1.5px solid rgba(196,181,253,.18);transition:filter .18s;}
+.c-emo-area::before{content:"";position:absolute;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);top:-10px;left:-10px;pointer-events:none;}
+.sec[data-cat="fun"] .c-emo-area{background:linear-gradient(160deg,#ffe5c8,#ffd0e8);border-right-color:rgba(253,164,207,.22);}
+.card:hover .c-emo-area{filter:saturate(1.1) brightness(1.04);}
+.c-body{flex:1;min-width:0;padding:10px 36px 10px 13px;display:flex;flex-direction:column;justify-content:center;}
+.c-title{font-weight:800;font-size:.88rem;line-height:1.3;color:var(--ink);margin-bottom:3px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;}
+.c-sub{font-size:.75rem;color:var(--muted);line-height:1.45;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.c-footer{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.pill{font-size:.64rem;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(196,181,253,.12);color:var(--muted);border:none;}
+.c-btn{appearance:none;border:none;margin-left:auto;flex-shrink:0;font-size:.72rem;font-weight:900;padding:5px 12px;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;display:flex;align-items:center;gap:3px;transition:filter .14s,transform .12s,box-shadow .14s;box-shadow:0 2px 8px rgba(255,61,154,.22);white-space:nowrap;}
+.c-btn::after{content:"→";font-size:.65rem;transition:transform .14s;display:inline-block;}
+.c-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,61,154,.35);}
+.c-btn:hover::after{transform:translateX(2px);}
+.c-redo{display:none;appearance:none;border:none;margin-left:auto;flex-shrink:0;font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:999px;color:var(--gr);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);transition:background .12s;}
+.c-redo:hover{background:rgba(52,211,153,.2);}
+.card[data-done="1"] .c-btn{display:none}
+.card[data-done="1"] .c-redo{display:inline-flex;align-items:center;gap:4px;}
+.bnew{display:inline-block;font-size:.56rem;font-weight:900;letter-spacing:.04em;padding:1.5px 6px;vertical-align:middle;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;box-shadow:0 1px 5px rgba(255,61,154,.22);}
+.done-rib{position:absolute;top:13px;left:-22px;width:86px;background:linear-gradient(90deg,#22c97a,#16a86a);color:#fff;font-size:.53rem;font-weight:900;letter-spacing:.05em;text-align:center;padding:3px 0;transform:rotate(-35deg);box-shadow:0 2px 8px rgba(34,201,122,.4);pointer-events:none;z-index:5;}
+.done-chip{display:inline-flex;align-items:center;gap:2px;font-size:.56rem;font-weight:800;padding:2px 6px;white-space:nowrap;background:rgba(52,211,153,.1);color:var(--gr);border:1px solid rgba(52,211,153,.25);}
+.fav-btn{position:absolute;top:8px;right:8px;width:24px;height:24px;appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:.82rem;border-radius:50%;transition:transform .14s,background .12s;color:rgba(150,100,150,.4);z-index:4;}
+.fav-btn::before{content:"♡"}
+.fav-btn[aria-pressed="true"]::before{content:"♥";color:var(--pk)}
+.fav-btn[aria-pressed="true"]{background:rgba(255,61,154,.07);border-color:rgba(255,61,154,.28);}
+.fav-btn:hover{transform:scale(1.2);}
+.empty{grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--muted);font-size:.88rem;}
+
+/* ── C. サイト案内 ── */
+.bk{border:1px solid var(--line);background:var(--card);margin-bottom:14px;border-radius:10px;box-shadow:var(--sh1);}
+.bk-hd{width:100%;appearance:none;border:none;background:transparent;display:flex;align-items:center;gap:11px;padding:13px 15px;font-family:inherit;font-size:.88rem;font-weight:800;color:var(--ink);transition:background .12s;}
+.bk-hd:hover{background:rgba(196,181,253,.06)}
+.bk-ico{width:28px;height:28px;background:rgba(196,181,253,.13);border-radius:6px;display:grid;place-items:center;font-size:.88rem;flex-shrink:0;}
+.bk-lt{flex:1;text-align:left;}
+.bk-ls{display:block;font-size:.7rem;font-weight:400;color:var(--muted);}
+.bk-ch{color:var(--muted);font-size:.74rem;transition:transform .2s;}
+.bk.open .bk-ch{transform:rotate(180deg)}
+.bk-body{display:none;padding:0 15px 15px;border-top:1px solid var(--line);}
+.bk.open .bk-body{display:block}
+.bk-desc{font-size:.82rem;color:var(--muted);line-height:1.7;padding-top:12px;margin-bottom:12px;}
+.bk-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px;}
+.bk-btn{appearance:none;border:none;padding:9px 16px;border-radius:7px;font-size:.82rem;font-weight:700;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:transform .12s;}
+.bk-btn:hover{transform:translateY(-2px)}
+.bex{background:var(--ink);color:#fff;}
+.bim{background:transparent;color:var(--fg);border:1px solid rgba(0,0,0,.14);}
+.bk-log{font-size:.71rem;color:var(--muted);background:rgba(196,181,253,.07);padding:9px 12px;line-height:1.8;white-space:pre-wrap;word-break:break-all;border:1px solid var(--line);border-radius:6px;}
+.bk-toast{display:none;margin-top:7px;padding:6px 13px;border-radius:6px;background:var(--ink);color:#fff;font-size:.77rem;font-weight:700;}
+.bk-toast.show{display:inline-block}
+.fb{border:1px solid var(--line);background:var(--card);padding:20px 18px;margin-bottom:14px;border-radius:10px;box-shadow:var(--sh1);}
+.fb-hd{font-size:.98rem;font-weight:900;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.fb-hd::before{content:"";width:3px;height:18px;background:linear-gradient(180deg,var(--pk),var(--pu));flex-shrink:0;border-radius:2px;}
+.fb-desc{font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+.fb label{display:flex;flex-direction:column;gap:4px;font-size:.82rem;font-weight:700;color:var(--fg);margin-bottom:9px;}
+.fb input,.fb textarea,.fb select{padding:9px 11px;border:1.5px solid var(--line);font-family:inherit;font-size:.87rem;color:var(--fg);outline:none;background:#fff;transition:border-color .13s;border-radius:7px;}
+.fb input:focus,.fb textarea:focus,.fb select:focus{border-color:var(--pu);}
+.fb textarea{min-height:86px;resize:vertical}
+.fb-sub{appearance:none;border:none;padding:11px 26px;font-weight:900;font-size:.9rem;font-family:inherit;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;border-radius:8px;transition:transform .13s,filter .13s;}
+.fb-sub:hover{transform:translateY(-2px);filter:brightness(1.08);}
+.fb-hint{font-size:.72rem;color:var(--muted);line-height:1.7;margin-top:9px;}
+.fb-hint.ok{color:var(--gr);font-weight:700}
+.fb-hint.err{color:#ef4444}
+.disclaimer{
+  margin-top:12px;
+  border:1px solid rgba(196,181,253,.25);
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:var(--sh1);
+}
+.disclaimer summary{
+  font-size:.82rem;font-weight:800;color:var(--ink);
+  padding:13px 16px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:9px;
+  list-style:none;user-select:none;
+  transition:background .13s;
+  background:transparent;
+}
+.disclaimer summary::-webkit-details-marker{display:none;}
+.disclaimer summary::before{
+  content:"📄";font-size:.9rem;flex-shrink:0;
+}
+.disclaimer summary::after{
+  content:"▾";font-size:.72rem;margin-left:auto;
+  color:var(--muted);
+  transition:transform .2s;
+}
+.disclaimer[open] summary{
+  border-bottom:1px solid var(--line);
+}
+.disclaimer[open] summary::after{transform:rotate(-180deg);}
+.disclaimer summary:hover{background:rgba(196,181,253,.06);}
+.disclaimer-body{
+  font-size:.76rem;color:var(--muted);line-height:1.9;
+  padding:14px 16px 16px;
+}
+.disclaimer-body p{margin-bottom:10px;}
+.disclaimer-body p:last-child{margin-bottom:0;}
+.site-ft{padding:16px 0 10px;text-align:center;}
+.ft-copy{font-size:.7rem;color:var(--muted);}
+@media(max-width:600px){.stab-n{display:none}.stab{font-size:.72rem}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div class="spl" id="spl" role="button" tabindex="0" aria-label="心の標本を開く">
+  <div class="spl-img-panel" id="splImgPanel">
+    <div class="spl-img-placeholder"></div>
+    <div class="spl-bg" id="splBg"></div>
+    <div class="spl-img-fade"></div>
+  </div>
+  <div class="spl-txt">
+    <div class="spl-orb"></div><div class="spl-orb2"></div>
+    <div class="spl-ey">SPECIMEN COLLECTION</div>
+    <h1 class="spl-h">心の<em>標本</em></h1>
+    <p class="spl-copy">こころを、解剖する。<br>ゆめかわ心理診断の標本箱。</p>
+    <button class="spl-btn" type="button">標本箱を開ける</button>
+    <p class="spl-hint">tap anywhere to enter</p>
+  </div>
+</div>
+
+<!-- メニューオーバーレイ -->
+<div class="menu-ov" id="menuOv"></div>
+
+<!-- メニュードロワー -->
+<nav class="menu-dr" id="menuDr" aria-label="サイトメニュー">
+  <div class="menu-dr-hd">
+    <span class="menu-dr-logo">心の標本 — 案内</span>
+    <button class="menu-close" id="menuClose" type="button" aria-label="メニューを閉じる">✕</button>
+  </div>
+  <div class="menu-sec">
+    <div class="menu-sec-lbl">このページ</div>
+    <button class="menu-item" data-action="scroll" data-target="main">
+      <span class="mi-emo">⬆</span>先頭へ戻る
+    </button>
+    <button class="menu-item" data-action="howto">
+      <span class="mi-emo">✦</span>遊び方
+    </button>
+    
+    
+    <button class="menu-item" data-action="scroll" data-target="nirChat">
+      <span class="mi-emo">📋</span>更新履歴
+    </button>>
+    <button class="menu-item" data-action="scroll" data-target="bkSec">
+      <span class="mi-emo">💾</span>データ引き継ぎ
+    </button>
+    <button class="menu-item" data-action="scroll" data-target="feedback">
+      <span class="mi-emo">✉</span>お問い合わせ
+    </button>
+    <button class="menu-item" data-action="scroll" data-target="disclaimer">
+      <span class="mi-emo">📄</span>免責事項
+    </button>
+  </div>
+  <div class="menu-div"></div>
+  <div class="menu-sec">
+    <div class="menu-sec-lbl">サイト</div>
+    <a href="/shindan/" class="menu-item"><span class="mi-emo">🧪</span>心の標本<span class="mi-ext">現在地</span></a>
+    <a href="/chishiki/" class="menu-item"><span class="mi-emo">📚</span>知識の水槽<span class="mi-ext">↗</span></a>
+    <a href="/torikago/" class="menu-item"><span class="mi-emo">🐦</span>試練の鳥籠<span class="mi-ext">↗</span></a>
+    <a href="/nir/" class="menu-item"><span class="mi-emo">🕯</span>NIR の部屋<span class="mi-ext">↗</span></a>
+  </div>
+</nav>
+
+<!-- 遊び方モーダル -->
+<div class="howto-modal" id="howtoModal">
+  <div class="howto-modal-bg" id="howtoModalBg"></div>
+  <div class="howto-sheet">
+    <div class="howto-handle"></div>
+    <div class="howto-title">遊び方</div>
+    <div class="howto-steps">
+      <div class="howto-step">
+        <div class="howto-step-num">1</div>
+        <div class="howto-step-body">
+          <div class="howto-step-title">診断カードをタップ</div>
+          <div class="howto-step-desc">気になる診断を選んでタップ。各診断ページに移動します。</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-step-num">2</div>
+        <div class="howto-step-body">
+          <div class="howto-step-title">♡ で推し標本に登録</div>
+          <div class="howto-step-desc">カード右上の ♡ を押すとお気に入りに登録。「推し」タブでまとめて見られます。</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-step-num">3</div>
+        <div class="howto-step-body">
+          <div class="howto-step-title">称号とランクが育つ</div>
+          <div class="howto-step-desc">開封した種類数に応じて称号が変わります。こころLvは累計開封数です。</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-step-num">4</div>
+        <div class="howto-step-body">
+          <div class="howto-step-title">題名をタップでおみくじ</div>
+          <div class="howto-step-desc">ページ上部の「心の標本」をタップするとおみくじが引けます。</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-step-num">5</div>
+        <div class="howto-step-body">
+          <div class="howto-step-title">機種変更前にバックアップ</div>
+          <div class="howto-step-desc">データはブラウザに保存されます。メニュー→データ引き継ぎでエクスポートを。</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:10px;padding:12px 14px;background:rgba(52,211,153,.18);border:1px solid rgba(52,211,153,.4);border-radius:8px;font-size:.8rem;color:#6effd4;display:flex;align-items:flex-start;gap:8px;line-height:1.6;font-weight:600;"><span style="flex-shrink:0;">✓</span>診断の回答は自動保存されます。途中で閉じても、開き直すと続きから再開できます。</div>
+    <div style="margin-bottom:16px;padding:10px 13px;background:rgba(255,200,80,.1);border:1px solid rgba(255,200,80,.3);border-radius:8px;font-size:.76rem;color:rgba(255,220,100,.85);display:flex;align-items:flex-start;gap:8px;line-height:1.6;"><span style="flex-shrink:0;">⚠</span>プライベートモードやアプリ内ブラウザ・プレビューでは保存されません。通常のブラウザでご利用ください。</div>
+    <button class="howto-close" id="howtoClose">閉じる</button>
+  </div>
+</div>
+
+<!-- メニューボタン（固定・常時表示） -->
+<button class="menu-btn" id="menuBtn" type="button" aria-label="メニューを開く" aria-expanded="false">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- MAIN -->
+<main class="wrap" id="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="titleBtn" tabindex="0" role="button">
+      <span class="topbar-name">心の<span class="g">標本</span></span>
+      <span class="topbar-sub" id="heroSub">ゆめかわ心理診断たちの標本箱</span>
+    </div>
+    </div>
+
+  <!-- SITE NAV -->
+  <nav class="sitenav" aria-label="サイト切替">
+    <a href="/shindan/" class="sn-item on">🧪 心の標本</a>
+    <a href="/chishiki/" class="sn-item">📚 知識の水槽</a>
+    <a href="/torikago/" class="sn-item">🐦 試練の鳥籠</a>
+    <a href="/nir/" class="sn-item">🕯 ???</a>
+  </nav>
+
+  <!-- A. STATUS CARD -->
+  <div class="status-card" id="statusCard">
+    <div class="sc-top">
+      <!-- ランクバッジ + % -->
+      <div class="sc-rank-row">
+        <div class="sc-rank-badge">
+          <div class="sc-emo-wrap"><span id="scEmoji">🌱</span></div>
+          <div class="sc-rank-info">
+            <div class="sc-rank-lbl">CURRENT RANK</div>
+            <div class="sc-name" id="scName">標本見習い</div>
+          </div>
+        </div>
+        <div class="sc-pct-big">
+          <div class="sc-pct"><span id="scPct">0</span><span class="sc-pct-u">%</span></div>
+          <div class="sc-rank-lbl-r">COMPLETE</div>
+        </div>
+      </div>
+      <!-- EXPバー -->
+      <div class="sc-bar-section">
+        <div class="sc-bar-labels">
+          <span class="sc-bar-label-l">EXP</span>
+          <span class="sc-next" id="scNext" style="display:none">あと <strong id="scRemain">?</strong> 種でランクアップ</span>
+        </div>
+        <div class="sc-bar-track">
+          <span class="sc-bar-fill" id="scFill">
+            <span class="sc-bar-tip" id="scTip"></span>
+          </span>
+          <!-- マイルストーン刻み 25/50/75% -->
+          <span class="sc-bar-mark" style="left:25%"></span>
+          <span class="sc-bar-mark" style="left:50%"></span>
+          <span class="sc-bar-mark" style="left:75%"></span>
+        </div>
+      </div>
+      <!-- NIRコメント -->
+      <p class="sc-comment" id="scComment">まだ未開封ばかりだね。べつに、急がなくていいけど。</p>
+    </div>
+    <!-- 下段ステータス -->
+    <div class="sc-bottom">
+      <div class="sc-stat">
+        <span class="sc-stat-icon">📖</span>
+        <span class="sc-stat-val" id="scDone">0</span>
+        <span class="sc-stat-lbl">開封済み種</span>
+      </div>
+      <div class="sc-stat">
+        <span class="sc-stat-icon">📦</span>
+        <span class="sc-stat-val" id="scTotal">0</span>
+        <span class="sc-stat-lbl">全診断数</span>
+      </div>
+      <div class="sc-stat">
+        <span class="sc-stat-icon">🔁</span>
+        <span class="sc-stat-val" id="myOpenCount">0</span>
+        <span class="sc-stat-lbl">累計開封数</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- B. NIR OFFICIAL -->
+  <div class="nir" id="nirChat">
+    <div class="nir-hd" id="nirHd" role="button" tabindex="0" aria-expanded="true">
+      <div class="nir-hd-av">🌑</div>
+      <div class="nir-hd-info">
+        <div class="nir-hd-name">NIR <span class="nir-hd-tag">OFFICIAL</span></div>
+        <div class="nir-hd-sub">更新ログ · お知らせ</div>
+      </div>
+      <span class="nir-badge" id="nirBadge"></span>
+      <span class="nir-chev">▾</span>
+    </div>
+    <div class="nir-log" id="nirBody"></div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter">
+    <div class="srow">
+      <span class="s-ico">🔍</span>
+      <input class="s-inp" type="search" id="q" placeholder="診断名・キーワードで探す" autocomplete="off">
+      <button class="s-clr" type="button" id="clrBtn">✕</button>
+    </div>
+    <div class="statetabs" role="tablist" id="stateTabs">
+      <button class="stab on" role="tab" data-tab="all">すべて<span class="stab-n" id="cnt-all">0</span></button>
+      <button class="stab" role="tab" data-tab="reco">⭐ おすすめ<span class="stab-n" id="cnt-reco">0</span></button>
+      <button class="stab" role="tab" data-tab="fav">💗 推し<span class="stab-n" id="cnt-fav">0</span></button>
+      <button class="stab" role="tab" data-tab="todo">📝 未挑戦<span class="stab-n" id="cnt-todo">0</span></button>
+    </div>
+    <div class="cattabs" id="catTabs">
+      <button class="ctab c-all" data-c="all">🗂 全カテゴリ</button>
+      <button class="ctab" data-c="science">🧬 こころの解剖室</button>
+      <button class="ctab" data-c="fun">🎪 きまぐれ標本</button>
+    </div>
+    <p class="rc" id="rc"><strong>0</strong> 件表示中</p>
+  </div>
+
+  <!-- CARDS -->
+  <div id="listRoot">
+    <div class="sec" data-cat="science" data-n="01" id="sec-science">
+      <div class="sec-hd"><div class="sec-n">01</div><div class="sec-info"><div class="sec-label">🧬 こころの解剖室</div><div class="sec-sub">心理学・認知科学エビデンスベース</div></div><span class="sec-done" id="done-science"></span></div>
+      <div class="grid">
+        <a href="/shindan/housekishin.html?src=specimens" class="card" data-id="housekishin" data-reco="1" data-cat="science" data-updated="2025-10-30" data-keywords="恋愛 宝石 愛着 安定 回避 不安 48問"><div class="c-emo-area">💎</div><div class="c-body"><div class="c-title">宝石恋愛タイプ 48問<span class="bnew" data-new>NEW</span></div><div class="c-sub">恋愛傾向をイラスト＋棒グラフ＋テキスト解説。</div><div class="c-footer"><span class="pill">⏱8分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/openness.html?src=specimens" class="card" data-id="openness" data-cat="science" data-updated="2025-09-29" data-keywords="開放性 神話 インド 18問 想像力"><div class="c-emo-area">🕉️</div><div class="c-body"><div class="c-title">開放性・インド神話 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">新しい体験や発想をどれだけ楽しめるか。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/neurotic.html?src=specimens" class="card" data-id="neurotic" data-cat="science" data-updated="2025-09-27" data-keywords="神経症 不安 易怒 18問"><div class="c-emo-area">🌊</div><div class="c-body"><div class="c-title">神経症的傾向・クトゥルフ神話 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">気分や不安の揺れやすさの傾向。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/conscientious.html?src=specimens" class="card" data-id="conscientious" data-cat="science" data-updated="2025-09-26" data-keywords="誠実性 神話 エジプト 18問"><div class="c-emo-area">🪶</div><div class="c-body"><div class="c-title">誠実性・エジプト神話 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">計画性ややり抜く力のバランス。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/agreeableness.html?src=specimens" class="card" data-id="agreeableness" data-cat="science" data-updated="2025-09-24" data-keywords="協調性 北欧神話 18問 信頼 共感"><div class="c-emo-area">🛡️</div><div class="c-body"><div class="c-title">協調性・北欧神話 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">人に合わせる・助ける姿勢の出方。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/extraversion.html?src=specimens" class="card" data-id="extraversion" data-cat="science" data-updated="2025-09-22" data-keywords="外向性 ギリシャ神話 18問 社交性"><div class="c-emo-area">🏛️</div><div class="c-body"><div class="c-title">外向性・ギリシャ神話 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">人前でのエネルギーの出し方。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/dev-mindset.html?src=specimens" class="card" data-id="dev-mindset" data-cat="science" data-updated="2025-10-30" data-keywords="マインドセット 成長 評価 16問"><div class="c-emo-area">🧠</div><div class="c-body"><div class="c-title">マインドセット 16問<span class="bnew" data-new>NEW</span></div><div class="c-sub">"努力で伸びる派"と"実力を見せる派"のバランス。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/opener.html?src=specimens" class="card" data-id="opener" data-cat="science" data-updated="2025-09-20" data-keywords="会話 オープナー 20問"><div class="c-emo-area">🔑</div><div class="c-body"><div class="c-title">会話オープナー 20問<span class="bnew" data-new>NEW</span></div><div class="c-sub">初対面でも会話が開きやすくなるコツ。</div><div class="c-footer"><span class="pill">⏱7分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/chc-cci-shin.html?src=specimens" class="card" data-id="chc-cci-shin" data-cat="science" data-updated="2025-10-30" data-keywords="認知 ひらめき 知識 視野"><div class="c-emo-area">🔬</div><div class="c-body"><div class="c-title">認知チャレンジ</div><div class="c-sub">ひらめき・知識・視野・スピード・作業記憶のバランスを把握。</div><div class="c-footer"><span class="pill">⏱6分</span><span class="pill">ゲーム風</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/adventure-shin.html?src=specimens" class="card" data-id="adventure-shin" data-cat="science" data-updated="2025-08-21" data-keywords="冒険者 逆境 28問"><div class="c-emo-area">🗺️</div><div class="c-body"><div class="c-title">冒険者逆境力 28問<span class="bnew" data-new>NEW</span></div><div class="c-sub">逆境への踏ん張り・切り替え・助けの使い方。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/mirorrshin.html?src=specimens" class="card" data-id="mirorrshin" data-cat="science" data-updated="2025-10-30" data-keywords="ナルシシズム 自己像 承認 20問"><div class="c-emo-area">🪞</div><div class="c-body"><div class="c-title">鏡ナルシスト 20問<span class="bnew" data-new>NEW</span></div><div class="c-sub">"自分の見せ方"と"こころの守り方"のバランスを可視化。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/sweetshin.html?src=specimens" class="card" data-id="sweetshin" data-cat="science" data-updated="2025-10-30" data-keywords="休息 スイーツ 疲れ 14問"><div class="c-emo-area">🍰</div><div class="c-body"><div class="c-title">7つの休息 × スイーツ 14問<span class="bnew" data-new>NEW</span></div><div class="c-sub">疲れ方のタイプを見極め、合う休み方をスイーツで提案。</div><div class="c-footer"><span class="pill">⏱3分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+      </div>
+    </div>
+    <div class="sec" data-cat="fun" data-n="02" id="sec-fun">
+      <div class="sec-hd"><div class="sec-n">02</div><div class="sec-info"><div class="sec-label">🎪 きまぐれ標本</div><div class="sec-sub">面白さ・キャッチーさ重視</div></div><span class="sec-done" id="done-fun"></span></div>
+      <div class="grid">
+        <a href="/shindan/star-guide.html?src=specimens" class="card" data-id="star-guide" data-reco="1" data-cat="fun" data-updated="2025-09-22" data-keywords="流れ星 手紙 メッセージ 330通"><div class="c-emo-area">🌠</div><div class="c-body"><div class="c-title">流れ星の手紙（全330通）<span class="bnew" data-new>NEW</span></div><div class="c-sub">辛い時に押して。夜空から優しい手紙が降りてくる。</div><div class="c-footer"><span class="pill">⏱1分</span><span class="pill">占い</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/inu-neko.html?src=specimens" class="card" data-id="inu-neko" data-cat="fun" data-updated="2025-09-21" data-keywords="犬派 猫派 12問"><div class="c-emo-area">🐾</div><div class="c-body"><div class="c-title">犬派？猫派？ 12問<span class="bnew" data-new>NEW</span></div><div class="c-sub">犬っぽさ／猫っぽさのバランスと活動スタイル。</div><div class="c-footer"><span class="pill">⏱4分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/drinkshin.html?src=specimens" class="card" data-id="drinkshin" data-cat="fun" data-updated="2025-10-30" data-keywords="飲み物 サイコパス 20問"><div class="c-emo-area">☕</div><div class="c-body"><div class="c-title">飲み物サイコパス 20問<span class="bnew" data-new>NEW</span></div><div class="c-sub">ちょい毒の駆け引き気質を飲み物ジョークでゆるくチェック。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/iceshin.html?src=specimens" class="card" data-id="iceshin" data-cat="fun" data-updated="2025-10-30" data-keywords="アイスクリーム 冷酷 距離 20問"><div class="c-emo-area">🍦</div><div class="c-body"><div class="c-title">冷酷アイスクリーム 20問<span class="bnew" data-new>NEW</span></div><div class="c-sub">距離の取り方や計算高さを甘く冷たく表現。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/mashou-succubus.html?src=specimens" class="card" data-id="mashou-succubus" data-cat="fun" data-updated="2025-09-27" data-keywords="サキュバス 魔性 24問"><div class="c-emo-area">🌙</div><div class="c-body"><div class="c-title">サキュバス魔性度 24問<span class="bnew" data-new>NEW</span></div><div class="c-sub">相手を惹きつける"魔性"のスイッチ。</div><div class="c-footer"><span class="pill">⏱6分</span><span class="pill">ダーク</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/charisma-demon.html?src=specimens" class="card" data-id="charisma-demon" data-cat="fun" data-updated="2025-09-25" data-keywords="悪魔 カリスマ 18問"><div class="c-emo-area">🕯️</div><div class="c-body"><div class="c-title">悪魔カリスマ 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">ダーク寄りの影響力の使い方。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/charisma-hero.html?src=specimens" class="card" data-id="charisma-hero" data-cat="fun" data-updated="2025-09-24" data-keywords="英雄 カリスマ 18問"><div class="c-emo-area">👑</div><div class="c-body"><div class="c-title">英雄カリスマ 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">人を前向きに動かす影響力の出し方。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/angel-kindness.html?src=specimens" class="card" data-id="angel-kindness" data-cat="fun" data-updated="2025-09-28" data-keywords="優しさ 天使 21問"><div class="c-emo-area">👼</div><div class="c-body"><div class="c-title">七天使の優しさ 21問<span class="bnew" data-new>NEW</span></div><div class="c-sub">"やさしさ"の届け方のタイプ。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/animalshin.html?src=specimens" class="card" data-id="animalshin" data-cat="fun" data-updated="2025-10-16" data-keywords="動物 性格 10問"><div class="c-emo-area">🦊</div><div class="c-body"><div class="c-title">性格動物 10問</div><div class="c-sub">性格のざっくり輪郭を動物メタファで楽しく把握。</div><div class="c-footer"><span class="pill">⏱3分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/hanashin.html?src=specimens" class="card" data-id="hanashin" data-cat="fun" data-updated="2025-09-12" data-keywords="魂の花 薔薇 向日葵 百合 10問"><div class="c-emo-area">🌸</div><div class="c-body"><div class="c-title">魂の花 10問<span class="bnew" data-new>NEW</span></div><div class="c-sub">内面の雰囲気と伸び方を花にたとえてメッセージ。</div><div class="c-footer"><span class="pill">⏱3分</span><span class="pill">占い</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/jp-myth.html?src=specimens" class="card" data-id="jp-myth" data-cat="fun" data-updated="2025-09-19" data-keywords="神話 ポジ ネガ 16問"><div class="c-emo-area">⛩️</div><div class="c-body"><div class="c-title">ポジ⇄ネガ日本神話 16問<span class="bnew" data-new>NEW</span></div><div class="c-sub">日常のポジ／ネガの傾き。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/forbidden-love-another.html?src=specimens" class="card" data-id="forbidden-love-another" data-cat="fun" data-updated="2025-08-31" data-keywords="姫 城下 恋 Another"><div class="c-emo-area">🏰</div><div class="c-body"><div class="c-title">姫と城下の恋・Another<span class="bnew" data-new>NEW</span></div><div class="c-sub">選択で分岐する読み物系。性格の傾向が物語に反映。</div><div class="c-footer"><span class="pill">⏱10分</span><span class="pill">#ゲーム</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. バックアップ -->
+  <div class="bk" id="bkSec">
+    <button class="bk-hd" id="bkTog" type="button" aria-expanded="false">
+      <div class="bk-ico">💾</div>
+      <div class="bk-lt">データの引き継ぎ・バックアップ<span class="bk-ls">エクスポート / インポートで安全に保管</span></div>
+      <span class="bk-ch">▾</span>
+    </button>
+    <div class="bk-body" id="bkBody">
+      <p class="bk-desc">推し標本・ランク・診断の進捗などをJSONファイルに書き出せます。機種変更や引っ越し前にエクスポートしておくと安心です。</p>
+      <div class="bk-btns">
+        <button class="bk-btn bex" id="exportBtn" type="button">📤 エクスポート</button>
+        <button class="bk-btn bim" id="importBtn" type="button">📥 インポート</button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+      </div>
+      <pre class="bk-log" id="bkInfo">読み込み中…</pre>
+      <span class="bk-toast" id="bkToast"></span>
+    </div>
+  </div>
+
+  <!-- C. 問い合わせ -->
+  <div class="fb" id="feedback">
+    <div class="fb-hd">ご意見・感想・ラブレター</div>
+    <p class="fb-desc">バグ報告・感想・「こんな診断ほしい」など、なんでもゆるく投げ込める箱です。匿名OK。</p>
+    <form id="fbForm" action="https://formspree.io/f/mdkqgynb" method="POST">
+      <label>お名前 / ニックネーム（任意）<input type="text" name="name" autocomplete="name"></label>
+      <label>連絡先（任意）<input type="email" name="email" inputmode="email" autocomplete="email"></label>
+      <label>種別<select name="type"><option value="impression">診断の感想・ご意見</option><option value="bug">バグ報告</option><option value="request">こんな診断がほしい</option><option value="love">作者を甘やかす・沼報告</option><option value="other">その他</option></select></label>
+      <label>メッセージ<textarea name="message" required></textarea></label>
+      <button class="fb-sub" type="submit">送信する</button>
+      <p class="fb-hint" id="fbHint">※ お名前・連絡先は空欄でも送信できます。</p>
+    </form>
+  </div>
+
+  <details class="disclaimer" id="disclaimer">
+    <summary>免責事項</summary>
+    <div class="disclaimer-body">
+      <p>※ 本サイトの診断は娯楽・自己理解の補助を目的とした簡易テストです。医学的診断や専門的評価の代替にはなりません。</p>
+      <p>体調不良や精神的な辛さが続く場合は、専門機関へご相談ください。</p>
+    </div>
+  </details>
+
+  <footer class="site-ft">
+    <p class="ft-copy">© 心の標本</p>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s);};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s));};
+function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+
+/* keys */
+var KT='specimens:open:total',KI='specimens:open:byid',KF='specimens:favs',KN='specimens:notif:lastread';
+function gls(k){return localStorage.getItem(k);}
+function sls(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function loadTot(){var n=+gls(KT)||0;return isFinite(n)?n:0;}
+function loadId(){try{var m=JSON.parse(gls(KI)||'{}');return m&&typeof m==='object'?m:{};}catch(e){return{};}}
+function loadFav(){try{var a=JSON.parse(gls(KF)||'[]');return new Set(Array.isArray(a)?a:[]);}catch(e){return new Set();}}
+function loadRd(){try{return new Set(JSON.parse(gls(KN)||'[]'));}catch(e){return new Set();}}
+function saveRd(s){sls(KN,JSON.stringify(Array.from(s)));}
+
+/* ================================================================
+   B. NIR OFFICIAL — 公式お知らせデータ
+   ・新しい診断追加時: 先頭に1オブジェクト追加するだけ
+   ・tag: 'UPDATE'=診断追加・変更 | 'NOTICE'=お知らせ | 'FIX'=修正
+   ================================================================ */
+var NOTICES=[
+  {id:'n-003',date:'2025-11-02',tag:'UPDATE',emo:'🧪',
+   title:'ビッグファイブ系 5種を追加',
+   text:'「開放性・インド神話」「神経症的傾向・クトゥルフ」「誠実性・エジプト」「協調性・北欧」「外向性・ギリシャ」を追加しました。'},
+  {id:'n-002',date:'2025-10-30',tag:'NOTICE',emo:'💾',
+   title:'データ引き継ぎ機能を追加',
+   text:'バックアップのエクスポート・インポートに対応しました。機種変更前にご利用ください。'},
+  {id:'n-001',date:'2025-10-16',tag:'UPDATE',emo:'💎',
+   title:'宝石恋愛タイプ（48問）をリリース',
+   text:'結果イラスト付きで、恋愛傾向を棒グラフとテキストで解説します。'},
+];
+var rdSet=loadRd(), nirExp=false, NIR_PREVIEW=2;
+function unrdCnt(){return NOTICES.filter(function(n){return !rdSet.has(n.id);}).length;}
+function uNirBadge(){var nb=$('#nirBadge');if(nb)nb.textContent=unrdCnt()>0?String(unrdCnt()):''}
+
+function buildEntry(n,i){
+  var isNew=!rdSet.has(n.id);
+  var d=new Date(n.date);
+  var ds=(d.getMonth()+1)+'/'+d.getDate();
+  var el=document.createElement('div');
+  el.className='nir-entry';
+  el.style.animationDelay=(i*0.07)+'s';
+  el.style.animation='cdin .25s ease both';
+  el.innerHTML=
+    '<div class="nir-entry-l">'+
+      '<div class="nir-entry-emo">'+n.emo+'</div>'+
+    '</div>'+
+    '<div class="nir-entry-r">'+
+      '<div class="nir-entry-meta">'+
+        '<span class="nir-entry-name">NIR</span>'+
+        '<span class="nir-entry-handle">@shindan</span>'+
+        '<span class="nir-entry-tag tag-'+n.tag+'">'+n.tag+'</span>'+
+        (isNew?'<span class="nir-entry-new">NEW</span>':'')+
+        '<span class="nir-entry-date">'+ds+'</span>'+
+      '</div>'+
+      '<div class="nir-entry-title">'+n.title+'</div>'+
+      (n.text?'<div class="nir-entry-text">'+n.text+'</div>':'')+
+    '</div>';
+  return el;
+}
+
+function renderNir(){
+  var body=$('#nirBody');if(!body)return;
+  body.innerHTML='';
+  var list=nirExp?NOTICES:NOTICES.slice(0,NIR_PREVIEW);
+  list.forEach(function(n,i){body.appendChild(buildEntry(n,i));});
+  var ft=document.createElement('div');ft.className='nir-log-ft';
+  if(NOTICES.length>NIR_PREVIEW){
+    var b=document.createElement('button');b.className='nir-more-btn';b.type='button';
+    b.textContent=nirExp?'▲ 折りたたむ':'▼ もっと見る ('+(NOTICES.length-NIR_PREVIEW)+'件)';
+    b.addEventListener('click',function(){nirExp=!nirExp;renderNir();});
+    ft.appendChild(b);
+  }
+  body.appendChild(ft);
+  /* 表示後に既読マーク */
+  setTimeout(function(){
+    NOTICES.slice(0,NIR_PREVIEW).forEach(function(n){rdSet.add(n.id);});
+    saveRd(rdSet);uNirBadge();
+  },800);
+}
+
+var nirHd=$('#nirHd'),nirChat=$('#nirChat');
+if(nirHd){
+  nirHd.addEventListener('click',function(){
+    var coll=nirChat.classList.toggle('coll');
+    nirHd.setAttribute('aria-expanded',String(!coll));
+  });
+  nirHd.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();nirHd.click();}});
+}
+renderNir();uNirBadge();
+
+/* ================================================================
+   A. STATUS CARD — ランク・進捗データ
+   ・RK: ランク定義（min=コンプリート率%）
+   ・各ランクに複数のNIRコメント（進捗への一言）
+   ================================================================ */
+var RK=[
+  {min:0,  name:'標本見習い',      emo:'🌱',
+   comments:['まだ未開封ばかりだね。べつに、急がなくていいけど。','一番最初ってことは……まだ何も知らないってことでもある。']},
+  {min:10, name:'標本瓶コレクター', emo:'🫙',
+   comments:['少し開けたね。……でもまだ底の方。']},
+  {min:25, name:'蝶の標本士',      emo:'🦋',
+   comments:['ここまで来たなら、もう少し先も見てほしい気もする。']},
+  {min:50, name:'夢喰い研究者',    emo:'🔭',
+   comments:['半分以上開けた。……これって、けっこうすごいことだと思う。']},
+  {min:75, name:'深夜の学芸員',    emo:'🌙',
+   comments:['ここまで埋めるなんて、想定外よ。「きみの方が取り憑かれてない？」って心配してる。']},
+  {min:100,name:'幻想標本師',      emo:'💠',
+   comments:['本当に全部終わらせちゃったのね。「ここからどうするつもり？」って方が気になってる。']},
+];
+
+/* 累計開封数による称号（補助） */
+var LVT=[
+  [0,'見習い採集者'],[3,'ちいさな標本瓶'],[8,'ラベル貼り係'],
+  [15,'解剖見習い'],[25,'蝶の標本士'],[40,'夢喰い研究者'],
+  [60,'深夜の学芸員'],[80,'幻想標本師'],[100,'伝説の魂の採集者'],
+];
+
+var favSet=loadFav(), doneMap=loadId();
+var totOpen=loadTot();
+var el_open=$('#myOpenCount');if(el_open)el_open.textContent=totOpen;
+
+var MSDAY=86400000, NOW=Date.now();
+var cards=$$('.card');
+var cardTot=cards.length;
+$('#scTotal').textContent=cardTot;
+
+cards.forEach(function(c){
+  var id=c.dataset.id;
+  if(id&&doneMap[id]>0){
+    c.setAttribute('data-done','1');
+    var rib=document.createElement('div');rib.className='done-rib';rib.textContent='✓ 開封済';c.appendChild(rib);
+    var tl=c.querySelector('.c-title');
+    if(tl){var ch=document.createElement('span');ch.className='done-chip';ch.textContent='✓ 済';tl.appendChild(ch);}
+  }
+  if(id&&favSet.has(id)){
+    c.classList.add('fav');
+    var b=c.querySelector('.fav-btn');
+    if(b){b.setAttribute('aria-pressed','true');b.setAttribute('aria-label','推し標本から外す');}
+  }
+  var up=c.dataset.updated;
+  if(up){var age=NOW-new Date(up).getTime();var eln=c.querySelector('[data-new]');if(eln&&age>30*MSDAY)eln.style.display='none';}
+});
+
+function uStatus(){
+  var done=0;
+  cards.forEach(function(c){if(c.dataset.id&&doneMap[c.dataset.id]>0)done++;});
+  var pct=cardTot?Math.round(done/cardTot*100):0;
+  var cur=RK[0];
+  RK.forEach(function(r){if(pct>=r.min)cur=r;});
+  var nxt=null;RK.forEach(function(r){if(!nxt&&r.min>pct)nxt=r;});
+
+  /* 率・バー */
+  var ep=$('#scPct');if(ep)ep.textContent=pct;
+  var ef=$('#scFill');if(ef){ef.style.width=pct+'%';}
+  /* バーが0%のときはtipを非表示 */
+  var tip=$('#scTip');if(tip)tip.style.display=pct>2?'':'none';
+  /* ランク名・絵文字 */
+  var en=$('#scName');if(en)en.textContent=cur.name;
+  var ee=$('#scEmoji');if(ee)ee.textContent=cur.emo;
+  /* NIRコメント（進捗への一言） */
+  var ec=$('#scComment');if(ec)ec.textContent=rnd(cur.comments);
+  /* 次の昇格 */
+  var enx=$('#scNext'),erm=$('#scRemain');
+  if(enx&&erm){
+    if(nxt){erm.textContent=Math.max(0,Math.ceil(nxt.min/100*cardTot)-done);enx.style.display='';}
+    else enx.style.display='none';
+  }
+  /* 補助数値 */
+  var ed=$('#scDone');if(ed)ed.textContent=done;
+
+  /* カテゴリ開封数 */
+  ['science','fun'].forEach(function(cat){
+    var cc=$$('.card[data-cat="'+cat+'"]');
+    var dn=cc.filter(function(c){return c.getAttribute('data-done')==='1';}).length;
+    var el=$('#done-'+cat);if(el)el.textContent=dn+'/'+cc.length+' 開封済';
+  });
+
+  /* タブカウント */
+  var recoN=cards.filter(function(c){return c.dataset.reco==='1';}).length;
+  var favN=cards.filter(function(c){return favSet.has(c.dataset.id||'');}).length;
+  var todoN=cards.filter(function(c){return c.getAttribute('data-done')!=='1';}).length;
+  var sc=function(id,v){var e=$(id);if(e)e.textContent=v;};
+  sc('#cnt-all',cards.length);sc('#cnt-reco',recoN);sc('#cnt-fav',favN);sc('#cnt-todo',todoN);
+}
+uStatus();
+
+/* FILTER */
+var aTab='all',aCat='all';
+var q=$('#q'),clrBtn=$('#clrBtn');
+var stateBtns=$$('#stateTabs .stab'),catBtns=$$('#catTabs .ctab');
+var rcEl=$('#rc').querySelector('strong');
+var sections=$$('.sec');
+
+function filt(){
+  var raw=q.value.trim().toLowerCase();
+  var kw=raw.length>0?raw.split(/\s+/).filter(function(x){return x.length>0;}):[]; 
+  var vis=0;
+  sections.forEach(function(sec){
+    var sc=sec.dataset.cat;
+    var catOk=aCat==='all'||aCat===sc;
+    var sv=0;
+    sec.querySelectorAll('.card').forEach(function(c){
+      var id=c.dataset.id||'';
+      var reco=c.dataset.reco==='1';
+      var done=c.getAttribute('data-done')==='1';
+      var fav=favSet.has(id);
+      var ok=catOk;
+      if(ok){if(aTab==='reco')ok=reco;else if(aTab==='fav')ok=fav;else if(aTab==='todo')ok=!done;}
+      if(ok&&kw.length>0){
+        var tx=((c.querySelector('.c-title')?c.querySelector('.c-title').textContent:'')+' '+
+               (c.querySelector('.c-sub')?c.querySelector('.c-sub').textContent:'')+' '+
+               (c.dataset.keywords||'')).toLowerCase();
+        ok=kw.every(function(w){return tx.indexOf(w)>=0;});
+      }
+      c.style.display=ok?'':'none';
+      if(ok){vis++;sv++;}
+    });
+    sec.style.display=(catOk&&sv>0)?'':'none';
+  });
+  rcEl.textContent=vis;
+  var em=$('#emptyState');
+  if(vis===0){
+    if(!em){em=document.createElement('div');em.id='emptyState';em.className='empty';em.innerHTML='<span style="font-size:2rem;display:block;margin-bottom:8px;opacity:.4">🔍</span>該当する診断が見つかりませんでした。';$('#listRoot').appendChild(em);}
+    em.style.display='';
+  } else if(em){em.style.display='none';}
+  uStatus();
+}
+stateBtns.forEach(function(b){b.addEventListener('click',function(){aTab=b.dataset.tab;stateBtns.forEach(function(x){x.classList.toggle('on',x===b);});filt();});});
+catBtns.forEach(function(b){b.addEventListener('click',function(){
+  aCat=b.dataset.c;
+  catBtns.forEach(function(x){x.className='ctab';});
+  b.className='ctab '+(aCat==='science'?'c-sci':aCat==='fun'?'c-fun':'c-all');
+  filt();
+});});
+q.addEventListener('input',filt);
+clrBtn.addEventListener('click',function(){q.value='';filt();q.focus();});
+filt();
+
+/* CARD CLICK */
+$('#listRoot').addEventListener('click',function(e){
+  if(e.target.closest('.c-redo')){
+    e.preventDefault();e.stopPropagation();
+    var c=e.target.closest('.card');if(c){var h=c.getAttribute('href');if(h)window.location.href=h;}
+    return;
+  }
+  var fb=e.target.closest('.fav-btn');
+  if(fb){
+    e.preventDefault();e.stopPropagation();
+    var c=e.target.closest('.card');if(!c)return;
+    var id=c.dataset.id;if(!id)return;
+    var nx=fb.getAttribute('aria-pressed')!=='true';
+    fb.setAttribute('aria-pressed',String(nx));
+    fb.setAttribute('aria-label',nx?'推し標本から外す':'推し標本に追加');
+    c.classList.toggle('fav',nx);
+    if(nx)favSet.add(id);else favSet.delete(id);
+    sls(KF,JSON.stringify(Array.from(favSet)));
+    filt();return;
+  }
+  var c=e.target.closest('.card');if(!c)return;
+  var id=c.dataset.id||'unknown';
+  totOpen++;sls(KT,String(totOpen));
+  var eo=$('#myOpenCount');if(eo)eo.textContent=totOpen;
+  doneMap[id]=(doneMap[id]||0)+1;sls(KI,JSON.stringify(doneMap));
+  c.setAttribute('data-done','1');
+  if(!c.querySelector('.done-rib')){var rib=document.createElement('div');rib.className='done-rib';rib.textContent='✓ 開封済';c.appendChild(rib);}
+  var tl=c.querySelector('.c-title');
+  if(tl&&!tl.querySelector('.done-chip')){var ch=document.createElement('span');ch.className='done-chip';ch.textContent='✓ 済';tl.appendChild(ch);}
+  uStatus();
+},{capture:true});
+
+/* MENU */
+var menuBtn=$('#menuBtn'),menuDr=$('#menuDr'),menuOv=$('#menuOv'),menuClose=$('#menuClose');
+function openMenu(){menuDr.classList.add('open');menuOv.classList.add('open');menuBtn.setAttribute('aria-expanded','true');}
+function closeMenu(){menuDr.classList.remove('open');menuOv.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');}
+if(menuBtn)menuBtn.addEventListener('click',function(){openMenu();vib(8);});
+if(menuClose)menuClose.addEventListener('click',closeMenu);
+if(menuOv)menuOv.addEventListener('click',closeMenu);
+/* メニューアイテムのアクション */
+$$('.menu-item[data-action]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var act=b.dataset.action;
+    if(act==='scroll'){
+      var tid=b.dataset.target;
+      var target=tid==='main'?$('#main').firstElementChild:$(tid==='top'?'body':'#'+tid);
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+      closeMenu();
+    } else if(act==='howto'){
+      var m=$('#howtoModal');
+      if(m){m.classList.add('open');}
+      closeMenu();
+    }
+  });
+});
+
+/* 遊び方モーダル */
+var howtoModal=$('#howtoModal');
+var howtoClose=$('#howtoClose');
+var howtoModalBg=$('#howtoModalBg');
+function closeHowto(){if(howtoModal)howtoModal.classList.remove('open');}
+if(howtoClose)howtoClose.addEventListener('click',closeHowto);
+if(howtoModalBg)howtoModalBg.addEventListener('click',closeHowto);
+
+/* ── 魂の炎 ── */
+(function(){
+  var FLAME_TYPES=[
+    {type:'normal', weight:68, sizeMin:18, sizeMax:32, durMin:2800, durMax:4200},
+    {type:'rare',   weight:24, sizeMin:26, sizeMax:44, durMin:2400, durMax:3800},
+    {type:'ultra',  weight:8,  sizeMin:36, sizeMax:56, durMin:3000, durMax:4600},
+  ];
+  var INTERVAL_MIN=1800, INTERVAL_MAX=4500;
+
+  function pickType(){
+    var total=0;FLAME_TYPES.forEach(function(t){total+=t.weight;});
+    var r=Math.random()*total;
+    for(var i=0;i<FLAME_TYPES.length;i++){r-=FLAME_TYPES[i].weight;if(r<=0)return FLAME_TYPES[i];}
+    return FLAME_TYPES[0];
+  }
+
+  function spawnFlame(){
+    var t=pickType();
+    var size=t.sizeMin+Math.random()*(t.sizeMax-t.sizeMin);
+    var dur=t.durMin+Math.random()*(t.durMax-t.durMin);
+    /* 画面端を避けた位置からランダムに出現 */
+    var x=size+Math.random()*(window.innerWidth-size*2);
+    var y=size+Math.random()*(window.innerHeight-size*2);
+    /* ゆらぎながら少し上へ漂う */
+    var driftX=(Math.random()-.5)*60;
+    var driftY=-(30+Math.random()*60);
+    var driftX2=driftX+(Math.random()-.5)*30;
+    var driftY2=driftY-(10+Math.random()*30);
+    var driftY3=driftY2-(10+Math.random()*20);
+    /* 途中で少し膨らんで消える */
+    var scaleMid=.9+Math.random()*.3;
+    var scaleLate=.5+Math.random()*.3;
+
+    var el=document.createElement('div');
+    el.className='soul-flame '+t.type;
+    el.style.cssText=[
+      'left:'+x+'px','top:'+y+'px',
+      'width:'+size+'px','height:'+(size*1.3)+'px',
+      '--dx:'+driftX+'px','--dy:'+driftY+'px',
+      '--dx2:'+driftX2+'px','--dy2:'+driftY2+'px',
+      '--dy3:'+driftY3+'px',
+      '--sm:'+scaleMid,'--sl:'+scaleLate,
+      'animation:flame-rise '+dur+'ms ease-in-out forwards',
+    ].join(';');
+
+    document.body.appendChild(el);
+    setTimeout(function(){el.remove();},dur+100);
+
+    if(t.type==='ultra')vib([15,20,15]);
+  }
+
+  function scheduleNext(){
+    var delay=INTERVAL_MIN+Math.random()*(INTERVAL_MAX-INTERVAL_MIN);
+    setTimeout(function(){spawnFlame();scheduleNext();},delay);
+  }
+
+  /* 起動時に2〜3発まとめて出す */
+  setTimeout(spawnFlame,600);
+  setTimeout(spawnFlame,1200);
+  setTimeout(function(){if(Math.random()>.4)spawnFlame();},2000);
+  setTimeout(scheduleNext,2400);
+})();
+
+/* TITLE CLICK → fortunes */
+/* ガチャデータ: {rarity:'ssr'|'sr'|'n', emo, text} */
+var GACHA=[
+  {rarity:'ssr',rank:'大大大吉',emo:'💘',text:'今日だけ、好きな人がなぜかあなたのことを2回思い出す。理由はない。'},
+  {rarity:'ssr',rank:'天下無双吉',emo:'💼',text:'今日の会議、なぜか短く終わる。奇跡とはこういうことである。'},
+  {rarity:'ssr',rank:'宇宙大吉',emo:'🌌',text:'今日の寝癖、直そうとしたらいい感じになる。天が整えた。'},
+  {rarity:'ssr',rank:'爆裂大吉',emo:'💥',text:'今日だけ、送信ボタンを押す前に誤字に気づける。'},
+  {rarity:'ssr',rank:'神風吉',emo:'⚡',text:'今日の財布、小銭がレジでちょうどぴったりになる。後ろの人も喜ぶ。'},
+  {rarity:'ssr',rank:'奇跡確定吉',emo:'✨',text:'今日、気になってた人から先にLINEが来る。用件はどうでもいい。それでいい。'},
+  {rarity:'ssr',rank:'天帝直筆大吉',emo:'👑',text:'今日のプレゼン、なぜかスムーズにいく。準備してなくても。してたらもっといい。'},
+  {rarity:'ssr',rank:'万物大吉',emo:'🌟',text:'今日、嫌いな仕事が後回しにできる正当な理由が降ってくる。'},
+  {rarity:'ssr',rank:'超大吉',emo:'💫',text:'今日だけ、ラインの既読が3分以内につく。相手も暇だった。'},
+  {rarity:'ssr',rank:'伝説大吉',emo:'🏆',text:'今日、片思いの相手が自分のSNSをなんとなく見る。いいねはしない。でも見る。'},
+  {rarity:'ssr',rank:'開運爆吉',emo:'🎆',text:'今日の仕事、褒められる。内容は問わない。とにかく褒められる。'},
+  {rarity:'ssr',rank:'縁結大吉',emo:'🔮',text:'今日だけ、元気ないのがなぜかかわいく見られる。'},
+  {rarity:'sr',rank:'大吉',emo:'🎊',text:'今日、好きな人と目が合う。向こうが先に逸らす。これは脈ありサイン説がある。'},
+  {rarity:'sr',rank:'福運吉',emo:'🍀',text:'今日、上司の機嫌がなぜかいい。頼みごとをするなら今日。'},
+  {rarity:'sr',rank:'春風吉',emo:'🌸',text:'今日の自分、写真うつりがいつもより1.3倍良い。'},
+  {rarity:'sr',rank:'順風吉',emo:'⛵',text:'今日、返信に悩んでた文章が一発でうまく書ける。'},
+  {rarity:'sr',rank:'開運吉',emo:'🗝',text:'今日、気まずかった人との空気がなぜかちょっとだけ和らぐ。'},
+  {rarity:'sr',rank:'縁起吉',emo:'🎋',text:'今日の晩ごはん、食べたいと思ってたやつが家にある。'},
+  {rarity:'sr',rank:'天恵吉',emo:'☀️',text:'今日だけ、二度寝しても罪悪感がない。天が許可を出した。'},
+  {rarity:'sr',rank:'好機吉',emo:'🌈',text:'今日、ずっと連絡とれてなかった友達から突然メッセージが来る。'},
+  {rarity:'sr',rank:'幸運吉',emo:'🌠',text:'今日の仕事、締め切りがこっそり伸びてる。誰も言ってないけど。'},
+  {rarity:'sr',rank:'恵沢吉',emo:'💐',text:'今日、自分の笑い声がいつもより少しかわいい。'},
+  {rarity:'sr',rank:'良縁吉',emo:'💌',text:'今日だけ、送ったスタンプが絶妙にハマる。場が和む。'},
+  {rarity:'sr',rank:'吉報吉',emo:'📣',text:'今日、ずっと気になってたあの人が自分のことを「なんかいいな」と思う。根拠なし。'},
+  {rarity:'n',rank:'中吉',emo:'🌱',text:'今日、誰かにさりげなく親切にできる。本人は気づいてない。でもいい行いをした。'},
+  {rarity:'n',rank:'小吉',emo:'🌿',text:'今日、鏡を見たとき「まあ悪くないか」と思える。'},
+  {rarity:'n',rank:'末吉',emo:'🍃',text:'今日、言いたかったことがちゃんと言える。かぶらない。かぶっても笑えるやつ。'},
+  {rarity:'n',rank:'微吉',emo:'🌾',text:'今日、褒められたとき素直に「ありがとう」って言える。反射でいい。'},
+  {rarity:'n',rank:'細吉',emo:'🪴',text:'今日、会いたいと思ってた人にばったり会う。用事はなくていい。'},
+  {rarity:'n',rank:'薄吉',emo:'🌤',text:'今日のあなた、なぜかいつもより声のトーンが良い。'},
+  {rarity:'n',rank:'佳吉',emo:'🌻',text:'今日だけ、自分の話を最後まで聞いてもらえる。かぶせてこない。'},
+  {rarity:'n',rank:'穏吉',emo:'🍵',text:'今日、どうでもいいことで誰かと笑える。それが一番たいせつ。'},
+  {rarity:'n',rank:'静吉',emo:'🌙',text:'今日の夜、なぜか少しだけ明日が楽しみになる。理由は不明。'},
+  {rarity:'n',rank:'平吉',emo:'⭐',text:'今日、嫌なことがあっても帰り道にぜんぶ忘れられる。'},
+];
+
+/* ガチャトースト */
+var gachaWrap=null;
+var gachaTimer=null;
+
+function showGacha(){
+  /* 既存を閉じる */
+  if(gachaWrap){closeGacha(true);}
+
+  var item=rnd(GACHA);
+  vib(item.rarity==='ssr'?[30,40,30]:item.rarity==='sr'?20:10);
+
+  /* DOM生成 */
+  var wrap=document.createElement('div');
+  wrap.className='gacha-wrap';
+  var stars={ssr:'★★★',sr:'★★',n:'★'}[item.rarity];
+  wrap.innerHTML=
+    '<div class="gacha-bg"></div>'+
+    '<div class="gacha-card">'+
+      '<div class="gacha-rarity-band r-'+item.rarity+'">'+
+        '<span class="gacha-rarity-stars">'+stars+'</span>'+
+        item.rank+
+      '</div>'+
+      '<span class="gacha-emo">'+item.emo+'</span>'+
+      '<div class="gacha-result">'+item.text+'</div>'+
+      '<div class="gacha-hint">タップで閉じる</div>'+
+    '</div>';
+
+  document.body.appendChild(wrap);
+  gachaWrap=wrap;
+
+  /* タイトルの押した感 */
+  var tb=$('#titleBtn');
+  if(tb){tb.classList.add('gacha-tap');setTimeout(function(){tb.classList.remove('gacha-tap');},300);}
+
+  /* 1フレーム後にactiveで開くアニメ */
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){wrap.classList.add('active');});
+  });
+
+  /* タップで閉じる */
+  wrap.addEventListener('click',function(){closeGacha(false);});
+
+  /* 自動で閉じる */
+  if(gachaTimer)clearTimeout(gachaTimer);
+  gachaTimer=setTimeout(function(){closeGacha(false);},2800);
+}
+
+function closeGacha(immediate){
+  if(!gachaWrap)return;
+  var wrap=gachaWrap;
+  gachaWrap=null;
+  if(gachaTimer){clearTimeout(gachaTimer);gachaTimer=null;}
+  if(immediate){wrap.remove();return;}
+  wrap.classList.add('closing');
+  setTimeout(function(){wrap.remove();},260);
+}
+
+var booted=false;
+function boot(){
+  if(booted)return;booted=true;
+  var tb=$('#titleBtn');
+  if(tb)tb.addEventListener('click',showGacha,{passive:true});
+}
+
+/* SPLASH */
+var splEl=$('#spl'),mainEl=$('#main'),splBg=$('#splBg'),splImgPanel=$('#splImgPanel');
+if(splBg){
+  var img=new Image();
+  img.onload=function(){splBg.style.backgroundImage="url('"+img.src+"')";setTimeout(function(){splBg.classList.add('loaded');if(splImgPanel)splImgPanel.classList.add('img-loaded');},50);};
+  img.onerror=function(){if(splImgPanel){splImgPanel.querySelector('.spl-img-placeholder').style.background='linear-gradient(155deg,#3a1060,#200840,#0e0618)';splImgPanel.classList.add('img-loaded');}};
+  img.src='/shindan/assets/hero/t01.webp';
+}
+/* スプラッシュのランダム仕掛け */
+var SPL_VARS=[
+  {ey:'SPECIMEN COLLECTION',
+   copy:'「汝自身を知れ。」\n— ソクラテス',
+   btn:'標本箱を開ける'},
+  {ey:'KOKORO NO HYOHON',
+   copy:'「魂の世話をすることが、\n人間の最大の仕事である。」\n— ソクラテス',
+   btn:'入館する'},
+  {ey:'MIDNIGHT MUSEUM',
+   copy:'「自分自身に打ち克つことが、\nもっとも偉大な勝利である。」\n— プラトン',
+   btn:'扉を開く'},
+  {ey:'SOUL ARCHIVE',
+   copy:'「人間は本質的に、\n知ることを欲する動物である。」\n— アリストテレス',
+   btn:'標本になる'},
+  {ey:'OPEN THE JAR',
+   copy:'「怒りを感じたならば、\n話す前に十まで数えよ。」\n— マルクス・アウレリウス',
+   btn:'開ける'},
+  {ey:'THE COLLECTION',
+   copy:'「あなたの心を乱せるのは、\nあなた自身の考えだけだ。」\n— マルクス・アウレリウス',
+   btn:'また開ける'},
+  {ey:'SPECIMEN NO.001',
+   copy:'「重要なのは出来事そのものではなく、\nそれについての考え方だ。」\n— エピクテトス',
+   btn:'名前をつける'},
+  {ey:'YUMEKAWA LAB',
+   copy:'「恐怖は、苦しみそのものより\n苦しみをより大きく見せる。」\n— エピクテトス',
+   btn:'解体する'},
+  {ey:'NIGHT ARCHIVE',
+   copy:'「習慣は第二の天性である。」\n— ウィリアム・ジェームズ',
+   btn:'問いを持つ'},
+  {ey:'SPECIMEN ROOM',
+   copy:'「人間の最大の武器は、\n一つの考えから別の考えへと\n心を切り替える能力だ。」\n— ウィリアム・ジェームズ',
+   btn:'試してみる'},
+  {ey:'SOUL COLLECTION',
+   copy:'「抑圧されたものは、\n必ず戻ってくる。」\n— ジークムント・フロイト',
+   btn:'魂を映す'},
+  {ey:'KOKORO LAB',
+   copy:'「劣等感は病気ではなく、\n成長への刺激である。」\n— アルフレッド・アドラー',
+   btn:'意味を探す'},
+  {ey:'INNER WORLD',
+   copy:'「人は自分が信じる通りの人間になる。」\n— アルフレッド・アドラー',
+   btn:'信じてみる'},
+  {ey:'THE UNCONSCIOUS',
+   copy:'「夢は抑圧された欲望の\n擬装された充足である。」\n— ジークムント・フロイト',
+   btn:'夢を見る'},
+  {ey:'BEHAVIOR LAB',
+   copy:'「行動が感情に従うように見えるが、\n実際は感情が行動に従う。」\n— ウィリアム・ジェームズ',
+   btn:'動いてみる'},
+  {ey:'DEEP ARCHIVE',
+   copy:'「人生の目的とは、\nなりたい自分になることだ。」\n— ウィリアム・ジェームズ',
+   btn:'なりたい自分へ'},
+  {ey:'MIDNIGHT LAB',
+   copy:'「知恵とは、何を見過ごすかを\n知ることである。」\n— ウィリアム・ジェームズ',
+   btn:'見極める'},
+];
+(function(){
+  var v=rnd(SPL_VARS);
+  var ey=$('.spl-ey');if(ey)ey.textContent=v.ey;
+  var copy=$('.spl-copy');if(copy)copy.textContent=v.copy;
+  var btn=$('.spl-btn');if(btn)btn.textContent=v.btn;
+  function $c(s){return document.querySelector(s);}
+  var ey2=$c('.spl-ey');if(ey2)ey2.textContent=v.ey;
+  var copy2=$c('.spl-copy');if(copy2)copy2.textContent=v.copy;
+  var btn2=$c('.spl-btn');if(btn2)btn2.textContent=v.btn;
+})();
+
+function openSpl(){splEl.style.transition='opacity .38s ease';splEl.style.opacity='0';setTimeout(function(){splEl.style.display='none';},380);mainEl.classList.add('show');boot();}
+if(splEl){
+  splEl.addEventListener('click',function(e){e.preventDefault();vib(10);openSpl();});
+  splEl.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openSpl();}});
+}
+
+/* BACKUP */
+var bkSec=$('#bkSec'),bkTog=$('#bkTog');var bkOpen=false;
+bkTog.addEventListener('click',function(){bkOpen=!bkOpen;bkSec.classList.toggle('open',bkOpen);bkTog.setAttribute('aria-expanded',String(bkOpen));if(bkOpen)uBkInfo();});
+function getBk(){var d={};for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.indexOf('specimens:')===0||k.indexOf('shindan:')===0))d[k]=gls(k);}return d;}
+function uBkInfo(){var info=$('#bkInfo');if(!info)return;var d=getBk(),ks=Object.keys(d);if(!ks.length){info.textContent='保存データはまだありません。';return;}info.textContent=ks.length+'件のデータがあります：\n'+ks.map(function(k){var v=d[k];if(v&&v.length>60)v=v.slice(0,57)+'…';return k+' : '+v;}).join('\n');}
+$('#exportBtn').addEventListener('click',function(){var d=getBk();if(!Object.keys(d).length){bkT('保存データがありません');return;}var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='shindan-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);bkT('📤 エクスポート完了！');});
+$('#importBtn').addEventListener('click',function(){$('#importFile').click();});
+$('#importFile').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);var n=0;Object.entries(d).forEach(function(kv){if(kv[0].indexOf('specimens:')===0||kv[0].indexOf('shindan:')===0){sls(kv[0],kv[1]);n++;}});bkT('📥 '+n+'件を復元しました。再読み込みします…');setTimeout(function(){location.reload();},1500);}catch(ex){bkT('⚠ JSONの解析に失敗しました');}};r.readAsText(f);e.target.value='';});
+function bkT(msg){var t=$('#bkToast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+
+/* FEEDBACK */
+var FOK=['📬 「また話そうね」と打って消して、「おやすみ」に変えた夜のほうが、ほんとは少しだけ話したかった。','📬 既読をつけない理由を並べてるあいだに、一番伝えたかった一文だけ、ゆっくり冷めていく。'];
+var FER=['⚠ うまく届かなかったみたい。少し時間を空けてもう一度試してみて。'];
+var ff=$('#fbForm'),fh=$('#fbHint');
+if(ff){var busy=false;ff.addEventListener('submit',function(e){e.preventDefault();if(busy)return;busy=true;var sb=ff.querySelector('button[type="submit"]'),ol=sb?sb.textContent:'送信する';if(sb){sb.disabled=true;sb.textContent='送信中…';}fetch(ff.action,{method:'POST',body:new FormData(ff),headers:{'Accept':'application/json'}}).then(function(res){if(!res.ok)throw 0;ff.reset();if(fh){fh.className='fb-hint ok';fh.innerHTML=rnd(FOK)+'<br><small>送信されました。</small>';}if(sb){sb.disabled=false;sb.textContent='もう一度送る';}}).catch(function(){if(fh){fh.className='fb-hint err';fh.textContent=rnd(FER);}if(sb){sb.disabled=false;sb.textContent=ol;}}).finally(function(){busy=false;});});}
+
+})();
+</script>
+</body>
+</html>
