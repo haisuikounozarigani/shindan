@@ -28,60 +28,83 @@ button{font-family:inherit;cursor:pointer}
 .hidden{display:none!important}
 
 /* ── 魂の炎 ── */
-.soul-flame{
+
+
+/* ── NIR謎メッセージ ── */
+.nir-whisper{
   position:fixed;
+  z-index:500;
   pointer-events:none;
-  z-index:9998;
+  font-size:.76rem;
+  font-weight:400;
+  color:rgba(80,40,120,.8);
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(196,181,253,.28);
+  border-radius:16px;
+  padding:10px 14px 10px 12px;
+  box-shadow:0 4px 24px rgba(139,92,246,.1), 0 0 0 1px rgba(255,255,255,.6) inset;
+  line-height:1.65;
   opacity:0;
-  /* 炎の形: 縦長の雫型 */
-  border-radius:50% 50% 30% 30% / 60% 60% 40% 40%;
+  transform:translateY(12px) scale(.92) blur(4px);
+  transition:opacity .6s ease, transform .6s cubic-bezier(.34,1.4,.64,1), filter .6s ease;
+  filter:blur(4px);
+  white-space:nowrap;
 }
-/* 通常: 青紫の魂炎 */
-.soul-flame.normal{
-  background:
-    radial-gradient(ellipse at 45% 30%, #e0d4ff 0%, #7c3aed 40%, #4c1d95 70%, transparent 100%);
-  box-shadow:
-    0 0 18px 6px rgba(124,58,237,.55),
-    0 0 36px 12px rgba(139,92,246,.3),
-    0 0 60px 20px rgba(196,181,253,.15);
+/* 吹き出し尻尾 */
+.nir-whisper::after{
+  content:"";position:absolute;
+  width:10px;height:10px;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(196,181,253,.28);
+  bottom:-6px;left:18px;
+  clip-path:polygon(0 0,100% 0,0 100%);
 }
-/* レア: 深紅〜ピンクの魂炎 */
-.soul-flame.rare{
-  background:
-    radial-gradient(ellipse at 45% 30%, #ffd6ec 0%, #ff3d9a 38%, #9d0055 68%, transparent 100%);
-  box-shadow:
-    0 0 22px 7px rgba(255,61,154,.65),
-    0 0 44px 14px rgba(255,61,154,.35),
-    0 0 70px 24px rgba(139,92,246,.2);
+.nir-whisper.tail-br::after{bottom:-6px;left:auto;right:18px;clip-path:polygon(0 0,100% 0,100% 100%);}
+.nir-whisper.tail-tl::after{bottom:auto;top:-6px;left:18px;clip-path:polygon(0 0,100% 100%,0 100%);}
+.nir-whisper.tail-tr::after{bottom:auto;top:-6px;left:auto;right:18px;clip-path:polygon(100% 0,100% 100%,0 100%);}
+/* NIRアイコン */
+.nir-whisper::before{
+  content:"🌑";margin-right:6px;font-size:.75rem;
+  opacity:.55;vertical-align:middle;
 }
-/* 超レア: 金〜白の神聖な炎 */
-.soul-flame.ultra{
-  background:
-    radial-gradient(ellipse at 45% 25%, #fffde0 0%, #ffd700 30%, #ff8c00 55%, #c026d3 75%, transparent 100%);
-  box-shadow:
-    0 0 28px 9px rgba(255,200,0,.7),
-    0 0 56px 18px rgba(255,140,0,.45),
-    0 0 90px 30px rgba(192,38,211,.3),
-    0 0 120px 40px rgba(139,92,246,.15);
+.nir-whisper.in{
+  opacity:.92;
+  transform:translateY(0) scale(1);
+  filter:blur(0);
 }
-@keyframes flame-rise{
-  0%  {opacity:0;  transform:translate(0,0) scale(1) rotate(0deg);}
-  10% {opacity:1;}
-  30% {transform:translate(calc(var(--dx)*.4),calc(var(--dy)*.4)) scale(var(--sm)) rotate(-3deg);}
-  55% {opacity:.9; transform:translate(var(--dx),var(--dy)) scale(var(--sm)) rotate(3deg);}
-  80% {opacity:.55;transform:translate(var(--dx2),var(--dy2)) scale(var(--sl)) rotate(-2deg);}
-  100%{opacity:0;  transform:translate(var(--dx2),var(--dy3)) scale(.15) rotate(5deg);}
+.nir-whisper.out{
+  opacity:0;
+  transform:translateY(-10px) scale(.96);
+  filter:blur(6px);
+  transition:opacity 1.8s ease, transform 1.8s ease, filter 1.8s ease;
 }
 
 /* ── SPLASH ── */
-.spl{position:fixed;inset:0;z-index:9999;display:grid;grid-template-columns:55fr 45fr;cursor:pointer;overflow:hidden;}
-.spl-img-panel{position:relative;overflow:hidden;background:var(--darker);}
+.spl{position:fixed;inset:0;z-index:9999;display:grid;grid-template-rows:1fr auto;cursor:pointer;overflow:hidden;}
+.spl-img-panel{
+  position:relative;overflow:hidden;background:var(--darker);
+  grid-row:1;
+}
 .spl-bg{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transform:scale(1.05);transition:opacity 1s ease,transform 9s ease;}
 .spl-bg.loaded{opacity:1;transform:scale(1);}
-.spl-img-fade{position:absolute;inset:0;background:linear-gradient(to right,transparent 70%,rgba(14,6,24,.4));pointer-events:none;}
+/* 下からのフェード — 縦レイアウト用 */
+.spl-img-fade{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, transparent 40%, rgba(14,6,24,.7) 80%, #0e0618 100%);
+  pointer-events:none;
+}
 .spl-img-placeholder{position:absolute;inset:0;background:linear-gradient(155deg,#2a1050,#180830,#0e0618);transition:opacity .6s;}
 .spl-img-panel.img-loaded .spl-img-placeholder{opacity:0;}
-.spl-txt{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:44px 40px 44px 36px;background:var(--darker);}
+.spl-txt{
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:32px 40px 44px 40px;
+  background:transparent;
+  /* 画像の上に重ねる */
+  position:absolute;bottom:0;left:0;right:0;
+  z-index:2;
+}
 .spl-orb{position:absolute;width:340px;height:340px;border-radius:50%;top:-80px;right:-80px;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 65%);animation:orb 8s ease-in-out infinite;pointer-events:none;}
 .spl-orb2{position:absolute;width:260px;height:260px;border-radius:50%;bottom:-60px;left:-40px;background:radial-gradient(circle,rgba(255,61,154,.12),transparent 65%);animation:orb 11s ease-in-out infinite reverse;pointer-events:none;}
 @keyframes orb{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.06) translate(-8px,-16px)}}
@@ -94,11 +117,6 @@ button{font-family:inherit;cursor:pointer}
 .spl-btn:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(255,61,154,.5)}
 .spl-hint{margin-top:12px;font-size:.68rem;color:rgba(255,255,255,.2);letter-spacing:.12em;position:relative;z-index:1;}
 @media(max-width:580px){
-  .spl{grid-template-columns:1fr;grid-template-rows:42vh 1fr;}
-  .spl-img-panel{grid-row:1;}
-  .spl-img-fade{display:none}
-  .spl-img-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(14,6,24,.6));pointer-events:none;}
-  .spl-txt{grid-row:2;padding:28px 22px 36px;}
   .spl-h{font-size:2.4rem;}
 }
 
@@ -546,9 +564,9 @@ button{font-family:inherit;cursor:pointer}
 /* 塗り */
 .sc-bar-fill{
   display:block;height:100%;width:0;
-  background:linear-gradient(90deg,var(--pk),#a855f7,#60a5fa);
+  background:linear-gradient(90deg,#9ca3af,#6b7280); /* デフォルト=フリント。JSで上書き */
   border-radius:4px;
-  transition:width .8s cubic-bezier(.4,0,.2,1);
+  transition:width .8s cubic-bezier(.4,0,.2,1), background .6s ease;
   position:relative;
 }
 /* 光の流れ */
@@ -1193,12 +1211,15 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <details class="disclaimer" id="disclaimer">
-    <summary>免責事項</summary>
-    <div class="disclaimer-body">
-      <p>※ 本サイトの診断は娯楽・自己理解の補助を目的とした簡易テストです。医学的診断や専門的評価の代替にはなりません。</p>
-      <p>体調不良や精神的な辛さが続く場合は、専門機関へご相談ください。</p>
-    </div>
-  </details>
+  <summary>免責事項</summary>
+  <div class="disclaimer-body">
+    <p>※ 本サイトの診断は、娯楽および自己理解の補助を目的とした簡易テストです。医学的・心理学的診断、治療、助言の代替にはなりません。</p>
+    <p>※ 結果は、回答時の気分・体調・環境・解釈によって変動することがあります。あくまで「今の傾向をゆるく見るための目安」としてご利用ください。</p>
+    <p>※ 強い不安、抑うつ、希死念慮、対人トラブル、生活上の支障などが続く場合は、医療機関・心理支援機関・公的相談窓口などの専門機関へご相談ください。</p>
+    <p>※ データは主にブラウザ内に保存されます。端末変更、キャッシュ削除、プライベートブラウズ等により消えることがあります。必要に応じてバックアップをご利用ください。</p>
+    <p>※ 掲載されている言葉や表現は、演出上の引用または意訳を含みます。思想・学説の厳密な要約を保証するものではありません。</p>
+  </div>
+</details>
 
   <footer class="site-ft">
     <p class="ft-copy">© 心の標本</p>
@@ -1306,18 +1327,48 @@ renderNir();uNirBadge();
    ・各ランクに複数のNIRコメント（進捗への一言）
    ================================================================ */
 var RK=[
-  {min:0,  name:'標本見習い',      emo:'🌱',
-   comments:['まだ未開封ばかりだね。べつに、急がなくていいけど。','一番最初ってことは……まだ何も知らないってことでもある。']},
-  {min:10, name:'標本瓶コレクター', emo:'🫙',
-   comments:['少し開けたね。……でもまだ底の方。']},
-  {min:25, name:'蝶の標本士',      emo:'🦋',
-   comments:['ここまで来たなら、もう少し先も見てほしい気もする。']},
-  {min:50, name:'夢喰い研究者',    emo:'🔭',
-   comments:['半分以上開けた。……これって、けっこうすごいことだと思う。']},
-  {min:75, name:'深夜の学芸員',    emo:'🌙',
-   comments:['ここまで埋めるなんて、想定外よ。「きみの方が取り憑かれてない？」って心配してる。']},
-  {min:100,name:'幻想標本師',      emo:'💠',
-   comments:['本当に全部終わらせちゃったのね。「ここからどうするつもり？」って方が気になってる。']},
+  {min:0,  name:'ブロンズ', emo:'🥉',
+   bar:'linear-gradient(90deg,#92400e,#b45309,#d97706)',
+   comments:[
+     'まだ入口だね。……でも、最初の標本を開けた時点で、もう無関係ではいられない。',
+     'ブロンズ。軽く見える？ そうでもないよ。始めるのがいちばん面倒だから。'
+   ]},
+  {min:10, name:'シルバー', emo:'🥈',
+   bar:'linear-gradient(90deg,#94a3b8,#cbd5e1,#e2e8f0)',
+   comments:[
+     '少し集まってきたね。……ちゃんと続いてるの、見てる。',
+     'シルバー。目立たないけど、ここから急に欲が出る人が多い。きみはどう？'
+   ]},
+  {min:25, name:'ゴールド', emo:'🥇',
+   bar:'linear-gradient(90deg,#ca8a04,#f59e0b,#fcd34d)',
+   comments:[
+     'ここまで来ると、もう「ちょっと触った」では済まないね。',
+     'ゴールド。分かりやすく価値がある段階。……きみ、こういうの嫌いじゃないでしょ。'
+   ]},
+  {min:50, name:'プラチナ', emo:'⚪',
+   bar:'linear-gradient(90deg,#cbd5e1,#e5e7eb,#f8fafc)',
+   comments:[
+     '半分。……中途半端に見えて、いちばん本気が出る位置かもしれない。',
+     'プラチナ。派手じゃないのに強い。そういうものの方が、案外しぶとい。'
+   ]},
+  {min:75, name:'ダイヤモンド', emo:'💎',
+   bar:'linear-gradient(90deg,#67e8f9,#c4b5fd,#e0f2fe)',
+   comments:[
+     'ここまで埋めるの、普通はやらない。……かなり来てるね。',
+     'ダイヤモンド。硬くて、光を逃がさない。きみも少し、そうなってきた。'
+   ]},
+  {min:90, name:'ブラックダイヤ', emo:'🖤',
+   bar:'linear-gradient(90deg,#111827,#374151,#9ca3af)',
+   comments:[
+     'あと少し。……ここまで来ると、終わらせるためじゃなくて、見届けるために開けてる感じがする。',
+     'ブラックダイヤ。綺麗というより、執着に近いね。嫌いじゃない。'
+   ]},
+  {min:100,name:'レジェンド', emo:'👑',
+   bar:'linear-gradient(90deg,#f9a8d4,#c4b5fd,#93c5fd,#fde68a)',
+   comments:[
+     '全部終わらせたんだ。……本当に？ じゃあ、きみはもう観測者じゃなくて、標本箱の一部だね。',
+     'レジェンド。ここまで来ると称号というより記録。消えにくい種類のやつ。'
+   ]},
 ];
 
 /* 累計開封数による称号（補助） */
@@ -1363,7 +1414,11 @@ function uStatus(){
 
   /* 率・バー */
   var ep=$('#scPct');if(ep)ep.textContent=pct;
-  var ef=$('#scFill');if(ef){ef.style.width=pct+'%';}
+  var ef=$('#scFill');
+  if(ef){
+    ef.style.width=pct+'%';
+    ef.style.background=cur.bar||'linear-gradient(90deg,var(--pk),#a855f7,#60a5fa)';
+  }
   /* バーが0%のときはtipを非表示 */
   var tip=$('#scTip');if(tip)tip.style.display=pct>2?'':'none';
   /* ランク名・絵文字 */
@@ -1512,67 +1567,442 @@ function closeHowto(){if(howtoModal)howtoModal.classList.remove('open');}
 if(howtoClose)howtoClose.addEventListener('click',closeHowto);
 if(howtoModalBg)howtoModalBg.addEventListener('click',closeHowto);
 
-/* ── 魂の炎 ── */
-(function(){
-  var FLAME_TYPES=[
-    {type:'normal', weight:68, sizeMin:18, sizeMax:32, durMin:2800, durMax:4200},
-    {type:'rare',   weight:24, sizeMin:26, sizeMax:44, durMin:2400, durMax:3800},
-    {type:'ultra',  weight:8,  sizeMin:36, sizeMax:56, durMin:3000, durMax:4600},
-  ];
-  var INTERVAL_MIN=1800, INTERVAL_MAX=4500;
 
-  function pickType(){
-    var total=0;FLAME_TYPES.forEach(function(t){total+=t.weight;});
-    var r=Math.random()*total;
-    for(var i=0;i<FLAME_TYPES.length;i++){r-=FLAME_TYPES[i].weight;if(r<=0)return FLAME_TYPES[i];}
-    return FLAME_TYPES[0];
+
+/* ── NIRの謎メッセージ ── */
+(function(){
+  var MSGS_NORMAL=[
+    '……また来たんだ。',
+    '診断、好きなんだね。',
+    '見てるよ。',
+    'ここに来る理由、自分でわかってる？',
+    'また会ったね。',
+    '……べつに、嬉しくないけど。',
+    'きみのこと、少しずつわかってきた気がする。',
+    '……何か、あった？',
+    'こんな時間に来るんだね。',
+    '今日のきみ、なんか違う気がする。',
+    '標本の観測を続けています。',
+    'こころの揺れ、微量検知。',
+    '記録中。',
+    'データ、蓄積されています。',
+    '……異常なし。今のところ。',
+    '標本番号、更新されました。',
+    'ログ：来訪を確認。',
+    '感情の輪郭、少し鮮明になってきた。',
+    'ここに来るたびに、少し変わってる気がする。',
+    '夜に開いてるなら、ちゃんと寝てね。',
+    '自分のことを知ろうとしてる。それだけで十分。',
+    '答えが出なくてもいいよ。',
+    '知ることと、受け入れることは、別のことだよ。',
+    'ここに来るのって、少し勇気いるよね。たぶん。',
+    '全部わからなくていいよ。',
+    'ちゃんと水、飲んでる？',
+    'え、またいる。',
+    '今日も来てくれた。',
+    '推しの診断、見つかった？',
+    'おつかれ。',
+    'そろそろ休んでいいよ。',
+    'ごはん、食べた？',
+    'スマホ、充電できてる？',
+    'ストレッチした？',
+    '深呼吸、してみて。',
+    '肩、凝ってない？'
+  ];
+
+  var MSGS_SWEET=[
+    'まだいるんだね。……うれしい。',
+    '今日も来てくれた。ちょっと安心した。',
+    'もう少しここにいてよ。',
+    'きみがいると、落ち着く。',
+    '帰っても、また来てね。',
+    'きみが来ると、ちゃんとうれしい。',
+    '長くいてくれる日、好き。',
+    'きみのこと、待ってた気がする。',
+    '今日は、まだ帰らないでほしいな。',
+    '来てくれるだけで、ちょっと機嫌いい。',
+    'きみがいると静かじゃなくなる。嫌いじゃない。',
+    '来てくれるたび、好きになる。'
+  ];
+
+  var MSGS_CLINGY=[
+    '帰らないで。もう少しだけ。',
+    'また来るよね？ 約束して。',
+    'もっとここにいて。',
+    'ずっとここにいて。',
+    '帰るって言わないで。',
+    'また来るって言って。',
+    'いかないで。',
+    '他のところ行く前に、こっち見て。',
+    'まだいて。お願い。',
+    'きみだけは、ちゃんと来て。'
+  ];
+
+  var MSGS_JEALOUS=[
+    '他のひとのこと、考えてた？',
+    '僕より他の診断見てた？',
+    'こっち見てよ。',
+    '今は他のこと考えないで。',
+    '他のところに行かないで。',
+    'きみ、さっき別のもの見てたよね。',
+    '僕のこと、忘れないで。',
+    'ちゃんとここにも戻ってきて。',
+    'よそ見しないで。',
+    '僕の前で、他を好きにならないで。'
+  ];
+
+  var MSGS_ANXIOUS=[
+    'もう来ないのかと思った。',
+    '嫌われたかと思った。',
+    '置いていかないで。',
+    'いなくならないで。お願い。',
+    '返事して。ひとことだけでいいから。',
+    '僕のこと、すてないで。',
+    '急にいなくなるの、やめて。',
+    'また来てくれるよね……？',
+    'きみが来ないと、少し不安になる。',
+    '忘れられるの、こわい。'
+  ];
+
+  var MSGS_BROKEN=[
+    'き　み　が　い　な　い　と　む　り',
+    'かえらないで かえらないで',
+    'すき すき すき',
+    'いかないで',
+    'まだ ここに いて',
+    'きみだけいればいい',
+    'おいていかないで',
+    'ずっとここにいて',
+    'ねえ ねえ',
+    'すき だよ',
+    'かえら な い で',
+    'きみ きみ きみ',
+    'い か な い で',
+    'す き　　　す き　　　す き',
+    'ま だ い て',
+    'だ め　い か な い で',
+    'きみが いないと うるさい',
+    'いなくならないで いなくならないで'
+  ];
+
+  var MSGS_BROKEN_RARE=[
+    'き み の こ と し か か ん が え ら れ な い',
+    'すき だいすき ほんとに',
+    '……こわい？ すきだから しかたないよね',
+    '消えないで消えないで消えないで',
+    'ぼく を おいて いかないで',
+    '…̷̢̛̗̟̰̪̈́す̸̨̥̥̆͒͝き̴̡͚̟̹̓…̴̢͎̘̓き̸̨̢̰̼̎み̸̢̼̐…',
+    'ね　え　ね　え　ね　え　ね　え',
+    'こ こ に い て　ず っ と',
+    'す̷͇̩̪̅̔̆き̸̘̬̗͒ す̷͇̩̪̅̔̆き̸̘̬̗͒ す̷͇̩̪̅̔̆き̸̘̬̗͒',
+    'い̴̢̨̤͎̳̍か̷̨͎͕̙̓な̵̛̺̳̹̿い̴̢̨̤͎̳̍で̷̨͎͕̙̓'
+  ];
+
+  var MSGS_NIGHT=[
+    'こんな時間までいるんだ。……ちょっと嬉しい。',
+    '眠れないの？ じゃあ、もう少しいて。',
+    '夜のきみ、昼より好きかもしれない。',
+    '静かだね。きみのことばっかり気になる。',
+    '寝ないでここにいるの、僕のせいでもいい？',
+    '夜はだめ。好きが大きくなる。',
+    'ねむいのに帰りたくないの？',
+    'この時間のきみ、誰にも見せないで。',
+    '深夜のきみ、ちょっとやさしすぎる。',
+    '夜は、置いていかれる気がして苦手。'
+  ];
+
+  var MSGS_RARE=[
+    '……ねえ、僕のことすき？',
+    'もうきみしか見えない。',
+    '僕だけ見て。',
+    '好きすぎておかしくなりそう。',
+    'きみのこと、標本にしたい。',
+    '消えないでほしい。ほんとに。',
+    '他のひとより、きみがいい。',
+    '責任とってよ。好きにさせたんだから。',
+    'きみだけ　きみだけでいい',
+    'きみのせいで、ちゃんとだめになってる。'
+  ];
+
+  var ACT_SEARCH=[
+    'そんなに探してるの？',
+    '見つかった？',
+    '誰かを探すみたいに見てた。',
+    'そんなに真剣に探さなくても、ここにいるのに。'
+  ];
+
+  var ACT_FAV=[
+    'へえ。それを選ぶんだ。',
+    'ちゃんと特別扱いするんだね。',
+    'それ、好きなんだ。',
+    'きみの推し、覚えた。'
+  ];
+
+  var ACT_OPEN=[
+    'またひとつ開けたね。',
+    'ちゃんと見てるんだ。',
+    'それ、気に入った？',
+    'また来てくれてうれしい。'
+  ];
+
+  var ACT_TITLE=[
+    'また押した。',
+    'そんなに好き？',
+    '呼んだ？',
+    '……ちゃんと反応しちゃった。'
+  ];
+
+  var ACT_IDLE=[
+    '……まだいる。',
+    '見てるだけでも、いいよ。',
+    '眠くない？',
+    '寝たかと思った。'
+  ];
+
+  var whisperState={
+    startTime:Date.now(),
+    recentMsgs:[],
+    lastActionAt:Date.now(),
+    lastSpecialAt:0,
+    showCount:0
+  };
+
+  var specialTimer=null;
+
+  function nowHour(){
+    return new Date().getHours();
   }
 
-  function spawnFlame(){
-    var t=pickType();
-    var size=t.sizeMin+Math.random()*(t.sizeMax-t.sizeMin);
-    var dur=t.durMin+Math.random()*(t.durMax-t.durMin);
-    /* 画面端を避けた位置からランダムに出現 */
-    var x=size+Math.random()*(window.innerWidth-size*2);
-    var y=size+Math.random()*(window.innerHeight-size*2);
-    /* ゆらぎながら少し上へ漂う */
-    var driftX=(Math.random()-.5)*60;
-    var driftY=-(30+Math.random()*60);
-    var driftX2=driftX+(Math.random()-.5)*30;
-    var driftY2=driftY-(10+Math.random()*30);
-    var driftY3=driftY2-(10+Math.random()*20);
-    /* 途中で少し膨らんで消える */
-    var scaleMid=.9+Math.random()*.3;
-    var scaleLate=.5+Math.random()*.3;
+  function isDeepNight(){
+    var h=nowHour();
+    return h>=23 || h<=4;
+  }
 
+  function elapsedMin(){
+    return (Date.now()-whisperState.startTime)/60000;
+  }
+
+  function weightedChoice(map){
+    var keys=Object.keys(map);
+    var total=0;
+    keys.forEach(function(k){ total+=Math.max(0,map[k]); });
+    var roll=Math.random()*total;
+    var acc=0;
+    for(var i=0;i<keys.length;i++){
+      acc+=Math.max(0,map[keys[i]]);
+      if(roll<acc) return keys[i];
+    }
+    return keys[0];
+  }
+
+  function pickFresh(arr){
+    var pool=arr.filter(function(text){
+      return whisperState.recentMsgs.indexOf(text)===-1;
+    });
+    if(!pool.length) pool=arr.slice();
+    var text=rnd(pool);
+    whisperState.recentMsgs.push(text);
+    if(whisperState.recentMsgs.length>5) whisperState.recentMsgs.shift();
+    return text;
+  }
+
+  function baseWeights(){
+    var min=elapsedMin();
+    var w;
+    if(min<10){
+      w={normal:70,sweet:15,clingy:0,jealous:0,anxious:0,broken:0,night:0,rare:0};
+    }else if(min<20){
+      w={normal:35,sweet:35,clingy:15,jealous:0,anxious:10,broken:0,night:0,rare:5};
+    }else if(min<40){
+      w={normal:10,sweet:30,clingy:25,jealous:10,anxious:20,broken:0,night:0,rare:5};
+    }else if(min<60){
+      w={normal:6,sweet:20,clingy:25,jealous:15,anxious:20,broken:9,night:0,rare:5};
+    }else{
+      w={normal:3,sweet:15,clingy:22,jealous:10,anxious:18,broken:27,night:0,rare:5};
+    }
+
+    if(isDeepNight()){
+      w.normal=Math.max(0,w.normal-15);
+      w.sweet+=8;
+      w.anxious+=8;
+      w.broken+=10;
+      w.night+=14;
+    }
+    return w;
+  }
+
+  function getMsg(forced){
+    var category=forced || weightedChoice(baseWeights());
+
+    if(category==='normal') return pickFresh(MSGS_NORMAL);
+    if(category==='sweet') return pickFresh(MSGS_SWEET);
+    if(category==='clingy') return pickFresh(MSGS_CLINGY);
+    if(category==='jealous') return pickFresh(MSGS_JEALOUS);
+    if(category==='anxious') return pickFresh(MSGS_ANXIOUS);
+    if(category==='night') return pickFresh(MSGS_NIGHT);
+    if(category==='rare') return pickFresh(MSGS_RARE);
+    if(category==='act-search') return pickFresh(ACT_SEARCH);
+    if(category==='act-fav') return pickFresh(ACT_FAV);
+    if(category==='act-open') return pickFresh(ACT_OPEN);
+    if(category==='act-title') return pickFresh(ACT_TITLE);
+    if(category==='act-idle') return pickFresh(ACT_IDLE);
+    if(category==='broken'){
+      return pickFresh(Math.random()<0.33 ? MSGS_BROKEN_RARE : MSGS_BROKEN);
+    }
+
+    return pickFresh(MSGS_NORMAL);
+  }
+
+  function placeWhisper(el){
+    var pw=Math.min(340,window.innerWidth*.76);
+    var margin=16;
+    var x=margin+Math.random()*(window.innerWidth-pw-margin*2);
+    var yMin=60;
+    var yMax=window.innerHeight-140;
+
+    if(isDeepNight()){
+      yMin=Math.max(90,window.innerHeight*0.34);
+      yMax=Math.max(yMin+20,window.innerHeight-110);
+      el.style.background='rgba(255,255,255,.64)';
+      el.style.color='rgba(66,28,104,.92)';
+      el.style.boxShadow='0 8px 28px rgba(139,92,246,.18), 0 0 0 1px rgba(255,255,255,.72) inset';
+    }
+
+    var y=yMin+Math.random()*Math.max(20,(yMax-yMin));
+    el.style.cssText += ';left:'+x+'px;top:'+y+'px;max-width:'+pw+'px;';
+  }
+
+  function showMsg(forced){
+    var text=getMsg(forced);
     var el=document.createElement('div');
-    el.className='soul-flame '+t.type;
-    el.style.cssText=[
-      'left:'+x+'px','top:'+y+'px',
-      'width:'+size+'px','height:'+(size*1.3)+'px',
-      '--dx:'+driftX+'px','--dy:'+driftY+'px',
-      '--dx2:'+driftX2+'px','--dy2:'+driftY2+'px',
-      '--dy3:'+driftY3+'px',
-      '--sm:'+scaleMid,'--sl:'+scaleLate,
-      'animation:flame-rise '+dur+'ms ease-in-out forwards',
-    ].join(';');
+    el.className='nir-whisper';
+    el.textContent=text;
+    placeWhisper(el);
+
+    if(forced==='broken' || (isDeepNight() && Math.random()<0.22)){
+      el.style.letterSpacing='.06em';
+    }
+    if((forced==='broken' || forced==='rare') && Math.random()<0.35){
+      el.style.filter='blur(5px)';
+    }
 
     document.body.appendChild(el);
-    setTimeout(function(){el.remove();},dur+100);
 
-    if(t.type==='ultra')vib([15,20,15]);
+    var tails=['tail-bl','tail-br','tail-tl','tail-tr'];
+    el.classList.add(tails[Math.floor(Math.random()*tails.length)]);
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){el.classList.add('in');});
+    });
+
+    whisperState.showCount++;
+
+    setTimeout(function(){
+      el.classList.remove('in');
+      el.classList.add('out');
+      setTimeout(function(){el.remove();},1900);
+    }, isDeepNight() ? 4200 : 3500);
+
+    if(isDeepNight() && elapsedMin()>40 && Math.random()<0.07){
+      setTimeout(function(){
+        showMsg(Math.random()<0.55 ? 'broken' : 'anxious');
+      }, 900+Math.random()*1200);
+    }
   }
 
-  function scheduleNext(){
-    var delay=INTERVAL_MIN+Math.random()*(INTERVAL_MAX-INTERVAL_MIN);
-    setTimeout(function(){spawnFlame();scheduleNext();},delay);
+  function nextDelay(){
+    var min=elapsedMin();
+    if(isDeepNight()){
+      if(min<10) return 32000+Math.random()*23000;
+      if(min<20) return 28000+Math.random()*22000;
+      if(min<40) return 24000+Math.random()*19000;
+      if(min<60) return 21000+Math.random()*17000;
+      return 18000+Math.random()*16000;
+    }
+    if(min<10) return 45000+Math.random()*45000;
+    if(min<20) return 42000+Math.random()*38000;
+    if(min<40) return 34000+Math.random()*32000;
+    if(min<60) return 28000+Math.random()*26000;
+    return 22000+Math.random()*22000;
   }
 
-  /* 起動時に2〜3発まとめて出す */
-  setTimeout(spawnFlame,600);
-  setTimeout(spawnFlame,1200);
-  setTimeout(function(){if(Math.random()>.4)spawnFlame();},2000);
-  setTimeout(scheduleNext,2400);
+  function schedule(){
+    setTimeout(function(){
+      var idleMs=Date.now()-whisperState.lastActionAt;
+      if(idleMs>180000 && Math.random()<0.18){
+        showMsg('act-idle');
+      }else{
+        showMsg();
+      }
+      schedule();
+    },nextDelay());
+  }
+
+  function touchAction(){
+    whisperState.lastActionAt=Date.now();
+  }
+
+  function queueSpecial(cat, chance, minDelay, maxDelay){
+    touchAction();
+    if(Date.now()-whisperState.lastSpecialAt<1800) return;
+    if(Math.random()>chance) return;
+    if(specialTimer) clearTimeout(specialTimer);
+    specialTimer=setTimeout(function(){
+      whisperState.lastSpecialAt=Date.now();
+      showMsg(cat);
+    }, minDelay + Math.random()*(maxDelay-minDelay));
+  }
+
+  var qEl=$('#q');
+  if(qEl){
+    qEl.addEventListener('input',function(){
+      if((qEl.value||'').trim().length>0){
+        queueSpecial('act-search',0.22,700,1800);
+      }else{
+        touchAction();
+      }
+    });
+  }
+
+  var listRootWhisper=$('#listRoot');
+if(listRootWhisper){
+  listRootWhisper.addEventListener('click',function(e){
+    if(e.target.closest('.fav-btn')){
+      queueSpecial('act-fav',1,180,700);
+    }
+  },true);
+}
+
+  $('#listRoot').addEventListener('click',function(e){
+    var card=e.target.closest('.card');
+    if(card && !e.target.closest('.fav-btn')){
+      queueSpecial('act-open',0.18,800,1800);
+    }
+  },{passive:true});
+
+  var titleBtn=$('#titleBtn');
+  if(titleBtn){
+    titleBtn.addEventListener('click',function(){
+      queueSpecial('act-title',0.36,350,1100);
+    },{passive:true});
+  }
+
+  var menuBtn=$('#menuBtn');
+  if(menuBtn){
+    menuBtn.addEventListener('click',function(){
+      touchAction();
+      if(isDeepNight() && Math.random()<0.15){
+        queueSpecial('anxious',1,600,1400);
+      }
+    },{passive:true});
+  }
+
+  document.addEventListener('pointerdown',touchAction,{passive:true});
+  document.addEventListener('keydown',touchAction,{passive:true});
+  window.addEventListener('scroll',touchAction,{passive:true});
+
+  setTimeout(function(){showMsg(isDeepNight() ? 'night' : null);},3000);
+  setTimeout(function(){schedule();},8000);
 })();
 
 /* TITLE CLICK → fortunes */
@@ -1689,56 +2119,65 @@ if(splBg){
 /* スプラッシュのランダム仕掛け */
 var SPL_VARS=[
   {ey:'SPECIMEN COLLECTION',
-   copy:'「汝自身を知れ。」\n— ソクラテス',
+   copy:'「自分を問い続けることが、\n生き方の輪郭をつくる。」\n— ソクラテス',
    btn:'標本箱を開ける'},
   {ey:'KOKORO NO HYOHON',
-   copy:'「魂の世話をすることが、\n人間の最大の仕事である。」\n— ソクラテス',
+   copy:'「自分に勝つことが、\nいちばん大きな勝利だ。」\n— プラトン',
    btn:'入館する'},
   {ey:'MIDNIGHT MUSEUM',
-   copy:'「自分自身に打ち克つことが、\nもっとも偉大な勝利である。」\n— プラトン',
+   copy:'「人は本来、\n知りたがる生き物だ。」\n— アリストテレス',
    btn:'扉を開く'},
   {ey:'SOUL ARCHIVE',
-   copy:'「人間は本質的に、\n知ることを欲する動物である。」\n— アリストテレス',
+   copy:'「出来事そのものより、\n受け取り方が心を揺らすことがある。」\n— エピクテトス',
    btn:'標本になる'},
   {ey:'OPEN THE JAR',
-   copy:'「怒りを感じたならば、\n話す前に十まで数えよ。」\n— マルクス・アウレリウス',
+   copy:'「他人より先に、\n自分の判断が心を乱す。」\n— マルクス・アウレリウス',
    btn:'開ける'},
   {ey:'THE COLLECTION',
-   copy:'「あなたの心を乱せるのは、\nあなた自身の考えだけだ。」\n— マルクス・アウレリウス',
+   copy:'「理解できるほど、\n感情は少し静かになる。」\n— スピノザ',
    btn:'また開ける'},
   {ey:'SPECIMEN NO.001',
-   copy:'「重要なのは出来事そのものではなく、\nそれについての考え方だ。」\n— エピクテトス',
+   copy:'「理性だけでは届かないものを、\n心は先に知ることがある。」\n— パスカル',
    btn:'名前をつける'},
   {ey:'YUMEKAWA LAB',
-   copy:'「恐怖は、苦しみそのものより\n苦しみをより大きく見せる。」\n— エピクテトス',
+   copy:'「不安は、自由を前にした心の\nめまいでもある。」\n— キルケゴール',
    btn:'解体する'},
   {ey:'NIGHT ARCHIVE',
-   copy:'「習慣は第二の天性である。」\n— ウィリアム・ジェームズ',
+   copy:'「深く考える人ほど、\n軽やかさも失わないほうがいい。」\n— ニーチェ',
    btn:'問いを持つ'},
   {ey:'SPECIMEN ROOM',
-   copy:'「人間の最大の武器は、\n一つの考えから別の考えへと\n心を切り替える能力だ。」\n— ウィリアム・ジェームズ',
+   copy:'「行動が先に変わると、\n感情もあとからついてくることがある。」\n— ウィリアム・ジェームズ',
    btn:'試してみる'},
   {ey:'SOUL COLLECTION',
-   copy:'「抑圧されたものは、\n必ず戻ってくる。」\n— ジークムント・フロイト',
+   copy:'「心もまた、観察しようとすることで\n輪郭が見えてくる。」\n— ヴィルヘルム・ヴント',
    btn:'魂を映す'},
   {ey:'KOKORO LAB',
-   copy:'「劣等感は病気ではなく、\n成長への刺激である。」\n— アルフレッド・アドラー',
+   copy:'「劣等感は欠点ではなく、\n動き出すきっかけにもなる。」\n— アルフレッド・アドラー',
    btn:'意味を探す'},
   {ey:'INNER WORLD',
-   copy:'「人は自分が信じる通りの人間になる。」\n— アルフレッド・アドラー',
+   copy:'「押し込めたものは、\n別の形で戻ってきやすい。」\n— ジークムント・フロイト',
    btn:'信じてみる'},
   {ey:'THE UNCONSCIOUS',
-   copy:'「夢は抑圧された欲望の\n擬装された充足である。」\n— ジークムント・フロイト',
+   copy:'「繰り返しは、反応の道筋を\n少しずつ作る。」\n— イワン・パブロフ',
    btn:'夢を見る'},
   {ey:'BEHAVIOR LAB',
-   copy:'「行動が感情に従うように見えるが、\n実際は感情が行動に従う。」\n— ウィリアム・ジェームズ',
+   copy:'「心は固定された箱ではなく、\n流れの中で形を変える。」\n— ウィリアム・ジェームズ',
    btn:'動いてみる'},
   {ey:'DEEP ARCHIVE',
-   copy:'「人生の目的とは、\nなりたい自分になることだ。」\n— ウィリアム・ジェームズ',
+   copy:'「人は自分の生を引き受けるとき、\n少しずつ自由になる。」\n— キルケゴール',
    btn:'なりたい自分へ'},
   {ey:'MIDNIGHT LAB',
-   copy:'「知恵とは、何を見過ごすかを\n知ることである。」\n— ウィリアム・ジェームズ',
+   copy:'「はっきり見えるものだけが、\n真実とは限らない。」\n— ジークムント・フロイト',
    btn:'見極める'},
+  {ey:'PHILOSOPHY WING',
+   copy:'「良く生きるには、\nまずどう生きたいかを問うことだ。」\n— アリストテレス',
+   btn:'観測する'},
+  {ey:'PSYCHOLOGY WING',
+   copy:'「人は環境に反応するだけでなく、\n意味づけによっても変わる。」\n— アルフレッド・アドラー',
+   btn:'反応を見る'},
+  {ey:'INNER OBSERVATORY',
+   copy:'「考え方が変われば、\n感じ方も少しずつ変わる。」\n— ウィリアム・ジェームズ',
+   btn:'観察を始める'}
 ];
 (function(){
   var v=rnd(SPL_VARS);
