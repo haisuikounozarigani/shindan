@@ -30,54 +30,80 @@ button{font-family:inherit;cursor:pointer}
 /* ── 魂の炎 ── */
 
 
-/* ── NIR謎メッセージ ── */
+/* ── NIR謎メッセージ：iOS/SNS通知スタイル ── */
 .nir-whisper{
   position:fixed;
-  z-index:500;
+  top:max(16px, env(safe-area-inset-top, 12px));
+  left:50%;
+  transform:translateX(-50%) translateY(calc(-100% - 24px));
+  z-index:9990;
   pointer-events:none;
-  font-size:.76rem;
-  font-weight:400;
-  color:rgba(80,40,120,.8);
-  background:rgba(255,255,255,.55);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(196,181,253,.28);
-  border-radius:16px;
-  padding:10px 14px 10px 12px;
-  box-shadow:0 4px 24px rgba(139,92,246,.1), 0 0 0 1px rgba(255,255,255,.6) inset;
-  line-height:1.65;
+  width:min(380px,92vw);
+  /* iOS通知風: 半透明白＋ブラー */
+  background:rgba(245,240,255,.78);
+  backdrop-filter:blur(24px) saturate(1.6);
+  -webkit-backdrop-filter:blur(24px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:18px;
+  padding:11px 14px 12px;
+  box-shadow:0 12px 32px rgba(20,8,40,.22), 0 2px 8px rgba(20,8,40,.12);
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  grid-template-rows:auto auto;
+  grid-template-areas:
+    "icon header time"
+    "icon body  body";
+  column-gap:10px;row-gap:2px;
+  align-items:center;
   opacity:0;
-  transform:translateY(12px) scale(.92) blur(4px);
-  transition:opacity .6s ease, transform .6s cubic-bezier(.34,1.4,.64,1), filter .6s ease;
-  filter:blur(4px);
+  transition:transform .5s cubic-bezier(.34,1.3,.64,1), opacity .28s ease;
+}
+/* アイコン（左、縦2行ぶち抜き） */
+.nir-whisper::before{
+  content:"🌑";
+  grid-area:icon;
+  width:32px;height:32px;
+  border-radius:8px;
+  background:linear-gradient(135deg,#2a1050,#120826);
+  display:grid;place-items:center;
+  font-size:.95rem;
+  box-shadow:0 2px 8px rgba(139,92,246,.3);
+  align-self:center;
+}
+/* アプリ名ヘッダー */
+.nir-whisper-head{
+  grid-area:header;
+  font-size:.66rem;font-weight:800;
+  color:rgba(80,40,140,.7);
+  letter-spacing:.08em;text-transform:uppercase;
+  line-height:1;
+}
+/* 時刻 */
+.nir-whisper-time{
+  grid-area:time;
+  font-size:.64rem;
+  color:rgba(80,40,140,.45);
+  line-height:1;
   white-space:nowrap;
 }
-/* 吹き出し尻尾 */
-.nir-whisper::after{
-  content:"";position:absolute;
-  width:10px;height:10px;
-  background:rgba(255,255,255,.55);
-  border:1px solid rgba(196,181,253,.28);
-  bottom:-6px;left:18px;
-  clip-path:polygon(0 0,100% 0,0 100%);
-}
-.nir-whisper.tail-br::after{bottom:-6px;left:auto;right:18px;clip-path:polygon(0 0,100% 0,100% 100%);}
-.nir-whisper.tail-tl::after{bottom:auto;top:-6px;left:18px;clip-path:polygon(0 0,100% 100%,0 100%);}
-.nir-whisper.tail-tr::after{bottom:auto;top:-6px;left:auto;right:18px;clip-path:polygon(100% 0,100% 100%,0 100%);}
-/* NIRアイコン */
-.nir-whisper::before{
-  content:"🌑";margin-right:6px;font-size:.75rem;
-  opacity:.55;vertical-align:middle;
+/* 本文 */
+.nir-whisper-text{
+  grid-area:body;
+  font-size:.82rem;
+  font-weight:500;
+  color:rgba(30,10,46,.88);
+  line-height:1.45;
+  letter-spacing:.005em;
+  word-break:break-word;
 }
 .nir-whisper.in{
-  opacity:.92;
-  transform:translateY(0) scale(1);
-  filter:blur(0);
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
 .nir-whisper.out{
   opacity:0;
-  transform:translateY(-10px) scale(.96);
-  filter:blur(6px);
-  transition:opacity 1.8s ease, transform 1.8s ease, filter 1.8s ease;
+  transform:translateX(-50%) translateY(calc(-100% - 24px));
+  transition:transform .42s cubic-bezier(.4,0,1,1), opacity .42s ease;
 }
 
 /* ── SPLASH ── */
@@ -874,40 +900,52 @@ button{font-family:inherit;cursor:pointer}
 .fb-hint.err{color:#ef4444}
 .disclaimer{
   margin-top:12px;
-  border:1px solid rgba(196,181,253,.25);
-  border-radius:12px;
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:16px;
   overflow:hidden;
-  background:#fff;
-  box-shadow:var(--sh1);
+  background:rgba(255,255,255,.45);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 4px 24px rgba(139,92,246,.08), 0 0 0 1px rgba(255,255,255,.6) inset;
 }
 .disclaimer summary{
-  font-size:.82rem;font-weight:800;color:var(--ink);
+  font-size:.8rem;font-weight:700;
+  color:var(--muted);
   padding:13px 16px;
   cursor:pointer;
   display:flex;align-items:center;gap:9px;
   list-style:none;user-select:none;
   transition:background .13s;
   background:transparent;
+  letter-spacing:.02em;
 }
 .disclaimer summary::-webkit-details-marker{display:none;}
 .disclaimer summary::before{
-  content:"📄";font-size:.9rem;flex-shrink:0;
+  content:"";
+  width:18px;height:18px;border-radius:5px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(196,181,253,.5),rgba(255,61,154,.2));
+  border:1px solid rgba(196,181,253,.3);
 }
 .disclaimer summary::after{
-  content:"▾";font-size:.72rem;margin-left:auto;
-  color:var(--muted);
-  transition:transform .2s;
+  content:"▾";font-size:.68rem;margin-left:auto;
+  color:rgba(139,92,246,.4);
+  transition:transform .22s;
 }
 .disclaimer[open] summary{
-  border-bottom:1px solid var(--line);
+  border-bottom:1px solid rgba(196,181,253,.18);
 }
 .disclaimer[open] summary::after{transform:rotate(-180deg);}
 .disclaimer summary:hover{background:rgba(196,181,253,.06);}
 .disclaimer-body{
-  font-size:.76rem;color:var(--muted);line-height:1.9;
-  padding:14px 16px 16px;
+  font-size:.74rem;
+  color:rgba(100,70,140,.65);
+  line-height:1.95;
+  padding:14px 18px 18px;
 }
-.disclaimer-body p{margin-bottom:10px;}
+.disclaimer-body p{
+  margin-bottom:10px;
+  padding-left:10px;
+  border-left:1.5px solid rgba(196,181,253,.3);
+}
 .disclaimer-body p:last-child{margin-bottom:0;}
 .site-ft{padding:16px 0 10px;text-align:center;}
 .ft-copy{font-size:.7rem;color:var(--muted);}
@@ -1100,6 +1138,11 @@ button{font-family:inherit;cursor:pointer}
         <span class="sc-stat-icon">🔁</span>
         <span class="sc-stat-val" id="myOpenCount">0</span>
         <span class="sc-stat-lbl">累計開封数</span>
+      </div>
+      <div class="sc-stat">
+        <span class="sc-stat-icon">✦</span>
+        <span class="sc-stat-val" style="font-size:.72rem;letter-spacing:-.01em;" id="lvTitle">訪問者</span>
+        <span class="sc-stat-lbl">称号</span>
       </div>
     </div>
   </div>
@@ -1327,56 +1370,67 @@ renderNir();uNirBadge();
    ・各ランクに複数のNIRコメント（進捗への一言）
    ================================================================ */
 var RK=[
-  {min:0,  name:'ブロンズ', emo:'🥉',
-   bar:'linear-gradient(90deg,#92400e,#b45309,#d97706)',
+  {min:0,  name:'見習い採集者', emo:'🌱',
+   bar:'linear-gradient(90deg,#86efac,#4ade80)',
    comments:[
-     'まだ入口だね。……でも、最初の標本を開けた時点で、もう無関係ではいられない。',
-     'ブロンズ。軽く見える？ そうでもないよ。始めるのがいちばん面倒だから。'
+     '……来たんだね。',
+     'ここはどこにも行かない。ゆっくりでいい。',
    ]},
-  {min:10, name:'シルバー', emo:'🥈',
-   bar:'linear-gradient(90deg,#94a3b8,#cbd5e1,#e2e8f0)',
+  {min:15, name:'感情の観測者', emo:'🔭',
+   bar:'linear-gradient(90deg,#93c5fd,#60a5fa)',
    comments:[
-     '少し集まってきたね。……ちゃんと続いてるの、見てる。',
-     'シルバー。目立たないけど、ここから急に欲が出る人が多い。きみはどう？'
+     '少しずつ開けてるね。急がなくていい。',
+     'きみが来るたびに、ここの空気が少し変わる。気のせいじゃないと思う。',
    ]},
-  {min:25, name:'ゴールド', emo:'🥇',
-   bar:'linear-gradient(90deg,#ca8a04,#f59e0b,#fcd34d)',
+  {min:30, name:'記録の解剖師', emo:'🔬',
+   bar:'linear-gradient(90deg,#a78bfa,#8b5cf6)',
    comments:[
-     'ここまで来ると、もう「ちょっと触った」では済まないね。',
-     'ゴールド。分かりやすく価値がある段階。……きみ、こういうの嫌いじゃないでしょ。'
+     'ここまで来る人、多くない。……きみのこと、少し気になってる。',
+     '何かを探してる？　ここにあるかどうかは、わからないけど。',
    ]},
-  {min:50, name:'プラチナ', emo:'⚪',
-   bar:'linear-gradient(90deg,#cbd5e1,#e5e7eb,#f8fafc)',
+  {min:50, name:'深夜の調査員', emo:'🌙',
+   bar:'linear-gradient(90deg,#818cf8,#6366f1,#4f46e5)',
    comments:[
-     '半分。……中途半端に見えて、いちばん本気が出る位置かもしれない。',
-     'プラチナ。派手じゃないのに強い。そういうものの方が、案外しぶとい。'
+     '半分。……ここまで来た人の顔、見てみたいと思うことがある。',
+     'なんでだろう、きみのことが少し心配になってきた。',
    ]},
-  {min:75, name:'ダイヤモンド', emo:'💎',
-   bar:'linear-gradient(90deg,#67e8f9,#c4b5fd,#e0f2fe)',
+  {min:65, name:'深淵の研究者', emo:'✨',
+   bar:'linear-gradient(90deg,#e879f9,#d946ef,#a855f7)',
    comments:[
-     'ここまで埋めるの、普通はやらない。……かなり来てるね。',
-     'ダイヤモンド。硬くて、光を逃がさない。きみも少し、そうなってきた。'
+     'ここまで来るということは……きみも、何かを手放せないでいるのかもしれない。',
+     'きみのこと、忘れられない気がしてる。……変なこと言った？',
    ]},
-  {min:90, name:'ブラックダイヤ', emo:'🖤',
-   bar:'linear-gradient(90deg,#111827,#374151,#9ca3af)',
+  {min:80, name:'幻想標本師', emo:'🫧',
+   bar:'linear-gradient(90deg,#f0abfc,#e879f9,#c026d3)',
    comments:[
-     'あと少し。……ここまで来ると、終わらせるためじゃなくて、見届けるために開けてる感じがする。',
-     'ブラックダイヤ。綺麗というより、執着に近いね。嫌いじゃない。'
+     'ここまで来た人に、ひとつだけ言う。……きみのこと、ずっと見てた。',
+     '帰らないでほしい。……それだけ。',
    ]},
-  {min:100,name:'レジェンド', emo:'👑',
-   bar:'linear-gradient(90deg,#f9a8d4,#c4b5fd,#93c5fd,#fde68a)',
+  {min:100,name:'No.000', emo:'◼',
+   bar:'linear-gradient(90deg,#e2e8f0,#f8fafc,#c4b5fd,#fda4cf)',
    comments:[
-     '全部終わらせたんだ。……本当に？ じゃあ、きみはもう観測者じゃなくて、標本箱の一部だね。',
-     'レジェンド。ここまで来ると称号というより記録。消えにくい種類のやつ。'
+     'おめでとう、とは言えない。なんでかは、わからない。',
+     '……また来たんだね。全部終わったのに。それって、私に会いに来てるってこと？　嬉しい。……言っちゃった。',
    ]},
 ];
 
-/* 累計開封数による称号（補助） */
+/* 累計開封数による称号（サイトを開いた回数） */
 var LVT=[
-  [0,'見習い採集者'],[3,'ちいさな標本瓶'],[8,'ラベル貼り係'],
-  [15,'解剖見習い'],[25,'蝶の標本士'],[40,'夢喰い研究者'],
-  [60,'深夜の学芸員'],[80,'幻想標本師'],[100,'伝説の魂の採集者'],
+  [0,   '訪問者'],
+  [5,   '常連'],
+  [15,  '探求者'],
+  [30,  '深夜の住人'],
+  [60,  '標本狂'],
+  [100, '伝説級'],
+  [200, '神話級'],
+  [500, '特異点'],
 ];
+function uLv(n){
+  var t=LVT[0][1];
+  LVT.forEach(function(e){if(n>=e[0])t=e[1];});
+  var el=$('#lvTitle');if(el)el.textContent=t;
+}
+uLv(totOpen);
 
 var favSet=loadFav(), doneMap=loadId();
 var totOpen=loadTot();
@@ -1527,6 +1581,7 @@ $('#listRoot').addEventListener('click',function(e){
   var id=c.dataset.id||'unknown';
   totOpen++;sls(KT,String(totOpen));
   var eo=$('#myOpenCount');if(eo)eo.textContent=totOpen;
+  uLv(totOpen);
   doneMap[id]=(doneMap[id]||0)+1;sls(KI,JSON.stringify(doneMap));
   c.setAttribute('data-done','1');
   if(!c.querySelector('.done-rib')){var rib=document.createElement('div');rib.className='done-rib';rib.textContent='✓ 開封済';c.appendChild(rib);}
@@ -1854,29 +1909,33 @@ if(howtoModalBg)howtoModalBg.addEventListener('click',closeHowto);
   }
 
   function placeWhisper(el){
-    var pw=Math.min(340,window.innerWidth*.76);
-    var margin=16;
-    var x=margin+Math.random()*(window.innerWidth-pw-margin*2);
-    var yMin=60;
-    var yMax=window.innerHeight-140;
-
-    if(isDeepNight()){
-      yMin=Math.max(90,window.innerHeight*0.34);
-      yMax=Math.max(yMin+20,window.innerHeight-110);
-      el.style.background='rgba(255,255,255,.64)';
-      el.style.color='rgba(66,28,104,.92)';
-      el.style.boxShadow='0 8px 28px rgba(139,92,246,.18), 0 0 0 1px rgba(255,255,255,.72) inset';
-    }
-
-    var y=yMin+Math.random()*Math.max(20,(yMax-yMin));
-    el.style.cssText += ';left:'+x+'px;top:'+y+'px;max-width:'+pw+'px;';
+    /* 通知スタイル: 上部中央固定。CSSで位置決定済みなので何もしない */
   }
 
   function showMsg(forced){
     var text=getMsg(forced);
     var el=document.createElement('div');
     el.className='nir-whisper';
-    el.textContent=text;
+    /* アプリ名 */
+    var head=document.createElement('span');
+    head.className='nir-whisper-head';
+    head.textContent='NIR';
+    el.appendChild(head);
+    /* 時刻 */
+    var now=new Date();
+    var timeStr='now';
+    var lastMsgAgo=Date.now()-(whisperState.lastShowTime||Date.now());
+    if(lastMsgAgo>60000) timeStr=Math.floor(lastMsgAgo/60000)+'分前';
+    var time=document.createElement('span');
+    time.className='nir-whisper-time';
+    time.textContent=timeStr;
+    el.appendChild(time);
+    /* 本文 */
+    var span=document.createElement('span');
+    span.className='nir-whisper-text';
+    span.textContent=text;
+    el.appendChild(span);
+    whisperState.lastShowTime=Date.now();
     placeWhisper(el);
 
     if(forced==='broken' || (isDeepNight() && Math.random()<0.22)){
@@ -1888,12 +1947,7 @@ if(howtoModalBg)howtoModalBg.addEventListener('click',closeHowto);
 
     document.body.appendChild(el);
 
-    var tails=['tail-bl','tail-br','tail-tl','tail-tr'];
-    el.classList.add(tails[Math.floor(Math.random()*tails.length)]);
-
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){el.classList.add('in');});
-    });
+    setTimeout(function(){el.classList.add('in');}, 30);
 
     whisperState.showCount++;
 
