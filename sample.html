@@ -37,7 +37,9 @@ button{font-family:inherit;cursor:pointer}
   left:50%;
   transform:translateX(-50%) translateY(calc(-100% - 24px));
   z-index:9990;
-  pointer-events:none;
+  pointer-events:auto;
+  cursor:pointer;
+  touch-action:pan-x;
   width:min(380px,92vw);
   /* iOS通知風: 半透明白＋ブラー */
   background:rgba(245,240,255,.78);
@@ -816,9 +818,11 @@ button{font-family:inherit;cursor:pointer}
 .sec{margin-bottom:28px;position:relative;}
 .sec::before{content:attr(data-n);position:absolute;left:-8px;top:-12px;font-size:clamp(6rem,14vw,10rem);font-weight:900;letter-spacing:-.06em;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(139,92,246,.09);pointer-events:none;z-index:0;user-select:none;}
 .sec[data-cat="fun"]::before{-webkit-text-stroke:1.5px rgba(249,115,22,.07);}
+.sec[data-cat="ethos"]::before{-webkit-text-stroke:1.5px rgba(100,116,139,.1);}
 .sec-hd{display:flex;align-items:baseline;gap:14px;padding-bottom:10px;border-bottom:2px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(90deg,var(--pk),var(--pu),var(--lv)) border-box;margin-bottom:14px;position:relative;z-index:1;}
 .sec-n{font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1;letter-spacing:-.04em;}
 .sec[data-cat="science"] .sec-n{background:linear-gradient(135deg,var(--sci),#a0c4ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sec[data-cat="ethos"] .sec-n{background:linear-gradient(135deg,#64748b,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .sec[data-cat="fun"] .sec-n{background:linear-gradient(135deg,var(--fun),#ffd970);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .sec-info{flex:1;}
 .sec-label{font-size:1rem;font-weight:900;color:var(--ink);letter-spacing:-.01em;}
@@ -837,32 +841,222 @@ button{font-family:inherit;cursor:pointer}
 .card:nth-child(3){animation-delay:.09s}.card:nth-child(4){animation-delay:.12s}
 .card:nth-child(5){animation-delay:.15s}.card:nth-child(6){animation-delay:.18s}
 .card.fav{border-color:rgba(255,61,154,.3);}
-.card[data-done="1"]{opacity:.72;}
+.card[data-done="1"]{opacity:.85;}
+.card[data-done="1"] .c-emo-area{position:relative;}
 .c-emo-area{width:76px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative;overflow:hidden;background:linear-gradient(160deg,#ede0ff,#fcd8f0);border-right:1.5px solid rgba(196,181,253,.18);transition:filter .18s;}
 .c-emo-area::before{content:"";position:absolute;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);top:-10px;left:-10px;pointer-events:none;}
 .sec[data-cat="fun"] .c-emo-area{background:linear-gradient(160deg,#ffe5c8,#ffd0e8);border-right-color:rgba(253,164,207,.22);}
+.sec[data-cat="ethos"] .c-emo-area{background:linear-gradient(160deg,#e7ebf0,#d8dde5);border-right-color:rgba(148,163,184,.24);}
 .card:hover .c-emo-area{filter:saturate(1.1) brightness(1.04);}
 .c-body{flex:1;min-width:0;padding:10px 36px 10px 13px;display:flex;flex-direction:column;justify-content:center;}
 .c-title{font-weight:800;font-size:.88rem;line-height:1.3;color:var(--ink);margin-bottom:3px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;}
 .c-sub{font-size:.75rem;color:var(--muted);line-height:1.45;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.c-footer{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.pill{font-size:.64rem;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(196,181,253,.12);color:var(--muted);border:none;}
-.c-btn{appearance:none;border:none;margin-left:auto;flex-shrink:0;font-size:.72rem;font-weight:900;padding:5px 12px;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;display:flex;align-items:center;gap:3px;transition:filter .14s,transform .12s,box-shadow .14s;box-shadow:0 2px 8px rgba(255,61,154,.22);white-space:nowrap;}
-.c-btn::after{content:"→";font-size:.65rem;transition:transform .14s;display:inline-block;}
-.c-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,61,154,.35);}
-.c-btn:hover::after{transform:translateX(2px);}
-.c-redo{display:none;appearance:none;border:none;margin-left:auto;flex-shrink:0;font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:999px;color:var(--gr);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);transition:background .12s;}
-.c-redo:hover{background:rgba(52,211,153,.2);}
+.c-footer{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  flex-wrap:nowrap;
+  padding-right:74px;
+  min-height:34px;
+  overflow:hidden;
+}
+.c-footer .c-btn{margin-left:0;}
+/* pillが折り返しても、ボタンは常に最終行の右端に来るように */
+.c-footer::after{content:"";flex:1 1 auto;}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  flex-shrink:0;
+  white-space:nowrap;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  line-height:1.2;
+  font-size:.64rem;
+  font-weight:600;
+  padding:2px 8px;
+  border-radius:999px;
+  background:rgba(196,181,253,.12);
+  color:var(--muted);
+  border:none;
+}
+.c-btn{
+  appearance:none;border:none;
+  margin-left:0;flex-shrink:0;
+  order:99;
+  font-size:.72rem;font-weight:900;
+  padding:7px 16px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff3d9a 0%,#c026d3 50%,#7c3aed 100%);
+  background-size:200% 100%;
+  background-position:0% 50%;
+  color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;
+  letter-spacing:.08em;
+  text-align:center;
+  box-shadow:
+    0 4px 14px rgba(255,61,154,.4),
+    0 2px 6px rgba(139,92,246,.3),
+    inset 0 1px 0 rgba(255,255,255,.3);
+  position:absolute;right:12px;bottom:12px;overflow:hidden;
+  transition:background-position .35s ease, transform .14s cubic-bezier(.34,1.4,.64,1), box-shadow .14s;
+  white-space:nowrap;
+  min-width:46px;
+  z-index:3;
+}
+/* 光の走査 */
+.c-btn::before{
+  content:"";position:absolute;
+  top:0;left:-70%;width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-20deg);
+  animation:btn-shine 3.5s ease-in-out infinite;
+}
+@keyframes btn-shine{
+  0%,60%{left:-70%}
+  80%,100%{left:130%}
+}
+.c-btn::after{display:none;}
+.c-btn:hover{
+  background-position:100% 50%;
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:
+    0 8px 22px rgba(255,61,154,.55),
+    0 4px 10px rgba(139,92,246,.4),
+    inset 0 1px 0 rgba(255,255,255,.4);
+}
+
+.c-btn:active{transform:translateY(0) scale(.98);}
+.c-redo{
+  display:none;appearance:none;border:none;
+  margin-left:0;margin-right:0;order:99;flex-shrink:0;
+  font-size:.72rem;font-weight:900;
+  padding:7px 16px;
+  border-radius:999px;
+  color:var(--gr);
+  background:rgba(52,211,153,.12);
+  border:1px solid rgba(52,211,153,.28);
+  transition:background .12s, transform .14s cubic-bezier(.34,1.4,.64,1), box-shadow .14s;
+  letter-spacing:.04em;
+  position:absolute;right:12px;bottom:12px;
+  white-space:nowrap;
+  min-width:46px;
+  z-index:3;
+}
+.c-redo:hover{
+  background:rgba(52,211,153,.2);
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 6px 18px rgba(52,211,153,.22);
+}
 .card[data-done="1"] .c-btn{display:none}
 .card[data-done="1"] .c-redo{display:inline-flex;align-items:center;gap:4px;}
 .bnew{display:inline-block;font-size:.56rem;font-weight:900;letter-spacing:.04em;padding:1.5px 6px;vertical-align:middle;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;box-shadow:0 1px 5px rgba(255,61,154,.22);}
-.done-rib{position:absolute;top:13px;left:-22px;width:86px;background:linear-gradient(90deg,#22c97a,#16a86a);color:#fff;font-size:.53rem;font-weight:900;letter-spacing:.05em;text-align:center;padding:3px 0;transform:rotate(-35deg);box-shadow:0 2px 8px rgba(34,201,122,.4);pointer-events:none;z-index:5;}
-.done-chip{display:inline-flex;align-items:center;gap:2px;font-size:.56rem;font-weight:800;padding:2px 6px;white-space:nowrap;background:rgba(52,211,153,.1);color:var(--gr);border:1px solid rgba(52,211,153,.25);}
-.fav-btn{position:absolute;top:8px;right:8px;width:24px;height:24px;appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:.82rem;border-radius:50%;transition:transform .14s,background .12s;color:rgba(150,100,150,.4);z-index:4;}
+/* 蝶々済バッジ — 絵文字エリア右上 */
+.done-butterfly{
+  position:absolute;top:4px;right:4px;z-index:5;
+  display:grid;place-items:center;
+  pointer-events:none;
+  filter:
+    drop-shadow(0 2px 4px rgba(56,92,165,.35))
+    drop-shadow(0 0 10px rgba(147,197,253,.5));
+  animation:butterfly-in .6s cubic-bezier(.34,1.56,.64,1),
+            butterfly-flutter 3.5s ease-in-out .6s infinite;
+}
+.done-butterfly::before{
+  content:"🦋";
+  font-size:1.35rem;line-height:1;
+  /* 儚い青グラデ */
+  background:linear-gradient(
+    115deg,
+    #e0f2fe 0%,
+    #bae6fd 22%,
+    #7dd3fc 42%,
+    #a5b4fc 62%,
+    #c4b5fd 82%,
+    #e0f2fe 100%
+  );
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  mix-blend-mode:luminosity;
+  animation:butterfly-shine 3s ease-in-out infinite;
+}
+.done-butterfly::after{
+  content:"済";
+  position:absolute;
+  bottom:-4px;right:-6px;
+  font-size:.48rem;font-weight:900;letter-spacing:.04em;
+  padding:1.5px 5px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#dbeafe,#93c5fd,#a5b4fc);
+  background-size:200% 100%;
+  color:#1e3a8a;
+  box-shadow:0 1px 4px rgba(56,92,165,.3), inset 0 1px 0 rgba(255,255,255,.7);
+  animation:butterfly-shine 3s ease-in-out infinite;
+}
+
+@keyframes butterfly-in{
+  0%{opacity:0;transform:scale(.3) rotate(-30deg);}
+  70%{transform:scale(1.2) rotate(8deg);}
+  100%{opacity:1;transform:scale(1) rotate(0);}
+}
+@keyframes butterfly-flutter{
+  0%,100%{transform:translateY(0) rotate(0);}
+  25%{transform:translateY(-2px) rotate(-3deg);}
+  75%{transform:translateY(1px) rotate(3deg);}
+}
+@keyframes butterfly-shine{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.fav-btn{position:absolute;top:8px;right:8px;width:26px;height:26px;appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:.86rem;border-radius:50%;transition:transform .14s,background .12s;color:rgba(150,100,150,.4);z-index:4;overflow:visible;}
 .fav-btn::before{content:"♡"}
-.fav-btn[aria-pressed="true"]::before{content:"♥";color:var(--pk)}
-.fav-btn[aria-pressed="true"]{background:rgba(255,61,154,.07);border-color:rgba(255,61,154,.28);}
-.fav-btn:hover{transform:scale(1.2);}
+.fav-btn[aria-pressed="true"]::before{content:"♥";color:var(--pk);animation:fav-beat .5s ease-out;}
+.fav-btn[aria-pressed="true"]{background:rgba(255,61,154,.08);border-color:rgba(255,61,154,.35);}
+.fav-btn:hover{transform:scale(1.15);}
+@keyframes fav-beat{
+  0%{transform:scale(1);}
+  30%{transform:scale(1.6);}
+  55%{transform:scale(.9);}
+  100%{transform:scale(1);}
+}
+
+/* 押した瞬間の標本瓶枠 */
+.fav-jar{
+  position:absolute;top:-4px;right:-4px;
+  width:34px;height:34px;
+  border:2px solid var(--pk);
+  border-radius:6px;
+  pointer-events:none;
+  opacity:0;z-index:6;
+  animation:fav-jar-pop .7s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+
+@keyframes fav-jar-pop{
+  0%{opacity:0;transform:scale(.4);}
+  25%{opacity:1;transform:scale(1.15);}
+  55%{opacity:1;transform:scale(1);}
+  100%{opacity:0;transform:scale(1.4);}
+}
+@keyframes fav-label{
+  0%,10%{opacity:0;transform:translate(-50%,4px);}
+  30%{opacity:1;transform:translate(-50%,0);}
+  70%{opacity:1;}
+  100%{opacity:0;transform:translate(-50%,-6px);}
+}
+
+/* 飛び散るハート */
+.fav-particle{
+  position:absolute;top:50%;left:50%;
+  font-size:.7rem;color:var(--pk);
+  pointer-events:none;opacity:0;z-index:7;
+  text-shadow:0 0 6px rgba(255,61,154,.5);
+  animation:fav-burst .8s cubic-bezier(.2,.6,.3,1) forwards;
+}
+@keyframes fav-burst{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.4);}
+  30%{opacity:1;transform:translate(calc(-50% + var(--bx)*.6),calc(-50% + var(--by)*.6)) scale(1.1);}
+  100%{opacity:0;transform:translate(calc(-50% + var(--bx)),calc(-50% + var(--by))) scale(.6);}
+}
 .empty{grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--muted);font-size:.88rem;}
 
 /* ── C. サイト案内 ── */
@@ -885,19 +1079,111 @@ button{font-family:inherit;cursor:pointer}
 .bk-log{font-size:.71rem;color:var(--muted);background:rgba(196,181,253,.07);padding:9px 12px;line-height:1.8;white-space:pre-wrap;word-break:break-all;border:1px solid var(--line);border-radius:6px;}
 .bk-toast{display:none;margin-top:7px;padding:6px 13px;border-radius:6px;background:var(--ink);color:#fff;font-size:.77rem;font-weight:700;}
 .bk-toast.show{display:inline-block}
-.fb{border:1px solid var(--line);background:var(--card);padding:20px 18px;margin-bottom:14px;border-radius:10px;box-shadow:var(--sh1);}
-.fb-hd{font-size:.98rem;font-weight:900;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.fb-hd::before{content:"";width:3px;height:18px;background:linear-gradient(180deg,var(--pk),var(--pu));flex-shrink:0;border-radius:2px;}
-.fb-desc{font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:14px;}
-.fb label{display:flex;flex-direction:column;gap:4px;font-size:.82rem;font-weight:700;color:var(--fg);margin-bottom:9px;}
-.fb input,.fb textarea,.fb select{padding:9px 11px;border:1.5px solid var(--line);font-family:inherit;font-size:.87rem;color:var(--fg);outline:none;background:#fff;transition:border-color .13s;border-radius:7px;}
-.fb input:focus,.fb textarea:focus,.fb select:focus{border-color:var(--pu);}
-.fb textarea{min-height:86px;resize:vertical}
-.fb-sub{appearance:none;border:none;padding:11px 26px;font-weight:900;font-size:.9rem;font-family:inherit;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;border-radius:8px;transition:transform .13s,filter .13s;}
-.fb-sub:hover{transform:translateY(-2px);filter:brightness(1.08);}
-.fb-hint{font-size:.72rem;color:var(--muted);line-height:1.7;margin-top:9px;}
-.fb-hint.ok{color:var(--gr);font-weight:700}
-.fb-hint.err{color:#ef4444}
+.fb{
+  position:relative;
+  padding:24px 22px;
+  margin-bottom:14px;
+  border-radius:18px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.85),rgba(252,248,255,.75));
+  border:1px solid rgba(196,181,253,.3);
+  box-shadow:0 4px 20px rgba(139,92,246,.08), inset 0 0 0 1px rgba(255,255,255,.7);
+  overflow:hidden;
+}
+/* 手紙風の装飾 */
+.fb::before{
+  content:"";position:absolute;
+  top:-20px;right:-20px;
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,61,154,.08),transparent 70%);
+  pointer-events:none;
+}
+.fb::after{
+  content:"";position:absolute;
+  bottom:-30px;left:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,92,246,.08),transparent 70%);
+  pointer-events:none;
+}
+.fb-hd{
+  font-size:1.02rem;font-weight:900;color:var(--ink);
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;
+  position:relative;z-index:1;
+}
+.fb-hd::before{
+  content:"💌";
+  font-size:1.1rem;
+  filter:drop-shadow(0 2px 4px rgba(255,61,154,.25));
+}
+.fb-desc{
+  font-size:.82rem;color:var(--muted);line-height:1.72;
+  margin-bottom:18px;
+  position:relative;z-index:1;
+}
+.fb form{position:relative;z-index:1;}
+.fb label{
+  display:flex;flex-direction:column;gap:5px;
+  font-size:.76rem;font-weight:700;color:var(--muted);
+  letter-spacing:.04em;
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
+.fb input,.fb textarea,.fb select{
+  padding:11px 13px;
+  border:1px solid rgba(196,181,253,.3);
+  font-family:inherit;font-size:.88rem;
+  color:var(--ink);outline:none;
+  background:rgba(255,255,255,.7);
+  backdrop-filter:blur(4px);
+  transition:border-color .14s, box-shadow .14s, background .14s;
+  border-radius:10px;
+  font-weight:400;text-transform:none;letter-spacing:normal;
+}
+.fb input:focus,.fb textarea:focus,.fb select:focus{
+  border-color:var(--pu);
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(139,92,246,.15);
+}
+.fb textarea{min-height:100px;resize:vertical;line-height:1.6;}
+.fb-sub{
+  appearance:none;border:none;
+  display:block;margin-left:auto;margin-top:8px;
+  padding:13px 32px;
+  font-weight:900;font-size:.9rem;font-family:inherit;letter-spacing:.06em;
+  background:linear-gradient(135deg,#ff3d9a,#c026d3,#7c3aed);
+  background-size:200% 100%;background-position:0% 50%;
+  color:#fff;border-radius:999px;
+  box-shadow:0 4px 16px rgba(255,61,154,.35), inset 0 1px 0 rgba(255,255,255,.3);
+  transition:background-position .3s, transform .14s cubic-bezier(.34,1.4,.64,1), box-shadow .14s;
+}
+.fb-sub:hover{
+  background-position:100% 50%;
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(255,61,154,.5);
+}
+.fb-sub:active{transform:translateY(0);}
+.fb-hint{
+  font-size:.72rem;color:var(--muted);line-height:1.75;
+  margin-top:12px;
+  padding-left:12px;
+  border-left:2px solid rgba(196,181,253,.3);
+}
+.fb-hint.ok{color:var(--gr);font-weight:700;border-left-color:var(--gr);}
+.fb-hint.err{color:#ef4444;border-left-color:#ef4444;}
+
+/* 注意書き小字 */
+.fb-notes{
+  margin-top:14px;
+  padding:10px 14px;
+  background:rgba(196,181,253,.06);
+  border:1px solid rgba(196,181,253,.18);
+  border-radius:8px;
+  font-size:.68rem;color:var(--muted);line-height:1.7;
+  position:relative;z-index:1;
+}
+.fb-notes p{margin-bottom:4px;}
+.fb-notes p:last-child{margin-bottom:0;}
 .disclaimer{
   margin-top:12px;
   border:1px solid rgba(255,255,255,.55);
@@ -947,8 +1233,87 @@ button{font-family:inherit;cursor:pointer}
   border-left:1.5px solid rgba(196,181,253,.3);
 }
 .disclaimer-body p:last-child{margin-bottom:0;}
-.site-ft{padding:16px 0 10px;text-align:center;}
-.ft-copy{font-size:.7rem;color:var(--muted);}
+/* ── フッター：SNSプロフィールカード ── */
+.site-ft{
+  margin-top:32px;
+  padding:24px 0 max(24px,env(safe-area-inset-bottom,16px));
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+
+.profile-card{
+  width:100%;
+  background:rgba(255,255,255,.6);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(196,181,253,.22);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 2px 14px rgba(139,92,246,.06);
+}
+.pc-cover{
+  height:56px;
+  background:linear-gradient(135deg,rgba(233,222,255,.7) 0%,rgba(251,213,238,.7) 50%,rgba(255,229,200,.7) 100%);
+  position:relative;overflow:hidden;
+}
+.pc-cover::before{
+  content:"";position:absolute;
+  width:140px;height:140px;border-radius:50%;
+  right:-30px;top:-40px;
+  background:radial-gradient(circle,rgba(255,255,255,.7),transparent 70%);
+}
+.pc-cover::after{
+  content:"";position:absolute;
+  width:100px;height:100px;border-radius:50%;
+  left:20px;top:20px;
+  background:radial-gradient(circle,rgba(196,181,253,.4),transparent 70%);
+}
+.pc-body{padding:0 18px 18px;position:relative;}
+.pc-avatar{
+  width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,#3a1860,#0e0618);
+  border:3px solid #fff;
+  display:grid;place-items:center;
+  font-size:1.6rem;
+  margin-top:-32px;margin-bottom:10px;
+  box-shadow:0 4px 16px rgba(139,92,246,.25);
+  position:relative;
+}
+.pc-avatar::after{
+  content:"";position:absolute;bottom:2px;right:2px;
+  width:14px;height:14px;border-radius:50%;
+  background:#84ff6a;
+  border:2.5px solid #fff;
+  box-shadow:0 0 6px rgba(132,255,106,.5);
+}
+.pc-name-row{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+.pc-name{font-size:.95rem;font-weight:900;color:var(--ink);}
+.pc-verified{
+  width:14px;height:14px;
+  background:linear-gradient(135deg,var(--pk),var(--pu));
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-size:.55rem;color:#fff;font-weight:900;
+}
+.pc-handle{font-size:.73rem;color:var(--muted);margin-bottom:10px;}
+.pc-bio{font-size:.78rem;color:var(--fg);line-height:1.6;margin-bottom:12px;}
+.pc-links{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.pc-link{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 6px;border-radius:10px;
+  font-size:.62rem;font-weight:700;
+  text-decoration:none;
+  background:rgba(196,181,253,.08);
+  border:1px solid rgba(196,181,253,.18);
+  color:var(--muted);
+  transition:background .14s,border-color .14s,color .14s,transform .12s;
+}
+.pc-link:hover{
+  background:linear-gradient(135deg,rgba(255,61,154,.08),rgba(139,92,246,.08));
+  border-color:rgba(139,92,246,.3);
+  color:var(--pu);
+  transform:translateY(-2px);
+}
+.pc-link-ico{font-size:1.05rem;line-height:1;}
+.ft-copy{font-size:.68rem;color:rgba(122,96,126,.45);letter-spacing:.06em;}
 @media(max-width:600px){.stab-n{display:none}.stab{font-size:.72rem}}
 </style>
 </head>
@@ -1010,6 +1375,14 @@ button{font-family:inherit;cursor:pointer}
     <a href="/chishiki/" class="menu-item"><span class="mi-emo">📚</span>知識の水槽<span class="mi-ext">↗</span></a>
     <a href="/torikago/" class="menu-item"><span class="mi-emo">🐦</span>試練の鳥籠<span class="mi-ext">↗</span></a>
     <a href="/nir/" class="menu-item"><span class="mi-emo">🕯</span>NIR の部屋<span class="mi-ext">↗</span></a>
+  </div>
+  <div class="menu-div"></div>
+  <div class="menu-sec">
+    <div class="menu-sec-lbl">SNS・運営者</div>
+    <a href="https://x.com/oki2a?s=21" target="_blank" rel="noopener" class="menu-item"><span class="mi-emo">𝕏</span>X (Twitter)<span class="mi-ext">↗</span></a>
+    <a href="https://www.instagram.com/zariganitabetai7/" target="_blank" rel="noopener" class="menu-item"><span class="mi-emo">📷</span>Instagram<span class="mi-ext">↗</span></a>
+    <a href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener" class="menu-item"><span class="mi-emo">💬</span>LINE<span class="mi-ext">↗</span></a>
+    <a href="/shindan/seikaku.html" class="menu-item"><span class="mi-emo">🪪</span>自己紹介<span class="mi-ext">↗</span></a>
   </div>
 </nav>
 
@@ -1176,8 +1549,9 @@ button{font-family:inherit;cursor:pointer}
     </div>
     <div class="cattabs" id="catTabs">
       <button class="ctab c-all" data-c="all">🗂 全カテゴリ</button>
-      <button class="ctab" data-c="science">🧬 こころの解剖室</button>
-      <button class="ctab" data-c="fun">🎪 きまぐれ標本</button>
+      <button class="ctab" data-c="science">🧬 LOGOS標本</button>
+      <button class="ctab" data-c="ethos">⚖️ ETHOS標本</button>
+      <button class="ctab" data-c="fun">🎪 PATHOS標本</button>
     </div>
     <p class="rc" id="rc"><strong>0</strong> 件表示中</p>
   </div>
@@ -1185,7 +1559,7 @@ button{font-family:inherit;cursor:pointer}
   <!-- CARDS -->
   <div id="listRoot">
     <div class="sec" data-cat="science" data-n="01" id="sec-science">
-      <div class="sec-hd"><div class="sec-n">01</div><div class="sec-info"><div class="sec-label">🧬 こころの解剖室</div><div class="sec-sub">心理学・認知科学エビデンスベース</div></div><span class="sec-done" id="done-science"></span></div>
+      <div class="sec-hd"><div class="sec-n">01</div><div class="sec-info"><div class="sec-label">🧬 LOGOS標本</div><div class="sec-sub">論理・科学エビデンスベース</div></div><span class="sec-done" id="done-science"></span></div>
       <div class="grid">
         <a href="/shindan/housekishin.html?src=specimens" class="card" data-id="housekishin" data-reco="1" data-cat="science" data-updated="2025-10-30" data-keywords="恋愛 宝石 愛着 安定 回避 不安 48問"><div class="c-emo-area">💎</div><div class="c-body"><div class="c-title">宝石恋愛タイプ 48問<span class="bnew" data-new>NEW</span></div><div class="c-sub">恋愛傾向をイラスト＋棒グラフ＋テキスト解説。</div><div class="c-footer"><span class="pill">⏱8分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
         <a href="/shindan/openness.html?src=specimens" class="card" data-id="openness" data-cat="science" data-updated="2025-09-29" data-keywords="開放性 神話 インド 18問 想像力"><div class="c-emo-area">🕉️</div><div class="c-body"><div class="c-title">開放性・インド神話 18問<span class="bnew" data-new>NEW</span></div><div class="c-sub">新しい体験や発想をどれだけ楽しめるか。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
@@ -1201,8 +1575,18 @@ button{font-family:inherit;cursor:pointer}
         <a href="/shindan/sweetshin.html?src=specimens" class="card" data-id="sweetshin" data-cat="science" data-updated="2025-10-30" data-keywords="休息 スイーツ 疲れ 14問"><div class="c-emo-area">🍰</div><div class="c-body"><div class="c-title">7つの休息 × スイーツ 14問<span class="bnew" data-new>NEW</span></div><div class="c-sub">疲れ方のタイプを見極め、合う休み方をスイーツで提案。</div><div class="c-footer"><span class="pill">⏱3分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
       </div>
     </div>
-    <div class="sec" data-cat="fun" data-n="02" id="sec-fun">
-      <div class="sec-hd"><div class="sec-n">02</div><div class="sec-info"><div class="sec-label">🎪 きまぐれ標本</div><div class="sec-sub">面白さ・キャッチーさ重視</div></div><span class="sec-done" id="done-fun"></span></div>
+    <div class="sec" data-cat="ethos" data-n="02" id="sec-ethos">
+      <div class="sec-hd"><div class="sec-n">02</div><div class="sec-info"><div class="sec-label">⚖️ ETHOS標本</div><div class="sec-sub">科学とエンタメの中間領域</div></div><span class="sec-done" id="done-ethos"></span></div>
+      <div class="grid">
+        <!-- ダミー3枚 -->
+        <a href="#" class="card" data-id="_ethos_dummy_1" data-cat="ethos" data-updated="2025-01-01" data-keywords="ダミー"><div class="c-emo-area">⚖️</div><div class="c-body"><div class="c-title">（ダミー）ETHOS診断A</div><div class="c-sub">振り分け待ち。あとで差し替え予定。</div><div class="c-footer"><span class="pill">⏱-</span><button class="c-btn" type="button" aria-hidden="true">開く</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="#" class="card" data-id="_ethos_dummy_2" data-cat="ethos" data-updated="2025-01-01" data-keywords="ダミー"><div class="c-emo-area">⚖️</div><div class="c-body"><div class="c-title">（ダミー）ETHOS診断B</div><div class="c-sub">振り分け待ち。あとで差し替え予定。</div><div class="c-footer"><span class="pill">⏱-</span><button class="c-btn" type="button" aria-hidden="true">開く</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="#" class="card" data-id="_ethos_dummy_3" data-cat="ethos" data-updated="2025-01-01" data-keywords="ダミー"><div class="c-emo-area">⚖️</div><div class="c-body"><div class="c-title">（ダミー）ETHOS診断C</div><div class="c-sub">振り分け待ち。あとで差し替え予定。</div><div class="c-footer"><span class="pill">⏱-</span><button class="c-btn" type="button" aria-hidden="true">開く</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+      </div>
+    </div>
+
+    <div class="sec" data-cat="fun" data-n="03" id="sec-fun">
+      <div class="sec-hd"><div class="sec-n">03</div><div class="sec-info"><div class="sec-label">🎪 PATHOS標本</div><div class="sec-sub">感情・面白さ・キャッチーさ重視</div></div><span class="sec-done" id="done-fun"></span></div>
       <div class="grid">
         <a href="/shindan/star-guide.html?src=specimens" class="card" data-id="star-guide" data-reco="1" data-cat="fun" data-updated="2025-09-22" data-keywords="流れ星 手紙 メッセージ 330通"><div class="c-emo-area">🌠</div><div class="c-body"><div class="c-title">流れ星の手紙（全330通）<span class="bnew" data-new>NEW</span></div><div class="c-sub">辛い時に押して。夜空から優しい手紙が降りてくる。</div><div class="c-footer"><span class="pill">⏱1分</span><span class="pill">占い</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
         <a href="/shindan/inu-neko.html?src=specimens" class="card" data-id="inu-neko" data-cat="fun" data-updated="2025-09-21" data-keywords="犬派 猫派 12問"><div class="c-emo-area">🐾</div><div class="c-body"><div class="c-title">犬派？猫派？ 12問<span class="bnew" data-new>NEW</span></div><div class="c-sub">犬っぽさ／猫っぽさのバランスと活動スタイル。</div><div class="c-footer"><span class="pill">⏱4分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
@@ -1215,7 +1599,37 @@ button{font-family:inherit;cursor:pointer}
         <a href="/shindan/animalshin.html?src=specimens" class="card" data-id="animalshin" data-cat="fun" data-updated="2025-10-16" data-keywords="動物 性格 10問"><div class="c-emo-area">🦊</div><div class="c-body"><div class="c-title">性格動物 10問</div><div class="c-sub">性格のざっくり輪郭を動物メタファで楽しく把握。</div><div class="c-footer"><span class="pill">⏱3分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
         <a href="/shindan/hanashin.html?src=specimens" class="card" data-id="hanashin" data-cat="fun" data-updated="2025-09-12" data-keywords="魂の花 薔薇 向日葵 百合 10問"><div class="c-emo-area">🌸</div><div class="c-body"><div class="c-title">魂の花 10問<span class="bnew" data-new>NEW</span></div><div class="c-sub">内面の雰囲気と伸び方を花にたとえてメッセージ。</div><div class="c-footer"><span class="pill">⏱3分</span><span class="pill">占い</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
         <a href="/shindan/jp-myth.html?src=specimens" class="card" data-id="jp-myth" data-cat="fun" data-updated="2025-09-19" data-keywords="神話 ポジ ネガ 16問"><div class="c-emo-area">⛩️</div><div class="c-body"><div class="c-title">ポジ⇄ネガ日本神話 16問<span class="bnew" data-new>NEW</span></div><div class="c-sub">日常のポジ／ネガの傾き。</div><div class="c-footer"><span class="pill">⏱5分</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
-        <a href="/shindan/forbidden-love-another.html?src=specimens" class="card" data-id="forbidden-love-another" data-cat="fun" data-updated="2025-08-31" data-keywords="姫 城下 恋 Another"><div class="c-emo-area">🏰</div><div class="c-body"><div class="c-title">姫と城下の恋・Another<span class="bnew" data-new>NEW</span></div><div class="c-sub">選択で分岐する読み物系。性格の傾向が物語に反映。</div><div class="c-footer"><span class="pill">⏱10分</span><span class="pill">#ゲーム</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+        <a href="/shindan/forbidden-love-another.html?src=specimens" class="card" data-id="forbidden-love-another" data-cat="fun" data-updated="2025-08-31" data-keywords="姫 城下 恋 Another"><div class="c-emo-area">🏰</div><div class="c-body"><div class="c-title">姫と城下の恋・Another<span class="bnew" data-new>NEW</span></div><div class="c-sub">選択で分岐する読み物系。性格の傾向が物語に反映。</div><div class="c-footer"><span class="pill">⏱10分</span><span class="pill">ゲーム</span><button class="c-btn" type="button" aria-hidden="true">開く</button><button class="c-redo" type="button" aria-hidden="true">↺</button></div></div><span class="fav-btn" role="button" aria-pressed="false" aria-label="推し標本に追加" tabindex="0"></span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. プロフィール（診断一覧の直後） -->
+  <div style="margin:24px 0 28px;">
+    <div class="profile-card">
+      <div class="pc-cover"></div>
+      <div class="pc-body">
+        <div class="pc-avatar">🌑</div>
+        <div class="pc-name-row">
+          <span class="pc-name">NIR</span>
+          <span class="pc-verified">✓</span>
+        </div>
+        <div class="pc-handle">@kokoro_hyohon · 心の標本 運営</div>
+        <p class="pc-bio">猫とAIしか友達いないので追加してくれたら嬉しい。</p>
+        <div class="pc-links">
+          <a class="pc-link" href="https://x.com/oki2a?s=21" target="_blank" rel="noopener">
+            <span class="pc-link-ico">𝕏</span>X
+          </a>
+          <a class="pc-link" href="https://www.instagram.com/zariganitabetai7/" target="_blank" rel="noopener">
+            <span class="pc-link-ico">📷</span>Instagram
+          </a>
+          <a class="pc-link" href="https://line.me/ti/p/JO0O0lvpKY" target="_blank" rel="noopener">
+            <span class="pc-link-ico">💬</span>LINE
+          </a>
+          <a class="pc-link" href="/shindan/seikaku.html">
+            <span class="pc-link-ico">🪪</span>自己紹介
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1242,14 +1656,19 @@ button{font-family:inherit;cursor:pointer}
   <!-- C. 問い合わせ -->
   <div class="fb" id="feedback">
     <div class="fb-hd">ご意見・感想・ラブレター</div>
-    <p class="fb-desc">バグ報告・感想・「こんな診断ほしい」など、なんでもゆるく投げ込める箱です。匿名OK。</p>
+    <p class="fb-desc">バグ報告・感想・「こんな診断ほしい」など、なんでもゆるく投げ込める箱です。<strong>匿名OK</strong>。</p>
     <form id="fbForm" action="https://formspree.io/f/mdkqgynb" method="POST">
       <label>お名前 / ニックネーム（任意）<input type="text" name="name" autocomplete="name"></label>
-      <label>連絡先（任意）<input type="email" name="email" inputmode="email" autocomplete="email"></label>
+      <label>連絡先（任意 / 返信希望時のみ）<input type="email" name="email" inputmode="email" autocomplete="email"></label>
       <label>種別<select name="type"><option value="impression">診断の感想・ご意見</option><option value="bug">バグ報告</option><option value="request">こんな診断がほしい</option><option value="love">作者を甘やかす・沼報告</option><option value="other">その他</option></select></label>
-      <label>メッセージ<textarea name="message" required></textarea></label>
+      <label>メッセージ<textarea name="message" required placeholder="ひとことでも、長文でも、どうぞ。"></textarea></label>
       <button class="fb-sub" type="submit">送信する</button>
       <p class="fb-hint" id="fbHint">※ お名前・連絡先は空欄でも送信できます。</p>
+      <div class="fb-notes">
+        <p>📮 送信内容は <strong>Formspree</strong> 経由で制作者に届きます。</p>
+        <p>💬 返信はお約束できませんが、すべてゆっくり目を通します。</p>
+        <p>📚 研究メモや説明が実際の研究と違っていた場合は、ゆるく教えてもらえると助かります。</p>
+      </div>
     </form>
   </div>
 
@@ -1445,9 +1864,8 @@ cards.forEach(function(c){
   var id=c.dataset.id;
   if(id&&doneMap[id]>0){
     c.setAttribute('data-done','1');
-    var rib=document.createElement('div');rib.className='done-rib';rib.textContent='✓ 開封済';c.appendChild(rib);
-    var tl=c.querySelector('.c-title');
-    if(tl){var ch=document.createElement('span');ch.className='done-chip';ch.textContent='✓ 済';tl.appendChild(ch);}
+    var emo=c.querySelector('.c-emo-area');
+    if(emo&&!emo.querySelector('.done-butterfly')){var bf=document.createElement('span');bf.className='done-butterfly';emo.appendChild(bf);}
   }
   if(id&&favSet.has(id)){
     c.classList.add('fav');
@@ -1575,6 +1993,29 @@ $('#listRoot').addEventListener('click',function(e){
     c.classList.toggle('fav',nx);
     if(nx)favSet.add(id);else favSet.delete(id);
     sls(KF,JSON.stringify(Array.from(favSet)));
+    /* 押した瞬間だけ演出 */
+    if(nx){
+      /* 標本瓶枠 */
+      var jar=document.createElement('span');
+      jar.className='fav-jar';
+      fb.appendChild(jar);
+      setTimeout(function(){jar.remove();},720);
+      /* ハート飛び散り 6個 */
+      var hearts=['♥','♡','✦','♥','♡','✧'];
+      for(var i=0;i<6;i++){
+        var p=document.createElement('span');
+        p.className='fav-particle';
+        p.textContent=hearts[i];
+        var ang=(Math.PI*2/6)*i+(Math.random()-.5)*.5;
+        var dist=22+Math.random()*14;
+        p.style.setProperty('--bx',Math.cos(ang)*dist+'px');
+        p.style.setProperty('--by',Math.sin(ang)*dist+'px');
+        p.style.animationDelay=(i*20)+'ms';
+        fb.appendChild(p);
+        (function(el){setTimeout(function(){el.remove();},900);})(p);
+      }
+      vib(12);
+    }
     filt();return;
   }
   var c=e.target.closest('.card');if(!c)return;
@@ -1584,9 +2025,10 @@ $('#listRoot').addEventListener('click',function(e){
   uLv(totOpen);
   doneMap[id]=(doneMap[id]||0)+1;sls(KI,JSON.stringify(doneMap));
   c.setAttribute('data-done','1');
-  if(!c.querySelector('.done-rib')){var rib=document.createElement('div');rib.className='done-rib';rib.textContent='✓ 開封済';c.appendChild(rib);}
+  var _emo=c.querySelector('.c-emo-area');
+  if(_emo&&!_emo.querySelector('.done-butterfly')){var _bf=document.createElement('span');_bf.className='done-butterfly';_emo.appendChild(_bf);}
   var tl=c.querySelector('.c-title');
-  if(tl&&!tl.querySelector('.done-chip')){var ch=document.createElement('span');ch.className='done-chip';ch.textContent='✓ 済';tl.appendChild(ch);}
+  
   uStatus();
 },{capture:true});
 
@@ -1948,6 +2390,25 @@ if(howtoModalBg)howtoModalBg.addEventListener('click',closeHowto);
     document.body.appendChild(el);
 
     setTimeout(function(){el.classList.add('in');}, 30);
+
+    /* タップ・上スワイプで消す */
+    function dismissWhisper(){
+      if(el._dismissed)return;
+      el._dismissed=true;
+      el.classList.remove('in');
+      el.classList.add('out');
+      setTimeout(function(){el.remove();},500);
+    }
+    el.addEventListener('click',dismissWhisper);
+    var touchStartY=null;
+    el.addEventListener('touchstart',function(ev){
+      touchStartY=ev.touches[0].clientY;
+    },{passive:true});
+    el.addEventListener('touchmove',function(ev){
+      if(touchStartY===null)return;
+      var dy=ev.touches[0].clientY-touchStartY;
+      if(dy<-20){dismissWhisper();touchStartY=null;}
+    },{passive:true});
 
     whisperState.showCount++;
 
