@@ -858,9 +858,19 @@ button{font-family:inherit;cursor:pointer}
 .ctab.c-ethos{background:#64748b;color:#fff;border-color:#64748b;}
 
 @media(max-width:640px){
-  .cat-top-tabs,
+  .cat-top-tabs{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
   .cattabs{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .ctab{
+    min-width:0;
+    padding:8px 6px;
+    font-size:.7rem;
+    white-space:nowrap;
   }
 }
 .rc{font-size:.73rem;color:var(--muted);}
