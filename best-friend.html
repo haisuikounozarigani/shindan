@@ -3,719 +3,737 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ベストフレンド力診断（わたし／あの人）</title>
-<meta name="description" content="親しい人といる時の自分を見る『わたしモード』と、相手を見る『あの人モード』を切替。21問で友情スキル（7因子）を％で可視化します。">
-<meta name="theme-color" content="#f7f9ff">
-<!-- OGP -->
+<meta name="color-scheme" content="light">
+<title>ベストフレンド力診断｜こころの標本</title>
+<meta name="description" content="21問で、友情の強みを7因子で可視化。『わたし』と『あの人』を切り替えて見られる、ベストフレンド力診断。">
+<meta name="theme-color" content="#fff6f0">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ベストフレンド力診断（わたし／あの人）">
-<meta property="og:description" content="21問で「喜びの分かち合い・安心・自律尊重・挑戦支援・一貫性・修復・ユーモア」を％化。モード切替で『わたし／あの人』を評価。">
+<meta property="og:title" content="ベストフレンド力診断">
+<meta property="og:description" content="21問で、友情の強みを7因子で可視化。『わたし』と『あの人』を切り替えて見られる、ベストフレンド力診断。">
 <meta property="og:url" content="https://haisuikounozarigani.github.io/shindan/best-friend.html">
-<meta property="og:image" content="/shindan/assets/results/best-friend/t01.webp">
+<meta property="og:image" content="https://haisuikounozarigani.github.io/shindan/assets/results/best-friend/t00.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
 :root{
-  --accent:#4aa8ff; --accent2:#a48bff;
-  --ink:#1f2732; --muted:#667087; --paper:#fff;
-  --bg1:#f7f9ff; --bg2:#f6f3ff; --line:#e6ecf7;
+  --bg:#fff6f0;
+  --paper:#ffffff;
+  --ink:#1a1412;
+  --muted:#a09088;
+  --line:#ffe0d4;
+  --line2:#fdf0ea;
+  --coral:#ff5230;
+  --coral-lt:#fff1ed;
+  --yellow:#ffbe00;
+  --yellow-lt:#fff9e0;
+  --mint:#00c896;
+  --mint-lt:#e0fff7;
+  --sky:#4ab4ff;
+  --f:'Nunito',system-ui,-apple-system,'Noto Sans JP','Hiragino Sans','Yu Gothic',Meiryo,sans-serif;
+  --r12:12px;--r16:16px;--r20:20px;--r999:999px;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; color:var(--ink);
-  background:linear-gradient(180deg,var(--bg1),var(--bg2));
-  font-family:"Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",sans-serif;
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--f);-webkit-text-size-adjust:100%}
+body{min-height:100vh}
+img{display:block;max-width:100%}
+button{font:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+
+/* ── PROGRESS ── */
+.prog-wrap{position:fixed;top:0;left:0;right:0;z-index:50;height:5px;background:var(--line)}
+.prog-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--coral),var(--yellow),var(--mint));transition:width .22s ease}
+
+/* ── HEADER ── */
+header{background:var(--paper);border-bottom:2px solid var(--line);padding-top:5px}
+.hd{max-width:860px;margin:0 auto;padding:14px 16px 13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hd-icon{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--coral),var(--yellow));display:grid;place-items:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 14px rgba(255,82,48,.3)}
+.hd-title{font-size:clamp(1.05rem,3.2vw,1.55rem);font-weight:900;letter-spacing:-.01em;flex:1}
+.rank-badge{display:inline-flex;align-items:center;gap:5px;padding:.28em .85em;border-radius:var(--r999);background:var(--coral-lt);color:var(--coral);font-weight:800;font-size:.78rem;border:1.5px solid rgba(255,82,48,.18);flex-shrink:0}
+
+/* ── CARD ── */
+.card{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r20);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+
+/* ── PROLOGUE ── */
+#prologue{margin:12px auto;max-width:860px;padding:0 16px}
+.pl-card{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r20);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+.pl-hero{padding:28px 20px 0;text-align:center}
+.pl-emoji{font-size:3rem;line-height:1;margin-bottom:10px;display:inline-block;animation:bobble 2.6s ease-in-out infinite}
+@keyframes bobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.pl-title{font-size:clamp(1.3rem,4.5vw,1.95rem);font-weight:900;line-height:1.45;margin-bottom:8px}
+.pl-title em{font-style:normal;background:linear-gradient(90deg,var(--coral),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pl-sub{color:var(--muted);font-size:.92rem;line-height:1.7;max-width:480px;margin:0 auto}
+.pl-pills{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:14px 0 0}
+.pl-pill{padding:4px 12px;border-radius:var(--r999);background:var(--bg);border:1.5px solid var(--line);color:var(--muted);font-size:.78rem;font-weight:700}
+.pl-divider{display:flex;align-items:center;gap:12px;padding:22px 20px 8px;color:var(--muted);font-size:.8rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.pl-divider::before,.pl-divider::after{content:'';flex:1;height:1.5px;background:var(--line)}
+
+/* ── MODE CARDS ── */
+.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px}
+.mc{border:2px solid var(--line);border-radius:var(--r16);padding:20px 14px;background:var(--paper);text-align:left;transition:.18s;position:relative;overflow:hidden}
+.mc:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.10)}
+.mc:active{transform:none}
+.mc[data-mode="self"]{border-top:4px solid var(--coral)}
+.mc[data-mode="friend"]{border-top:4px solid var(--mint)}
+.mc-tag{font-size:.68rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.mc[data-mode="self"] .mc-tag{color:var(--coral)}
+.mc[data-mode="friend"] .mc-tag{color:var(--mint)}
+.mc-icon{font-size:1.9rem;line-height:1;margin-bottom:7px}
+.mc-name{font-size:1.15rem;font-weight:900;margin-bottom:4px}
+.mc-desc{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:14px}
+.mc-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r999);font-size:.82rem;font-weight:800;transition:.14s}
+.mc[data-mode="self"] .mc-btn{background:var(--coral);color:#fff;box-shadow:0 4px 14px rgba(255,82,48,.28)}
+.mc[data-mode="friend"] .mc-btn{background:var(--mint);color:#fff;box-shadow:0 4px 14px rgba(0,200,150,.28)}
+.mc:hover .mc-btn{filter:brightness(1.06)}
+.pl-note{padding:0 20px 12px;font-size:.78rem;color:var(--muted);line-height:1.65}
+.pl-resume{display:flex;gap:8px;padding:0 16px 22px;flex-wrap:wrap}
+.resume-btn{flex:1 1 180px;padding:10px 14px;border-radius:var(--r12);border:1.5px solid var(--line);background:var(--paper);color:var(--muted);font-weight:700;font-size:.86rem;transition:.12s}
+.resume-btn:hover{background:var(--coral-lt);border-color:var(--coral);color:var(--coral)}
+.resume-btn.hide{display:none !important}
+
+/* ── QUIZ ── */
+#quiz{display:none;margin:12px auto;max-width:860px;padding:0 16px}
+.quiz-card{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r20);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);padding:22px}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.q-num{font-size:.8rem;font-weight:800;color:var(--muted);letter-spacing:.06em}
+.q-tag{display:inline-flex;padding:4px 12px;border-radius:var(--r999);background:var(--coral-lt);color:var(--coral);font-size:.76rem;font-weight:800}
+.q-text{font-size:1.06rem;font-weight:800;line-height:1.88;margin-bottom:20px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;border:1.5px solid var(--line);border-radius:var(--r12);background:var(--paper);transition:.13s;text-align:left}
+.opt-btn:hover{border-color:var(--coral);background:var(--coral-lt)}
+.opt-btn[aria-pressed="true"]{background:var(--coral);border-color:var(--coral);color:#fff;box-shadow:0 5px 16px rgba(255,82,48,.28)}
+.opt-btn[aria-pressed="true"] .opt-sub{color:rgba(255,255,255,.7)}
+.opt-label{font-weight:800;font-size:.95rem}
+.opt-sub{color:var(--muted);font-size:.8rem;white-space:nowrap}
+.q-ctrl{margin-top:14px}
+.back-btn{border:1.5px solid var(--line);border-radius:var(--r999);background:var(--paper);color:var(--muted);padding:8px 18px;font-weight:700;font-size:.86rem;transition:.12s}
+.back-btn:hover{border-color:var(--muted)}
+.back-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── RESULT ── */
+.result{display:none}
+#result{margin:12px auto;max-width:860px;padding:0 16px}
+.res-card{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r20);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05);padding:22px}
+
+.res-top{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.res-img-wrap{flex:0 0 auto;width:clamp(110px,28%,160px)}
+.res-img-wrap img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:var(--r16);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.res-info{flex:1 1 180px;min-width:0}
+.res-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+.rbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--r999);font-size:.76rem;font-weight:800;background:var(--coral-lt);color:var(--coral);border:1.5px solid rgba(255,82,48,.16)}
+.rbadge.mode{background:var(--mint-lt);color:var(--mint);border-color:rgba(0,200,150,.2)}
+.res-headline{font-size:1.12rem;font-weight:900;line-height:1.5;margin-bottom:4px}
+.res-sub{font-size:.85rem;color:var(--muted);line-height:1.65}
+
+/* score ring */
+.score-wrap{display:flex;align-items:center;gap:14px;padding:14px;background:linear-gradient(135deg,var(--coral-lt),var(--yellow-lt));border-radius:var(--r12);border:1.5px solid rgba(255,190,0,.2);margin-bottom:14px}
+.score-svg{width:62px;height:62px;flex-shrink:0}
+.score-num{font-size:1.45rem;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--coral),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-lbl{font-size:.76rem;color:var(--muted);font-weight:700;margin-top:2px}
+
+/* comment */
+.res-comment{padding:14px;background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r12);margin-bottom:14px}
+.rc-ttl{font-weight:900;font-size:.94rem;margin-bottom:6px}
+.res-comment p{color:var(--muted);font-size:.87rem;line-height:1.72;margin:.3rem 0}
+
+/* kv */
+.kv-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.kv{padding:10px 12px;border-radius:var(--r12);border:1.5px solid var(--line);background:var(--paper)}
+.kv-top{font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.kv-val{font-weight:800;font-size:.9rem}
+
+/* today */
+.today{padding:14px;margin-bottom:14px;border-radius:var(--r12);background:linear-gradient(135deg,rgba(0,200,150,.09),rgba(74,180,255,.09));border:1.5px solid rgba(0,200,150,.2)}
+.today-head{display:flex;align-items:center;gap:7px;font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mint);margin-bottom:7px}
+.today-text{font-size:.9rem;font-weight:700;line-height:1.7}
+
+/* bars */
+.bars-ttl{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.bar{margin-bottom:10px}
+.bar-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.bar-name{font-size:.85rem;font-weight:800}
+.bar-pct{font-size:.8rem;font-weight:800;padding:2px 8px;border-radius:var(--r999);background:var(--paper);border:1.5px solid var(--line)}
+.bar-track{height:10px;border-radius:var(--r999);background:var(--line2);overflow:hidden}
+.bar-fill{height:100%;border-radius:var(--r999);transition:width .35s ease-out}
+.bar-desc{font-size:.76rem;color:var(--muted);margin-top:4px;line-height:1.5}
+
+/* actions */
+.act-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.act{flex:1 1 150px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 16px;border-radius:var(--r999);font-weight:800;font-size:.9rem;transition:.14s;border:none}
+.act:hover{transform:translateY(-2px)}
+.act-primary{background:var(--coral);color:#fff;box-shadow:0 6px 18px rgba(255,82,48,.28)}
+.act-ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.meta-txt{font-size:.76rem;color:var(--muted);margin-top:12px;line-height:1.65}
+
+/* ── FOLD SECTIONS ── */
+.fold{margin-top:10px;padding:10px 14px;border-radius:var(--r12);border:1.5px solid var(--line);background:var(--paper);transition:.15s}
+.fold[open]{background:#fffbf8;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+.fold summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:.86rem}
+.fold summary::-webkit-details-marker{display:none}
+.fold-chev{color:var(--muted);font-size:.8rem;transition:transform .2s}
+.fold[open] .fold-chev{transform:rotate(180deg)}
+.fold-body{margin-top:10px;padding-top:10px;border-top:1.5px dashed var(--line)}
+
+/* prev answers */
+.prev-list{list-style:none;padding:0;margin:0}
+.prev-item{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line2)}
+.prev-item:last-child{border-bottom:none}
+.prev-q{flex:1;min-width:0;font-size:.82rem;color:var(--ink);line-height:1.55;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.prev-a{flex:0 0 auto;white-space:nowrap;border:1.5px solid rgba(255,82,48,.2);border-radius:var(--r999);padding:2px 10px;font-size:.74rem;background:var(--coral-lt);color:var(--coral);font-weight:800}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.gallery figure{margin:0;border:1.5px solid var(--line);border-radius:var(--r12);background:var(--paper);padding:6px;text-align:center;font-size:.7rem;color:var(--muted);display:flex;flex-direction:column;gap:4px;transition:.15s}
+.gallery figure.current{border-color:var(--coral);background:var(--coral-lt);color:var(--coral);font-weight:800}
+.gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px}
+
+/* science memo */
+.memo-list{list-style:none;padding:0;margin:0}
+.memo-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.83rem;line-height:1.7;color:var(--ink)}
+.memo-item:last-child{border-bottom:none}
+.memo-num{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--coral),var(--yellow));color:#fff;font-weight:900;font-size:.72rem;display:grid;place-items:center;margin-top:2px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:#fff;padding:7px 18px;border-radius:var(--r999);font-size:.88rem;font-weight:700;transition:.22s;z-index:60;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hide{display:none !important}
+
+@media(max-width:600px){
+  .hd{padding:11px 12px}
+  .mode-cards{grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 16px}
+  .mc{padding:14px 10px}
+  .mc-icon{font-size:1.6rem}
+  .mc-name{font-size:1rem}
+  .mc-desc{font-size:.78rem}
+  .mc-btn{padding:7px 11px;font-size:.78rem}
+  #prologue,.quiz-card,.res-card{padding:0 12px}
+  .pl-hero{padding:22px 16px 0}
+  .quiz-card,.res-card{padding:18px 14px}
 }
-a{color:inherit}
-.wrap{max-width:980px;margin:18px auto;padding:0 14px}
-header.hd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin:8px 0}
-.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#e1f2ff,#ece6ff);display:grid;place-items:center;font-size:28px}
-h1{margin:0;font-size:clamp(22px,4.6vw,34px);letter-spacing:.02em}
-.sub{margin:4px 0 0;color:var(--muted);font-size:.96em}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
-.section{margin:14px 0}
-.pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6b6a77;font-size:.88em}
-.meta{display:flex;gap:8px;flex-wrap:wrap}
-.sticky{position:sticky;top:0;z-index:10;margin:-6px -14px 12px;padding:8px 14px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px) saturate(1.05);border-bottom:1px solid #e9edf7;display:flex;align-items:center;gap:10px}
-.progress{height:8px;background:#edf2fb;border-radius:999px;flex:1;overflow:hidden}
-.progress>span{
-  display:block;height:100%;width:0;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  transition:width .25s ease;
-}
-.btn{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
-.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;font-weight:700}
-fieldset.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
-legend{font-weight:700}
-.scale{display:grid;grid-template-columns:repeat(5,minmax(66px,1fr));gap:8px;margin-top:8px}
-.scale input{position:absolute;opacity:0;pointer-events:none}
-.scale label{display:grid;place-items:center;border:1px solid #e5e9f3;border-radius:10px;padding:8px;cursor:pointer;user-select:none;background:#fff}
-.scale input:checked+label{outline:2px solid var(--accent);border-color:transparent}
-mark.need{animation:need 1.6s ease}
-@keyframes need{0%{box-shadow:0 0 0 0 rgba(74,168,255,.45)}100%{box-shadow:0 0 0 0 rgba(74,168,255,0)}}
-.result-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
-.total{font-size:26px;font-weight:800}
-.small{color:var(--muted);font-size:.92em}
-
-/* モード切替 */
-.mode-tabs{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-.mode-tabs button{padding:8px 12px;border:0;background:#fff;cursor:pointer}
-.mode-tabs button.on{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
-
-/* ヒーロー（タイトル→画像→コメント） */
-.hero-vert{display:grid;place-items:center;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
-.hero-vert figure{margin:0;width:min(720px,100%);max-width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);background:#f7f9ff}
-.hero-vert img{width:100%;height:100%;object-fit:cover;display:block}
-.hero-vert figcaption{padding:10px;width:100%}
-.hero-vert .capline{font-weight:800;line-height:1.55;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
-.hero-vert .poem{font-style:italic;letter-spacing:.02em;margin-top:4px;color:#445;opacity:.9}
-.hero-vert .capmini{font-size:1em;line-height:1.85;color:var(--muted);overflow-wrap:anywhere;word-break:break-word;white-space:normal}
-
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.stat{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
-.stat .big{font-size:22px;font-weight:800}
-.hr{height:1px;background:var(--line);margin:10px 0}
-.factor-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.bar{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
-.bar .row{height:10px;background:#edf2fb;border-radius:999px;overflow:hidden;margin-top:6px}
-.bar .row>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.note{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
-.note h4{margin:0 0 6px;font-size:16px}
-.note p{margin:6px 0;line-height:1.75}
-.footer{color:var(--muted);font-size:.92em}
-.warn{background:#f8fbff;border:1px solid #e1ebf7;border-radius:12px;padding:10px;margin:12px 0}
-.back-area{display:flex;justify-content:center;margin-top:10px}
-a.back{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-decoration:none}
-.badge-size{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85em;margin-left:6px}
-.title-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-
-/* 共有ボタン */
-.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.btn.tw::before{content:"𝕏";margin-right:.25em}
-.btn.line::before{content:"💬";margin-right:.25em}
-.btn.ig::before{content:"📸";margin-right:.25em}
-
-@media (max-width: 560px){
-  .wrap{padding:0 10px}
-  .sticky{top:calc(env(safe-area-inset-top) + 0px); padding:8px 10px}
-  .scale{grid-template-columns:repeat(2,1fr)}
-  .scale label{padding:12px 8px;font-size:14px}
-  .hero-vert figure{width:100%}
-  .grid2{grid-template-columns:1fr}
-  .badge-size{font-size:.8em}
-  .card{padding:12px}
-  .hero-vert .capline{font-size:clamp(16px,5.2vw,20px);line-height:1.65}
-  .hero-vert .capmini{font-size:clamp(14px,4.6vw,16px);line-height:1.95}
-  .note h4{font-size:15px}
+@media(max-width:380px){
+  .mode-cards{grid-template-columns:1fr}
+  .kv-row{grid-template-columns:1fr}
 }
 </style>
 </head>
-<body data-id="best-friend">
-<main class="wrap" id="app">
-  <header class="hd">
-    <div class="logo">🤝</div>
-    <div>
-      <h1>ベストフレンド力診断（わたし／あの人）</h1>
-      <p class="sub">21問（0〜4の5件法）。7因子の％と総合ランク、上位因子ヒーロー、研究メモを表示します。※エンタメ自己理解／因果は断定しません。</p>
-    </div>
-  </header>
 
-  <div class="sticky" aria-live="polite">
-    <div class="mode-tabs" role="tablist" aria-label="回答モード">
-      <button id="modeSelf" class="on" role="tab" aria-selected="true">わたし</button>
-      <button id="modeFriend" role="tab" aria-selected="false">あの人</button>
+<body data-id="best-friend">
+<div class="prog-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="prog-bar" id="progressBar"></div>
+</div>
+
+<header>
+  <div class="hd">
+    <div class="hd-icon" aria-hidden="true">🤝</div>
+    <div class="hd-title">ベストフレンド力診断</div>
+    <span class="rank-badge" id="topRankBadge">
+      <span>🧩</span><span>未判定</span>
+    </span>
+  </div>
+</header>
+
+<main id="app" role="main" aria-live="polite">
+
+  <!-- PROLOGUE -->
+  <div id="prologue">
+    <div class="pl-card">
+      <div class="pl-hero">
+        <div class="pl-emoji">🔬</div>
+        <h1 class="pl-title">友情の<em>強み</em>、<br>観測してみる？</h1>
+        <p class="pl-sub">7つの因子で、あなたやあの人の<br>ベストフレンド力をスキャンします。</p>
+        <div class="pl-pills">
+          <span class="pl-pill">📋 21問</span>
+          <span class="pl-pill">⭐ 5択</span>
+          <span class="pl-pill">📊 7因子</span>
+          <span class="pl-pill">💾 保存あり</span>
+        </div>
+      </div>
+
+      <div class="pl-divider">だれを観測する？</div>
+
+      <div class="mode-cards" id="modeSelect" role="group" aria-label="観測対象を選択">
+        <button type="button" class="mc" id="startSelf" data-mode="self">
+          <div class="mc-tag">Subject A</div>
+          <div class="mc-icon">🙋</div>
+          <div class="mc-name">わたし</div>
+          <div class="mc-desc">自分の<br>ベストフレンド力を測る</div>
+          <div class="mc-btn">はじめる →</div>
+        </button>
+        <button type="button" class="mc" id="startFriend" data-mode="friend">
+          <div class="mc-tag">Subject B</div>
+          <div class="mc-icon">👤</div>
+          <div class="mc-name">あの人</div>
+          <div class="mc-desc">相手の<br>ベストフレンド力を測る</div>
+          <div class="mc-btn">はじめる →</div>
+        </button>
+      </div>
+
+      <p class="pl-note">※娯楽と自己理解の補助目的の簡易テストです。人物の価値を決めるものではありません。</p>
+      <div class="pl-resume">
+        <button type="button" class="resume-btn hide" id="resumeBtn">↩ 途中から再開</button>
+        <button type="button" class="resume-btn hide" id="viewResultBtn">📊 保存された結果を見る</button>
+      </div>
     </div>
-    <div class="progress" aria-label="回答進捗" role="progressbar" aria-valuemin="0" aria-valuemax="21">
-      <span id="prog"></span>
-    </div>
-    <button class="btn primary" id="doScore">診断する</button>
   </div>
 
-  <section class="card section" id="desc">
-    <h2 style="margin:4px 0 8px">説明</h2>
-    <div class="meta" style="margin-bottom:8px">
-      <span class="pill">質問数：21</span>
-      <span class="pill">形式：0–4（0=ぜんぜん / 4=とても）</span>
-      <span class="pill">総合：0–4（7因子平均）→％化</span>
-    </div>
-    <p class="small">モードは<b>文面だけ切替</b>（集計は共通）。「わたし＝自分のふるまい」「あの人＝相手のふるまい」を思い浮かべて回答してください。</p>
-  </section>
-
-  <!-- 設問 -->
-  <section class="card section" id="questions">
-    <h2 style="margin:4px 0 8px">設問（ぜんぜん／あまり／ときどき／よく／とても）</h2>
-    <div id="qWrap"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-      <button class="btn" id="clearAns">回答をクリア</button>
-      <button class="btn primary" id="doScore2">診断する</button>
-    </div>
-  </section>
-
-  <!-- 結果 -->
-  <section class="card section" id="result" aria-live="polite">
-    <div id="resEmpty">
-      <span class="badge">まだ結果はありません</span>
-      <p class="small">全21問に回答して「診断する」を押してください。</p>
-    </div>
-
-    <div id="resArea" style="display:none">
-      <div class="result-head">
-        <span class="badge">結果</span>
-        <div class="total" id="typeLine">—</div>
+  <!-- QUIZ -->
+  <div id="quiz">
+    <div class="quiz-card">
+      <div class="q-meta">
+        <div class="q-num" id="qnum">Q1 / 21</div>
+        <div class="q-tag" id="qtag">因子</div>
       </div>
+      <div class="q-text" id="qtext">…</div>
+      <div class="opts" id="opts" role="group" aria-label="回答を選択"></div>
+      <div class="q-ctrl">
+        <button type="button" class="back-btn" id="prevBtn">← もどる</button>
+      </div>
+    </div>
+  </div>
 
-      <!-- ヒーロー（上位因子画像＋総合バッジ） -->
-      <div class="hero-vert section" role="region" aria-label="タイプイメージ">
-        <figure>
-          <img id="heroImg" src="/shindan/assets/results/best-friend/t01.webp" alt="結果イメージ" loading="lazy" width="1200" height="1200">
-        </figure>
-        <figcaption>
-          <div class="title-row">
-            <div class="capline" id="heroTitle">—</div>
-            <span class="badge-size" id="sizeBadge" aria-label="総合平均">—</span>
-            <span class="badge-size" id="rankBadge" aria-label="総合ランク">—</span>
+  <!-- RESULT -->
+  <div id="result" class="result">
+    <div class="res-card">
+      <div class="res-top">
+        <div class="res-img-wrap">
+          <img id="resultImg" src="" alt="結果画像" loading="lazy">
+        </div>
+        <div class="res-info">
+          <div class="res-badges">
+            <span class="rbadge" id="gradeBadge">🧩 未判定</span>
+            <span class="rbadge mode" id="modeBadge">わたし</span>
           </div>
-          <div class="poem" id="heroPoem">—</div>
-          <div class="capmini" id="heroCopy">—</div>
-          <div class="share-row" id="shareRow" hidden>
-            <a id="shareTw" class="btn tw" href="#" target="_blank" rel="noopener">で共有</a>
-            <a id="shareLn" class="btn line" href="#" target="_blank" rel="noopener">LINEで送る</a>
-            <a id="shareIg" class="btn ig" href="#" aria-label="Instagramでシェア">Instagramでシェア</a>
-          </div>
-        </figcaption>
+          <div class="res-headline" id="resultTitle">—</div>
+          <div class="res-sub" id="resultSubtitle">—</div>
+        </div>
       </div>
 
-      <!-- 数値など -->
-      <div class="grid2">
-        <article class="stat" aria-label="総合スコア">
-          <div><strong>総合（0–4）</strong></div>
-          <div class="big"><span id="sumAvg">0.00</span> / 4.00 <span class="small" id="sumPct">= 0%</span></div>
-          <div class="small" id="sumNote">—</div>
-        </article>
+      <div class="score-wrap">
+        <svg class="score-svg" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#ffe0d4" stroke-width="7"/>
+          <circle id="scoreArc" cx="32" cy="32" r="26" fill="none"
+            stroke="url(#sg)" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="163.4" stroke-dashoffset="163.4"
+            transform="rotate(-90 32 32)"
+            style="transition:stroke-dashoffset .65s ease-out"/>
+          <defs>
+            <linearGradient id="sg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#ff5230"/>
+              <stop offset="100%" stop-color="#ffbe00"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div>
+          <div class="score-num" id="scorePct">—</div>
+          <div class="score-lbl">総合ベストフレンド力</div>
+        </div>
       </div>
 
-      <div class="hr"></div>
-      <!-- 因子バー -->
-      <div class="section">
-        <h3 style="margin:8px 0">因子別スコア</h3>
-        <div id="bars" class="factor-mini"></div>
+      <div class="res-comment" id="resultComment">
+        <div class="rc-ttl">—</div><p>—</p>
       </div>
 
-      <div class="hr"></div>
-      <!-- ランク長文＋ヒント -->
-      <div id="longCopy" class="small"></div>
+      <div class="kv-row">
+        <div class="kv">
+          <div class="kv-top">第一因子</div>
+          <div class="kv-val" id="topFactor">—</div>
+        </div>
+        <div class="kv">
+          <div class="kv-top">第二因子</div>
+          <div class="kv-val" id="secondFactor">—</div>
+        </div>
+      </div>
 
-      <div class="hr"></div>
-      <!-- 研究メモ -->
-      <details class="section" open>
-        <summary><strong>研究メモ</strong></summary>
-        <ul class="small" id="resMemo" style="margin:6px 0 0 18px;line-height:1.8"></ul>
-        <p class="small" style="margin-top:6px">※相関中心で因果は断定できません。個人差が大きい性質があります。医療・採用などの用途には使えません。</p>
+      <div class="today">
+        <div class="today-head">🪄 今日の一手</div>
+        <div class="today-text" id="todayText">—</div>
+      </div>
+
+      <div>
+        <div class="bars-ttl">7因子スコア</div>
+        <div id="bars"></div>
+      </div>
+
+      <details class="fold">
+        <summary>📝 前回の回答<span class="fold-chev">▾</span></summary>
+        <div class="fold-body"><ul class="prev-list" id="prevList"></ul></div>
       </details>
 
-      <div class="back-area" style="margin-top:12px">
-        <a class="back" href="/shindan/" id="backLink" aria-label="診断一覧に戻る">診断一覧に戻る</a>
+      <details class="fold">
+        <summary>🖼 結果ギャラリー<span class="fold-chev">▾</span></summary>
+        <div class="fold-body"><div class="gallery" id="gallery"></div></div>
+      </details>
+
+      <details class="fold">
+        <summary>🔬 ベストフレンドの科学<span class="fold-chev">▾</span></summary>
+        <div class="fold-body"><ul class="memo-list" id="researchList"></ul></div>
+      </details>
+
+      <p class="meta-txt">娯楽と自己理解の補助を目的とした簡易テストです。体調や不調が続く場合は専門機関へご相談ください。</p>
+
+      <div class="act-row">
+        <button type="button" class="act act-primary" id="restartBtn">🔁 最初から</button>
+        <a class="act act-ghost" href="/shindan/">🧪 診断一覧へ</a>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section class="footer card">
-    <h2 style="margin:4px 0 8px">ご利用にあたって</h2>
-    <p class="warn"><strong>注意：</strong>このコンテンツは<b>エンタメ用の自己理解</b>です。現実の判断や医療・採用には使えません。必要な場合は関係機関・専門家にご相談ください。<br>
-回答は端末内で処理・保存され、回答内容や個人を特定できる情報はサーバーに送信されません。結果表示時に匿名の件数カウントのみ送信する場合があります。</p>
-  </section>
 </main>
 
+<div class="toast" id="toast" role="status" aria-live="polite">✅</div>
+
 <script>
 (function(){
-  // ====== ページ情報 ======
-  var SLUG = "best-friend";
-  var TITLE = "ベストフレンド力診断（わたし／あの人）";
-  var ANS_KEY = "specimens:"+SLUG+":answers";
-  var MODE_KEY= "specimens:"+SLUG+":mode";
-  var IMG_BASE_FACTOR = "/shindan/assets/results/best-friend/"; // 01..07
-  var IMG_BY_FACTOR = { ACR:"t01.webp", SEC:"t02.webp", AUT:"t03.webp", CHL:"t04.webp", REL:"t05.webp", REP:"t06.webp", FUN:"t07.webp" };
-  var ALT_BY_FACTOR = {
-    ACR:"喜びを分かち合う2人", SEC:"安心して話せる空気",
-    AUT:"自律を尊重する2人", CHL:"背中を押す友", REL:"一貫性と予測可能性",
-    REP:"すれ違いの修復", FUN:"遊びとユーモア"
-  };
+'use strict';
 
-  // ====== 因子・設問 ======
-  var FACTORS = {
-    ACR:{ name:"喜びの分かち合い応答", items:["Q01","Q02","Q03"] },
-    SEC:{ name:"安心の土台",         items:["Q04","Q05","Q06"] },
-    AUT:{ name:"自律の尊重",         items:["Q07","Q08","Q09"] },
-    CHL:{ name:"成長の後押し",       items:["Q10","Q11","Q12"] },
-    REL:{ name:"一貫性と予測可能性", items:["Q13","Q14","Q15"] },
-    REP:{ name:"修復力",             items:["Q16","Q17","Q18"] },
-    FUN:{ name:"遊びとユーモア",     items:["Q19","Q20","Q21"] }
-  };
-  var ITEMS = {
-    Q01:{ text_self:"わたしは、相手の良いニュースを目を輝かせて詳しく聞く。", text_friend:"その人は、わたしの良いニュースを目を輝かせて詳しく聞く。" },
-    Q02:{ text_self:"わたしは、良い報告をされてもすぐ話題を変えがちだ。", text_friend:"その人は、わたしが良い報告をしてもすぐ話題を変えがちだ。", rev:true },
-    Q03:{ text_self:"わたしは、相手の努力や工夫を言葉にして褒める。", text_friend:"その人は、わたしの努力や工夫を言葉にして褒める。" },
-    Q04:{ text_self:"わたしは、弱音も話せる安心な空気を一緒に作れる。", text_friend:"その人は、わたしが弱音も話せる安心な空気を作ってくれる。" },
-    Q05:{ text_self:"つらい日に、相手が落ち着くまで寄りそえる。", text_friend:"つらい日に、わたしが落ち着くまで寄りそってくれる。" },
-    Q06:{ text_self:"相手が打ち明けても、評価や説教をしがちだ。", text_friend:"わたしが打ち明けると、評価や説教をされがちだ。", rev:true },
-    Q07:{ text_self:"相手の選択や境界線を尊重できる。", text_friend:"わたしの選択や境界線を尊重してくれる。" },
-    Q08:{ text_self:"相談されると、細かい指図が増えがちだ。", text_friend:"相談すると、細かい指図をされがちだ。", rev:true },
-    Q09:{ text_self:"相手のペースを大切にし、急かさない。", text_friend:"わたしのペースを大切にし、急かさない。" },
-    Q10:{ text_self:"必要な時に“できる理由”で背中を押せる。", text_friend:"必要な時に“できる理由”で背中を押してくれる。" },
-    Q11:{ text_self:"相手の挑戦の話題を、ついそらしてしまう。", text_friend:"わたしの挑戦の話題を、ついそらしがちだ。", rev:true },
-    Q12:{ text_self:"甘やかすだけでなく、建設的な問いで視野を広げられる。", text_friend:"甘やかすだけでなく、建設的な問いで視野を広げてくれる。" },
-    Q13:{ text_self:"約束・連絡の一貫性があり、頼れる。", text_friend:"その人の約束・連絡は一貫していて、頼れる。" },
-    Q14:{ text_self:"ドタキャンや既読スルーが続きがちだ。", text_friend:"ドタキャンや既読スルーが続きがちだ。", rev:true },
-    Q15:{ text_self:"「頼っていい」と言える空気感を保てている。", text_friend:"わたしが「頼っていい」と言える空気感がある。" },
-    Q16:{ text_self:"意見が食い違っても、早めに話し合い再接続できる。", text_friend:"食い違っても、早めに話し合い再接続してくれる。" },
-    Q17:{ text_self:"ケンカ後、謝らず自然消滅を待ちがちだ。", text_friend:"ケンカ後、謝らず自然消滅を待ちがちだ。", rev:true },
-    Q18:{ text_self:"自分の非に気づいたら、素直に謝れる。", text_friend:"自分の非に気づいたら、素直に謝ってくれる。" },
-    Q19:{ text_self:"一緒に笑い、気分を切り替える工夫ができる。", text_friend:"一緒に笑い、気分を切り替える工夫をしてくれる。" },
-    Q20:{ text_self:"内輪ネタや小さな遊びの習慣が自然と生まれる。", text_friend:"内輪ネタや小さな遊びの習慣が自然と生まれる。" },
-    Q21:{ text_self:"愚痴だけで終わらず、気分を軽く締められる。", text_friend:"愚痴だけで終わらず、気分を軽く締めてくれる。" }
-  };
-  var LABELS = ["ぜんぜん","あまり","ときどき","よく","とても"];
-  var REVERSED = new Set(["Q02","Q06","Q08","Q11","Q14","Q17"]);
-  var CURRENT_MODE = "self"; // "self" | "friend"
+const SLUG='best-friend',TITLE='ベストフレンド力診断',IMG_BASE='/shindan/assets/results/best-friend/';
+const LS_ANS='shindan:best-friend:answers',LS_IDX='shindan:best-friend:index';
+const LS_MODE='shindan:best-friend:mode',LS_LAST='shindan:best-friend:lastAnswers';
 
-  // ====== 上位因子ヒーロー文面（短評） ======
-  var FACTOR_COPY = {
-    ACR:{ title:"祝福マスター（ACR）", poem:"良いニュースを一緒に育てる人。", copy:"うれしい話を深掘りで受け取れるタイプ。称賛と言語化が相手の自信を育てます。"},
-    SEC:{ title:"安心ベース係（SEC）", poem:"弱音も置ける、やわらかな土台。", copy:"相手が安心して話せる空気をつくれる人。急がず聴く姿勢が関係の温度を上げます。"},
-    AUT:{ title:"尊重ドライバー（AUT）", poem:"互いのペースに敬意を。", copy:"選択や境界線を大切にできるタイプ。無理強いしない支え方が長続きの鍵に。"},
-    CHL:{ title:"挑戦ブースター（CHL）", poem:"“できる理由”で背中を押す。", copy:"建設的な問いかけで視野を広げる人。小さな成功を一緒に設計できます。"},
-    REL:{ title:"安定オペレーター（REL）", poem:"約束は静かな安心のメッセージ。", copy:"連絡や約束が安定し信頼を貯金できるタイプ。予測可能性が“頼っていい”を生みます。"},
-    REP:{ title:"再接続ナビ（REP）", poem:"ぶつかったら、短く早めに再接続。", copy:"対立後の話し合いが得意。素直な謝罪と次の行動で関係を回復できます。"},
-    FUN:{ title:"ムードシフター（FUN）", poem:"笑いで軽やか、切替上手。", copy:"内輪ネタや小さな遊びで気分転換を促せるタイプ。良い時間を増やせます。"}
-  };
+const LABELS=['ぜんぜん','あまり','ときどき','よく','とても'];
+const LABEL_NOTES=['ほぼない','すこしある','半々','かなりある','かなり強い'];
+const FACTS=['ACR','SEC','AUT','CHL','REL','REP','FUN'];
 
-  // ====== 総合ランク ======
-  var RANKS = [
-    { id:"R1", min:80, label:"相棒レジェンド", img:"rank-01.png",
-      one:"安心・称賛・修復・挑戦支援・笑いが循環。ベストフレンド力はトップ層。",
-      long:"あなたは良いニュースを深掘りで祝し、弱い気持ちも受け止め、必要な時に背中を押せる人。約束は安定し、衝突の後も短時間で再接続できます。さらに笑いと小さな遊びがエネルギーを補給。こうした並びは、主観的幸福やレジリエンス、目標達成の継続に関連しやすい構成です。今の良さを保つ鍵は“過度に完璧化しないこと”。小さな称賛と「ありがとう」を日常に。",
-      hint:"ACR（祝う深掘り）とREP（早い修復）を習慣で固定化。"
-    },
-    { id:"R2", min:65, label:"安心と挑戦の二刀流", img:"rank-02.png",
-      one:"支えと前進のバランスが良好。あと少しACRが伸びしろ。",
-      long:"安心と行動支援は強い軸。良い知らせを「質問→称賛→一緒に計画」で受け取るACRを増やすと、満足度と絆がもう一段階上がります。修復は“早め・短く・具体”。",
-      hint:"「うれしい理由、もう少し教えて？」の一言から。"
-    },
-    { id:"R3", min:50, label:"ほどよい友の達人", img:"rank-03.png",
-      one:"良好な基盤。連絡のばらつきや修復待ちが弱点になりやすい。",
-      long:"一緒の時間は心地よいけれど、約束の揺れや修復の遅れで摩耗しやすい段階。月1の“うれしかった共有会”（ACR＋FUN）と、ミニ定期（REL）で底上げ。",
-      hint:"「3分で良い話共有」を合言葉に。"
-    },
-    { id:"R4", min:35, label:"芽ばえ期の支え手", img:"rank-04.png",
-      one:"良さはある。まずは予測可能性と早い修復から整えよう。",
-      long:"連絡や約束が揺れると、安心とACRが効きにくくなります。RELの“型”を決め、ぶつかったら「ごめん＋次はこうする」で短く再接続。",
-      hint:"予定が詰まる日は「今日は聴き役宣言」で無理なく。"
-    },
-    { id:"R5", min:0,  label:"これから育つ相棒力", img:"rank-05.png",
-      one:"焦らず土づくり。安心と一貫性のミニ成功から。",
-      long:"深い話より、軽い共有と笑いを増やすところから。SECとRELの土台を整え、ACRを少しだけ足すと関係の温度が上がります。",
-      hint:"「短く定期」→「小さな称賛」の順で。"
-    }
-  ];
+const FACT_LABEL={ACR:'喜びの共有',SEC:'安心の土台',AUT:'境界の尊重',CHL:'成長支援',REL:'信頼の一貫性',REP:'衝突修復',FUN:'遊び心'};
+const FACT_DESC={
+  ACR:'相手の嬉しい出来事を受け止めて、いっしょに明るく広げる力。',
+  SEC:'失敗や弱音を出しても、関係が危うくならない安心感をつくる力。',
+  AUT:'親しさを理由に踏み込みすぎず、相手の選択やペースを尊重する力。',
+  CHL:'相手の挑戦や回復を、押しつけにならず後押しする力。',
+  REL:'連絡・約束・反応の安定で、「頼っても大丈夫」を積み上げる力。',
+  REP:'食い違いや気まずさのあと、関係を整え直して戻る力。',
+  FUN:'笑い・内輪ネタ・ちょっとした遊びで、空気に呼吸をつくる力。'
+};
 
-  // ====== 研究メモ（やさしい語彙・羅列） ======
-  var RESEARCH_MEMO = [
-    "ある研究では、良いニュースを深掘りで祝う応答（ACR）が、関係の満足や幸せ感と関連する示唆。",
-    "ある研究では、安心できる場（安全基地）が、ストレス回復や挑戦行動の安定に関わる関連。",
-    "ある研究では、自律の尊重は、内発的なやる気や関係満足と結びつきやすい傾向。",
-    "ある研究では、早い修復（謝罪や再接続）が、長く良い関係を保つことに関係する可能性。",
-    "ある研究では、ユーモアや小さな遊びは、気分の切替や前向きさの助けになる示唆。"
-  ];
+const QUESTIONS=[
+  {id:'Q01',key:'ACR',self:'わたしは、相手の良い報告を自分のことのように喜べる。',friend:'その人は、わたしの良い報告を自分のことのように喜んでくれる。'},
+  {id:'Q02',key:'ACR',self:'わたしは、相手の良い報告を聞くと比較したり話題をそらしがちだ。',friend:'その人は、わたしの良い報告を聞くと比較したり話題をそらしがちだ。',reverse:true},
+  {id:'Q03',key:'ACR',self:'わたしは、相手の努力や工夫を具体的に言葉にできる。',friend:'その人は、わたしの努力や工夫を具体的に言葉にしてくれる。'},
+  {id:'Q04',key:'SEC',self:'わたしは、失敗や弱音も置いていける空気を一緒に作れる。',friend:'その人は、わたしが失敗や弱音も置いていける空気を作ってくれる。'},
+  {id:'Q05',key:'SEC',self:'相手がしんどい時、すぐ正しさに飛ばずに受け止められる。',friend:'その人は、わたしがしんどい時、すぐ正しさに飛ばずに受け止めてくれる。'},
+  {id:'Q06',key:'SEC',self:'相手に打ち明けられると、助言や解決を急ぎすぎる。',friend:'わたしが打ち明けると、助言や解決を急がれすぎる。',reverse:true},
+  {id:'Q07',key:'AUT',self:'わたしは、親しくても相手の「そこは触れないで」を尊重できる。',friend:'その人は、親しくてもわたしの「そこは触れないで」を尊重してくれる。'},
+  {id:'Q08',key:'AUT',self:'相談されると、相手の決める余地まで奪いがちだ。',friend:'相談すると、わたしの決める余地まで奪いがちだ。',reverse:true},
+  {id:'Q09',key:'AUT',self:'距離や返信のペースが違っても、必要以上に急かさない。',friend:'距離や返信のペースが違っても、必要以上に急かさない。'},
+  {id:'Q10',key:'CHL',self:'必要な時に、相手が一歩出やすくなる言葉をかけられる。',friend:'必要な時に、わたしが一歩出やすくなる言葉をかけてくれる。'},
+  {id:'Q11',key:'CHL',self:'相手の挑戦を、心配のあまり止める方に傾きやすい。',friend:'わたしの挑戦を、心配のあまり止める方に傾きやすい。',reverse:true},
+  {id:'Q12',key:'CHL',self:'わたしは、相手の可能性や強みを現実的に言葉にして返せる。',friend:'その人は、わたしの可能性や強みを現実的に言葉にして返してくれる。'},
+  {id:'Q13',key:'REL',self:'わたしは、約束や返事の安定で安心を作りやすい。',friend:'その人は、約束や返事の安定で安心を作ってくれる。'},
+  {id:'Q14',key:'REL',self:'わたしは、気分や余裕しだいで連絡や対応の差が出やすい。',friend:'その人は、気分や余裕しだいで連絡や対応の差が出やすい。',reverse:true},
+  {id:'Q15',key:'REL',self:'わたしは、「困ったら頼っていい」と思ってもらいやすい。',friend:'その人には、「困ったら頼っていい」と思いやすい。'},
+  {id:'Q16',key:'REP',self:'意見が食い違っても、後回しにせず整えにいける。',friend:'意見が食い違っても、後回しにせず整えにいってくれる。'},
+  {id:'Q17',key:'REP',self:'気まずくなると、時間が何とかしてくれるのを待ちがちだ。',friend:'気まずくなると、時間が何とかしてくれるのを待ちがちだ。',reverse:true},
+  {id:'Q18',key:'REP',self:'自分の非がある時、言い訳より先に謝れる。',friend:'自分の非がある時、言い訳より先に謝ってくれる。'},
+  {id:'Q19',key:'FUN',self:'わたしは、一緒にいると空気を少し軽くできる。',friend:'その人は、一緒にいると空気を少し軽くしてくれる。'},
+  {id:'Q20',key:'FUN',self:'わたしは、内輪ネタや小さな遊びを自然に育てられる。',friend:'その人は、内輪ネタや小さな遊びを自然に育ててくれる。'},
+  {id:'Q21',key:'FUN',self:'まじめな話のあとでも、ほどよく空気を戻せる。',friend:'まじめな話のあとでも、ほどよく空気を戻してくれる。'}
+];
 
-  // ====== 要素 ======
-  var qWrap   = document.getElementById("qWrap");
-  var prog    = document.getElementById("prog");
-  var resEmpty= document.getElementById("resEmpty");
-  var resArea = document.getElementById("resArea");
-  var typeLine= document.getElementById("typeLine");
-  var heroImg = document.getElementById("heroImg");
-  var heroTitle= document.getElementById("heroTitle");
-  var heroPoem = document.getElementById("heroPoem");
-  var heroCopy = document.getElementById("heroCopy");
-  var sizeBadgeEl= document.getElementById("sizeBadge");
-  var rankBadgeEl= document.getElementById("rankBadge");
-  var sumAvg  = document.getElementById("sumAvg");
-  var sumPct  = document.getElementById("sumPct");
-  var sumNote = document.getElementById("sumNote");
-  var bars    = document.getElementById("bars");
-  var longCopy= document.getElementById("longCopy");
-  var resMemo = document.getElementById("resMemo");
-  var shareRow= document.getElementById("shareRow");
-  var shareTw = document.getElementById("shareTw");
-  var shareLn = document.getElementById("shareLn");
-  var shareIg = document.getElementById("shareIg");
-  var modeSelfBtn   = document.getElementById("modeSelf");
-  var modeFriendBtn = document.getElementById("modeFriend");
+const GRADE_DEF=[
+  {min:0,max:34,emo:'🌱',label:'芽ばえの友だち力',img:'t01.webp',alt:'芽ばえの友だち力',
+   headline:'まだ細いけれど、伸びる芽はちゃんとある。',
+   story:'大きく支えるというより、まずは「無理を増やさない」段階。良いところが無いわけではなく、まだ安定して出せていないだけ。焦って"理想の親友像"を演じ始めると逆にしんどくなる。',
+   action:'今日は一つだけ、相手の話を途中で切らずに最後まで聞く。'},
+  {min:35,max:49,emo:'🪴',label:'支え手の準備中',img:'t02.webp',alt:'支え手の準備中',
+   headline:'良さはある。ただ、波がある。',
+   story:'優しくできる日と、余裕が切れて雑になる日が混ざりやすい帯。だから相手から見ると「いい人なのは分かるけど、読みにくい」に寄りやすい。ここで効くのは気合いより一貫性。',
+   action:'短くてもいいから、返事や反応の"普通"を一つ決める。'},
+  {min:50,max:64,emo:'🤝',label:'ほどよい友の達人',img:'t03.webp',alt:'ほどよい友の達人',
+   headline:'一緒にいると、ちゃんと居心地がある。',
+   story:'極端に尖ってはいないけれど、安心・称賛・笑いのどれかが自然に出せている。だから大事故は少ない。ただし"普通にいい"は、放っておくと埋もれる。強みを自覚すると一段上がる帯。',
+   action:'相手の最近の良かったことを、一つ具体的に言葉にする。'},
+  {min:65,max:79,emo:'✨',label:'安心と後押しの二刀流',img:'t04.webp',alt:'安心と後押しの二刀流',
+   headline:'支えるだけで終わらず、前にも進める。',
+   story:'話を聞いて終わるだけじゃなく、相手の挑戦や回復にもちゃんと効く。頼られやすさと背中押しの両方を持ちやすい帯。ここまで来ると"雑に扱わないこと"が最大の課題になる。',
+   action:'今日は「それ、いいね」で終わらず、一歩先の質問を一つ足す。'},
+  {min:80,max:100,emo:'🌟',label:'相棒レジェンド',img:'t05.webp',alt:'相棒レジェンド',
+   headline:'かなり強い。いるだけで関係の空気が整いやすい。',
+   story:'良い報告を広げ、弱い話を受け止め、ズレても戻りやすい。しかも重くなりすぎず、笑いも回せる。こういう並びは珍しい。派手ではなくても、長く効く友情の土台を持っている。',
+   action:'その良さを"当たり前"にせず、感謝と称賛をちゃんと返し合う。'}
+];
 
-  // ====== 設問生成 ======
-  function buildQuestions(){
-    var html = "";
-    Object.keys(FACTORS).forEach(function(key){
-      FACTORS[key].items.forEach(function(qid){
-        var q = ITEMS[qid];
-        var text = (CURRENT_MODE === "friend") ? q.text_friend : q.text_self;
-        html += '<fieldset class="q" id="fs-'+qid+'">'+
-          '<legend>'+text+'</legend>'+
-          '<div class="scale" role="radiogroup" aria-label="'+text+'">';
-        for(var v=0;v<=4;v++){
-          html += '<div style="position:relative">'+
-            '<input id="q'+qid+'-'+v+'" type="radio" name="q'+qid+'" value="'+v+'">'+
-            '<label for="q'+qid+'-'+v+'" title="'+LABELS[v]+'">'+LABELS[v]+'</label>'+
-          '</div>';
-        }
-        html += '</div></fieldset>';
-      });
-    });
-    qWrap.innerHTML = html;
+const FACTOR_COPY={
+  ACR:{title:'嬉しいことを大きくする力',note:'良い報告への反応は、友情の温度をかなり左右する。ここが高い人は、相手の上向きな気分をさらに育てやすい。'},
+  SEC:{title:'安心して弱さを置ける力',note:'しんどい時に、正しさより先に受け止められるタイプ。相談相手としての信頼にかなり直結しやすい。'},
+  AUT:{title:'近さの中で境界を守る力',note:'親しいから何でも踏み込んでいい、になりにくい人。長く一緒にいるほど効いてくる因子。'},
+  CHL:{title:'可能性を後押しする力',note:'気休めだけで終わらず、相手が一歩出る足場を作れるタイプ。成長の伴走者になりやすい。'},
+  REL:{title:'読める安心を積む力',note:'友情は気持ちだけで続かない。連絡や約束の安定が、「頼っても大丈夫」の土台になる。'},
+  REP:{title:'こじれても戻る力',note:'本当に強い関係は、こじれない関係ではなく、こじれたあと整え直せる関係。ここが高いと長期でかなり強い。'},
+  FUN:{title:'重さを少し軽くする力',note:'深い話だけでは関係は保たない。小さな笑いや遊びを回せる人は、疲れた空気を戻しやすい。'}
+};
 
-    // イベント
-    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){
-      r.addEventListener('change', function(){ saveAnswers(); updateProgress(); }, false);
-    });
-    restoreAnswers();
-    updateProgress();
+const RESEARCH_MEMO=[
+  '良い報告に対して、話を広げながら一緒に喜ぶ応答は、親密さや関係満足と結びつきやすい。いわゆる capitalization 研究でよく出てくる論点。',
+  '友情の質では、情緒的サポート・社会的つながり・衝突の扱い方が、 well-being とかなり強く関係しやすい。',
+  '安心して弱さを見せられる関係は、ストレス回復や心理的安全感の土台になりやすい。',
+  '親しさを理由に相手の選択を奪わない支え方は、息苦しさを減らし、長期の関係満足に効きやすい。',
+  '頼れる一貫性や予測可能性は、「この人には連絡して大丈夫」という安心を地味に積み上げる。',
+  '関係が強いかどうかは、衝突がゼロかより、衝突のあとにどれだけ戻れるかの方が大きい。',
+  '小さな笑い・内輪ネタ・軽い遊びは、緊張をゆるめ、重い空気を戻す補助として働きやすい。'
+];
+
+const GALLERY_CAPS=[
+  {img:'t01.webp',cap:'芽ばえ'},
+  {img:'t02.webp',cap:'準備中'},
+  {img:'t03.webp',cap:'達人'},
+  {img:'t04.webp',cap:'二刀流'},
+  {img:'t05.webp',cap:'レジェンド'}
+];
+
+// state
+let mode='self',idx=0,answers=new Array(QUESTIONS.length).fill(null),toastTimer=null;
+
+// DOM
+const $progWrap=document.querySelector('.prog-wrap');
+const $progBar=document.getElementById('progressBar');
+const $rankBadge=document.getElementById('topRankBadge');
+const $prologue=document.getElementById('prologue');
+const $quiz=document.getElementById('quiz');
+const $result=document.getElementById('result');
+const $resumeBtn=document.getElementById('resumeBtn');
+const $viewResultBtn=document.getElementById('viewResultBtn');
+const $qnum=document.getElementById('qnum');
+const $qtag=document.getElementById('qtag');
+const $qtext=document.getElementById('qtext');
+const $opts=document.getElementById('opts');
+const $prevBtn=document.getElementById('prevBtn');
+const $resultImg=document.getElementById('resultImg');
+const $gradeBadge=document.getElementById('gradeBadge');
+const $modeBadge=document.getElementById('modeBadge');
+const $resultTitle=document.getElementById('resultTitle');
+const $resultSub=document.getElementById('resultSubtitle');
+const $resultComment=document.getElementById('resultComment');
+const $topFactor=document.getElementById('topFactor');
+const $secondFactor=document.getElementById('secondFactor');
+const $todayText=document.getElementById('todayText');
+const $bars=document.getElementById('bars');
+const $scoreArc=document.getElementById('scoreArc');
+const $scorePct=document.getElementById('scorePct');
+const $restartBtn=document.getElementById('restartBtn');
+const $toast=document.getElementById('toast');
+const $prevList=document.getElementById('prevList');
+const $gallery=document.getElementById('gallery');
+const $researchList=document.getElementById('researchList');
+
+function renderPrev(){
+  $prevList.innerHTML='';
+  let snap=null;try{snap=JSON.parse(localStorage.getItem(LS_LAST)||'null');}catch(_){}
+  if(!snap||!Array.isArray(snap.answers)){
+    $prevList.innerHTML='<li class="prev-item"><span class="prev-q" style="color:var(--muted)">まだ保存された回答はありません。</span></li>';
+    return;
   }
-
-  // ====== 保存/復元 ======
-  function saveAnswers(){
-    try{
-      var out = {};
-      Object.keys(ITEMS).forEach(function(id){
-        var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
-        if(chk){ out[id] = parseInt(chk.value,10); }
-      });
-      localStorage.setItem(ANS_KEY, JSON.stringify({ts:Date.now(), ans:out}));
-    }catch(e){}
-  }
-  function restoreAnswers(){
-    try{
-      var raw = localStorage.getItem(ANS_KEY);
-      if(!raw) return;
-      var data = JSON.parse(raw);
-      var ans = (data && data.ans) || {};
-      Object.keys(ans).forEach(function(id){
-        var v = ans[id];
-        var input = qWrap.querySelector('#q'+id+'-'+v);
-        if(input){ input.checked = true; }
-      });
-    }catch(e){}
-  }
-  function wipeAnswers(){
-    try{ localStorage.removeItem(ANS_KEY); }catch(e){}
-  }
-
-  function updateProgress(){
-    var total = Object.keys(ITEMS).length;
-    var answered = 0;
-    Object.keys(ITEMS).forEach(function(id){
-      if(qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked')) answered++;
-    });
-    var pct = Math.round(100*answered/total);
-    prog.style.width = pct + "%";
-    var bar = prog.parentElement;
-    if(bar){
-      bar.setAttribute("aria-valuenow", answered);
-      bar.setAttribute("aria-label", "回答進捗："+answered+" / "+total);
-    }
-  }
-
-  // ====== スコア計算 ======
-  function valOf(id, raw){ var v=Number(raw); return REVERSED.has(id)?(4-v):v; }
-  function score(){
-    var missing = [];
-    var ans = {};
-    Object.keys(ITEMS).forEach(function(id){
-      var chk = qWrap.querySelector('#fs-'+id+' input[type="radio"]:checked');
-      if(!chk){ missing.push(id); return; }
-      ans[id] = parseInt(chk.value,10);
-    });
-    if(missing.length){
-      alert("未回答があります。全21問にお答えください。");
-      var fs = document.getElementById('fs-'+missing[0]);
-      if(fs){ fs.scrollIntoView({behavior:"smooth", block:"center"}); fs.classList.add("need"); setTimeout(function(){ fs.classList.remove("need"); },1600); }
-      return;
-    }
-
-    var fScore = {}, fPct = {};
-    Object.keys(FACTORS).forEach(function(key){
-      var ids = FACTORS[key].items;
-      var sum = ids.reduce(function(s,id){ return s + valOf(id, ans[id]); },0);
-      var avg = sum / ids.length; // 0-4
-      fScore[key] = avg;
-      fPct[key] = Math.round((avg/4)*100);
-    });
-
-    var keys = Object.keys(FACTORS);
-    var totalAvg = keys.reduce(function(s,k){ return s + fScore[k]; },0) / keys.length;
-    var totalPct = Math.round((totalAvg/4)*100);
-
-    var order = keys.slice().sort(function(a,b){ return fPct[b]-fPct[a]; });
-    var top = order[0], second = order[1];
-    var diff = fPct[top]-fPct[second];
-
-    render({ fScore, fPct, totalAvg, totalPct, top, second, diff });
-  }
-
-  // ====== ランク選定 ======
-  function pickRank(pct){
-    for(var i=0;i<RANKS.length;i++){
-      if(pct >= RANKS[i].min) return RANKS[i];
-    }
-    return RANKS[RANKS.length-1];
-  }
-
-  function render(o){
-    var topDef = FACTORS[o.top];
-    var heroDef= FACTOR_COPY[o.top];
-    var rank   = pickRank(o.totalPct);
-
-    // タイトル行
-    var typeText = '総合ランク：'+rank.label+'（'+o.totalPct+'%） ／ 上位因子：'+topDef.name;
-    typeLine.textContent = typeText;
-
-    // ヒーロー（上位因子画像）
-    heroImg.src = heroPathFromRank(rank.id);
-    heroImg.alt = ALT_BY_FACTOR[o.top] || "結果イメージ";
-    heroTitle.textContent = heroDef.title + "（" + topDef.name + "）";
-    heroPoem.textContent  = heroDef.poem;
-    heroCopy.textContent  = heroDef.copy;
-    sizeBadgeEl.textContent = "総合 " + o.totalAvg.toFixed(2) + " / 4.00";
-    rankBadgeEl.textContent = "ランク " + rank.id + "・" + rank.label;
-    
-
-    // 総合
-    sumAvg.textContent = o.totalAvg.toFixed(2);
-    sumPct.textContent = "= " + o.totalPct + "%";
-    sumNote.textContent = "上位因子："+topDef.name + "（第2位との差："+o.diff+"%）";
-
-    // 因子バー
-    var bHtml = "";
-    Object.keys(FACTORS).forEach(function(key){
-      var def = FACTORS[key];
-      var avg = o.fScore[key], pct = o.fPct[key];
-      bHtml += '<article class="bar" aria-label="'+def.name+'">'+
-        '<div><strong>'+def.name+'</strong><span class="pill" style="margin-left:6px">'+avg.toFixed(2)+' / 4</span>'+
-        '<span class="pill" style="margin-left:6px">'+pct+'%</span></div>'+
-        '<div class="row" aria-hidden="true"><span style="width:'+pct+'%"></span></div>'+
-      '</article>';
-    });
-    bars.innerHTML = bHtml;
-
-    // 長文（ランク）
-    longCopy.innerHTML =
-      '<div class="note"><h4>'+rank.label+'（'+rank.id+'）</h4>'+
-      '<p>'+rank.one+'</p><p>'+rank.long+'</p>'+
-      '<p><em>ヒント：</em>'+rank.hint+'</p></div>';
-
-    // 研究メモ
-    resMemo.innerHTML = RESEARCH_MEMO.map(function(s){ return "<li>"+s+"</li>"; }).join("");
-
-    // 共有リンク
-    var shareText = '『ベストフレンド力診断』結果：'+rank.label+'（'+o.totalPct+'%）｜上位因子：'+topDef.name;
-    var url = location.href.split('#')[0];
-
-    var tw = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url);
-    shareTw.href = tw;
-
-    var ln = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + url);
-    shareLn.href = ln;
-
-    shareIg.onclick = function(e){
-      e.preventDefault();
-      var caption = shareText + ' ' + url;
-      copyToClipboard(caption).then(function(){
-        var opened = false;
-        try{ var w = window.open('instagram://app','_blank'); opened = !!w; }catch(_){}
-        if(!opened){ window.open('https://www.instagram.com/','_blank'); }
-        toast('キャプションをコピーしました。Instagramで貼り付けてください。');
-      });
-    };
-    shareRow.hidden = false;
-
-    // 表示切替
-    resEmpty.style.display = "none";
-    resArea.style.display  = "block";
-    document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
-
-    try{
-      document.dispatchEvent(new Event('result:ready'));
-      localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
-    }catch(e){}
-  }
-
-  // 共有ヘルパー
-  function copyToClipboard(text){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      return navigator.clipboard.writeText(text);
-    }
-    return new Promise(function(res){
-      var ta=document.createElement('textarea'); ta.value=text;
-      document.body.appendChild(ta); ta.select();
-      try{ document.execCommand('copy'); }catch(_){}
-      document.body.removeChild(ta); res();
-    });
-  }
-  function toast(msg){
-    var t=document.createElement('div');
-    t.textContent=msg;
-    t.style.position='fixed'; t.style.left='50%'; t.style.bottom='20px';
-    t.style.transform='translateX(-50%)'; t.style.background='rgba(31,39,50,.92)';
-    t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='10px';
-    t.style.zIndex=9999; t.style.fontSize='13px';
-    document.body.appendChild(t);
-    setTimeout(function(){ t.remove(); },1500);
-  }
-
-  // クリア
-  function clearAnswers(){
-    qWrap.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked=false; });
-    wipeAnswers();
-    prog.style.width = "0%";
-    resEmpty.style.display = "";
-    resArea.style.display = "none";
-    var app = document.getElementById("app");
-    if(app){ app.scrollIntoView({behavior:"smooth", block:"start"}); }
-  }
-
-  // モード切替
-  function setMode(m){
-    CURRENT_MODE = m;
-    try{ localStorage.setItem(MODE_KEY, m); }catch(e){}
-    modeSelfBtn.classList.toggle("on", m==="self");
-    modeFriendBtn.classList.toggle("on", m==="friend");
-    modeSelfBtn.setAttribute("aria-selected", m==="self" ? "true":"false");
-    modeFriendBtn.setAttribute("aria-selected", m==="friend" ? "true":"false");
-    buildQuestions(); // 文面だけ再生成、回答は復元
-  }
-  modeSelfBtn.addEventListener("click", function(){ setMode("self"); }, false);
-  modeFriendBtn.addEventListener("click", function(){ setMode("friend"); }, false);
-
-  // 初期化
-  function init(){
-    try{
-      var savedMode = localStorage.getItem(MODE_KEY);
-      if(savedMode === "friend") CURRENT_MODE = "friend";
-    }catch(e){}
-    buildQuestions();
-    // 研究メモ（初期表示用）
-    resMemo.innerHTML = RESEARCH_MEMO.map(function(s){ return "<li>"+s+"</li>"; }).join("");
-  }
-
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", init);
-  }else{
-    init();
-  }
-  document.getElementById("doScore").addEventListener("click", score, false);
-  document.getElementById("doScore2").addEventListener("click", score, false);
-  document.getElementById("clearAns").addEventListener("click", clearAnswers, false);
-
-  var back = document.getElementById("backLink");
-  if(back){
-    back.addEventListener("click", function(){
-      try{
-        localStorage.setItem("specimens:last", JSON.stringify({ id: SLUG, title: TITLE, href: location.pathname }));
-      }catch(e){}
-    }, false);
-  }
-})();
-
-</script>
-<script>
-/* ============================================================
-   診断ページ共通スニペット（コピペ用）
-   1) 回答の自動保存・自動復元（入力中も逐次保存）
-   2) 結果表示タイミングで「済」＋ あなたのLv +1
-   3) みんなのこころLv（CountAPI）に +1（失敗は無視）
-============================================================ */
-(function(){
-  'use strict';
-  var DONE_KEY   = 'specimens:open:byid';
-  var TOTAL_KEY  = 'specimens:open:total';
-  var GLOBAL_LAST= 'specimens:open:global:last';
-  var MY_ID = (document.body && document.body.getAttribute('data-id')) || 'unknown';
-
-  // みんなのLv（CountAPI）
-  var COUNTAPI_NS  = 'haisuikounozarigani_shindan';
-  var COUNTAPI_KEY = 'specimens_open_total';
-  function countapiHit(){
-    var url = 'https://api.countapi.xyz/hit/'+COUNTAPI_NS+'/'+COUNTAPI_KEY;
-    if(navigator.sendBeacon){ try{ navigator.sendBeacon(url); }catch(_){ } }
-    else{ fetch(url, {mode:'cors', cache:'no-store', keepalive:true}).catch(function(){}); }
-  }
-
-  // 回答の保存箱（この診断だけ）
-  var ANSWER_KEY = 'specimens:answers:' + MY_ID;
-  function loadState(){ try{ return JSON.parse(localStorage.getItem(ANSWER_KEY) || '{}'); }catch(_){ return {}; } }
-  function saveState(obj){ try{ localStorage.setItem(ANSWER_KEY, JSON.stringify(obj)); }catch(_){} }
-  function saveField(el){
-    if(!el || !el.name) return;
-    var st = loadState(), nm = el.name;
-    if(el.type==='radio'){
-      var c = (el.form||document).querySelector('input[type="radio"][name="'+nm+'"]:checked');
-      st[nm] = c ? {t:'r', v:c.value} : {t:'r', v:null};
-    }else if(el.type==='checkbox'){
-      var arr=[]; (el.form||document).querySelectorAll('input[type="checkbox"][name="'+nm+'"]').forEach(function(x){ if(x.checked) arr.push(x.value||'on'); });
-      st[nm] = {t:'c', v:arr};
-    }else if(el.tagName==='SELECT'){
-      if(el.multiple){ var mv=[]; [].slice.call(el.options).forEach(function(o){ if(o.selected) mv.push(o.value); }); st[nm]={t:'m',v:mv}; }
-      else{ st[nm]={t:'s',v:el.value}; }
-    }else{
-      st[nm]={t:'t',v:el.value};
-    }
-    saveState(st);
-  }
-  function restoreOnce(){
-    var st = loadState(), names = Object.keys(st);
-    if(!names.length) return false;
-    names.forEach(function(nm){
-      var info = st[nm]; if(!info) return;
-      if(info.t==='r'){
-        var r = document.querySelector('input[type="radio"][name="'+nm+'"][value="'+CSS.escape(String(info.v))+'"]');
-        if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); }
-      }else if(info.t==='c'){
-        var set = new Set(info.v||[]); document.querySelectorAll('input[type="checkbox"][name="'+nm+'"]').forEach(function(c){ c.checked = set.has(c.value||'on'); });
-      }else if(info.t==='m'){
-        var sel = document.querySelector('select[name="'+nm+'"]'); if(sel){ var setm=new Set(info.v||[]); [].slice.call(sel.options).forEach(function(o){ o.selected=setm.has(o.value); }); }
-      }else if(info.t==='s'){
-        var s = document.querySelector('select[name="'+nm+'"]'); if(s){ s.value = info.v; }
-      }else{
-        var t = document.querySelector('[name="'+nm+'"]'); if(t){ t.value = info.v==null? '' : String(info.v); }
-      }
-    });
-    try{ document.dispatchEvent(new Event('change',{bubbles:true})); }catch(_){}
-    return true;
-  }
-  document.addEventListener('change', function(e){ var el=e.target; if(el && el.matches && el.matches('input[name], select[name], textarea[name]')) saveField(el); }, true);
-  document.addEventListener('input',  function(e){ var el=e.target; if(el && el.matches && el.matches('input[type="text"][name], input:not([type])[name], textarea[name]')) saveField(el); }, true);
-  (function(){ var TRY_MAX=12, n=0; function tick(){ n++; if(document.querySelector('input[name], select[name], textarea[name]')){ restoreOnce(); return; } if(n<TRY_MAX) setTimeout(tick,300); } if(/complete|interactive/.test(document.readyState)) tick(); else document.addEventListener('DOMContentLoaded', tick); })();
-
-  // 「済」＋Lv加算（結果描画の合図で一度だけ）
-  var marked=false;
-  function markOnce(){
-    if(marked) return; marked=true;
-    try{
-      var total=(+localStorage.getItem(TOTAL_KEY)||0)+1; localStorage.setItem(TOTAL_KEY,String(total));
-      var map={}; try{ map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); }catch(_){}
-      map[MY_ID]=(map[MY_ID]||0)+1; localStorage.setItem(DONE_KEY, JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
-      countapiHit();
-      try{ var last=(+localStorage.getItem(GLOBAL_LAST)||0)+1; localStorage.setItem(GLOBAL_LAST,String(last)); }catch(_){}
-    }catch(_){}
-  }
-  document.addEventListener('result:ready', markOnce);
-  setTimeout(markOnce, 2000); // フォールバック
-})();
-</script>
-<script>
-function heroPathFromRank(rankId){
-  var n = (rankId==='R1'?1:rankId==='R2'?2:rankId==='R3'?3:rankId==='R4'?4:5);
-  return "/shindan/assets/results/best-friend/" + "t" + String(n).padStart(2,"0") + ".webp";
+  snap.answers.forEach(function(v,i){
+    const li=document.createElement('li');li.className='prev-item';
+    const lab=typeof v==='number'?LABELS[v]:'—';
+    const text=snap.mode==='friend'?QUESTIONS[i].friend:QUESTIONS[i].self;
+    li.innerHTML='<span class="prev-q">Q'+(i+1)+'：'+text+'</span><span class="prev-a">'+lab+'</span>';
+    $prevList.appendChild(li);
+  });
 }
+function renderGallery(currentImg){
+  $gallery.innerHTML='';
+  GALLERY_CAPS.forEach(function(item){
+    const fig=document.createElement('figure');
+    if(item.img===currentImg)fig.className='current';
+    fig.innerHTML='<img src="'+IMG_BASE+item.img+'" alt="'+item.cap+'" loading="lazy"><figcaption>'+item.cap+(item.img===currentImg?' ◎':'')+'</figcaption>';
+    $gallery.appendChild(fig);
+  });
+}
+function renderResearch(){
+  $researchList.innerHTML=RESEARCH_MEMO.map(function(line,i){
+    return '<li class="memo-item"><span class="memo-num">'+(i+1)+'</span><span>'+line+'</span></li>';
+  }).join('');
+}
+
+function updProg(p){const v=Math.max(0,Math.min(100,p));$progBar.style.width=v+'%';$progWrap.setAttribute('aria-valuenow',String(v))}
+function setRank(l,e){$rankBadge.innerHTML='<span>'+e+'</span><span>'+l+'</span>'}
+function toast(m){$toast.textContent=m||'✅';$toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){$toast.classList.remove('show');},700)}
+
+function barColor(p){
+  if(p<50){const t=p/50;return 'hsl('+Math.round(16+t*28)+',100%,'+(50-t*5)+'%)';}
+  const t=(p-50)/50;return 'hsl('+Math.round(44+t*112)+',100%,'+(45+t*8)+'%)';
+}
+
+function setMode(m){
+  mode=m;
+  try{localStorage.setItem(LS_MODE,mode);}catch(_){}
+}
+
+function persist(){try{localStorage.setItem(LS_ANS,JSON.stringify(answers));localStorage.setItem(LS_IDX,JSON.stringify(idx));}catch(_){}}
+function clearSaved(){try{localStorage.removeItem(LS_ANS);localStorage.removeItem(LS_IDX);}catch(_){}}
+
+function startFresh(){
+  answers=new Array(QUESTIONS.length).fill(null);idx=0;
+  clearSaved();try{localStorage.removeItem(LS_LAST);}catch(_){}
+  enterQuiz();renderQ();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function enterPrologue(){
+  $prologue.style.display='block';$quiz.style.display='none';$result.style.display='none';
+  setRank('未判定','🧩');updProg(0);
+}
+function enterQuiz(){
+  $prologue.style.display='none';$quiz.style.display='block';$result.style.display='none';
+  setRank('観測中','🔎');
+}
+function enterResult(){
+  $prologue.style.display='none';$quiz.style.display='none';$result.style.display='block';
+}
+
+function renderQ(){
+  const q=QUESTIONS[idx];
+  const ans=answers.filter(function(v){return v!==null;}).length;
+  $qnum.textContent='Q'+(idx+1)+' / '+QUESTIONS.length;
+  $qtag.textContent=FACT_LABEL[q.key];
+  $qtext.textContent=mode==='friend'?q.friend:q.self;
+  $opts.innerHTML='';
+  LABELS.forEach(function(label,i){
+    const btn=document.createElement('button');
+    btn.type='button';btn.className='opt-btn';
+    btn.setAttribute('aria-pressed',answers[idx]===i?'true':'false');
+    btn.innerHTML='<span class="opt-label">'+label+'</span><span class="opt-sub">'+(LABEL_NOTES[i]||'')+'</span>';
+    btn.addEventListener('click',function(){
+      answers[idx]=i;persist();
+      Array.prototype.slice.call($opts.children).forEach(function(el,j){el.setAttribute('aria-pressed',j===i?'true':'false');});
+      toast('✅');
+      setTimeout(function(){
+        if(idx<QUESTIONS.length-1){idx++;renderQ();}
+        else{enterResult();showResult();}
+      },130);
+    });
+    $opts.appendChild(btn);
+  });
+  $prevBtn.disabled=idx===0;
+  updProg(Math.round((ans/QUESTIONS.length)*100));
+}
+
+function computeScores(raw){
+  const sums={},counts={};
+  FACTS.forEach(function(k){sums[k]=0;counts[k]=0;});
+  QUESTIONS.forEach(function(q,i){
+    let v=raw[i];if(v==null)return;if(q.reverse)v=4-v;
+    sums[q.key]+=v;counts[q.key]+=1;
+  });
+  const pct={};
+  FACTS.forEach(function(k){pct[k]=Math.round(((counts[k]?sums[k]/counts[k]:0)/4)*100);});
+  const total=Math.round(FACTS.reduce(function(a,k){return a+pct[k];},0)/FACTS.length);
+  const order=FACTS.slice().sort(function(a,b){return pct[b]-pct[a];});
+  return{pct:pct,totalPct:total,top:order[0],second:order[1]};
+}
+
+function gradeFromScore(s){
+  for(let i=0;i<GRADE_DEF.length;i++){if(s>=GRADE_DEF[i].min&&s<=GRADE_DEF[i].max)return GRADE_DEF[i];}
+  return GRADE_DEF[2];
+}
+
+function showResult(){
+  const firstNull=answers.findIndex(function(v){return v==null;});
+  if(firstNull!==-1){idx=firstNull;enterQuiz();renderQ();return;}
+  const c=computeScores(answers),grade=gradeFromScore(c.totalPct);
+  const tKey=c.top,sKey=c.second,tInfo=FACTOR_COPY[tKey];
+
+  $resultImg.src=IMG_BASE+grade.img;$resultImg.alt=grade.alt;
+  $gradeBadge.innerHTML='<span>'+grade.emo+' '+grade.label+'</span>';
+  $modeBadge.textContent=mode==='self'?'わたしモード':'あの人モード';
+  $resultTitle.textContent=grade.headline;
+  $resultSub.textContent=(mode==='self'?'あなたの':'その人の')+'トップ因子は『'+FACT_LABEL[tKey]+'』。';
+  $resultComment.innerHTML='<div class="rc-ttl">'+tInfo.title+'</div><p>'+grade.story+'</p><p>'+tInfo.note+'</p>';
+  $scorePct.textContent=c.totalPct+'%';
+  $topFactor.textContent=FACT_LABEL[tKey]+'（'+c.pct[tKey]+'%）';
+  $secondFactor.textContent=FACT_LABEL[sKey]+'（'+c.pct[sKey]+'%）';
+  $todayText.textContent=grade.action;
+  setRank(grade.label,grade.emo);
+
+  // arc
+  $scoreArc.style.strokeDashoffset='163.4';
+  setTimeout(function(){$scoreArc.style.strokeDashoffset=String(163.4*(1-c.totalPct/100));},80);
+
+  // bars
+  $bars.innerHTML='';
+  FACTS.forEach(function(k){
+    const v=c.pct[k];
+    const d=document.createElement('div');d.className='bar';
+    d.innerHTML='<div class="bar-h"><span class="bar-name">'+FACT_LABEL[k]+'</span><span class="bar-pct">'+v+'%</span></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:0%;background:'+barColor(v)+'"></div></div>'
+      +'<div class="bar-desc">'+FACT_DESC[k]+'</div>';
+    $bars.appendChild(d);
+  });
+  setTimeout(function(){
+    Array.prototype.slice.call($bars.querySelectorAll('.bar-fill')).forEach(function(el,i){
+      el.style.width=c.pct[FACTS[i]]+'%';
+    });
+  },100);
+
+  try{
+    localStorage.setItem(LS_LAST,JSON.stringify({answers:answers.slice(),mode:mode,ts:Date.now()}));
+    localStorage.setItem('specimens:last',JSON.stringify({id:SLUG,title:TITLE,href:location.pathname}));
+  }catch(_){}
+
+  renderPrev();
+  renderGallery(grade.img);
+  renderResearch();
+
+  enterResult();
+  document.dispatchEvent(new Event('result:ready'));
+}
+
+function boot(){
+  let savedAns=null,savedIdx=0,savedMode='self';
+  try{
+    savedAns=JSON.parse(localStorage.getItem(LS_ANS)||'null');
+    savedIdx=JSON.parse(localStorage.getItem(LS_IDX)||'0');
+    savedMode=localStorage.getItem(LS_MODE)||'self';
+  }catch(_){}
+  setMode(savedMode==='friend'?'friend':'self');
+  const valid=Array.isArray(savedAns)&&savedAns.length===QUESTIONS.length;
+  const hasAny=valid&&savedAns.some(function(v){return v!==null;});
+  const allDone=valid&&savedAns.every(function(v){return v!==null;});
+  if(valid){answers=savedAns.slice();idx=Math.min(Math.max(0,+savedIdx||0),QUESTIONS.length-1);}
+  if(allDone){$viewResultBtn.classList.remove('hide');$resumeBtn.classList.remove('hide');}
+  else if(hasAny){$resumeBtn.classList.remove('hide');}
+  if(allDone){showResult();return;}
+  if(hasAny){enterQuiz();renderQ();return;}
+  enterPrologue();
+}
+
+document.getElementById('startSelf').addEventListener('click',function(){setMode('self');startFresh();});
+document.getElementById('startFriend').addEventListener('click',function(){setMode('friend');startFresh();});
+$resumeBtn.addEventListener('click',function(){enterQuiz();renderQ();window.scrollTo({top:0,behavior:'smooth'});});
+$viewResultBtn.addEventListener('click',function(){showResult();window.scrollTo({top:0,behavior:'smooth'});});
+$prevBtn.addEventListener('click',function(){if(idx>0){idx--;persist();renderQ();}});
+$restartBtn.addEventListener('click',function(){
+  answers=new Array(QUESTIONS.length).fill(null);idx=0;clearSaved();
+  try{localStorage.removeItem(LS_LAST);}catch(_){}
+  enterPrologue();toast('🔁');window.scrollTo({top:0,behavior:'smooth'});
+});
+
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}else{boot();}
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+var DONE_KEY='specimens:open:byid',TOTAL_KEY='specimens:open:total',GLOBAL_LAST='specimens:open:global:last';
+var MY_ID=(document.body&&document.body.getAttribute('data-id'))||'best-friend';
+var NS='haisuikounozarigani_shindan',CK='specimens_open_total';
+function hit(){var u='https://api.countapi.xyz/hit/'+NS+'/'+CK;if(navigator.sendBeacon){try{navigator.sendBeacon(u);}catch(_){}}else{fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){});}}
+var marked=false;
+function markOnce(){
+  if(marked)return;marked=true;
+  try{
+    var total=(+localStorage.getItem(TOTAL_KEY)||0)+1;localStorage.setItem(TOTAL_KEY,String(total));
+    var map={};try{map=JSON.parse(localStorage.getItem(DONE_KEY)||'{}');}catch(_){}
+    map[MY_ID]=(map[MY_ID]||0)+1;localStorage.setItem(DONE_KEY,JSON.stringify(Object.assign({},map,{_ts:Date.now()})));
+    hit();
+    try{var last=(+localStorage.getItem(GLOBAL_LAST)||0)+1;localStorage.setItem(GLOBAL_LAST,String(last));}catch(_){}
+  }catch(_){}
+}
+document.addEventListener('result:ready',markOnce);
+})();
 </script>
 </body>
 </html>
