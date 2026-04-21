@@ -2831,11 +2831,10 @@ function uLv(n){
   var el=$('#lvTitle'); if(el) el.textContent=title;
   var em=$('#lvTitleEmoji'); if(em) em.textContent=emo;
 }
-uLv(totOpen);
-
 var favSet=loadFav(), doneMap=loadId();
 var totOpen=loadTot();
 var el_open=$('#myOpenCount');if(el_open)el_open.textContent=totOpen;
+uLv(totOpen);
 
 var MSDAY=86400000, NOW=Date.now();
 var cards=$$('.card');
@@ -3617,7 +3616,7 @@ function showGacha(){
 
   /* 自動で閉じる */
   if(gachaTimer)clearTimeout(gachaTimer);
-  gachaTimer=setTimeout(function(){closeGacha(false);},2800);
+  gachaTimer=setTimeout(function(){closeGacha(false);},4200);
 }
 
 function closeGacha(immediate){
