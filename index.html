@@ -790,89 +790,158 @@ button{font-family:inherit;cursor:pointer}
 .nir-more-btn:hover{background:rgba(139,92,246,.15);transform:translateY(-1px);}
 
 /* ── FILTER ── */
-.filter{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;}
-.srow{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:10px;box-shadow:var(--sh1);overflow:hidden;}
-.srow:focus-within{border-color:rgba(139,92,246,.45);}
-.s-ico{padding:0 11px;font-size:.88rem;color:rgba(0,0,0,.28);flex-shrink:0;}
-.s-inp{flex:1;padding:11px 0;border:none;background:transparent;font-size:.9rem;color:var(--fg);outline:none;font-family:inherit;}
-.s-inp::placeholder{color:rgba(0,0,0,.27)}
-.s-clr{padding:0 12px;height:42px;appearance:none;border:none;background:transparent;font-size:.78rem;color:rgba(0,0,0,.24);transition:color .12s;}
+.filter{display:flex;flex-direction:column;gap:0;margin-bottom:20px;}
+
+/* 折りたたみトリガー行 */
+.filter-trigger{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  background:var(--card);
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  box-shadow:var(--sh1);
+  cursor:pointer;
+  user-select:none;
+  transition:border-color .14s, box-shadow .14s;
+  position:relative;
+  overflow:hidden;
+}
+.filter-trigger.open{
+  border-radius:12px 12px 0 0;
+  border-bottom-color:rgba(196,181,253,.15);
+  border-color:rgba(139,92,246,.35);
+}
+.filter-trigger-ico{
+  font-size:1rem;flex-shrink:0;color:var(--pu);
+}
+.filter-trigger-label{
+  flex:1;font-size:.86rem;font-weight:700;color:var(--fg);
+}
+.filter-trigger-hint{
+  font-size:.7rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.filter-trigger-active-dot{
+  display:none;
+  width:7px;height:7px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pk),var(--pu));
+  box-shadow:0 0 6px rgba(255,61,154,.5);
+}
+.filter-trigger-active-dot.show{display:block;}
+.filter-trigger-chev{
+  font-size:.7rem;color:var(--muted);
+  transition:transform .22s;
+}
+.filter-trigger.open .filter-trigger-chev{transform:rotate(-180deg);}
+
+/* 展開パネル */
+.filter-panel{
+  display:none;
+  flex-direction:column;gap:0;
+  background:var(--card);
+  border:1.5px solid rgba(139,92,246,.35);
+  border-top:none;
+  border-radius:0 0 12px 12px;
+  box-shadow:var(--sh1);
+  overflow:hidden;
+}
+.filter-panel.open{display:flex;}
+
+/* 検索行 */
+.srow{
+  display:flex;align-items:center;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.srow:focus-within{background:rgba(196,181,253,.04);}
+.s-ico{padding:0 12px;font-size:.9rem;color:rgba(0,0,0,.28);flex-shrink:0;}
+.s-inp{flex:1;padding:12px 0;border:none;background:transparent;font-size:.9rem;color:var(--fg);outline:none;font-family:inherit;}
+.s-inp::placeholder{color:rgba(0,0,0,.25)}
+.s-clr{padding:0 12px;height:44px;appearance:none;border:none;background:transparent;font-size:.78rem;color:rgba(0,0,0,.24);transition:color .12s;}
 .s-clr:hover{color:var(--fg)}
-.statetabs{display:flex;border:1px solid rgba(0,0,0,.1);background:var(--card);overflow:hidden;border-radius:8px;}
-.stab{flex:1;padding:8px 4px;text-align:center;font-size:.76rem;font-weight:700;color:var(--muted);border-right:1px solid rgba(0,0,0,.07);appearance:none;border-top:none;border-bottom:none;background:transparent;transition:background .12s,color .12s;display:flex;align-items:center;justify-content:center;gap:4px;}
+
+/* ステートタブ */
+.statetabs{
+  display:flex;
+  border:1px solid rgba(0,0,0,.1);
+  background:var(--card);
+  overflow:hidden;
+  border-radius:10px;
+  margin-bottom:10px;
+  box-shadow:var(--sh1);
+}
+.stab{flex:1;padding:9px 4px;text-align:center;font-size:.76rem;font-weight:700;color:var(--muted);border-right:1px solid rgba(0,0,0,.07);appearance:none;border-top:none;border-bottom:none;border-left:none;background:transparent;transition:background .12s,color .12s;display:flex;align-items:center;justify-content:center;gap:4px;}
 .stab:last-child{border-right:none}
 .stab:hover{background:rgba(255,255,255,.9);color:var(--fg)}
 .stab.on{background:var(--ink);color:#fff;}
-.stab-n{font-size:.64rem;padding:1px 5px;background:rgba(255,255,255,.18);line-height:1.3;}
+.stab-n{font-size:.64rem;padding:1px 5px;background:rgba(255,255,255,.18);line-height:1.3;border-radius:4px;}
 .stab:not(.on) .stab-n{background:rgba(0,0,0,.06);color:var(--muted);}
+
+/* カテゴリ＋並び替え行 */
 .catwrap{
+  padding:12px 14px;
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:12px;
 }
-
-.cat-top-tabs{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-}
-
-.cattabs{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-
-.ctab{
-  padding:8px 12px;
-  font-size:.77rem;
-  font-weight:700;
-  appearance:none;
-  border:1px solid rgba(0,0,0,.1);
-  background:transparent;
+.filter-group{display:flex;flex-direction:column;gap:6px;}
+.filter-group-lbl{
+  font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
   color:var(--muted);
-  transition:all .13s;
-  border-radius:6px;
-  text-align:center;
+}
+/* カテゴリ：縦並びカード型 */
+.cat-chips{display:flex;flex-direction:column;gap:4px;}
+.cat-chip{
+  appearance:none;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:9px 13px;
+  font-family:inherit;
+  background:#fff;color:var(--muted);
+  cursor:pointer;transition:all .14s;
+  text-align:left;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;
+}
+.cat-chip:hover{border-color:rgba(139,92,246,.3);background:rgba(196,181,253,.05);}
+.cat-chip.on{color:#fff;border-color:transparent;}
+.cat-chip.on .cat-chip-sub{opacity:.8;}
+/* すべて */
+.cat-chip[data-c="all"].on{background:var(--ink);}
+/* LOGOS：青 */
+.cat-chip[data-c="science"].on{background:linear-gradient(135deg,#2563eb,#4f8ef0);box-shadow:0 3px 10px rgba(79,142,240,.35);}
+/* ETHOS：グレー */
+.cat-chip[data-c="ethos"].on{background:linear-gradient(135deg,#475569,#64748b);box-shadow:0 3px 10px rgba(100,116,139,.35);}
+/* PATHOS：オレンジ */
+.cat-chip[data-c="fun"].on{background:linear-gradient(135deg,#ea580c,#f97316);box-shadow:0 3px 10px rgba(249,115,22,.35);}
+.cat-chip-main{display:block;font-size:.8rem;font-weight:700;color:var(--ink);}
+.cat-chip.on .cat-chip-main{color:#fff;}
+.cat-chip-sub{display:block;font-size:.67rem;color:var(--muted);font-weight:500;margin-top:1px;}
+
+/* 並び替え：横並びセグメント型 */
+.sort-chips{
+  display:flex;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:rgba(196,181,253,.05);
+}
+.sort-chip{
+  flex:1;
+  appearance:none;border:none;
+  border-right:1px solid var(--line);
+  padding:8px 4px;
+  font-size:.72rem;font-weight:700;font-family:inherit;
+  background:transparent;color:var(--muted);
+  cursor:pointer;transition:background .12s,color .12s;
+  text-align:center;white-space:nowrap;
+}
+.sort-chip:last-child{border-right:none;}
+.sort-chip:hover{background:rgba(255,255,255,.8);color:var(--fg);}
+.sort-chip.on{
+  background:var(--ink);color:#fff;
 }
 
-.ctab:hover{
-  background:rgba(255,255,255,.9);
-  color:var(--fg);
-}
-
-.ctab.c-all{
-  background:var(--ink);
-  color:#fff;
-  border-color:var(--ink);
-}
-
-.ctab.c-new{
-  background:linear-gradient(90deg,var(--pk),var(--pu));
-  color:#fff;
-  border-color:transparent;
-}
-
-.ctab.c-sci{background:var(--sci);color:#fff;border-color:var(--sci);}
-.ctab.c-fun{background:var(--fun);color:#fff;border-color:var(--fun);}
-.ctab.c-ethos{background:#64748b;color:#fff;border-color:#64748b;}
-
-@media(max-width:640px){
-  .cat-top-tabs{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-
-  .cattabs{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-
-  .ctab{
-    min-width:0;
-    padding:8px 6px;
-    font-size:.7rem;
-    white-space:nowrap;
-  }
-}
 .rc{font-size:.73rem;color:var(--muted);}
 .rc strong{font-weight:700;color:var(--fg)}
 
@@ -1011,7 +1080,19 @@ button{font-family:inherit;cursor:pointer}
 }
 .card[data-done="1"] .c-btn{display:none}
 .card[data-done="1"] .c-redo{display:inline-flex;align-items:center;gap:4px;}
-.bnew{display:inline-block;font-size:.56rem;font-weight:900;letter-spacing:.04em;padding:1.5px 6px;vertical-align:middle;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;box-shadow:0 1px 5px rgba(255,61,154,.22);}
+.bnew{
+  display:inline-flex;align-items:center;
+  font-size:.52rem;font-weight:900;letter-spacing:.1em;
+  padding:2px 7px;
+  vertical-align:middle;
+  border-radius:3px;
+  background:transparent;
+  color:var(--pk);
+  border:1px solid var(--pk);
+  box-shadow:none;
+  position:relative;top:-.5px;
+  opacity:.9;
+}
 /* 蝶々済バッジ — 絵文字エリア右上 */
 .done-butterfly{
   position:absolute;top:4px;right:4px;z-index:5;
@@ -1597,30 +1678,65 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <!-- FILTER -->
-  <div class="filter">
-    <div class="srow">
-      <span class="s-ico">🔍</span>
-      <input class="s-inp" type="search" id="q" placeholder="診断名・キーワードで探す" autocomplete="off">
-      <button class="s-clr" type="button" id="clrBtn">✕</button>
-    </div>
-    <div class="statetabs" role="tablist" id="stateTabs">
-      <button class="stab on" role="tab" data-tab="all">すべて<span class="stab-n" id="cnt-all">0</span></button>
-      <button class="stab" role="tab" data-tab="reco">⭐ おすすめ<span class="stab-n" id="cnt-reco">0</span></button>
-      <button class="stab" role="tab" data-tab="fav">💗 推し<span class="stab-n" id="cnt-fav">0</span></button>
-      <button class="stab" role="tab" data-tab="todo">📝 未挑戦<span class="stab-n" id="cnt-todo">0</span></button>
-    </div>
-    <div class="catwrap">
-  <div class="cat-top-tabs">
-    <button class="ctab c-all" data-c="all">🗂 全カテゴリ</button>
-    <button class="ctab" data-c="new">👑 NEW</button>
+  <!-- ステートタブ：常時表示 -->
+  <div class="statetabs" role="tablist" id="stateTabs">
+    <button class="stab on" role="tab" data-tab="all">すべて<span class="stab-n" id="cnt-all">0</span></button>
+    <button class="stab" role="tab" data-tab="reco">⭐ おすすめ<span class="stab-n" id="cnt-reco">0</span></button>
+    <button class="stab" role="tab" data-tab="fav">💗 推し<span class="stab-n" id="cnt-fav">0</span></button>
+    <button class="stab" role="tab" data-tab="todo">📝 未挑戦<span class="stab-n" id="cnt-todo">0</span></button>
   </div>
 
-  <div class="cattabs" id="catTabs">
-    <button class="ctab" data-c="science">🧬 LOGOS標本</button>
-    <button class="ctab" data-c="ethos">⚖️ ETHOS標本</button>
-    <button class="ctab" data-c="fun">🎪 PATHOS標本</button>
-  </div>
-</div>
+  <div class="filter">
+    <!-- トリガー行 -->
+    <div class="filter-trigger" id="filterTrigger">
+      <span class="filter-trigger-ico">🔍</span>
+      <span class="filter-trigger-label">標本を探す・絞り込む</span>
+      <span class="filter-trigger-hint">
+        <span class="filter-trigger-active-dot" id="filterActiveDot"></span>
+        <span class="filter-trigger-chev">▾</span>
+      </span>
+    </div>
+    <!-- 展開パネル -->
+    <div class="filter-panel" id="filterPanel">
+      <!-- 検索 -->
+      <div class="srow">
+        <span class="s-ico">🔍</span>
+        <input class="s-inp" type="search" id="q" placeholder="診断名・キーワードで探す" autocomplete="off">
+        <button class="s-clr" type="button" id="clrBtn">✕</button>
+      </div>
+      
+      <!-- カテゴリ＋並び替え -->
+      <div class="catwrap">
+        <div class="filter-group">
+          <span class="filter-group-lbl">標本分類</span>
+          <div class="cat-chips" id="catChips">
+            <button class="cat-chip on" data-c="all">すべて</button>
+            
+            <button class="cat-chip" data-c="science">
+              <span class="cat-chip-main">🧬 LOGOS標本</span>
+              <span class="cat-chip-sub">科学・エビデンス系</span>
+            </button>
+            <button class="cat-chip" data-c="ethos">
+              <span class="cat-chip-main">⚖️ ETHOS標本</span>
+              <span class="cat-chip-sub">科学×エンタメ</span>
+            </button>
+            <button class="cat-chip" data-c="fun">
+              <span class="cat-chip-main">🎪 PATHOS標本</span>
+              <span class="cat-chip-sub">エンタメ・感情系</span>
+            </button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-lbl">並び替え</span>
+          <div class="sort-chips" id="sortChips">
+            <button class="sort-chip on" data-s="new">新しい順</button>
+            <button class="sort-chip" data-s="old">古い順</button>
+            <button class="sort-chip" data-s="mins">問数が少ない順</button>
+            <button class="sort-chip" data-s="random">ランダム</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <p class="rc" id="rc"><strong>0</strong> 件表示中</p>
   </div>
 
@@ -2905,13 +3021,46 @@ function uStatus(){
 uStatus();
 
 /* FILTER */
-var aTab='all',aCat='all';
+var aTab='all',aCat='all',aSort='new';
 var q=$('#q'),clrBtn=$('#clrBtn');
-var stateBtns=$$('#stateTabs .stab'),catBtns=$$('.ctab');
+var stateBtns=$$('#stateTabs .stab');
+var catChips=$$('#catChips .cat-chip');
+var sortChips=$$('#sortChips .sort-chip');
+
+/* フィルタートリガー開閉 */
+var filterTrigger=$('#filterTrigger');
+var filterPanel=$('#filterPanel');
+var filterActiveDot=$('#filterActiveDot');
+if(filterTrigger){
+  filterTrigger.addEventListener('click',function(){
+    var open=filterPanel.classList.toggle('open');
+    filterTrigger.classList.toggle('open',open);
+  });
+}
+function updateActiveDot(){
+  var active=aCat!=='all'||aSort!=='new'||(q&&q.value.trim().length>0)||aTab!=='all';
+  if(filterActiveDot)filterActiveDot.classList.toggle('show',active);
+}
 var rcEl=$('#rc').querySelector('strong');
 var sections=$$('.sec');
 
+function applySort(){
+  if(aSort==='random')return;
+  $$('.sec').forEach(function(sec){
+    var grid=sec.querySelector('.grid');
+    if(!grid)return;
+    var cards=Array.from(grid.querySelectorAll('.card'));
+    cards.sort(function(a,b){
+      if(aSort==='new')return (b.dataset.updated||'').localeCompare(a.dataset.updated||'');
+      if(aSort==='old')return (a.dataset.updated||'').localeCompare(b.dataset.updated||'');
+      if(aSort==='mins')return (+a.dataset.mins||99)-(+b.dataset.mins||99);
+      return 0;
+    });
+    cards.forEach(function(c){grid.appendChild(c);});
+  });
+}
 function filt(){
+  applySort();
   var raw=q.value.trim().toLowerCase();
   var kw=raw.length>0?raw.split(/\s+/).filter(function(x){return x.length>0;}):[];
   var vis=0;
@@ -2951,6 +3100,9 @@ function filt(){
       if(ok){vis++;sv++;}
     });
 
+    var showHd=aCat!=='all';
+    var hd=sec.querySelector('.sec-hd');
+    if(hd)hd.style.display=showHd?'':'none';
     sec.style.display=(sv>0)?'':'none';
   });
 
@@ -2972,18 +3124,27 @@ function filt(){
   uStatus();
 }
 stateBtns.forEach(function(b){b.addEventListener('click',function(){aTab=b.dataset.tab;stateBtns.forEach(function(x){x.classList.toggle('on',x===b);});filt();});});
-catBtns.forEach(function(b){b.addEventListener('click',function(){
-  aCat=b.dataset.c;
-  catBtns.forEach(function(x){x.className='ctab';});
-  b.className='ctab '+(
-    aCat==='science' ? 'c-sci' :
-    aCat==='ethos'   ? 'c-ethos' :
-    aCat==='fun'     ? 'c-fun' :
-    aCat==='new'     ? 'c-new' :
-                        'c-all'
-  );
-  filt();
-});});
+catChips.forEach(function(b){
+  b.addEventListener('click',function(){
+    aCat=b.dataset.c;
+    catChips.forEach(function(x){x.classList.toggle('on',x===b);});
+    updateActiveDot();
+    filt();
+  });
+});
+sortChips.forEach(function(b){
+  b.addEventListener('click',function(){
+    aSort=b.dataset.s;
+    sortChips.forEach(function(x){x.classList.toggle('on',x===b);});
+    if(aSort==='random'){
+      var allCards=Array.from($$('#listRoot .card'));
+      allCards.sort(function(){return Math.random()-.5;});
+      allCards.forEach(function(c){c.parentNode.appendChild(c);});
+    }
+    updateActiveDot();
+    filt();
+  });
+});
 q.addEventListener('input',filt);
 clrBtn.addEventListener('click',function(){q.value='';filt();q.focus();});
 filt();
