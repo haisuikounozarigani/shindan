@@ -156,6 +156,59 @@ button{font-family:inherit;cursor:pointer}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;border-bottom:1px solid var(--line);margin-bottom:18px;gap:12px;}
 .topbar-title{cursor:pointer;user-select:none;position:relative;}
 
+/* ── ヒーロー画像：枠なし・背景溶け込み ── */
+.specimen-frame{
+  width:100%;
+  margin:0 0 24px;
+  cursor:pointer;
+  user-select:none;
+  position:relative;
+}
+.specimen-frame::before,
+.specimen-frame::after{content:none;}
+.specimen-frame-inner{
+  position:relative;
+  overflow:hidden;
+  border-radius:0;
+  box-shadow:none;
+}
+.specimen-frame-img{
+  display:block;
+  width:100%;
+  aspect-ratio:16/5;
+  object-fit:cover;
+  object-position:center top;
+  transition:filter .4s ease, opacity .4s ease;
+  background:linear-gradient(155deg,#f5eeff,#fce8f4,#f0f4ff);
+  opacity:0;
+}
+.specimen-frame-img.loaded{opacity:1;}
+.specimen-frame:hover .specimen-frame-img{
+  filter:brightness(1.03) saturate(1.05);
+}
+/* 上下グラデーションで背景に溶け込む */
+.specimen-frame-inner::before{
+  content:"";position:absolute;
+  top:0;left:0;right:0;height:28%;
+  background:linear-gradient(to bottom,#fdf2ff,transparent);
+  pointer-events:none;z-index:1;
+}
+.specimen-frame-inner::after{
+  content:"";position:absolute;
+  bottom:0;left:0;right:0;height:40%;
+  background:linear-gradient(to top,#faf4ff,transparent);
+  pointer-events:none;z-index:1;
+}
+/* タップ演出 */
+.specimen-frame.gacha-tap .specimen-frame-inner{
+  animation:frame-tap .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes frame-tap{
+  0%{transform:scale(1)}
+  40%{transform:scale(.99)}
+  100%{transform:scale(1)}
+}
+
 /* ── タイトル本体 ── */
 .topbar-name{
   font-size:clamp(2.4rem,7vw,3.6rem);
@@ -790,28 +843,158 @@ button{font-family:inherit;cursor:pointer}
 .nir-more-btn:hover{background:rgba(139,92,246,.15);transform:translateY(-1px);}
 
 /* ── FILTER ── */
-.filter{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;}
-.srow{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:10px;box-shadow:var(--sh1);overflow:hidden;}
-.srow:focus-within{border-color:rgba(139,92,246,.45);}
-.s-ico{padding:0 11px;font-size:.88rem;color:rgba(0,0,0,.28);flex-shrink:0;}
-.s-inp{flex:1;padding:11px 0;border:none;background:transparent;font-size:.9rem;color:var(--fg);outline:none;font-family:inherit;}
-.s-inp::placeholder{color:rgba(0,0,0,.27)}
-.s-clr{padding:0 12px;height:42px;appearance:none;border:none;background:transparent;font-size:.78rem;color:rgba(0,0,0,.24);transition:color .12s;}
+.filter{display:flex;flex-direction:column;gap:0;margin-bottom:20px;}
+
+/* 折りたたみトリガー行 */
+.filter-trigger{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  background:var(--card);
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  box-shadow:var(--sh1);
+  cursor:pointer;
+  user-select:none;
+  transition:border-color .14s, box-shadow .14s;
+  position:relative;
+  overflow:hidden;
+}
+.filter-trigger.open{
+  border-radius:12px 12px 0 0;
+  border-bottom-color:rgba(196,181,253,.15);
+  border-color:rgba(139,92,246,.35);
+}
+.filter-trigger-ico{
+  font-size:1rem;flex-shrink:0;color:var(--pu);
+}
+.filter-trigger-label{
+  flex:1;font-size:.86rem;font-weight:700;color:var(--fg);
+}
+.filter-trigger-hint{
+  font-size:.7rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.filter-trigger-active-dot{
+  display:none;
+  width:7px;height:7px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pk),var(--pu));
+  box-shadow:0 0 6px rgba(255,61,154,.5);
+}
+.filter-trigger-active-dot.show{display:block;}
+.filter-trigger-chev{
+  font-size:.7rem;color:var(--muted);
+  transition:transform .22s;
+}
+.filter-trigger.open .filter-trigger-chev{transform:rotate(-180deg);}
+
+/* 展開パネル */
+.filter-panel{
+  display:none;
+  flex-direction:column;gap:0;
+  background:var(--card);
+  border:1.5px solid rgba(139,92,246,.35);
+  border-top:none;
+  border-radius:0 0 12px 12px;
+  box-shadow:var(--sh1);
+  overflow:hidden;
+}
+.filter-panel.open{display:flex;}
+
+/* 検索行 */
+.srow{
+  display:flex;align-items:center;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.srow:focus-within{background:rgba(196,181,253,.04);}
+.s-ico{padding:0 12px;font-size:.9rem;color:rgba(0,0,0,.28);flex-shrink:0;}
+.s-inp{flex:1;padding:12px 0;border:none;background:transparent;font-size:.9rem;color:var(--fg);outline:none;font-family:inherit;}
+.s-inp::placeholder{color:rgba(0,0,0,.25)}
+.s-clr{padding:0 12px;height:44px;appearance:none;border:none;background:transparent;font-size:.78rem;color:rgba(0,0,0,.24);transition:color .12s;}
 .s-clr:hover{color:var(--fg)}
-.statetabs{display:flex;border:1px solid rgba(0,0,0,.1);background:var(--card);overflow:hidden;border-radius:8px;}
-.stab{flex:1;padding:8px 4px;text-align:center;font-size:.76rem;font-weight:700;color:var(--muted);border-right:1px solid rgba(0,0,0,.07);appearance:none;border-top:none;border-bottom:none;background:transparent;transition:background .12s,color .12s;display:flex;align-items:center;justify-content:center;gap:4px;}
+
+/* ステートタブ */
+.statetabs{
+  display:flex;
+  border:1px solid rgba(0,0,0,.1);
+  background:var(--card);
+  overflow:hidden;
+  border-radius:10px;
+  margin-bottom:10px;
+  box-shadow:var(--sh1);
+}
+.stab{flex:1;padding:9px 4px;text-align:center;font-size:.76rem;font-weight:700;color:var(--muted);border-right:1px solid rgba(0,0,0,.07);appearance:none;border-top:none;border-bottom:none;border-left:none;background:transparent;transition:background .12s,color .12s;display:flex;align-items:center;justify-content:center;gap:4px;}
 .stab:last-child{border-right:none}
 .stab:hover{background:rgba(255,255,255,.9);color:var(--fg)}
 .stab.on{background:var(--ink);color:#fff;}
-.stab-n{font-size:.64rem;padding:1px 5px;background:rgba(255,255,255,.18);line-height:1.3;}
+.stab-n{font-size:.64rem;padding:1px 5px;background:rgba(255,255,255,.18);line-height:1.3;border-radius:4px;}
 .stab:not(.on) .stab-n{background:rgba(0,0,0,.06);color:var(--muted);}
-.cattabs{display:flex;gap:7px;flex-wrap:wrap;}
-.ctab{padding:6px 14px;font-size:.77rem;font-weight:700;appearance:none;border:1px solid rgba(0,0,0,.1);background:transparent;color:var(--muted);transition:all .13s;border-radius:6px;}
-.ctab:hover{background:rgba(255,255,255,.9);color:var(--fg)}
-.ctab.c-all{background:var(--ink);color:#fff;border-color:var(--ink);}
-.ctab.c-sci{background:var(--sci);color:#fff;border-color:var(--sci);}
-.ctab.c-fun{background:var(--fun);color:#fff;border-color:var(--fun);}
-.ctab.c-ethos{background:#64748b;color:#fff;border-color:#64748b;}
+
+/* カテゴリ＋並び替え行 */
+.catwrap{
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.filter-group{display:flex;flex-direction:column;gap:6px;}
+.filter-group-lbl{
+  font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);
+}
+/* カテゴリ：縦並びカード型 */
+.cat-chips{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.cat-chip{
+  appearance:none;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:8px 12px;
+  font-family:inherit;
+  background:#fff;color:var(--muted);
+  cursor:pointer;transition:all .14s;
+  text-align:left;
+  display:flex;flex-direction:column;
+  gap:0;
+}
+.cat-chip:hover{border-color:rgba(139,92,246,.3);background:rgba(196,181,253,.05);}
+.cat-chip.on{color:#fff;border-color:transparent;}
+.cat-chip.on .cat-chip-sub{opacity:.8;}
+/* すべて */
+.cat-chip[data-c="all"].on{background:var(--ink);}
+/* LOGOS：青 */
+.cat-chip[data-c="science"].on{background:linear-gradient(135deg,#2563eb,#4f8ef0);box-shadow:0 3px 10px rgba(79,142,240,.35);}
+/* ETHOS：グレー */
+.cat-chip[data-c="ethos"].on{background:linear-gradient(135deg,#475569,#64748b);box-shadow:0 3px 10px rgba(100,116,139,.35);}
+/* PATHOS：オレンジ */
+.cat-chip[data-c="fun"].on{background:linear-gradient(135deg,#ea580c,#f97316);box-shadow:0 3px 10px rgba(249,115,22,.35);}
+.cat-chip-main{display:block;font-size:.8rem;font-weight:700;color:var(--ink);}
+.cat-chip.on .cat-chip-main{color:#fff;}
+.cat-chip-sub{display:block;font-size:.67rem;color:var(--muted);font-weight:500;margin-top:1px;}
+
+/* 並び替え：横並びセグメント型 */
+.sort-chips{
+  display:flex;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:rgba(196,181,253,.05);
+}
+.sort-chip{
+  flex:1;
+  appearance:none;border:none;
+  border-right:1px solid var(--line);
+  padding:8px 4px;
+  font-size:.72rem;font-weight:700;font-family:inherit;
+  background:transparent;color:var(--muted);
+  cursor:pointer;transition:background .12s,color .12s;
+  text-align:center;white-space:nowrap;
+}
+.sort-chip:last-child{border-right:none;}
+.sort-chip:hover{background:rgba(255,255,255,.8);color:var(--fg);}
+.sort-chip.on{
+  background:var(--ink);color:#fff;
+}
+
 .rc{font-size:.73rem;color:var(--muted);}
 .rc strong{font-weight:700;color:var(--fg)}
 
@@ -950,7 +1133,18 @@ button{font-family:inherit;cursor:pointer}
 }
 .card[data-done="1"] .c-btn{display:none}
 .card[data-done="1"] .c-redo{display:inline-flex;align-items:center;gap:4px;}
-.bnew{display:inline-block;font-size:.56rem;font-weight:900;letter-spacing:.04em;padding:1.5px 6px;vertical-align:middle;border-radius:999px;background:linear-gradient(90deg,var(--pk),var(--pu));color:#fff;box-shadow:0 1px 5px rgba(255,61,154,.22);}
+.bnew{
+  display:inline-flex;align-items:center;
+  font-size:.5rem;font-weight:900;letter-spacing:.12em;
+  padding:2.5px 6px;
+  vertical-align:middle;
+  border-radius:4px;
+  background:linear-gradient(135deg,#fff0f7,#f5ecff);
+  color:var(--pk);
+  border:1px solid rgba(255,61,154,.3);
+  box-shadow:0 1px 4px rgba(255,61,154,.12);
+  position:relative;top:-.5px;
+}
 /* 蝶々済バッジ — 絵文字エリア右上 */
 .done-butterfly{
   position:absolute;top:4px;right:4px;z-index:5;
@@ -1444,13 +1638,13 @@ button{font-family:inherit;cursor:pointer}
 <!-- MAIN -->
 <main class="wrap" id="main">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="topbar-title" id="titleBtn" tabindex="0" role="button">
-      <span class="topbar-name">心の<span class="g">標本</span></span>
-      <span class="topbar-sub" id="heroSub">ゆめかわ心理診断たちの標本箱</span>
+  <!-- 標本ラベル額縁タイトル -->
+  <div class="specimen-frame" id="titleBtn" tabindex="0" role="button" aria-label="おみくじを引く">
+    <div class="specimen-frame-inner">
+      <img class="specimen-frame-img" id="specimenHeroImg" src="" alt="心の標本" draggable="false">
+      
     </div>
-    </div>
+  </div>
 
   <!-- SITE NAV -->
   <nav class="sitenav" aria-label="サイト切替">
@@ -1514,10 +1708,10 @@ button{font-family:inherit;cursor:pointer}
         <span class="sc-stat-lbl">累計開封数</span>
       </div>
       <div class="sc-stat">
-        <span class="sc-stat-icon">✦</span>
-        <span class="sc-stat-val" style="font-size:.72rem;letter-spacing:-.01em;" id="lvTitle">訪問者</span>
-        <span class="sc-stat-lbl">称号</span>
-      </div>
+  <span class="sc-stat-icon" id="lvTitleEmoji">👣</span>
+  <span class="sc-stat-val" style="font-size:.72rem;letter-spacing:-.01em;" id="lvTitle">訪問者</span>
+  <span class="sc-stat-lbl">称号</span>
+</div>
     </div>
   </div>
 
@@ -1536,23 +1730,64 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <!-- FILTER -->
+  <!-- ステートタブ：常時表示 -->
+  <div class="statetabs" role="tablist" id="stateTabs">
+    <button class="stab on" role="tab" data-tab="all">すべて<span class="stab-n" id="cnt-all">0</span></button>
+    <button class="stab" role="tab" data-tab="reco">⭐ おすすめ<span class="stab-n" id="cnt-reco">0</span></button>
+    <button class="stab" role="tab" data-tab="fav">💗 推し<span class="stab-n" id="cnt-fav">0</span></button>
+    <button class="stab" role="tab" data-tab="todo">📝 未挑戦<span class="stab-n" id="cnt-todo">0</span></button>
+  </div>
+
   <div class="filter">
-    <div class="srow">
-      <span class="s-ico">🔍</span>
-      <input class="s-inp" type="search" id="q" placeholder="診断名・キーワードで探す" autocomplete="off">
-      <button class="s-clr" type="button" id="clrBtn">✕</button>
+    <!-- トリガー行 -->
+    <div class="filter-trigger" id="filterTrigger">
+      <span class="filter-trigger-ico">🔍</span>
+      <span class="filter-trigger-label">標本を探す・絞り込む</span>
+      <span class="filter-trigger-hint">
+        <span class="filter-trigger-active-dot" id="filterActiveDot"></span>
+        <span class="filter-trigger-chev">▾</span>
+      </span>
     </div>
-    <div class="statetabs" role="tablist" id="stateTabs">
-      <button class="stab on" role="tab" data-tab="all">すべて<span class="stab-n" id="cnt-all">0</span></button>
-      <button class="stab" role="tab" data-tab="reco">⭐ おすすめ<span class="stab-n" id="cnt-reco">0</span></button>
-      <button class="stab" role="tab" data-tab="fav">💗 推し<span class="stab-n" id="cnt-fav">0</span></button>
-      <button class="stab" role="tab" data-tab="todo">📝 未挑戦<span class="stab-n" id="cnt-todo">0</span></button>
-    </div>
-    <div class="cattabs" id="catTabs">
-      <button class="ctab c-all" data-c="all">🗂 全カテゴリ</button>
-      <button class="ctab" data-c="science">🧬 LOGOS標本</button>
-      <button class="ctab" data-c="ethos">⚖️ ETHOS標本</button>
-      <button class="ctab" data-c="fun">🎪 PATHOS標本</button>
+    <!-- 展開パネル -->
+    <div class="filter-panel" id="filterPanel">
+      <!-- 検索 -->
+      <div class="srow">
+        <span class="s-ico">🔍</span>
+        <input class="s-inp" type="search" id="q" placeholder="診断名・キーワードで探す" autocomplete="off">
+        <button class="s-clr" type="button" id="clrBtn">✕</button>
+      </div>
+      
+      <!-- カテゴリ＋並び替え -->
+      <div class="catwrap">
+        <div class="filter-group">
+          <span class="filter-group-lbl">標本分類</span>
+          <div class="cat-chips" id="catChips">
+            <button class="cat-chip on" data-c="all">📚️全標本</button>
+            
+            <button class="cat-chip" data-c="science">
+              <span class="cat-chip-main">🧬 LOGOS標本</span>
+              <span class="cat-chip-sub">科学・エビデンス系</span>
+            </button>
+            <button class="cat-chip" data-c="ethos">
+              <span class="cat-chip-main">⚖️ ETHOS標本</span>
+              <span class="cat-chip-sub">科学×エンタメ</span>
+            </button>
+            <button class="cat-chip" data-c="fun">
+              <span class="cat-chip-main">🎪 PATHOS標本</span>
+              <span class="cat-chip-sub">エンタメ・感情系</span>
+            </button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-lbl">並び替え</span>
+          <div class="sort-chips" id="sortChips">
+            <button class="sort-chip on" data-s="new">新しい順</button>
+            <button class="sort-chip" data-s="old">古い順</button>
+            <button class="sort-chip" data-s="mins">問数が少ない順</button>
+            <button class="sort-chip" data-s="random">ランダム</button>
+          </div>
+        </div>
+      </div>
     </div>
     <p class="rc" id="rc"><strong>0</strong> 件表示中</p>
   </div>
@@ -1946,7 +2181,7 @@ button{font-family:inherit;cursor:pointer}
         <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
         </a>
         <a class="card" data-cat="ethos" data-id="charisma-demon" data-keywords="悪魔 カリスマ 誘導 威圧 無慈悲 ベルフェゴール ベルゼブブ アスモデウス ベリアル ルシファー 18問 因子 正方形" data-mins="5" data-tags="こころ,神話,ダーク" data-updated="2025-09-25" href="/shindan/charisma-demon.html?src=specimens">
-        <div class="c-emo-area">🕯️</div>
+        <div class="c-emo-area">??️</div>
         <div class="c-body">
         <div class="c-title">悪魔カリスマ 18問<span class="bnew" data-new="">NEW</span></div>
         <div class="c-sub">ダーク寄りの影響力の使い方。</div>
@@ -2049,7 +2284,7 @@ button{font-family:inherit;cursor:pointer}
         </div>
         <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
         </a>
-        <a class="card" data-cat="ethos" data-id="noh-menhera" data-keywords="無表情 感情ギャップ 表情 調子" data-mins="3" data-tags="こころ,さくっと" data-updated="2025-10-30" href="/shindan/noh-menhera.html?src=specimens">
+        <a class="card" data-cat="ethos" data-id="noh-menhera" data-reco="1"  data-keywords="無表情 感情ギャップ 表情 調子" data-mins="3" data-tags="こころ,さくっと" data-updated="2025-10-30" href="/shindan/noh-menhera.html?src=specimens">
         <div class="c-emo-area">🎭</div>
         <div class="c-body">
         <div class="c-title">能面ヘラ度 12問<span class="bnew" data-new="">NEW</span></div>
@@ -2080,7 +2315,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="sec" data-cat="fun" data-n="03" id="sec-fun">
       <div class="sec-hd"><div class="sec-n">03</div><div class="sec-info"><div class="sec-label">🎪 PATHOS標本</div><div class="sec-sub">感情・面白さ・キャッチーさ重視</div></div><span class="sec-done" id="done-fun"></span></div>
       <div class="grid">
-        <a class="card" data-cat="fun" data-id="kabuki-role" data-keywords="歌舞伎 役 診断 配役 性格 心理 自己理解 エンタメ 荒事 色役 恋役 黒幕 道化 曲者 見得圧 情念 啖呵 策謀 艶 戯れ 舞台 気質 キャラ 20問 ベストワースト BW方式 二択 四択" data-mins="7" data-tags="心理,性格,自己理解,エンタメ" data-updated="2026-03-29" href="/shindan/kabuki-role.html?src=specimens">
+        <a class="card" data-cat="fun" data-id="kabuki-role" data-reco="1"  data-keywords="歌舞伎 役 診断 配役 性格 心理 自己理解 エンタメ 荒事 色役 恋役 黒幕 道化 曲者 見得圧 情念 啖呵 策謀 艶 戯れ 舞台 気質 キャラ 20問 ベストワースト BW方式 二択 四択" data-mins="7" data-tags="心理,性格,自己理解,エンタメ" data-updated="2026-03-29" href="/shindan/kabuki-role.html?src=specimens">
         <div class="c-emo-area">🎭</div>
         <div class="c-body">
         <div class="c-title">歌舞伎役診断 20問<span class="bnew" data-new="">NEW</span></div>
@@ -2184,7 +2419,7 @@ button{font-family:inherit;cursor:pointer}
         </div>
         <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
         </a>
-        <a class="card" data-cat="fun" data-id="researcher-vs-artist" data-keywords="研究者 芸術家 思考スタイル ロジック 感性 事実アンカー 構造フレーム ひらめき 美意識 没頭 5因子 18問" data-mins="4" data-tags="こころ,思考スタイル,研究者,芸術家" data-updated="2025-12-05" href="/shindan/researcher-vs-artist.html?src=specimens">
+        <a class="card" data-cat="fun" data-id="researcher-vs-artist" data-reco="1" data-keywords="研究者 芸術家 思考スタイル ロジック 感性 事実アンカー 構造フレーム ひらめき 美意識 没頭 5因子 18問" data-mins="4" data-tags="こころ,思考スタイル,研究者,芸術家" data-updated="2025-12-05" href="/shindan/researcher-vs-artist.html?src=specimens">
         <div class="c-emo-area">🧪🎨</div>
         <div class="c-body">
         <div class="c-title">研究者vs芸術家 18問<span class="bnew" data-new="">NEW</span></div>
@@ -2236,7 +2471,7 @@ button{font-family:inherit;cursor:pointer}
         </div>
         <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
         </a>
-        <a class="card" data-cat="fun" data-id="crystal-guess" data-keywords="水晶 HARM 健康 仕事 関係 お金 魔女 24問 研究メモ ミニ一歩 t00.webp" data-mins="5" data-reco="1" data-tags="悩み,占い風,HARM" data-updated="2025-10-31" href="/shindan/crystal-guess.html?src=specimens">
+        <a class="card" data-cat="fun" data-id="crystal-guess" data-keywords="水晶 HARM 健康 仕事 関係 お金 魔女 24問 研究メモ ミニ一歩 t00.webp" data-mins="5"  data-tags="悩み,占い風,HARM" data-updated="2025-10-31" href="/shindan/crystal-guess.html?src=specimens">
         <div class="c-emo-area">??</div>
         <div class="c-body">
         <div class="c-title">水晶のお告げ 24問<span class="bnew" data-new="">NEW</span></div>
@@ -2615,15 +2850,21 @@ function saveRd(s){sls(KN,JSON.stringify(Array.from(s)));}
    ・tag: 'UPDATE'=診断追加・変更 | 'NOTICE'=お知らせ | 'FIX'=修正
    ================================================================ */
 var NOTICES=[
-  {id:'n-003',date:'2025-11-02',tag:'UPDATE',emo:'🧪',
-   title:'ビッグファイブ系 5種を追加',
-   text:'「開放性・インド神話」「神経症的傾向・クトゥルフ」「誠実性・エジプト」「協調性・北欧」「外向性・ギリシャ」を追加しました。'},
-  {id:'n-002',date:'2025-10-30',tag:'NOTICE',emo:'💾',
-   title:'データ引き継ぎ機能を追加',
-   text:'バックアップのエクスポート・インポートに対応しました。機種変更前にご利用ください。'},
-  {id:'n-001',date:'2025-10-16',tag:'UPDATE',emo:'💎',
-   title:'宝石恋愛タイプ（48問）をリリース',
-   text:'結果イラスト付きで、恋愛傾向を棒グラフとテキストで解説します。'},
+  {id:'n-004',date:'2026-04-21',tag:'UPDATE',emo:'🤝',
+   title:'ベストフレンド力診断をリニューアル',
+   text:'「わたし／あの人」切り替えを含めて、友情の強みがもっと見やすくなるように整えました。'},
+
+  {id:'n-003',date:'2026-04-21',tag:'NOTICE',emo:'🧪',
+   title:'心の標本サイトをリニューアル',
+   text:'分類や見た目、動線を見直して、診断を探しやすくしました。'},
+
+  {id:'n-002',date:'2026-04-21',tag:'NOTICE',emo:'🖼️',
+   title:'カバー画像を変更',
+   text:'トップの印象が少し変わりました。前より“標本箱”っぽい空気に寄せています。'},
+
+  {id:'n-001',date:'2026-04-21',tag:'NOTICE',emo:'🛠️',
+   title:'昔の診断も順次リニューアル予定',
+   text:'過去の診断も、UIや結果の見せ方を少しずつ作り直していく予定です。'}
 ];
 var rdSet=loadRd(), nirExp=false, NIR_PREVIEW=2;
 function unrdCnt(){return NOTICES.filter(function(n){return !rdSet.has(n.id);}).length;}
@@ -2737,25 +2978,31 @@ var RK=[
 
 /* 累計開封数による称号（サイトを開いた回数） */
 var LVT=[
-  [0,   '訪問者'],
-  [5,   '常連'],
-  [15,  '探求者'],
-  [30,  '深夜の住人'],
-  [60,  '標本狂'],
-  [100, '伝説級'],
-  [200, '神話級'],
-  [500, '特異点'],
+  [0,   '訪問者',     '👣'],
+  [5,   '常連',       '🔁'],
+  [15,  '探求者',     '🧭'],
+  [30,  '深夜の住人', '🌙'],
+  [60,  '標本狂',     '🦋'],
+  [100, '伝説級',     '👑'],
+  [200, '神話級',     '🌌'],
+  [500, '特異点',     '◼']
 ];
 function uLv(n){
-  var t=LVT[0][1];
-  LVT.forEach(function(e){if(n>=e[0])t=e[1];});
-  var el=$('#lvTitle');if(el)el.textContent=t;
+  var title=LVT[0][1];
+  var emo=LVT[0][2];
+  LVT.forEach(function(e){
+    if(n>=e[0]){
+      title=e[1];
+      emo=e[2];
+    }
+  });
+  var el=$('#lvTitle'); if(el) el.textContent=title;
+  var em=$('#lvTitleEmoji'); if(em) em.textContent=emo;
 }
-uLv(totOpen);
-
 var favSet=loadFav(), doneMap=loadId();
 var totOpen=loadTot();
 var el_open=$('#myOpenCount');if(el_open)el_open.textContent=totOpen;
+uLv(totOpen);
 
 var MSDAY=86400000, NOW=Date.now();
 var cards=$$('.card');
@@ -2826,53 +3073,130 @@ function uStatus(){
 uStatus();
 
 /* FILTER */
-var aTab='all',aCat='all';
+var aTab='all',aCat='all',aSort='new';
 var q=$('#q'),clrBtn=$('#clrBtn');
-var stateBtns=$$('#stateTabs .stab'),catBtns=$$('#catTabs .ctab');
+var stateBtns=$$('#stateTabs .stab');
+var catChips=$$('#catChips .cat-chip');
+var sortChips=$$('#sortChips .sort-chip');
+
+/* フィルタートリガー開閉 */
+var filterTrigger=$('#filterTrigger');
+var filterPanel=$('#filterPanel');
+var filterActiveDot=$('#filterActiveDot');
+if(filterTrigger){
+  filterTrigger.addEventListener('click',function(){
+    var open=filterPanel.classList.toggle('open');
+    filterTrigger.classList.toggle('open',open);
+  });
+}
+function updateActiveDot(){
+  var active=aCat!=='all'||aSort!=='new'||(q&&q.value.trim().length>0)||aTab!=='all';
+  if(filterActiveDot)filterActiveDot.classList.toggle('show',active);
+}
 var rcEl=$('#rc').querySelector('strong');
 var sections=$$('.sec');
 
+function applySort(){
+  if(aSort==='random')return;
+  $$('.sec').forEach(function(sec){
+    var grid=sec.querySelector('.grid');
+    if(!grid)return;
+    var cards=Array.from(grid.querySelectorAll('.card'));
+    cards.sort(function(a,b){
+      if(aSort==='new')return (b.dataset.updated||'').localeCompare(a.dataset.updated||'');
+      if(aSort==='old')return (a.dataset.updated||'').localeCompare(b.dataset.updated||'');
+      if(aSort==='mins')return (+a.dataset.mins||99)-(+b.dataset.mins||99);
+      return 0;
+    });
+    cards.forEach(function(c){grid.appendChild(c);});
+  });
+}
 function filt(){
+  applySort();
   var raw=q.value.trim().toLowerCase();
-  var kw=raw.length>0?raw.split(/\s+/).filter(function(x){return x.length>0;}):[]; 
+  var kw=raw.length>0?raw.split(/\s+/).filter(function(x){return x.length>0;}):[];
   var vis=0;
+
   sections.forEach(function(sec){
     var sc=sec.dataset.cat;
-    var catOk=aCat==='all'||aCat===sc;
     var sv=0;
+
     sec.querySelectorAll('.card').forEach(function(c){
       var id=c.dataset.id||'';
       var reco=c.dataset.reco==='1';
       var done=c.getAttribute('data-done')==='1';
       var fav=favSet.has(id);
-      var ok=catOk;
-      if(ok){if(aTab==='reco')ok=reco;else if(aTab==='fav')ok=fav;else if(aTab==='todo')ok=!done;}
+      var newBadge=c.querySelector('[data-new]');
+      var isNew=!!(newBadge && newBadge.style.display!=='none');
+
+      var ok=false;
+
+      if(aCat==='all') ok=true;
+      else if(aCat==='new') ok=isNew;
+      else ok=(aCat===sc);
+
+      if(ok){
+        if(aTab==='reco') ok=reco;
+        else if(aTab==='fav') ok=fav;
+        else if(aTab==='todo') ok=!done;
+      }
+
       if(ok&&kw.length>0){
         var tx=((c.querySelector('.c-title')?c.querySelector('.c-title').textContent:'')+' '+
                (c.querySelector('.c-sub')?c.querySelector('.c-sub').textContent:'')+' '+
                (c.dataset.keywords||'')).toLowerCase();
         ok=kw.every(function(w){return tx.indexOf(w)>=0;});
       }
+
       c.style.display=ok?'':'none';
       if(ok){vis++;sv++;}
     });
-    sec.style.display=(catOk&&sv>0)?'':'none';
+
+    var showHd=aCat!=='all';
+    var hd=sec.querySelector('.sec-hd');
+    if(hd)hd.style.display=showHd?'':'none';
+    sec.style.display=(sv>0)?'':'none';
   });
+
   rcEl.textContent=vis;
   var em=$('#emptyState');
   if(vis===0){
-    if(!em){em=document.createElement('div');em.id='emptyState';em.className='empty';em.innerHTML='<span style="font-size:2rem;display:block;margin-bottom:8px;opacity:.4">🔍</span>該当する診断が見つかりませんでした。';$('#listRoot').appendChild(em);}
+    if(!em){
+      em=document.createElement('div');
+      em.id='emptyState';
+      em.className='empty';
+      em.innerHTML='<span style="font-size:2rem;display:block;margin-bottom:8px;opacity:.4">🔍</span>該当する診断が見つかりませんでした。';
+      $('#listRoot').appendChild(em);
+    }
     em.style.display='';
-  } else if(em){em.style.display='none';}
+  } else if(em){
+    em.style.display='none';
+  }
+
   uStatus();
 }
 stateBtns.forEach(function(b){b.addEventListener('click',function(){aTab=b.dataset.tab;stateBtns.forEach(function(x){x.classList.toggle('on',x===b);});filt();});});
-catBtns.forEach(function(b){b.addEventListener('click',function(){
-  aCat=b.dataset.c;
-  catBtns.forEach(function(x){x.className='ctab';});
-  b.className='ctab '+(aCat==='science'?'c-sci':aCat==='ethos'?'c-ethos':aCat==='fun'?'c-fun':'c-all');
-  filt();
-});});
+catChips.forEach(function(b){
+  b.addEventListener('click',function(){
+    aCat=b.dataset.c;
+    catChips.forEach(function(x){x.classList.toggle('on',x===b);});
+    updateActiveDot();
+    filt();
+  });
+});
+sortChips.forEach(function(b){
+  b.addEventListener('click',function(){
+    aSort=b.dataset.s;
+    sortChips.forEach(function(x){x.classList.toggle('on',x===b);});
+    if(aSort==='random'){
+      var allCards=Array.from($$('#listRoot .card'));
+      allCards.sort(function(){return Math.random()-.5;});
+      allCards.forEach(function(c){c.parentNode.appendChild(c);});
+    }
+    updateActiveDot();
+    filt();
+  });
+});
 q.addEventListener('input',filt);
 clrBtn.addEventListener('click',function(){q.value='';filt();q.focus();});
 filt();
@@ -3422,6 +3746,34 @@ if(listRootWhisper){
   setTimeout(function(){schedule();},8000);
 })();
 
+/* ヒーロー画像：9枚ランダム読み込み */
+(function(){
+  var HERO_IMGS=[
+    '/shindan/assets/hero/d01.webp',
+    '/shindan/assets/hero/d02.webp',
+    '/shindan/assets/hero/d03.webp',
+    '/shindan/assets/hero/d04.webp',
+    '/shindan/assets/hero/d05.webp',
+    '/shindan/assets/hero/d06.webp',
+    '/shindan/assets/hero/d07.webp',
+    '/shindan/assets/hero/d08.webp',
+    '/shindan/assets/hero/d09.webp',
+  ];
+  var img=$('#specimenHeroImg');
+  if(img){
+    var src=rnd(HERO_IMGS);
+    var loader=new Image();
+    loader.onload=function(){img.src=src;img.classList.add('loaded');};
+    loader.onerror=function(){
+      /* 失敗したら t01 にフォールバック */
+      var fb=new Image();
+      fb.onload=function(){img.src=fb.src;img.classList.add('loaded');};
+      fb.src='/shindan/assets/hero/d01.webp';
+    };
+    loader.src=src;
+  }
+})();
+
 /* TITLE CLICK → fortunes */
 /* ガチャデータ: {rarity:'ssr'|'sr'|'n', emo, text} */
 var GACHA=[
@@ -3494,6 +3846,9 @@ function showGacha(){
   /* タイトルの押した感 */
   var tb=$('#titleBtn');
   if(tb){tb.classList.add('gacha-tap');setTimeout(function(){tb.classList.remove('gacha-tap');},300);}
+  /* 額縁のtap演出も同期 */
+  var sf=$('.specimen-frame');
+  if(sf){sf.classList.add('gacha-tap');setTimeout(function(){sf.classList.remove('gacha-tap');},300);}
 
   /* 1フレーム後にactiveで開くアニメ */
   requestAnimationFrame(function(){
@@ -3505,7 +3860,7 @@ function showGacha(){
 
   /* 自動で閉じる */
   if(gachaTimer)clearTimeout(gachaTimer);
-  gachaTimer=setTimeout(function(){closeGacha(false);},2800);
+  gachaTimer=setTimeout(function(){closeGacha(false);},4200);
 }
 
 function closeGacha(immediate){
