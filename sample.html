@@ -156,65 +156,108 @@ button{font-family:inherit;cursor:pointer}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;border-bottom:1px solid var(--line);margin-bottom:18px;gap:12px;}
 .topbar-title{cursor:pointer;user-select:none;position:relative;}
 
-/* ── ヒーロー画像：枠なし・背景溶け込み ── */
+/* ── お菓子屋さん看板 ── */
 .specimen-frame{
-  width:100%;
-  margin:0 0 24px;
+  width:92%;
+  margin:16px auto 28px;
   cursor:pointer;
   user-select:none;
   position:relative;
+  /* ゆっくり揺れる */
+  animation:candy-swing 6s ease-in-out infinite;
+  transform-origin:top center;
 }
-.specimen-frame::before,
-.specimen-frame::after{content:none;}
+@keyframes candy-swing{
+  0%,100%{transform:rotate(-.3deg);}
+  50%{transform:rotate(.3deg);}
+}
+.specimen-frame:hover{animation:none;transform:rotate(0);}
+
+/* 吊り紐（左右） */
+.specimen-frame::before{
+  content:"";
+  position:absolute;
+  top:-20px;left:22%;
+  width:2px;height:22px;
+  background:linear-gradient(to bottom,#e8b4d0,#c9a0c0);
+  border-radius:999px;
+  z-index:2;
+}
+.specimen-frame::after{
+  content:"";
+  position:absolute;
+  top:-20px;right:22%;
+  width:2px;height:22px;
+  background:linear-gradient(to bottom,#e8b4d0,#c9a0c0);
+  border-radius:999px;
+  z-index:2;
+}
+
+/* 看板本体 */
 .specimen-frame-inner{
   position:relative;
   overflow:hidden;
-  border-radius:0;
-  box-shadow:none;
+  border-radius:20px;
+  /* お菓子屋さんらしいダブルボーダー */
+  box-shadow:
+    0 0 0 3px #f9d0e6,
+    0 0 0 6px #c9a0c0,
+    0 0 0 9px #f9d0e6,
+    0 8px 28px rgba(180,100,160,.2),
+    0 2px 8px rgba(0,0,0,.08);
 }
+
+/* 画像 */
 .specimen-frame-img{
   display:block;
   width:100%;
   aspect-ratio:16/5;
   object-fit:cover;
   object-position:center top;
-  transition:filter .4s ease, opacity .4s ease;
-  background:linear-gradient(155deg,#f5eeff,#fce8f4,#f0f4ff);
+  transition:filter .3s ease, opacity .4s ease;
+  background:linear-gradient(155deg,#fce8f4,#f5eeff,#fce8f4);
   opacity:0;
+  border-radius:14px;
 }
 .specimen-frame-img.loaded{opacity:1;}
 .specimen-frame:hover .specimen-frame-img{
-  filter:brightness(1.03) saturate(1.05);
+  filter:brightness(1.03) saturate(1.06);
 }
-/* 四方向グラデーションで背景に溶け込む */
+
+/* 上部：アーチ型カラー帯 */
 .specimen-frame-inner::before{
-  content:"";position:absolute;
-  top:0;left:0;right:0;height:35%;
-  background:linear-gradient(to bottom,#fdf2ff 10%,transparent);
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:18%;
+  background:linear-gradient(
+    to bottom,
+    rgba(249,208,230,.55) 0%,
+    transparent 100%
+  );
   pointer-events:none;z-index:1;
 }
+/* 下部フェード */
 .specimen-frame-inner::after{
-  content:"";position:absolute;
-  bottom:0;left:0;right:0;height:55%;
-  background:linear-gradient(to top,#faf4ff 20%,transparent);
+  content:"";
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:30%;
+  background:linear-gradient(
+    to top,
+    rgba(249,208,230,.35) 0%,
+    transparent 100%
+  );
   pointer-events:none;z-index:1;
 }
-/* 左右フェード */
-.specimen-frame-img{
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%),
-    linear-gradient(to bottom, black 0%, black 100%);
-  -webkit-mask-composite: destination-in;
-  mask-image:
-    linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-}
+
 /* タップ演出 */
 .specimen-frame.gacha-tap .specimen-frame-inner{
   animation:frame-tap .3s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes frame-tap{
   0%{transform:scale(1)}
-  40%{transform:scale(.99)}
+  40%{transform:scale(.97)}
   100%{transform:scale(1)}
 }
 
@@ -3756,21 +3799,30 @@ if(listRootWhisper){
 })();
 
 /* ヒーロー画像：9枚ランダム読み込み */
+/* ヒーロー画像：レア確率付きランダム読み込み */
 (function(){
-  var HERO_IMGS=[
-    '/shindan/assets/hero/d01.webp',
-    '/shindan/assets/hero/d02.webp',
-    '/shindan/assets/hero/d03.webp',
-    '/shindan/assets/hero/d04.webp',
-    '/shindan/assets/hero/d05.webp',
-    '/shindan/assets/hero/d06.webp',
-    '/shindan/assets/hero/d07.webp',
-    '/shindan/assets/hero/d08.webp',
-    '/shindan/assets/hero/d09.webp',
+  /* d01-d08: 通常(各weight=10), d09: 超レア(weight=1) */
+  var HERO_POOL=[
+    {src:'/shindan/assets/hero/d01.webp',w:10},
+    {src:'/shindan/assets/hero/d02.webp',w:10},
+    {src:'/shindan/assets/hero/d03.webp',w:10},
+    {src:'/shindan/assets/hero/d04.webp',w:10},
+    {src:'/shindan/assets/hero/d05.webp',w:10},
+    {src:'/shindan/assets/hero/d06.webp',w:10},
+    {src:'/shindan/assets/hero/d07.webp',w:10},
+    {src:'/shindan/assets/hero/d08.webp',w:10},
+    {src:'/shindan/assets/hero/d09.webp',w:1},
   ];
+  function weightedRnd(pool){
+    var total=pool.reduce(function(s,e){return s+e.w;},0);
+    var r=Math.random()*total;
+    var acc=0;
+    for(var i=0;i<pool.length;i++){acc+=pool[i].w;if(r<acc)return pool[i].src;}
+    return pool[0].src;
+  }
   var img=$('#specimenHeroImg');
   if(img){
-    var src=rnd(HERO_IMGS);
+    var src=weightedRnd(HERO_POOL);
     var loader=new Image();
     loader.onload=function(){img.src=src;img.classList.add('loaded');};
     loader.onerror=function(){
