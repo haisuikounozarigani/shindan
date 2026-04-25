@@ -186,18 +186,27 @@ button{font-family:inherit;cursor:pointer}
 .specimen-frame:hover .specimen-frame-img{
   filter:brightness(1.03) saturate(1.05);
 }
-/* 上下グラデーションで背景に溶け込む */
+/* 四方向グラデーションで背景に溶け込む */
 .specimen-frame-inner::before{
   content:"";position:absolute;
-  top:0;left:0;right:0;height:28%;
-  background:linear-gradient(to bottom,#fdf2ff,transparent);
+  top:0;left:0;right:0;height:35%;
+  background:linear-gradient(to bottom,#fdf2ff 10%,transparent);
   pointer-events:none;z-index:1;
 }
 .specimen-frame-inner::after{
   content:"";position:absolute;
-  bottom:0;left:0;right:0;height:40%;
-  background:linear-gradient(to top,#faf4ff,transparent);
+  bottom:0;left:0;right:0;height:55%;
+  background:linear-gradient(to top,#faf4ff 20%,transparent);
   pointer-events:none;z-index:1;
+}
+/* 左右フェード */
+.specimen-frame-img{
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%),
+    linear-gradient(to bottom, black 0%, black 100%);
+  -webkit-mask-composite: destination-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 /* タップ演出 */
 .specimen-frame.gacha-tap .specimen-frame-inner{
