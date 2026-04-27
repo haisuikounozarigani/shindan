@@ -173,23 +173,27 @@ button{font-family:inherit;cursor:pointer}
 .specimen-frame-inner{
   position:relative;
   overflow:hidden;
-  border-radius:18px;
-  padding:6px;
-  background:rgba(255,255,255,.58);
-  border:1px solid rgba(255,255,255,.72);
+  border-radius:20px;
+  /* グラデーションボーダー */
+  padding:2px;
+  background:linear-gradient(
+    135deg,
+    rgba(255,182,218,.7) 0%,
+    rgba(196,181,253,.6) 50%,
+    rgba(255,182,218,.7) 100%
+  );
   box-shadow:
-    0 8px 20px rgba(139,92,246,.08),
-    0 1px 0 rgba(255,255,255,.75) inset;
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+    0 12px 32px rgba(139,92,246,.12),
+    0 4px 12px rgba(255,61,154,.08),
+    0 1px 0 rgba(255,255,255,.9) inset;
 }
 
 .specimen-frame-inner::before{
   content:"";
   position:absolute;
-  inset:6px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.55);
+  inset:2px;
+  border-radius:18px;
+  background:rgba(255,255,255,.15);
   pointer-events:none;
   z-index:2;
 }
@@ -197,11 +201,10 @@ button{font-family:inherit;cursor:pointer}
 .specimen-frame-inner::after{
   content:"";
   position:absolute;
-  inset:6px;
-  border-radius:14px;
-  background:
-    linear-gradient(to bottom,rgba(255,255,255,.14),rgba(255,255,255,0) 30%),
-    linear-gradient(to top,rgba(255,255,255,.08),rgba(255,255,255,0) 24%);
+  top:2px;left:2px;right:2px;
+  height:40%;
+  border-radius:18px 18px 0 0;
+  background:linear-gradient(to bottom,rgba(255,255,255,.18),transparent);
   pointer-events:none;
   z-index:3;
 }
@@ -213,12 +216,12 @@ button{font-family:inherit;cursor:pointer}
   object-fit:cover;
   object-position:center center;
   opacity:0;
-  border-radius:14px;
+  border-radius:18px;
   background:#f8f3fb;
   transition:
     opacity .35s ease,
-    filter .2s ease,
-    transform .25s ease;
+    filter .22s ease,
+    transform .28s ease;
 }
 
 .specimen-frame-img.loaded{
@@ -226,8 +229,8 @@ button{font-family:inherit;cursor:pointer}
 }
 
 .specimen-frame:hover .specimen-frame-img{
-  filter:brightness(1.015) saturate(1.02);
-  transform:scale(1.003);
+  filter:brightness(1.02) saturate(1.03);
+  transform:scale(1.004);
 }
 
 .specimen-frame.gacha-tap .specimen-frame-inner{
@@ -247,18 +250,22 @@ button{font-family:inherit;cursor:pointer}
   }
 
   .specimen-frame-inner{
-    border-radius:16px;
-    padding:5px;
+    border-radius:18px;
+    padding:2px;
   }
 
-  .specimen-frame-inner::before,
+  .specimen-frame-inner::before{
+    inset:2px;
+    border-radius:16px;
+  }
+
   .specimen-frame-inner::after{
-    inset:5px;
-    border-radius:12px;
+    top:2px;left:2px;right:2px;
+    border-radius:16px 16px 0 0;
   }
 
   .specimen-frame-img{
-    border-radius:12px;
+    border-radius:16px;
     aspect-ratio:2 / 1;
   }
 }
@@ -594,43 +601,47 @@ button{font-family:inherit;cursor:pointer}
 /* ── SITENAV ── */
 .sitenav{
   display:flex;
-  border:1px solid rgba(255,255,255,.72);
-  background:rgba(255,255,255,.72);
-  margin:8px auto 8px;
-  overflow:hidden;
-  border-radius:14px;
+  gap:6px;
+  padding:6px;
+  margin:8px auto 12px;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:18px;
   box-shadow:
-    0 8px 18px rgba(139,92,246,.07),
-    0 1px 0 rgba(255,255,255,.75) inset;
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+    0 4px 20px rgba(139,92,246,.08),
+    0 1px 0 rgba(255,255,255,.9) inset;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   position:relative;
   z-index:4;
 }
 
 .sn-item{
   flex:1;
-  padding:10px 6px;
+  padding:9px 4px;
   text-align:center;
-  font-size:.77rem;
+  font-size:.72rem;
   font-weight:700;
   color:var(--muted);
-  border-right:1px solid rgba(0,0,0,.06);
-  transition:background .12s,color .12s;
+  border-radius:12px;
+  transition:background .16s, color .16s, box-shadow .16s;
   white-space:nowrap;
+  letter-spacing:.01em;
 }
 
-.sn-item:last-child{border-right:none}
-
 .sn-item:hover{
-  background:rgba(255,255,255,.9);
+  background:rgba(255,255,255,.7);
   color:var(--fg);
 }
 
 .sn-item.on{
-  background:linear-gradient(90deg,rgba(255,61,154,.08),rgba(139,92,246,.10));
+  background:linear-gradient(135deg,#fff0f8,#f3ecff);
   color:var(--pu);
   font-weight:900;
+  box-shadow:
+    0 2px 8px rgba(139,92,246,.12),
+    0 1px 0 rgba(255,255,255,.9) inset;
+  border:1px solid rgba(196,181,253,.3);
 }
 
 /* ================================================================
