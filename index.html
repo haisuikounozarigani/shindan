@@ -1985,7 +1985,7 @@ button{font-family:inherit;cursor:pointer}
         </div>
         <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
         </a>
-        <a class="card" data-cat="science" data-id="best-friend" data-keywords="友情 親友 ベストフレンド 21問 7因子 喜び 安心 自律 挑戦 一貫性 修復 ユーモア モード切替 因子バー 研究メモ" data-mins="6" data-tags="こころ,ふつう,しっかり" data-updated="2026-04-21" href="/shindan/best-friend.html?src=specimens">
+        <a class="card" data-cat="science" data-id="best-friend" data-keywords="友情 親友 ベストフレンド 21問 7因子 喜び 安心 自律 挑戦 一貫性 修復 ユーモア モード切替 因子バー 研究メモ" data-mins="6" data-tags="こころ,ふつう,しっかり" data-updated="2025-09-30" href="/shindan/best-friend.html?src=specimens">
         <div class="c-emo-area">🤝</div>
         <div class="c-body">
         <div class="c-title">ベストフレンド力 21問<span class="bnew" data-new="">NEW</span></div>
@@ -3856,37 +3856,69 @@ if(listRootWhisper){
   setTimeout(function(){schedule();},8000);
 })();
 
-/* ヒーロー画像：d01〜d09 ランダム表示 */
+/* ヒーロー画像：通常カバー c01〜c09 / レア動物 d01〜d09 */
 (function(){
   var img=$('#specimenHeroImg');
   var frame=$('#titleBtn');
   if(!img)return;
 
+  /*
+    c01〜c10 = 通常カバー。各10。
+    d01〜d09 = レア動物カバー。各1。
+    全体では通常カバー約91.7%、動物カバー約8.3%。
+  */
   var HERO_POOL=[
-    '/shindan/assets/hero/d01.webp',
-    '/shindan/assets/hero/d02.webp',
-    '/shindan/assets/hero/d03.webp',
-    '/shindan/assets/hero/d04.webp',
-    '/shindan/assets/hero/d05.webp',
-    '/shindan/assets/hero/d06.webp',
-    '/shindan/assets/hero/d07.webp',
-    '/shindan/assets/hero/d08.webp',
-    '/shindan/assets/hero/d09.webp'
+    {src:'/shindan/assets/hero/c01.webp',w:10},
+    {src:'/shindan/assets/hero/c02.webp',w:10},
+    {src:'/shindan/assets/hero/c03.webp',w:10},
+    {src:'/shindan/assets/hero/c04.webp',w:10},
+    {src:'/shindan/assets/hero/c05.webp',w:10},
+    {src:'/shindan/assets/hero/c06.webp',w:10},
+    {src:'/shindan/assets/hero/c07.webp',w:10},
+    {src:'/shindan/assets/hero/c08.webp',w:10},
+    {src:'/shindan/assets/hero/c09.webp',w:10},
+    {src:'/shindan/assets/hero/c10.webp',w:10},
+
+    {src:'/shindan/assets/hero/d01.webp',w:1},
+    {src:'/shindan/assets/hero/d02.webp',w:1},
+    {src:'/shindan/assets/hero/d03.webp',w:1},
+    {src:'/shindan/assets/hero/d04.webp',w:1},
+    {src:'/shindan/assets/hero/d05.webp',w:1},
+    {src:'/shindan/assets/hero/d06.webp',w:1},
+    {src:'/shindan/assets/hero/d07.webp',w:1},
+    {src:'/shindan/assets/hero/d08.webp',w:1},
+    {src:'/shindan/assets/hero/d09.webp',w:1}
   ];
 
   var HERO_LAST_KEY='specimens:hero:last';
+
+  function weightedPick(pool){
+    var total=pool.reduce(function(sum,item){
+      return sum + item.w;
+    },0);
+
+    var r=Math.random()*total;
+    var acc=0;
+
+    for(var i=0;i<pool.length;i++){
+      acc+=pool[i].w;
+      if(r<acc)return pool[i].src;
+    }
+
+    return pool[0].src;
+  }
 
   function pickHero(){
     var last='';
     try{last=localStorage.getItem(HERO_LAST_KEY)||'';}catch(e){}
 
-    var pool=HERO_POOL.filter(function(src){
-      return src!==last;
+    var pool=HERO_POOL.filter(function(item){
+      return item.src!==last;
     });
 
     if(!pool.length)pool=HERO_POOL.slice();
 
-    return pool[Math.floor(Math.random()*pool.length)];
+    return weightedPick(pool);
   }
 
   function heroName(src){
@@ -3912,8 +3944,8 @@ if(listRootWhisper){
     };
 
     loader.onerror=function(){
-      if(src!=='/shindan/assets/hero/d01.webp'){
-        setHero('/shindan/assets/hero/d01.webp');
+      if(src!=='/shindan/assets/hero/c01.webp'){
+        setHero('/shindan/assets/hero/c01.webp');
       }else{
         img.classList.add('loaded');
       }
