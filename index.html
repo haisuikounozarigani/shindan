@@ -1127,6 +1127,34 @@ button{font-family:inherit;cursor:pointer}
 .grid{display:grid;grid-template-columns:1fr;gap:8px;}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr);}}
+
+/* すべて表示：カテゴリをまたいで新しい順に並べる */
+#listRoot.flat-all{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+@media(min-width:600px){
+  #listRoot.flat-all{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(min-width:900px){
+  #listRoot.flat-all{grid-template-columns:repeat(3,1fr);}
+}
+
+#listRoot.flat-all .sec,
+#listRoot.flat-all .grid{
+  display:contents;
+}
+
+#listRoot.flat-all .sec-hd{
+  display:none!important;
+}
+
+#listRoot.flat-all .card{
+  margin:0;
+}
 .card{position:relative;background:#fff;border:1.5px solid rgba(196,181,253,.25);box-shadow:0 2px 12px rgba(139,92,246,.07),0 1px 3px rgba(0,0,0,.04);cursor:pointer;text-decoration:none;color:var(--fg);display:flex;flex-direction:row;align-items:stretch;border-radius:12px;transition:transform .16s cubic-bezier(.2,0,.4,1),box-shadow .16s,border-color .15s;overflow:hidden;animation:cdin .28s ease both;min-height:86px;}
 @keyframes cdin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(139,92,246,.14),0 4px 12px rgba(0,0,0,.07);border-color:rgba(196,181,253,.5);}
@@ -1903,6 +1931,7 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <!-- CARDS -->
+  
   <div id="listRoot">
     <div class="sec" data-cat="science" data-n="01" id="sec-science">
       <div class="sec-hd"><div class="sec-n">01</div><div class="sec-info"><div class="sec-label">🧬 LOGOS標本</div><div class="sec-sub">論理・科学エビデンスベース</div></div><span class="sec-done" id="done-science"></span></div>
@@ -2222,9 +2251,36 @@ button{font-family:inherit;cursor:pointer}
         </a>
       </div>
     </div>
+    
+    
+    <!-- ETHOS標本（中間）カード一覧 -->
+    
     <div class="sec" data-cat="ethos" data-n="02" id="sec-ethos">
       <div class="sec-hd"><div class="sec-n">02</div><div class="sec-info"><div class="sec-label">⚖️ ETHOS標本</div><div class="sec-sub">科学とエンタメの中間領域</div></div><span class="sec-done" id="done-ethos"></span></div>
       <div class="grid">
+
+        <!-- ★ あなたの脳は何学部？ -->
+        <a class="card"
+           data-cat="ethos"
+           data-id="brain-faculty"
+           data-keywords="脳 学部 学問 適性 進路 思考傾向 興味 認知スタイル 人文系 社会科学系 心理 対人 自然科学 工学 情報系 研究テーマ 知的好奇心 文系 理系 25問 フラスコキャッチ ミニゲーム 診断"
+           data-mins="5"
+           data-reco="1"
+           data-tags="学問,適性,自己理解,思考スタイル"
+           data-updated="2026-05-18"
+           href="/shindan/brain-faculty.html?src=specimens">
+          <div class="c-emo-area">🎓</div>
+          <div class="c-body">
+            <div class="c-title">あなたの脳は何学部？ 25問<span class="bnew" data-new="">NEW</span></div>
+            <div class="c-sub">向いている学問ジャンルを仕分け。おまけで謎のフラスコゲームも。</div>
+            <div class="c-footer">
+              <span class="pill">⏱5分</span>
+              <button aria-hidden="true" class="c-btn" type="button">診断へ</button>
+              <button aria-hidden="true" class="c-redo" type="button">↺</button>
+            </div>
+          </div>
+          <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
+        </a>
         <a class="card" data-cat="ethos" data-id="frenemy-scan" data-keywords="フレネミー frenemy アンビバレント関係 二面性 嫉妬 競争 皮肉 受動攻撃 パッシブアグレッシブ 陰口 噂 悪口 情報漏洩 信頼 境界線 距離感 操作 マキャベリアニズム 印象操作 ガスライティング いじり からかい けなす 上から評価 立場を下げる 職場 友達 グループ LINE 24問 5件法 霧 ヒビ 仮面 毒 警戒" data-mins="6" data-tags="心理,人間関係,職場,友人" data-updated="2026-02-19" href="/shindan/frenemy-scan.html?src=specimens">
         <div class="c-emo-area">🎭</div>
         <div class="c-body">
@@ -2960,6 +3016,10 @@ function saveRd(s){sls(KN,JSON.stringify(Array.from(s)));}
    ・tag: 'UPDATE'=診断追加・変更 | 'NOTICE'=お知らせ | 'FIX'=修正
    ================================================================ */
 var NOTICES=[
+  {id:'n-005',date:'2026-05-18',tag:'UPDATE',emo:'🎓',
+   title:'あなたの脳は何学部？を追加',
+   text:'25枚の研究テーマを仕分けて、向いている学問ジャンルを探す診断を追加しました。おまけでフラスコとの恋愛関係が試される謎ミニゲームもあります。'},
+
   {id:'n-004',date:'2026-04-21',tag:'UPDATE',emo:'🤝',
    title:'ベストフレンド力診断をリニューアル',
    text:'「わたし／あの人」切り替えを含めて、友情の強みがもっと見やすくなるように整えました。'},
@@ -3207,18 +3267,51 @@ var rcEl=$('#rc').querySelector('strong');
 var sections=$$('.sec');
 
 function applySort(){
-  if(aSort==='random')return;
-  $$('.sec').forEach(function(sec){
-    var grid=sec.querySelector('.grid');
-    if(!grid)return;
-    var cards=Array.from(grid.querySelectorAll('.card'));
-    cards.sort(function(a,b){
+  var root=$('#listRoot');
+  var allCards=Array.from($$('#listRoot .card'));
+
+  function sortCards(arr){
+    arr.sort(function(a,b){
       if(aSort==='new')return (b.dataset.updated||'').localeCompare(a.dataset.updated||'');
       if(aSort==='old')return (a.dataset.updated||'').localeCompare(b.dataset.updated||'');
       if(aSort==='mins')return (+a.dataset.mins||99)-(+b.dataset.mins||99);
       return 0;
     });
-    cards.forEach(function(c){grid.appendChild(c);});
+    return arr;
+  }
+
+  /* すべて表示の時だけ、LOGOS/ETHOS/PATHOSをまたいで並べる */
+  if(aCat==='all'){
+    if(root)root.classList.add('flat-all');
+
+    allCards.forEach(function(c){
+      c.style.order='';
+    });
+
+    if(aSort==='random')return;
+
+    sortCards(allCards).forEach(function(c,i){
+      c.style.order=i;
+    });
+    return;
+  }
+
+  /* カテゴリ表示では元のセクション表示に戻す */
+  if(root)root.classList.remove('flat-all');
+
+  allCards.forEach(function(c){
+    c.style.order='';
+  });
+
+  if(aSort==='random')return;
+
+  $$('.sec').forEach(function(sec){
+    var grid=sec.querySelector('.grid');
+    if(!grid)return;
+    var cards=Array.from(grid.querySelectorAll('.card'));
+    sortCards(cards).forEach(function(c){
+      grid.appendChild(c);
+    });
   });
 }
 function filt(){
