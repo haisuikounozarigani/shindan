@@ -1690,12 +1690,12 @@ button{font-family:inherit;cursor:pointer}
     
     <button class="menu-item" data-action="scroll" data-target="nirChat">
       <span class="mi-emo">📋</span>更新履歴
-    </button>>
+    </button>
     <button class="menu-item" data-action="scroll" data-target="bkSec">
       <span class="mi-emo">💾</span>データ引き継ぎ
     </button>
     <button class="menu-item" data-action="scroll" data-target="feedback">
-      <span class="mi-emo">✉</span>お問い合わせ
+      <span class="mi-emo">✉</span>お問い合わせ・質問箱
     </button>
     <button class="menu-item" data-action="scroll" data-target="disclaimer">
       <span class="mi-emo">📄</span>免責事項
@@ -1781,7 +1781,7 @@ button{font-family:inherit;cursor:pointer}
     <a href="/shindan/" class="sn-item on">🧪 心の標本</a>
     <a href="/chishiki/" class="sn-item">📚 知識の水槽</a>
     <a href="/torikago/" class="sn-item">🐦 試練の鳥籠</a>
-    <a href="/nir/" class="sn-item">🕯 ???</a>
+    <a href="/nir/" class="sn-item">🕯 禁書の部屋</a>
   </nav>
 
   <!-- 標本ラベル額縁タイトル -->
@@ -2958,19 +2958,20 @@ button{font-family:inherit;cursor:pointer}
 
   <!-- C. 問い合わせ -->
   <div class="fb" id="feedback">
-    <div class="fb-hd">ご意見・感想・ラブレター</div>
-    <p class="fb-desc">バグ報告・感想・「こんな診断ほしい」など、なんでもゆるく投げ込める箱です。<strong>匿名OK</strong>。</p>
+    <div class="fb-hd">お問い合わせ・質問箱</div>
+    <p class="fb-desc">バグ報告・感想・診断リクエスト・普段気になった疑問などを送れます。質問は、内容に応じて「禁書の部屋」で回答する場合があります。<strong>匿名OK</strong>。</p>
     <form id="fbForm" action="https://formspree.io/f/mdkqgynb" method="POST">
       <label>お名前 / ニックネーム（任意）<input type="text" name="name" autocomplete="name"></label>
       <label>連絡先（任意 / 返信希望時のみ）<input type="email" name="email" inputmode="email" autocomplete="email"></label>
-      <label>種別<select name="type"><option value="impression">診断の感想・ご意見</option><option value="bug">バグ報告</option><option value="request">こんな診断がほしい</option><option value="love">作者を甘やかす・沼報告</option><option value="other">その他</option></select></label>
-      <label>メッセージ<textarea name="message" required placeholder="ひとことでも、長文でも、どうぞ。"></textarea></label>
+      <label>種別<select name="type"><option value="impression">診断の感想・ご意見</option><option value="question">質問・調べてほしいこと</option><option value="bug">バグ報告</option><option value="request">こんな診断がほしい</option><option value="love">作者を甘やかす・沼報告</option><option value="other">その他</option></select></label>
+      <label>メッセージ・疑問<textarea name="message" required placeholder="感想、バグ報告、診断リクエスト、普段気になった疑問など。ひとことでも、長文でも、どうぞ。"></textarea></label>
       <button class="fb-sub" type="submit">送信する</button>
       <p class="fb-hint" id="fbHint">※ お名前・連絡先は空欄でも送信できます。</p>
       <div class="fb-notes">
         <p>📮 送信内容は <strong>Formspree</strong> 経由で制作者に届きます。</p>
         <p>💬 返信はお約束できませんが、すべてゆっくり目を通します。</p>
-        <p>📚 研究メモや説明が実際の研究と違っていた場合は、ゆるく教えてもらえると助かります。</p>
+        <p>📚 質問や調べてほしいことは、匿名化して「禁書の部屋」で回答する場合があります。</p>
+        <p>🧪 研究メモや説明が実際の研究と違っていた場合は、ゆるく教えてもらえると助かります。</p>
       </div>
     </form>
   </div>
@@ -3016,6 +3017,10 @@ function saveRd(s){sls(KN,JSON.stringify(Array.from(s)));}
    ・tag: 'UPDATE'=診断追加・変更 | 'NOTICE'=お知らせ | 'FIX'=修正
    ================================================================ */
 var NOTICES=[
+  {id:'n-006',date:'2026-05-22',tag:'UPDATE',emo:'📮',
+   title:'お問い合わせから質問を送れるようになりました',
+   text:'感想やバグ報告に加えて、ふだん気になった疑問や調べてほしいことも送れるようになりました。採用した質問は、匿名化して「禁書の部屋」で回答する場合があります。'},
+
   {id:'n-005',date:'2026-05-18',tag:'UPDATE',emo:'🎓',
    title:'あなたの脳は何学部？を追加',
    text:'25枚の研究テーマを仕分けて、向いている学問ジャンルを探す診断を追加しました。おまけでフラスコとの恋愛関係が試される謎ミニゲームもあります。'},
