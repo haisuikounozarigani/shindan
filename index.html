@@ -598,50 +598,281 @@ button{font-family:inherit;cursor:pointer}
 }
 .howto-close:hover{background:rgba(255,255,255,.12);color:#fff;}
 
-/* ── SITENAV ── */
-.sitenav{
+/* ── WORLD GUIDE ── */
+.world-guide{
+  margin:0 0 18px;
+}
+
+.world-guide-head{
   display:flex;
-  gap:6px;
-  padding:6px;
-  margin:8px auto 12px;
-  background:rgba(255,255,255,.55);
-  border:1px solid rgba(255,255,255,.8);
-  border-radius:18px;
-  box-shadow:
-    0 4px 20px rgba(139,92,246,.08),
-    0 1px 0 rgba(255,255,255,.9) inset;
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  position:relative;
-  z-index:4;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 2px 8px;
+  padding:0 2px;
 }
 
-.sn-item{
-  flex:1;
-  padding:9px 4px;
-  text-align:center;
-  font-size:.72rem;
-  font-weight:700;
-  color:var(--muted);
-  border-radius:12px;
-  transition:background .16s, color .16s, box-shadow .16s;
-  white-space:nowrap;
-  letter-spacing:.01em;
-}
-
-.sn-item:hover{
-  background:rgba(255,255,255,.7);
-  color:var(--fg);
-}
-
-.sn-item.on{
-  background:linear-gradient(135deg,#fff0f8,#f3ecff);
-  color:var(--pu);
+.world-guide-kicker{
+  font-size:.55rem;
   font-weight:900;
-  box-shadow:
-    0 2px 8px rgba(139,92,246,.12),
-    0 1px 0 rgba(255,255,255,.9) inset;
-  border:1px solid rgba(196,181,253,.3);
+  letter-spacing:.18em;
+  color:rgba(139,92,246,.58);
+  margin-bottom:2px;
+}
+
+.world-guide h2{
+  font-size:.98rem;
+  line-height:1.1;
+  color:var(--ink);
+  letter-spacing:-.02em;
+}
+
+.world-guide-note{
+  font-size:.68rem;
+  color:var(--muted);
+  line-height:1.45;
+  text-align:right;
+}
+
+@media(max-width:520px){
+  .world-guide-head{
+    align-items:flex-start;
+  }
+  .world-guide-note{
+    max-width:9.5em;
+  }
+}
+
+/* ── WORLD SWITCHER / FLIP ── */
+.ws-flips{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;margin:0 0 16px;
+}
+.ws-flip-wrap{
+  height:132px;perspective:600px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.ws-flip-card{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .52s cubic-bezier(.4,0,.2,1);
+}
+.ws-flip-wrap.flipped .ws-flip-card{transform:rotateY(180deg);}
+.ws-flip-front,.ws-flip-back{
+  position:absolute;inset:0;border-radius:14px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+
+/* 表面 */
+.ws-flip-front{
+  overflow:hidden;
+  border:1.5px solid rgba(255,255,255,.4);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:10px 10px 12px;
+}
+/* 光のオーブ */
+.ws-flip-front::before{
+  content:"";position:absolute;
+  top:-25%;left:-15%;
+  width:65%;height:65%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,.38),transparent 65%);
+  pointer-events:none;
+  animation:wf-orb 4.5s ease-in-out infinite;
+}
+@keyframes wf-orb{
+  0%,100%{transform:translate(0,0);}
+  50%{transform:translate(12%,18%);}
+}
+/* shimmer sweep */
+.ws-flip-front::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(108deg,transparent 38%,rgba(255,255,255,.22) 50%,transparent 62%);
+  transform:translateX(-120%);pointer-events:none;
+  animation:wf-sweep 4s ease-in-out infinite;
+}
+@keyframes wf-sweep{
+  0%,55%{transform:translateX(-120%);}
+  78%{transform:translateX(220%);}
+  100%{transform:translateX(220%);}
+}
+.ws-flip-wrap:nth-child(2) .ws-flip-front::after{animation-delay:.9s;}
+.ws-flip-wrap:nth-child(3) .ws-flip-front::after{animation-delay:1.8s;}
+.ws-flip-wrap:nth-child(4) .ws-flip-front::after{animation-delay:2.7s;}
+
+.ws-flip-icon{
+  font-size:2.4rem;line-height:1;
+  position:absolute;top:13px;left:50%;
+  transform:translateX(-50%);
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.22));
+  animation:wf-float 3.2s ease-in-out infinite;
+  z-index:1;
+}
+@keyframes wf-float{
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%{transform:translateX(-50%) translateY(-6px);}
+}
+.ws-flip-wrap:nth-child(2) .ws-flip-icon{animation-delay:.6s;}
+.ws-flip-wrap:nth-child(3) .ws-flip-icon{animation-delay:1.2s;}
+.ws-flip-wrap:nth-child(4) .ws-flip-icon{animation-delay:.3s;}
+
+.ws-flip-name{
+  font-size:.7rem;font-weight:900;
+  color:rgba(255,255,255,.97);
+  text-shadow:0 1px 5px rgba(0,0,0,.28);
+  position:relative;z-index:1;
+  letter-spacing:-.01em;word-break:keep-all;text-align:center;
+}
+.ws-flip-f-badge{
+  font-size:.5rem;font-weight:800;
+  padding:2px 8px;border-radius:99px;
+  background:rgba(255,255,255,.22);
+  color:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.38);
+  position:relative;z-index:1;margin-top:3px;
+}
+.ws-flip-f-badge--current{background:rgba(255,255,255,.92)!important;color:#c026d3!important;border:none!important;}
+.ws-flip-hint{
+  position:absolute;
+  top:8px;right:8px;
+  font-size:.56rem;
+  font-weight:900;
+  color:rgba(255,255,255,.9);
+  letter-spacing:.04em;
+  padding:3px 7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.28);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  z-index:2;
+}
+
+/* 裏面 */
+.ws-flip-back{
+  transform:rotateY(180deg);
+  overflow:hidden;border:1.5px solid;
+  display:flex;flex-direction:column;
+}
+.ws-flip-b-top{
+  padding:9px 11px 7px;
+  display:flex;align-items:center;gap:7px;
+  flex-shrink:0;border-bottom:1px solid;
+}
+.ws-flip-b-icon{font-size:1.1rem;}
+.ws-flip-b-meta{display:flex;flex-direction:column;gap:1px;}
+.ws-flip-b-name{font-size:.75rem;font-weight:900;line-height:1.2;}
+.ws-flip-b-badge{
+  font-size:.5rem;font-weight:800;
+  padding:1px 7px;border-radius:99px;width:fit-content;
+}
+.ws-flip-b-desc{
+  flex:1;padding:6px 11px 0;
+  font-size:.64rem;color:var(--muted);line-height:1.55;overflow:hidden;
+}
+.ws-flip-b-btn{
+  display:block;margin:5px 11px 10px;
+  padding:7px;border-radius:8px;
+  font-size:.68rem;font-weight:900;color:#fff;text-align:center;
+  transition:opacity .14s;
+}
+.ws-flip-b-btn:active{opacity:.8;}
+.ws-flip-b-btn--disabled{
+  opacity:.68;
+  cursor:not-allowed;
+  background:linear-gradient(90deg,#9ca3af,#6b7280)!important;
+  box-shadow:none!important;
+}
+
+/* テーマ：ピンク */
+.wf--pk .ws-flip-front{background:linear-gradient(148deg,#ffd6ec,#e879b0,#b84fcf);box-shadow:0 5px 20px rgba(232,121,176,.35);}
+.wf--pk .ws-flip-back{border-color:rgba(232,121,176,.28);background:linear-gradient(170deg,rgba(255,240,250,.7),#fff);}
+.wf--pk .ws-flip-b-top{background:rgba(255,200,230,.25);border-bottom-color:rgba(232,121,176,.12);}
+.wf--pk .ws-flip-b-name{color:#9d2860;}
+.wf--pk .ws-flip-b-badge{background:rgba(232,121,176,.15);color:#b84fcf;}
+.wf--pk .ws-flip-b-btn{background:linear-gradient(90deg,#e879b0,#b84fcf);}
+
+/* テーマ：ブルー */
+.wf--bl .ws-flip-front{background:linear-gradient(148deg,#bae6fd,#38bdf8,#0284c7);box-shadow:0 5px 20px rgba(56,189,248,.28);}
+.wf--bl .ws-flip-back{border-color:rgba(56,189,248,.25);background:linear-gradient(170deg,rgba(240,249,255,.7),#fff);}
+.wf--bl .ws-flip-b-top{background:rgba(186,230,253,.3);border-bottom-color:rgba(56,189,248,.12);}
+.wf--bl .ws-flip-b-name{color:#0369a1;}
+.wf--bl .ws-flip-b-badge{background:rgba(56,189,248,.15);color:#0284c7;}
+.wf--bl .ws-flip-b-btn{background:linear-gradient(90deg,#38bdf8,#0284c7);}
+
+/* テーマ：グリーン */
+.wf--gr .ws-flip-front{background:linear-gradient(148deg,#d1fae5,#34d399,#059669);box-shadow:0 5px 18px rgba(52,211,153,.22);opacity:.92;}
+.wf--gr .ws-flip-back{border-color:rgba(52,211,153,.22);background:linear-gradient(170deg,rgba(240,253,244,.7),#fff);}
+.wf--gr .ws-flip-b-top{background:rgba(209,250,229,.35);border-bottom-color:rgba(52,211,153,.1);}
+.wf--gr .ws-flip-b-name{color:#065f46;}
+.wf--gr .ws-flip-b-badge{background:rgba(52,211,153,.15);color:#059669;}
+.wf--gr .ws-flip-b-btn{background:linear-gradient(90deg,#34d399,#059669);opacity:.75;}
+
+/* テーマ：薄菫 */
+.wf--vl .ws-flip-front{
+  background:
+    radial-gradient(circle at 38% 24%,rgba(255,255,255,.68),transparent 46%),
+    linear-gradient(148deg,#fbf8ff,#d8ccff 48%,#8f7edb);
+  box-shadow:0 5px 20px rgba(137,120,170,.28);
+}
+.wf--vl .ws-flip-back{border-color:rgba(167,139,250,.28);background:linear-gradient(170deg,rgba(245,243,255,.75),#fff);}
+.wf--vl .ws-flip-b-top{background:rgba(233,213,255,.3);border-bottom-color:rgba(167,139,250,.12);}
+.wf--vl .ws-flip-b-name{color:#5b21b6;}
+.wf--vl .ws-flip-b-badge{background:rgba(167,139,250,.18);color:#6d28d9;}
+.wf--vl .ws-flip-b-btn{background:linear-gradient(90deg,#a78bfa,#6d28d9);}
+
+@media(prefers-reduced-motion:reduce){
+  .ws-flip-card{transition:none;}
+  .ws-flip-icon,.ws-flip-front::before,.ws-flip-front::after{animation:none;}
+}
+/* ドア：開いた状態 */
+.ws-door--open{
+  transform:perspective(260px) rotateY(-22deg) translateX(6px);
+  box-shadow:14px 2px 32px rgba(0,0,0,.28),inset -3px 0 0 rgba(255,255,255,.3);
+  z-index:3;
+}
+/* 開きますか？オーバーレイ */
+.ws-door-peek{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:6px;
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;
+  transition:opacity .18s ease;
+  padding:10px 8px;
+  z-index:2;
+}
+.ws-door--open .ws-door-peek{
+  opacity:1;pointer-events:all;
+}
+.ws-door-peek-q{
+  font-size:.54rem;font-weight:800;
+  color:rgba(255,255,255,.72);
+  letter-spacing:.12em;
+}
+.ws-door-peek-desc{
+  font-size:.64rem;font-weight:700;
+  color:rgba(255,255,255,.92);
+  text-align:center;line-height:1.35;
+}
+.ws-door-peek-btn{
+  margin-top:2px;
+  font-size:.64rem;font-weight:900;color:#fff;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.48);
+  border-radius:99px;
+  padding:4px 14px;
+  letter-spacing:.04em;
+  transition:background .14s;
+}
+.ws-door--open:hover .ws-door-peek-btn{
+  background:rgba(255,255,255,.32);
+}
+@media(prefers-reduced-motion:reduce){
+  .ws-door--open{transform:none;}
+  .ws-door-peek{transition:none;}
 }
 
 /* ================================================================
@@ -1707,7 +1938,7 @@ button{font-family:inherit;cursor:pointer}
     <a href="/shindan/" class="menu-item"><span class="mi-emo">🧪</span>心の標本<span class="mi-ext">現在地</span></a>
     <a href="/chishiki/" class="menu-item"><span class="mi-emo">📚</span>知識の水槽<span class="mi-ext">↗</span></a>
     <a href="/torikago/" class="menu-item"><span class="mi-emo">🐦</span>試練の鳥籠<span class="mi-ext">↗</span></a>
-    <a href="/nir/" class="menu-item"><span class="mi-emo">🕯</span>NIR の部屋<span class="mi-ext">↗</span></a>
+    <a href="/nir/" class="menu-item"><span class="mi-emo">🗝</span>秘密の部屋 β<span class="mi-ext">↗</span></a>
   </div>
   <div class="menu-div"></div>
   <div class="menu-sec">
@@ -1776,14 +2007,6 @@ button{font-family:inherit;cursor:pointer}
 <!-- MAIN -->
 <main class="wrap" id="main">
 
-  <!-- SITE NAV -->
-  <nav class="sitenav" aria-label="サイト切替">
-    <a href="/shindan/" class="sn-item on">🧪 心の標本</a>
-    <a href="/chishiki/" class="sn-item">📚 知識の水槽</a>
-    <a href="/torikago/" class="sn-item">🐦 試練の鳥籠</a>
-    <a href="/nir/" class="sn-item">🕯 禁書の部屋</a>
-  </nav>
-
   <!-- 標本ラベル額縁タイトル -->
   <div class="specimen-frame" id="titleBtn" tabindex="0" role="button" aria-label="おみくじを引く">
     <div class="specimen-frame-inner">
@@ -1791,6 +2014,103 @@ button{font-family:inherit;cursor:pointer}
       
     </div>
   </div>
+
+  <!-- SITE NAV / WORLD SWITCHER -->
+  <section class="world-guide" aria-labelledby="worldGuideTitle">
+    <div class="world-guide-head">
+      <div>
+        <p class="world-guide-kicker">OTHER WORLDS</p>
+        <h2 id="worldGuideTitle">ほかの世界</h2>
+      </div>
+      <p class="world-guide-note">カードをタップすると説明が開きます。</p>
+    </div>
+
+  <div class="ws-flips" id="worldSw" aria-label="サイト切替">
+    <div class="ws-flip-wrap wf--pk flipped" id="wfCard0">
+      <div class="ws-flip-card">
+        <div class="ws-flip-front">
+          <span class="ws-flip-icon">🧪</span>
+          <span class="ws-flip-name">心の標本</span>
+          <span class="ws-flip-f-badge ws-flip-f-badge--current">現在地</span>
+        </div>
+        <div class="ws-flip-back">
+          <div class="ws-flip-b-top">
+            <span class="ws-flip-b-icon">🧪</span>
+            <div class="ws-flip-b-meta">
+              <span class="ws-flip-b-name">心の標本</span>
+              <span class="ws-flip-b-badge">現在地 ✓</span>
+            </div>
+          </div>
+          <div class="ws-flip-b-desc">夢可愛い心理診断の標本箱。性格・恋愛・ストレス・適性の診断を集めた場所。</div>
+          <a href="/shindan/" class="ws-flip-b-btn">現在地です</a>
+        </div>
+      </div>
+    </div>
+    <div class="ws-flip-wrap wf--bl" id="wfCard1">
+      <div class="ws-flip-card">
+        <div class="ws-flip-front">
+          <span class="ws-flip-icon">📚</span>
+          <span class="ws-flip-hint">説明</span>
+          <span class="ws-flip-name">知識の水槽</span>
+          <span class="ws-flip-f-badge">クイズ</span>
+        </div>
+        <div class="ws-flip-back">
+          <div class="ws-flip-b-top">
+            <span class="ws-flip-b-icon">📚</span>
+            <div class="ws-flip-b-meta">
+              <span class="ws-flip-b-name">知識の水槽</span>
+              <span class="ws-flip-b-badge">クイズ</span>
+            </div>
+          </div>
+          <div class="ws-flip-b-desc">心理・健康・雑学などのクイズを置いた、青い知識の水槽。</div>
+          <a href="/chishiki/" class="ws-flip-b-btn">クイズへ</a>
+        </div>
+      </div>
+    </div>
+    <div class="ws-flip-wrap wf--gr" id="wfCard2">
+      <div class="ws-flip-card">
+        <div class="ws-flip-front">
+          <span class="ws-flip-icon">🐦</span>
+          <span class="ws-flip-hint">説明</span>
+          <span class="ws-flip-name">試練の鳥籠</span>
+          <span class="ws-flip-f-badge">準備中</span>
+        </div>
+        <div class="ws-flip-back">
+          <div class="ws-flip-b-top">
+            <span class="ws-flip-b-icon">🐦</span>
+            <div class="ws-flip-b-meta">
+              <span class="ws-flip-b-name">試練の鳥籠</span>
+              <span class="ws-flip-b-badge">準備中</span>
+            </div>
+          </div>
+          <div class="ws-flip-b-desc">ゲームサイト予定地。鳥・羽・空の生き物たちの試練を準備中。</div>
+          <span class="ws-flip-b-btn ws-flip-b-btn--disabled">準備中</span>
+        </div>
+      </div>
+    </div>
+    <div class="ws-flip-wrap wf--vl" id="wfCard3">
+      <div class="ws-flip-card">
+        <div class="ws-flip-front">
+          <span class="ws-flip-icon">🗝</span>
+          <span class="ws-flip-hint">説明</span>
+          <span class="ws-flip-name">秘密の部屋 β</span>
+          <span class="ws-flip-f-badge">β版</span>
+        </div>
+        <div class="ws-flip-back">
+          <div class="ws-flip-b-top">
+            <span class="ws-flip-b-icon">🗝</span>
+            <div class="ws-flip-b-meta">
+              <span class="ws-flip-b-name">秘密の部屋 β</span>
+              <span class="ws-flip-b-badge">β版</span>
+            </div>
+          </div>
+          <div class="ws-flip-b-desc">制作裏側・質問・CBT日記などを置く、秘密めいたβ版エリア。</div>
+          <a href="/nir/" class="ws-flip-b-btn">秘密の部屋へ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
 
   <!-- A. STATUS CARD -->
   <div class="status-card" id="statusCard">
@@ -2959,7 +3279,7 @@ button{font-family:inherit;cursor:pointer}
   <!-- C. 問い合わせ -->
   <div class="fb" id="feedback">
     <div class="fb-hd">お問い合わせ・質問箱</div>
-    <p class="fb-desc">バグ報告・感想・診断リクエスト・普段気になった疑問などを送れます。質問は、内容に応じて「禁書の部屋」で回答する場合があります。<strong>匿名OK</strong>。</p>
+    <p class="fb-desc">バグ報告・感想・診断リクエスト・普段気になった疑問などを送れます。質問は、内容に応じて「秘密の部屋」で回答する場合があります。<strong>匿名OK</strong>。</p>
     <form id="fbForm" action="https://formspree.io/f/mdkqgynb" method="POST">
       <label>お名前 / ニックネーム（任意）<input type="text" name="name" autocomplete="name"></label>
       <label>連絡先（任意 / 返信希望時のみ）<input type="email" name="email" inputmode="email" autocomplete="email"></label>
@@ -2970,7 +3290,7 @@ button{font-family:inherit;cursor:pointer}
       <div class="fb-notes">
         <p>📮 送信内容は <strong>Formspree</strong> 経由で制作者に届きます。</p>
         <p>💬 返信はお約束できませんが、すべてゆっくり目を通します。</p>
-        <p>📚 質問や調べてほしいことは、匿名化して「禁書の部屋」で回答する場合があります。</p>
+        <p>📚 質問や調べてほしいことは、匿名化して「秘密の部屋」で回答する場合があります。</p>
         <p>🧪 研究メモや説明が実際の研究と違っていた場合は、ゆるく教えてもらえると助かります。</p>
       </div>
     </form>
@@ -3018,13 +3338,13 @@ function saveRd(s){sls(KN,JSON.stringify(Array.from(s)));}
    ================================================================ */
 var NOTICES=[
 
-{id:'n-006',date:'2026-05-22',tag:'UPDATE',emo:'🕯️',
-   title:'禁書の部屋（β版）を解禁しました',
-   text:'お問い合わせから普段気になった疑問や調べてほしい事などを禁書の部屋から回答してます'},
+{id:'n-007',date:'2026-05-22',tag:'UPDATE',emo:'🗝️',
+   title:'秘密の部屋 β を少し開けました',
+   text:'お問い合わせから届いた疑問や調べてほしいことを、秘密の部屋で取り上げる予定です。'},
    
   {id:'n-006',date:'2026-05-22',tag:'UPDATE',emo:'📮',
    title:'お問い合わせから質問を送れるようになりました',
-   text:'感想やバグ報告に加えて、ふだん気になった疑問や調べてほしいことも送れるようになりました。採用した質問は、匿名化して「禁書の部屋」で回答する場合があります。'},
+   text:'感想やバグ報告に加えて、ふだん気になった疑問や調べてほしいことも送れるようになりました。採用した質問は、匿名化して「秘密の部屋」で取り上げる場合があります。'},
 
   {id:'n-005',date:'2026-05-18',tag:'UPDATE',emo:'🎓',
    title:'あなたの脳は何学部？を追加',
@@ -3502,6 +3822,25 @@ var howtoModalBg=$('#howtoModalBg');
 function closeHowto(){if(howtoModal)howtoModal.classList.remove('open');}
 if(howtoClose)howtoClose.addEventListener('click',closeHowto);
 if(howtoModalBg)howtoModalBg.addEventListener('click',closeHowto);
+
+
+
+/* ── WORLD SWITCHER / FLIP ── */
+(function(){
+  var wraps=document.querySelectorAll('.ws-flip-wrap:not(#wfCard0)');
+  wraps.forEach(function(w){
+    w.addEventListener('click',function(e){
+      if(e.target.closest('a'))return;
+      var wasFlipped=w.classList.contains('flipped');
+      wraps.forEach(function(x){x.classList.remove('flipped');});
+      if(!wasFlipped){w.classList.add('flipped');if(typeof vib==='function')vib(8);}
+    });
+  });
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('.ws-flip-wrap'))
+      wraps.forEach(function(x){x.classList.remove('flipped');});
+  },{passive:true});
+})();
 
 
 
