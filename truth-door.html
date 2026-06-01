@@ -301,7 +301,13 @@
     /*  QUIZ                                       */
     /* ─────────────────────────────────────────── */
     #quiz {
-      padding: 20px 16px 56px;
+      padding: 18px 6px 56px;
+    }
+
+    @media (min-width: 580px) {
+      #quiz {
+        padding: 20px 16px 56px;
+      }
     }
 
     .quiz-topbar {
@@ -374,15 +380,34 @@
     .doors-grid {
       width: 100%;
       max-width: 720px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 10px 12px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
       transition: opacity 0.35s ease, transform 0.35s ease;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold-dim) transparent;
+    }
+
+    .doors-grid::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .doors-grid::-webkit-scrollbar-thumb {
+      background: var(--gold-dim);
     }
 
     @media (min-width: 580px) {
       .doors-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 18px;
+        overflow: visible;
+        padding: 0;
+        scroll-snap-type: none;
       }
     }
 
@@ -394,6 +419,16 @@
       overflow: hidden;
       transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
       -webkit-tap-highlight-color: transparent;
+
+      flex: 0 0 clamp(148px, 46vw, 210px);
+      scroll-snap-align: center;
+    }
+
+    @media (min-width: 580px) {
+      .door-card {
+        flex: initial;
+        scroll-snap-align: initial;
+      }
     }
     .door-card:hover {
       transform: translateY(-5px);
@@ -430,14 +465,14 @@
     .door-card.img-error .door-img-fallback { display: flex; }
 
     .door-card-foot {
-      padding: 8px 4px;
-      font-size: 8px;
+      padding: 9px 8px;
+      font-size: 10px;
       line-height: 1.45;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.08em;
       color: var(--text-dim);
       text-align: center;
       border-top: 1px solid var(--border);
-      min-height: 34px;
+      min-height: 36px;
       display: grid;
       place-items: center;
     }
