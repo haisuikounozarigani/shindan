@@ -2798,9 +2798,34 @@ button{font-family:inherit;cursor:pointer}
         </a>
       </div>
     </div>
+    
+    <!--PATHOS標本（エンタメ）-->
     <div class="sec" data-cat="fun" data-n="03" id="sec-fun">
       <div class="sec-hd"><div class="sec-n">03</div><div class="sec-info"><div class="sec-label">🎪 PATHOS標本</div><div class="sec-sub">感情・面白さ・キャッチーさ重視</div></div><span class="sec-done" id="done-fun"></span></div>
+      
       <div class="grid">
+      <a class="card"
+           data-cat="fun"
+           data-id="truth-door"
+           data-reco="1"
+           data-keywords="真理の扉 扉 診断 画像選択 直感 異界探索 怪しい 幻想的 道化 骨の生き物 禁じられた祝祭 真理 世界 住人 ミニゲーム 扉を叩く 12問 エンタメ 心理"
+           data-mins="5"
+           data-tags="心理,エンタメ,画像選択,ミニゲーム"
+           data-updated="2026-06-01"
+           href="/shindan/truth-door.html?src=specimens">
+          <div class="c-emo-area">🚪</div>
+          <div class="c-body">
+            <div class="c-title">真理の扉 12問<span class="bnew" data-new="">NEW</span></div>
+            <div class="c-sub">怪しい扉を直感で選び、真理の世界を開く診断。</div>
+            <div class="c-footer">
+              <span class="pill">⏱5分</span>
+              <button aria-hidden="true" class="c-btn" type="button">診断へ</button>
+              <button aria-hidden="true" class="c-redo" type="button">↺</button>
+            </div>
+          </div>
+          <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
+        </a>
+        
         <a class="card" data-cat="fun" data-id="kabuki-role" data-reco="1"  data-keywords="歌舞伎 役 診断 配役 性格 心理 自己理解 エンタメ 荒事 色役 恋役 黒幕 道化 曲者 見得圧 情念 啖呵 策謀 艶 戯れ 舞台 気質 キャラ 20問 ベストワースト BW方式 二択 四択" data-mins="7" data-tags="心理,性格,自己理解,エンタメ" data-updated="2026-03-29" href="/shindan/kabuki-role.html?src=specimens">
         <div class="c-emo-area">🎭</div>
         <div class="c-body">
@@ -2814,6 +2839,7 @@ button{font-family:inherit;cursor:pointer}
         </div>
         <span aria-label="推し標本に追加" aria-pressed="false" class="fav-btn" role="button" tabindex="0"></span>
         </a>
+        
         <a class="card" data-cat="fun" data-id="valentine-sweetness" data-keywords="バレンタイン チョコ 人への甘さ 優しさ 寛容 断れなさ 境界線 身内びいき 忠誠 推し優遇 ひいき 許し 初対面 信頼 親切 贈り物 6因子 24問 5件法 ビター ミルク ホワイト フォンデュ" data-mins="6" data-tags="心理,恋愛,バレンタイン" data-updated="2026-02-06" href="/shindan/valentine-sweetness.html?src=specimens">
         <div class="c-emo-area">🍫</div>
         <div class="c-body">
@@ -3337,6 +3363,10 @@ function saveRd(s){sls(KN,JSON.stringify(Array.from(s)));}
    ・tag: 'UPDATE'=診断追加・変更 | 'NOTICE'=お知らせ | 'FIX'=修正
    ================================================================ */
 var NOTICES=[
+
+{id:'n-008',date:'2026-06-01',tag:'UPDATE',emo:'🚪',
+   title:'真理の扉を追加しました',
+   text:'複数の扉画像から直感で選び、どんな真理の世界に惹かれやすいかを見る画像選択式診断を追加しました。結果後には、扉を叩いて記録を開く小さなミニゲームもあります。'},
 
 {id:'n-007',date:'2026-05-22',tag:'UPDATE',emo:'🗝️',
    title:'秘密の部屋 β を少し開けました',

@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="その扉に惹かれた理由を、あなたはまだ知らない。">
+  <title>真理の扉</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #2b2240;
+      --surface:     #3a2b52;
+      --surface2:    #493862;
+      --border:      rgba(226, 185, 105, 0.38);
+      --border-mid:  rgba(232, 195, 118, 0.62);
+      --gold:        #e1bd70;
+      --gold-dim:    #ad8245;
+      --gold-bright: #ffe1a0;
+      --ice:         #cce9f8;
+      --ice-dim:     #78afd0;
+      --text:        #fff2df;
+      --text-mid:    #dfcfb8;
+      --text-dim:    #bca694;
+      --glow-gold:   rgba(225, 189, 112, 0.42);
+      --glow-ice:    rgba(204, 233, 248, 0.34);
+      --red-deep:    #5a1a25;
+      --purple-deep: #352351;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "ヒラギノ明朝 ProN", serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* Atmospheric layers */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 90% 70% at 10% 18%, rgba(84, 48, 120, 0.46) 0%, transparent 58%),
+        radial-gradient(ellipse 70% 60% at 90% 78%, rgba(128, 48, 68, 0.30) 0%, transparent 56%),
+        radial-gradient(circle at 50% 8%, rgba(225, 189, 112, 0.08), transparent 34%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* SVG grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,...");
+      opacity: 0.018; pointer-events: none; z-index: 1;
+    }
+
+    /* ── Sections ─────────────────────────────── */
+    section {
+      display: none;
+      position: relative; z-index: 2;
+      min-height: 100dvh;
+      flex-direction: column;
+      align-items: center;
+    }
+    section.active {
+      display: flex;
+      animation: sectionIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes sectionIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Shared Deco ──────────────────────────── */
+    .deco-line {
+      width: 56px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto;
+    }
+
+    .corner {
+      position: absolute; width: 14px; height: 14px; pointer-events: none;
+    }
+    .corner--tl { top: -1px; left: -1px;  border-top: 1px solid var(--gold); border-left:  1px solid var(--gold); }
+    .corner--tr { top: -1px; right: -1px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+    .corner--bl { bottom: -1px; left: -1px;  border-bottom: 1px solid var(--gold); border-left:  1px solid var(--gold); }
+    .corner--br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+    /* ── Buttons ─────────────────────────────── */
+    .btn {
+      display: inline-block;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: 0.2em;
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+      border-radius: 0;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn-gold {
+      padding: 15px 52px;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--gold);
+      font-size: 13px;
+    }
+    .btn-gold::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--gold);
+      transform: translateX(-101%);
+      transition: transform 0.3s ease;
+    }
+    .btn-gold:hover::before { transform: translateX(0); }
+    .btn-gold span { position: relative; z-index: 1; }
+    .btn-gold:hover span { color: var(--bg); }
+
+    .btn-ghost {
+      padding: 11px 32px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+    .btn-ghost:hover {
+      border-color: var(--ice-dim);
+      color: var(--ice);
+    }
+
+    .return-link {
+      margin-top: 14px;
+      letter-spacing: 0.14em;
+    }
+
+    /* ─────────────────────────────────────────── */
+    /*  HERO                                       */
+    /* ─────────────────────────────────────────── */
+    #hero {
+      justify-content: center;
+      padding: 48px 24px 64px;
+    }
+    .hero-inner {
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; max-width: 480px;
+    }
+
+    .hero-img-wrap {
+      width: min(340px, 88vw);
+      aspect-ratio: 1;
+      margin-bottom: 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-img-wrap::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      box-shadow: inset 0 0 40px rgba(22, 16, 31, 0.35);
+    }
+    .hero-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      border: 1px solid var(--border-mid);
+    }
+    .hero-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      filter: saturate(0.95) brightness(1.02);
+    }
+    /* corner ornaments on hero */
+    .hero-corner {
+      position: absolute; width: 20px; height: 20px;
+      z-index: 4; pointer-events: none;
+    }
+    .hero-corner--tl { top: 0; left: 0;  border-top: 2px solid var(--gold); border-left:  2px solid var(--gold); }
+    .hero-corner--tr { top: 0; right: 0; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+    .hero-corner--bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--gold); border-left:  2px solid var(--gold); }
+    .hero-corner--br { bottom: 0; right: 0; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+
+    .hero-img-wrap.img-error {
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-img-wrap.img-error img { display: none; }
+    .hero-img-fallback {
+      display: none; font-size: 11px; color: var(--text-dim);
+      letter-spacing: 0.1em; text-align: center;
+    }
+    .hero-img-wrap.img-error .hero-img-fallback { display: block; }
+
+    .hero-eyebrow {
+      font-size: 9px; letter-spacing: 0.5em;
+      color: var(--gold); opacity: 0.65;
+      margin-bottom: 14px; text-align: center;
+    }
+    .hero-title {
+      font-size: clamp(38px, 10vw, 68px);
+      letter-spacing: 0.18em;
+      line-height: 1;
+      color: var(--text);
+      text-shadow: 0 0 50px rgba(201, 168, 76, 0.22);
+      margin-bottom: 24px; text-align: center;
+    }
+    .hero-deco-row {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px; width: 180px;
+    }
+    .hero-deco-row .deco-line { flex: 1; margin: 0; }
+    .hero-deco-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold); opacity: 0.5; flex-shrink: 0;
+    }
+    .hero-subtitle {
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--text-dim); text-align: center;
+      line-height: 2.1; margin-bottom: 48px;
+      max-width: 260px;
+    }
+
+    /* ─────────────────────────────────────────── */
+    /*  INTRO                                      */
+    /* ─────────────────────────────────────────── */
+    #intro {
+      justify-content: center;
+      padding: 56px 24px 72px;
+    }
+    .intro-inner {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 28px; width: 100%; max-width: 520px;
+    }
+
+    .intro-img-wrap {
+      width: min(220px, 64vw);
+      aspect-ratio: 1;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-mid);
+      box-shadow: 0 0 52px rgba(212,176,96,0.08);
+      background: var(--surface2);
+    }
+    .intro-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 34px rgba(7,4,8,0.42);
+    }
+    .intro-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.88) brightness(0.9);
+    }
+    .intro-img-wrap.img-error img {
+      display: none;
+    }
+    .intro-img-fallback {
+      display: none;
+      height: 100%;
+      place-items: center;
+      color: var(--text-dim);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+    }
+    .intro-img-wrap.img-error .intro-img-fallback {
+      display: grid;
+    }
+    .intro-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 40px 32px;
+      width: 100%; position: relative;
+    }
+    .intro-card-bar {
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 44px; height: 2px;
+      background: var(--gold);
+    }
+    .intro-text {
+      font-size: 14px; line-height: 2.3;
+      color: var(--text); text-align: center;
+      letter-spacing: 0.06em;
+    }
+    .intro-text p + p { margin-top: 1.4em; }
+
+    .intro-rule {
+      font-size: 12px; letter-spacing: 0.1em;
+      color: var(--ice-dim); text-align: center;
+      padding: 18px 24px; line-height: 2.1;
+      border: 1px solid rgba(170, 207, 232, 0.12);
+      background: rgba(170, 207, 232, 0.025);
+      width: 100%;
+    }
+
+    /* ─────────────────────────────────────────── */
+    /*  QUIZ                                       */
+    /* ─────────────────────────────────────────── */
+    #quiz {
+      padding: 20px 16px 56px;
+    }
+
+    .quiz-topbar {
+      width: 100%; max-width: 720px;
+      display: flex; align-items: center;
+      gap: 14px; margin-bottom: 4px;
+    }
+
+    .quiz-back-btn {
+      width: 100%;
+      max-width: 720px;
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      border: 1px solid rgba(212,176,96,0.22);
+      background: rgba(212,176,96,0.025);
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      cursor: pointer;
+      transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .quiz-back-btn:hover,
+    .quiz-back-btn:focus-visible {
+      border-color: var(--border-mid);
+      color: var(--gold);
+      background: rgba(212,176,96,0.055);
+      outline: none;
+    }
+    .quiz-prog-label {
+      font-size: 10px; letter-spacing: 0.25em;
+      color: var(--gold); opacity: 0.65;
+      flex-shrink: 0; width: 42px;
+    }
+    .quiz-prog-track {
+      flex: 1; height: 1px;
+      background: rgba(201, 168, 76, 0.12);
+      position: relative; overflow: hidden;
+    }
+    .quiz-prog-fill {
+      position: absolute; top: 0; left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+      transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .quiz-q-wrap {
+      width: 100%; max-width: 720px;
+      padding: 28px 8px 36px;
+      min-height: 88px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .quiz-q-text {
+      font-size: clamp(14px, 3.8vw, 18px);
+      letter-spacing: 0.07em; line-height: 1.9;
+      color: var(--text); text-align: center;
+    }
+
+    .doors-grid {
+      width: 100%; max-width: 720px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    @media (min-width: 580px) {
+      .doors-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    }
+
+    .door-card {
+      cursor: pointer;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .door-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-mid);
+      box-shadow: 0 10px 50px rgba(0,0,0,0.55), 0 0 25px rgba(201,168,76,0.1);
+    }
+    .door-card-img-wrap {
+      aspect-ratio: 1; width: 100%;
+      overflow: hidden; position: relative;
+    }
+    .door-card-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 65%, rgba(22,16,31,0.5));
+      pointer-events: none;
+    }
+    .door-card img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 0.4s ease;
+    }
+    .door-card:hover img { transform: scale(1.06); }
+
+    .door-card.img-error img { display: none; }
+    .door-img-fallback {
+      display: none;
+      position: absolute; inset: 0;
+      align-items: center; justify-content: center;
+      background: var(--surface2);
+      font-size: 11px; color: var(--text-dim);
+      letter-spacing: 0.06em; text-align: center;
+      padding: 12px;
+    }
+    .door-card.img-error .door-img-fallback { display: flex; }
+
+    .door-card-foot {
+      padding: 10px 12px;
+      font-size: 10px; letter-spacing: 0.14em;
+      color: var(--text-dim); text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Selected state */
+    .door-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 35px var(--glow-gold), 0 0 80px rgba(201,168,76,0.08);
+      animation: cardPick 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .door-card.selected::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 10;
+      background: rgba(201, 168, 76, 0.12);
+      animation: cardFlash 0.5s ease forwards;
+    }
+    @keyframes cardPick {
+      0%   { transform: translateY(-5px) scale(1); }
+      40%  { transform: translateY(-5px) scale(1.07); }
+      70%  { transform: translateY(-5px) scale(0.97); }
+      100% { transform: translateY(-5px) scale(1.02); }
+    }
+    @keyframes cardFlash {
+      0%   { opacity: 0; }
+      40%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* ─────────────────────────────────────────── */
+    /*  LOADING                                    */
+    /* ─────────────────────────────────────────── */
+    #loading {
+      justify-content: center; align-items: center;
+    }
+    .loading-inner {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 36px;
+    }
+    .loading-glyph {
+      width: 76px; height: 76px;
+      position: relative;
+    }
+    .loading-glyph::before,
+    .loading-glyph::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 50%;
+    }
+    .loading-glyph::before {
+      border: 1px solid transparent;
+      border-top-color: var(--gold);
+      border-right-color: rgba(201,168,76,0.35);
+      animation: rot 1.4s linear infinite;
+    }
+    .loading-glyph::after {
+      inset: 14px;
+      border: 1px solid transparent;
+      border-bottom-color: var(--ice-dim);
+      border-left-color:  rgba(170,207,232,0.35);
+      animation: rot 2s linear infinite reverse;
+    }
+    @keyframes rot { to { transform: rotate(360deg); } }
+    .loading-dot {
+      position: absolute; top: 50%; left: 50%;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold);
+      transform: translate(-50%, -50%);
+      animation: dotPulse 1.4s ease infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.3; transform: translate(-50%,-50%) scale(0.8); }
+      50%       { opacity: 1;   transform: translate(-50%,-50%) scale(1.3); }
+    }
+    .loading-text {
+      font-size: 13px; letter-spacing: 0.22em;
+      color: var(--text-dim);
+      animation: blink 2s ease infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0.35; }
+      50%       { opacity: 1; }
+    }
+
+    /* ─────────────────────────────────────────── */
+    /*  RESULT                                     */
+    /* ─────────────────────────────────────────── */
+    #result {
+      padding: 44px 16px 88px;
+    }
+    .result-inner {
+      width: 100%; max-width: 540px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0;
+    }
+
+    .result-eyebrow {
+      font-size: 9px; letter-spacing: 0.5em;
+      color: var(--gold); opacity: 0.55;
+      margin-bottom: 14px; text-align: center;
+    }
+    .result-name {
+      font-size: clamp(30px, 8vw, 54px);
+      letter-spacing: 0.18em; line-height: 1;
+      color: var(--text); text-align: center;
+      text-shadow: 0 0 40px rgba(201,168,76,0.2);
+      margin-bottom: 16px;
+    }
+    .result-subtitle {
+      font-size: 14px; letter-spacing: 0.08em;
+      color: var(--gold); text-align: center;
+      line-height: 1.9; margin-bottom: 36px;
+    }
+
+    .result-img-wrap {
+      width: min(380px, 90vw);
+      aspect-ratio: 1;
+      overflow: hidden; position: relative;
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+      box-shadow: 0 0 80px rgba(201,168,76,0.08);
+    }
+    .result-img-wrap::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      box-shadow: inset 0 0 50px rgba(7,4,8,0.4);
+    }
+    /* Gradient frame */
+    .result-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(135deg, rgba(201,168,76,0.4) 0%, transparent 40%, transparent 60%, rgba(170,207,232,0.25) 100%)
+        border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+    }
+    .result-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      filter: saturate(0.9) brightness(0.92);
+    }
+    .result-img-wrap.img-error img { display: none; }
+    .result-img-fallback {
+      display: none; position: absolute; inset: 0;
+      align-items: center; justify-content: center;
+      background: var(--surface2);
+      font-size: 11px; color: var(--text-dim);
+    }
+    .result-img-wrap.img-error .result-img-fallback { display: flex; }
+
+    /* Body sections */
+    .result-sections {
+      width: 100%;
+      display: flex; flex-direction: column; gap: 16px;
+      margin-bottom: 24px;
+    }
+    .rsec {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 22px 24px;
+      position: relative;
+    }
+    .rsec-label {
+      font-size: 8px; letter-spacing: 0.45em;
+      color: var(--gold); opacity: 0.55;
+      margin-bottom: 10px;
+    }
+    .rsec-text {
+      font-size: 13.5px; line-height: 2.2;
+      color: var(--text); letter-spacing: 0.05em;
+    }
+
+    .result-quote {
+      width: 100%;
+      background: rgba(201,168,76,0.035);
+      border-left: 2px solid var(--gold);
+      padding: 22px 24px;
+      margin-bottom: 32px;
+    }
+    .result-quote-label {
+      font-size: 8px; letter-spacing: 0.4em;
+      color: var(--gold); opacity: 0.5;
+      margin-bottom: 10px;
+    }
+    .result-quote-text {
+      font-size: 15px; line-height: 2;
+      color: var(--text); letter-spacing: 0.08em;
+    }
+
+   .door-psych {
+      width: 100%;
+      margin: 0 0 20px;
+      border: 1px solid rgba(226,185,105,0.34);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(225,189,112,0.10), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%),
+        rgba(255,255,255,0.025);
+      position: relative;
+      overflow: hidden;
+    }
+    .door-psych::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(225,189,112,0.08), transparent);
+      opacity: 0.9;
+    }
+    .door-psych-summary {
+      list-style: none;
+      cursor: pointer;
+      position: relative;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .door-psych-summary::-webkit-details-marker {
+      display: none;
+    }
+    .door-psych-summary:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: -4px;
+    }
+    .door-psych-summary-main {
+      position: relative;
+      display: grid;
+      gap: 5px;
+    }
+    .door-psych-kicker {
+      font-size: 8px;
+      letter-spacing: 0.36em;
+      color: var(--gold);
+      opacity: 0.66;
+    }
+    .door-psych-title {
+      font-size: 14px;
+      line-height: 1.6;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .door-psych-mark {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(226,185,105,0.42);
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .door-psych-mark::before {
+      content: '+';
+      font-size: 18px;
+      line-height: 1;
+      transform: translateY(-1px);
+    }
+    .door-psych[open] .door-psych-mark::before {
+      content: '−';
+    }
+    .door-psych-body {
+      position: relative;
+      padding: 0 20px 20px;
+      animation: psychOpen 0.28s ease both;
+    }
+    @keyframes psychOpen {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .door-psych-text {
+      font-size: 13px;
+      line-height: 2.05;
+      letter-spacing: 0.05em;
+      color: var(--text-mid);
+      margin-bottom: 14px;
+    }
+    .door-psych-notes {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .door-psych-note {
+      border-left: 1px solid rgba(225,189,112,0.38);
+      padding: 8px 0 8px 12px;
+      font-size: 12px;
+      line-height: 1.9;
+      letter-spacing: 0.045em;
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.06);
+    }
+    .door-psych-note strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* History */
+    .history-wrap {
+      width: 100%; margin-bottom: 32px;
+    }
+    .history-label {
+      font-size: 9px; letter-spacing: 0.35em;
+      color: var(--text-dim); opacity: 0.55;
+      margin-bottom: 12px;
+    }
+    .history-row {
+      display: flex; gap: 7px;
+      overflow-x: auto; padding-bottom: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold-dim) transparent;
+    }
+    .history-row::-webkit-scrollbar { height: 2px; }
+    .history-row::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+    .h-thumb {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .h-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .h-thumb.img-error img { display: none; }
+    .h-thumb-fb {
+      display: none; position: absolute; inset: 0;
+      align-items: center; justify-content: center;
+      background: var(--surface2);
+      font-size: 8px; color: var(--text-dim);
+    }
+    .h-thumb.img-error .h-thumb-fb { display: flex; }
+
+    /* Actions */
+    .result-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+      align-items: stretch;
+    }
+    .result-actions .btn {
+      width: 100%;
+      padding-left: 12px;
+      padding-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+    }
+    
+
+    /* ── Tap Game ── */
+    .tapgame-wrap {
+      width: 100%; margin-bottom: 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .tapgame-eyebrow {
+  font-size: 9px; letter-spacing: 0.4em;
+  color: var(--gold); opacity: 0.6; text-align: center;
+}
+.tapgame-hud {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.tapgame-hud-item {
+  border: 1px solid rgba(212,176,96,0.22);
+  background: rgba(212,176,96,0.035);
+  padding: 10px 6px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.tapgame-hud-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.04), transparent);
+  transform: translateX(-120%);
+  animation: hudSweep 3.4s ease-in-out infinite;
+}
+@keyframes hudSweep {
+  0%, 55% { transform: translateX(-120%); }
+  82%, 100% { transform: translateX(120%); }
+}
+.tapgame-hud-item span {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+}
+.tapgame-hud-item strong {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  position: relative;
+  z-index: 1;
+}
+.tapgame-time.danger {
+  color: #ff8f8f;
+  animation: timeDanger 0.42s ease-in-out infinite alternate;
+}
+/* ── Door Transition ── */
+    .door-transition {
+      position: fixed; inset: 0; z-index: 9999;
+      display: none; pointer-events: none;
+    }
+    .door-transition.active { display: block; pointer-events: auto; }
+    .door-panel {
+      position: absolute; top: 0; bottom: 0; width: 50%;
+      background: var(--surface2);
+    }
+    .door-panel-l {
+      left: 0;
+      border-right: 1px solid var(--border-mid);
+      transform: translateX(0);
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .door-panel-r {
+      right: 0;
+      border-left: 1px solid var(--border-mid);
+      transform: translateX(0);
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .door-panel-l::before, .door-panel-r::before {
+      content: '';
+      position: absolute; top: 0; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+      opacity: 0.35;
+    }
+    .door-panel-l::before { right: 0; }
+    .door-panel-r::before { left: 0; }
+    .door-panel-l::after, .door-panel-r::after {
+      content: '';
+      position: absolute; top: 20%; bottom: 20%;
+      width: 1px; opacity: 0.1;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+    .door-panel-l::after { right: 24px; }
+    .door-panel-r::after { left: 24px; }
+    .door-keyhole {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px; height: 12px; z-index: 1;
+      pointer-events: none;
+    }
+    .door-keyhole::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 7px; height: 7px; border-radius: 50%;
+      border: 1px solid var(--gold); opacity: 0.6;
+    }
+    .door-keyhole::after {
+      content: '';
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 6px;
+      border: 1px solid var(--gold); border-top: none; opacity: 0.6;
+    }
+    .door-transition.open .door-panel-l { transform: translateX(-100%); }
+    .door-transition.open .door-panel-r { transform: translateX(100%); }
+    .door-center-glow {
+      position: absolute; top: 0; bottom: 0; left: 50%;
+      width: 2px; transform: translateX(-50%);
+      background: var(--gold);
+      opacity: 0; z-index: 2;
+      transition: opacity 0.2s ease;
+      box-shadow: 0 0 30px 8px rgba(212,176,96,0.5);
+    }
+    .door-transition.open .door-center-glow { opacity: 1; }
+
+    @keyframes timeDanger {
+  from { opacity: 0.62; text-shadow: 0 0 0 rgba(255,120,120,0); }
+  to   { opacity: 1; text-shadow: 0 0 14px rgba(255,120,120,0.45); }
+}
+.tapgame-count-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+}
+.tapgame-count-row span {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--text-dim);
+}
+.tapgame-count-row strong {
+  font-size: clamp(52px, 14vw, 80px);
+  line-height: 1;
+  color: var(--text);
+  text-shadow: 0 0 30px rgba(212,176,96,0.25);
+}
+.tapgame-mode-rule {
+  display: block;
+  font-size: 8px;
+  opacity: 0.55;
+  margin-top: 3px;
+  letter-spacing: 0.06em;
+}
+.tapgame-clear-card {
+  width: min(260px, 74vw);
+  border: 1px solid var(--border-mid);
+  background: rgba(212,176,96,0.045);
+  box-shadow: 0 0 38px rgba(212,176,96,0.10);
+  overflow: hidden;
+  animation: clearCardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes clearCardIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.tapgame-clear-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--surface2);
+  filter: saturate(0.92) brightness(0.94);
+}
+
+.tapgame-clear-card.img-error img {
+  display: none;
+}
+
+.tapgame-clear-card.img-error .tapgame-reward-fallback {
+  display: grid;
+}
+.tapgame-clear-card-body {
+  padding: 13px 14px 15px;
+  text-align: center;
+}
+.tapgame-clear-card-title {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.tapgame-clear-card-text {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--text-mid);
+  letter-spacing: 0.04em;
+}
+
+.tapgame-rewards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.tapgame-reward {
+  border: 1px solid rgba(212,176,96,0.22);
+  background: rgba(212,176,96,0.035);
+  min-height: 112px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tapgame-reward img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.9) brightness(0.92);
+}
+
+.tapgame-reward.locked {
+  border-color: rgba(160,136,120,0.22);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.025), transparent),
+    rgba(0,0,0,0.12);
+}
+
+.tapgame-reward.locked::before {
+  content: 'LOCKED';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: rgba(240,232,216,0.38);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(212,176,96,0.04) 0 7px,
+      transparent 7px 14px
+    );
+  z-index: 2;
+}
+
+.tapgame-reward-label {
+  padding: 7px 4px 8px;
+  font-size: 8px;
+  line-height: 1.45;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--text-dim);
+  border-top: 1px solid rgba(212,176,96,0.16);
+}
+
+.tapgame-reward.unlocked {
+  box-shadow: 0 0 28px rgba(212,176,96,0.13);
+  animation: rewardGlow 0.6s ease both;
+}
+
+@keyframes rewardGlow {
+  from { transform: translateY(6px); opacity: 0.45; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.tapgame-reward-fallback {
+  width: 100%;
+  aspect-ratio: 1;
+  display: none;
+  place-items: center;
+  background: var(--surface2);
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding: 10px;
+}
+
+.tapgame-reward.img-error img {
+  display: none;
+}
+
+.tapgame-reward.img-error .tapgame-reward-fallback {
+  display: grid;
+}
+
+.tapgame-clear-card {
+  width: min(320px, 82vw);
+}
+
+.tapgame-clear-card-title::before {
+  content: '解放された扉片';
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.32em;
+  color: var(--text-dim);
+  opacity: 0.72;
+  margin-bottom: 8px;
+}
+    .tapgame-modes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+    .tapgame-mode-btn {
+      flex: 1; padding: 14px 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: inherit; font-size: 11px; letter-spacing: 0.18em;
+      cursor: pointer; position: relative;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tapgame-mode-btn.unlocked:hover { border-color: var(--gold); color: var(--gold); }
+    .tapgame-mode-btn.selected { border-color: var(--gold); color: var(--gold); background: rgba(212,176,96,0.07); }
+    .tapgame-mode-btn.cleared  { border-color: rgba(184,220,244,0.4); color: var(--ice-dim); }
+    .tapgame-mode-btn.locked   { opacity: 0.3; cursor: not-allowed; }
+    .tapgame-mode-btn:nth-child(4) {
+      border-color: rgba(184,220,244,0.28);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(184,220,244,0.08), transparent 55%),
+        var(--surface);
+    }
+    .tapgame-mode-btn:nth-child(4).unlocked {
+      border-color: rgba(184,220,244,0.62);
+      color: var(--ice);
+      box-shadow: 0 0 24px rgba(184,220,244,0.12);
+    }
+    .tapgame-mode-label { display: block; }
+    .tapgame-mode-sub   { display: block; font-size: 9px; opacity: 0.5; margin-top: 4px; letter-spacing: 0.08em; }
+
+    .tapgame-arena {
+      width: 100%; display: flex; flex-direction: column;
+      align-items: center; gap: 14px;
+      scroll-margin-top: 18px;
+    }
+    .tapgame-wrap.is-running .tapgame-arena,
+    .tapgame-wrap.is-running .tapgame-door-wrap,
+    .tapgame-wrap.is-running .tapgame-count-row {
+      touch-action: none;
+      overscroll-behavior: contain;
+    }
+    .tapgame-timer-track {
+      width: 100%; height: 2px;
+      background: rgba(212,176,96,0.1); position: relative; overflow: hidden;
+    }
+    .tapgame-timer-fill {
+      position: absolute; top: 0; left: 0; height: 100%; width: 100%;
+      background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    }
+    .tapgame-door-wrap {
+      width: min(150px, 42vw);
+      aspect-ratio: 58 / 84;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      overscroll-behavior: contain;
+      perspective: 320px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tapgame-door-back {
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: inset 0 0 24px rgba(0,0,0,0.32);
+    }
+    .tapgame-door-glow {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: radial-gradient(ellipse at 25% 50%, rgba(212,176,96,0) 0%, transparent 70%);
+      transition: background 0.22s ease;
+      pointer-events: none;
+    }
+    .tapgame-door-panel {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: var(--surface2);
+      border: 1px solid var(--border-mid);
+      border-left: 2px solid var(--gold);
+      transform-origin: left center;
+      transform: rotateY(0deg);
+      transition: transform 0.16s ease;
+      box-shadow: inset 0 0 18px rgba(0,0,0,0.22);
+    }
+    .tapgame-door-panel::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 9px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.6;
+      transform: translateY(-50%);
+    }
+    .tapgame-door-panel::after {
+      content: '';
+      position: absolute;
+      top: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 26px;
+      border: 1px solid rgba(200,165,90,0.25);
+    }
+    .tapgame-door-spark {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: rgba(212,176,96,0);
+      pointer-events: none;
+    }
+    .tapgame-door-wrap.ready {
+      opacity: 1;
+      animation: doorReadyPulse 1.25s ease-in-out infinite alternate;
+    }
+
+    @keyframes doorReadyPulse {
+      from {
+        transform: translateY(0);
+        filter: brightness(0.96);
+      }
+      to {
+        transform: translateY(-2px);
+        filter: brightness(1.12);
+      }
+    }
+
+    .tapgame-door-wrap.ready .tapgame-door-glow {
+      background:
+        radial-gradient(ellipse at 25% 50%, rgba(212,176,96,0.26) 0%, transparent 58%),
+        radial-gradient(circle at 70% 18%, rgba(184,220,244,0.12), transparent 34%);
+    }
+
+    .tapgame-door-wrap.tapped {
+      animation: tappedShake 0.13s ease both;
+    }
+    .tapgame-door-wrap.tapped .tapgame-door-glow {
+      background: radial-gradient(ellipse at 25% 50%, rgba(212,176,96,0.34) 0%, transparent 56%);
+    }
+    .tapgame-door-wrap.tapped .tapgame-door-spark {
+      animation: tappedFlash 0.18s ease;
+    }
+    @keyframes tappedShake {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(0.94) rotate(-1.2deg); }
+      70%  { transform: scale(1.03) rotate(0.6deg); }
+      100% { transform: scale(1); }
+    }
+    @keyframes tappedFlash {
+      0%   { background: rgba(212,176,96,0); }
+      35%  { background: rgba(212,176,96,0.24); }
+      100% { background: rgba(212,176,96,0); }
+    }
+    .tapgame-door-wrap.opened {
+      animation: doorOpenBurst 0.62s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .tapgame-door-wrap.opened .tapgame-door-glow {
+      background:
+        radial-gradient(ellipse at 16% 50%, rgba(240,208,128,0.66) 0%, transparent 46%),
+        radial-gradient(circle at 70% 20%, rgba(184,220,244,0.24), transparent 34%);
+    }
+    .tapgame-door-wrap.opened .tapgame-door-spark {
+      animation: clearBurst 0.52s ease both;
+    }
+    .tapgame-door-wrap.opened {
+      animation: doorOpenBurst 0.72s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .tapgame-door-wrap.opened .tapgame-door-glow {
+      background:
+        radial-gradient(ellipse at 16% 50%, rgba(240,208,128,0.76) 0%, transparent 46%),
+        radial-gradient(circle at 70% 20%, rgba(184,220,244,0.28), transparent 34%);
+    }
+    .tapgame-door-wrap.opened .tapgame-door-spark {
+      animation: clearBurst 0.62s ease both;
+    }
+
+    .tapgame-door-wrap.slammed {
+      animation: slamWhole 0.72s cubic-bezier(0.18,0.89,0.32,1.28) both;
+    }
+    .tapgame-door-wrap.slammed .tapgame-door-panel {
+      animation: slamPanel 0.62s cubic-bezier(0.2,1.8,0.3,1) both;
+    }
+    .tapgame-door-wrap.slammed .tapgame-door-back {
+      animation: slamBackPulse 0.5s ease both;
+    }
+    .tapgame-door-wrap.slammed .tapgame-door-glow {
+      background:
+        radial-gradient(ellipse at 25% 50%, rgba(74,16,24,0.7) 0%, transparent 56%),
+        radial-gradient(circle at 50% 50%, rgba(0,0,0,0.32), transparent 58%);
+    }
+    .tapgame-door-wrap.slammed .tapgame-door-spark {
+      animation: slamDust 0.62s ease both;
+    }
+
+    @keyframes doorOpenBurst {
+      0%   { filter: brightness(1); transform: scale(1); }
+      42%  { filter: brightness(1.7); transform: scale(1.04); }
+      100% { filter: brightness(1.05); transform: scale(1); }
+    }
+
+    @keyframes clearBurst {
+      0%   { background: rgba(240,208,128,0); box-shadow: none; }
+      35%  { background: rgba(240,208,128,0.34); box-shadow: 0 0 58px rgba(240,208,128,0.58); }
+      100% { background: rgba(240,208,128,0); box-shadow: none; }
+    }
+
+    @keyframes slamWhole {
+      0%   { transform: translateX(0) scale(1); filter: brightness(1); }
+      12%  { transform: translateX(-14px) scale(1.04); filter: brightness(0.76); }
+      25%  { transform: translateX(13px) scale(0.96); }
+      42%  { transform: translateX(-9px) scale(1.02); }
+      58%  { transform: translateX(6px) scale(0.99); }
+      76%  { transform: translateX(-3px); }
+      100% { transform: translateX(0) scale(1); filter: brightness(0.88); }
+    }
+
+    @keyframes slamPanel {
+      0%   { transform: rotateY(-42deg); }
+      38%  { transform: rotateY(8deg); }
+      52%  { transform: rotateY(-3deg); }
+      100% { transform: rotateY(0deg); }
+    }
+
+    @keyframes slamBackPulse {
+      0%   { box-shadow: inset 0 0 24px rgba(0,0,0,0.32); }
+      35%  { box-shadow: inset 0 0 42px rgba(0,0,0,0.72), 0 0 26px rgba(74,16,24,0.42); }
+      100% { box-shadow: inset 0 0 26px rgba(0,0,0,0.48); }
+    }
+
+    @keyframes slamDust {
+      0%   { background: rgba(74,16,24,0); }
+      25%  { background: rgba(74,16,24,0.48); }
+      100% { background: rgba(74,16,24,0); }
+    }
+    .tapgame-count {
+      font-size: clamp(52px, 14vw, 80px);
+      line-height: 1; color: var(--text);
+      text-shadow: 0 0 30px rgba(212,176,96,0.25);
+      pointer-events: none;
+    }
+    .tapgame-target-label {
+      font-size: 10px; letter-spacing: 0.18em; color: var(--text-dim);
+    }
+    .tapgame-start-btn {
+      padding: 12px 40px;
+      border: 1px solid var(--gold); background: transparent;
+      color: var(--gold); font-family: inherit;
+      font-size: 12px; letter-spacing: 0.2em; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tapgame-start-btn:active { background: rgba(212,176,96,0.1); }
+    .tapgame-result-area {
+      width: 100%; display: flex; flex-direction: column;
+      align-items: center; gap: 13px;
+    }
+    .tapgame-score-num {
+      font-size: 13px; letter-spacing: 0.12em; color: var(--text-mid); text-align: center;
+    }
+    .tapgame-badge {
+      font-size: 9px; letter-spacing: 0.4em;
+      padding: 6px 18px; border: 1px solid; text-align: center;
+    }
+    .tapgame-badge.ok   { border-color: var(--gold);     color: var(--gold); }
+    .tapgame-badge.fail { border-color: var(--text-dim); color: var(--text-dim); }
+    .tapgame-result-msg {
+      font-size: 13px; line-height: 2.1; letter-spacing: 0.06em;
+      color: var(--text); text-align: center;
+    }
+    .tapgame-unlock {
+      font-size: 11px; letter-spacing: 0.2em; color: var(--ice);
+      opacity: 0; animation: unlockIn 0.7s 0.4s ease forwards;
+    }
+    @keyframes unlockIn {
+      from { opacity: 0; transform: translateY(7px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .tapgame-pop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      isolation: isolate;
+    }
+    .tapgame-pop.show {
+      display: flex;
+      animation: popFadeIn 0.22s ease both;
+    }
+    @keyframes popFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .tapgame-pop-backdrop {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(212,176,96,0.12), transparent 42%),
+        rgba(10, 6, 18, 0.82);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+    .tapgame-pop-card {
+      position: relative;
+      width: min(390px, 94vw);
+      max-height: calc(100dvh - 28px);
+      overflow: hidden;
+      border: 1px solid var(--border-mid);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), transparent 34%),
+        var(--surface);
+      box-shadow:
+        0 22px 80px rgba(0,0,0,0.62),
+        0 0 40px rgba(212,176,96,0.12);
+      padding: 18px 16px 16px;
+      text-align: center;
+      animation: popCardIn 0.42s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes popCardIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .tapgame-pop-card::before,
+    .tapgame-pop-card::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+    .tapgame-pop-card::before {
+      top: -1px;
+      left: -1px;
+      border-top: 1px solid var(--gold);
+      border-left: 1px solid var(--gold);
+    }
+    .tapgame-pop-card::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+    }
+    .tapgame-pop-kicker {
+      font-size: 8px;
+      letter-spacing: 0.36em;
+      color: var(--gold);
+      opacity: 0.68;
+      margin-bottom: 7px;
+    }
+    .tapgame-pop-title {
+      font-size: clamp(16px, 4.6vw, 22px);
+      line-height: 1.35;
+      letter-spacing: 0.11em;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .tapgame-pop-score {
+      display: none;
+    }
+    .tapgame-pop-msg {
+      font-size: 12.5px;
+      line-height: 1.75;
+      letter-spacing: 0.052em;
+      color: var(--text-mid);
+      margin: 0 auto 12px;
+      max-width: 30em;
+      white-space: normal;
+    }
+    .tapgame-pop-story {
+      margin: 0 auto;
+      max-width: 30em;
+      text-align: left;
+      border-left: 1px solid rgba(212,176,96,0.36);
+      padding: 1px 0 1px 13px;
+    }
+    .tapgame-pop-story p {
+      font-size: 12.5px;
+      line-height: 1.75;
+      letter-spacing: 0.052em;
+      color: var(--text-mid);
+    }
+    .tapgame-pop-story p + p {
+      margin-top: 0.46em;
+    }
+    .tapgame-pop-story strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+    .tapgame-pop-image {
+      width: min(168px, 44vw);
+      margin: 0 auto 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.14);
+      display: none;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(212,176,96,0.12);
+    }
+    .tapgame-pop.ok .tapgame-pop-image {
+      display: block;
+      animation: popImageIn 0.45s 0.04s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes popImageIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .tapgame-pop-image img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.92) brightness(0.94);
+    }
+    .tapgame-pop-image-fallback {
+      width: 100%;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      color: var(--text-dim);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+      background: var(--surface2);
+    }
+    .tapgame-pop.fail .tapgame-pop-card {
+      border-color: rgba(160,136,120,0.34);
+      box-shadow:
+        0 22px 80px rgba(0,0,0,0.68),
+        0 0 36px rgba(74,16,24,0.2);
+    }
+    .tapgame-pop.fail .tapgame-pop-kicker {
+      color: var(--text-dim);
+    }
+    .tapgame-pop-close {
+      padding: 10px 28px;
+      border: 1px solid var(--border-mid);
+      background: transparent;
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tapgame-pop-close:active {
+      background: rgba(212,176,96,0.1);
+    }
+    .tapgame-pop-close:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 4px;
+    }
+
+    @media (max-height: 680px) {
+      .tapgame-pop-card {
+        padding: 14px 14px 13px;
+      }
+      .tapgame-pop-kicker {
+        margin-bottom: 5px;
+      }
+      .tapgame-pop-title {
+        font-size: 16px;
+        margin-bottom: 6px;
+      }
+      .tapgame-pop-image {
+        width: min(132px, 36vw);
+        margin-bottom: 9px;
+      }
+      .tapgame-pop-msg,
+      .tapgame-pop-story p {
+        font-size: 11.5px;
+        line-height: 1.58;
+      }
+      .tapgame-pop-story p + p {
+        margin-top: 0.34em;
+      }
+      .tapgame-pop-close {
+        padding: 9px 24px;
+        font-size: 10.5px;
+      }
+    }
+
+    
+  </style>
+</head>
+<body data-id="truth-door">
+
+  <!-- ════════════ HERO ════════════ -->
+  <section id="hero" class="active">
+    <div class="hero-inner">
+      <div class="hero-img-wrap" id="heroImgWrap">
+        <span class="hero-corner hero-corner--tl"></span>
+        <span class="hero-corner hero-corner--tr"></span>
+        <span class="hero-corner hero-corner--bl"></span>
+        <span class="hero-corner hero-corner--br"></span>
+        <img src="./assets/results/truth-door/t00.webp" alt="真理の扉"
+             onerror="document.getElementById('heroImgWrap').classList.add('img-error')">
+        <div class="hero-img-fallback">真理の扉</div>
+      </div>
+      <p class="hero-eyebrow">SHINRI NO TOBIRA</p>
+      <h1 class="hero-title">真理の扉</h1>
+      <div class="hero-deco-row">
+        <div class="deco-line"></div>
+        <div class="hero-deco-dot"></div>
+        <div class="deco-line"></div>
+      </div>
+      <p class="hero-subtitle">その扉に惹かれた理由を、<br>あなたはまだ知らない。</p>
+      <button class="btn btn-gold" onclick="showSection('intro')">
+        <span>扉を選びはじめる</span>
+      </button>
+      <a class="btn btn-ghost return-link" href="https://haisuikounozarigani.github.io/shindan/">
+        診断一覧へ戻る
+      </a>
+    </div>
+  </section>
+
+  <!-- ════════════ INTRO ════════════ -->
+  <section id="intro">
+    <div class="intro-inner">
+      <div class="intro-img-wrap" id="introImgWrap">
+        <img src="./assets/results/truth-door/t00.webp" alt="真理の扉の入口"
+          onerror="document.getElementById('introImgWrap').classList.add('img-error')">
+        <div class="intro-img-fallback">真理の扉</div>
+      </div>
+
+      <div class="intro-card">
+        <div class="intro-card-bar"></div>
+        <div class="corner corner--tl"></div>
+        <div class="corner corner--tr"></div>
+        <div class="corner corner--bl"></div>
+        <div class="corner corner--br"></div>
+        <div class="intro-text">
+          <p>長い回廊の奥で、いくつもの扉が眠っている。</p>
+          <p>仮面の案内人は笑っているだけ。<br>足元の小さな骨の生き物だけが、ずっと扉を見ていた。</p>
+          <p>誰を待っていたのかは、まだ分からない。<br>ただ、あなたが近づくと、小さな灯りがひとつ揺れた。</p>
+        </div>
+      </div>
+      <div class="intro-rule">
+        表示される3枚の扉の中から、<br>
+        いちばん惹かれるものを選んでください。<br><br>
+        全12問。正解はありません。
+      </div>
+      <button class="btn btn-gold" onclick="startQuiz()">
+        <span>回廊へ進む</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ════════════ QUIZ ════════════ -->
+  <section id="quiz">
+    <div class="quiz-topbar">
+      <span class="quiz-prog-label" id="progLabel">1 / 12</span>
+      <div class="quiz-prog-track">
+        <div class="quiz-prog-fill" id="progFill" style="width:0%"></div>
+      </div>
+    </div>
+    
+    <div class="quiz-q-wrap">
+      <p class="quiz-q-text" id="qText"></p>
+    </div>
+    <div class="doors-grid" id="doorsGrid"></div>
+    
+    <button class="quiz-back-btn" id="quizBackBtn" type="button" onclick="goBackQuestion()">
+      入口へ戻る
+    </button>
+    
+  </section>
+
+  <!-- ════════════ LOADING ════════════ -->
+  <section id="loading">
+    <div class="loading-inner">
+      <div class="loading-glyph">
+        <div class="loading-dot"></div>
+      </div>
+      <p class="loading-text" id="loadingMsg">扉が、閉じていく…</p>
+    </div>
+  </section>
+
+  <!-- ════════════ RESULT ════════════ -->
+  <section id="result">
+    <div class="result-inner">
+      <p class="result-eyebrow">あなたが開けた世界</p>
+      <h2 class="result-name" id="rName"></h2>
+      <p class="result-subtitle" id="rSub"></p>
+
+      <div class="result-img-wrap" id="rImgWrap">
+        <div class="result-img-fallback" id="rImgFb"></div>
+        <img id="rImg" src="" alt="">
+      </div>
+
+      <div class="result-sections" id="rSections"></div>
+      <blockquote class="result-quote" id="rQuote"></blockquote>
+
+      
+
+      <div class="tapgame-wrap" id="tapGame">
+        <p class="tapgame-eyebrow">扉を叩き続けろ</p>
+        <div class="tapgame-modes" id="tapModes"></div>
+        <div class="tapgame-arena" id="tapArena" style="display:none">
+  <div class="tapgame-hud">
+    <div class="tapgame-hud-item">
+      <span>難易度</span>
+      <strong id="tapModeNow">---</strong>
+    </div>
+    <div class="tapgame-hud-item">
+      <span>残り</span>
+      <strong id="tapTimeLeft" class="tapgame-time">--.-秒</strong>
+    </div>
+    <div class="tapgame-hud-item">
+      <span>目標</span>
+      <strong id="tapTargetNow">--回</strong>
+    </div>
+  </div>
+  <div class="tapgame-timer-track">
+    <div class="tapgame-timer-fill" id="tapTimerFill"></div>
+  </div>
+  <div class="tapgame-door-wrap" id="tapDoorWrap" onclick="onTapDoor()">
+    <div class="tapgame-door-back"></div>
+    <div class="tapgame-door-glow"></div>
+    <div class="tapgame-door-panel" id="tapDoorPanel"></div>
+    <div class="tapgame-door-spark" id="tapFlash"></div>
+  </div>
+  <div class="tapgame-count-row">
+    <span>HITS</span>
+    <strong id="tapCount">0</strong>
+  </div>
+  <p class="tapgame-target-label" id="tapTargetLabel"></p>
+</div>
+        <div class="tapgame-result-area" id="tapResultArea" style="display:none"></div>
+        <div class="tapgame-rewards" id="tapRewards" aria-label="解放された扉片"></div>
+      </div>
+
+      <div class="tapgame-pop" id="tapPop" aria-hidden="true">
+        <div class="tapgame-pop-backdrop" onclick="closeTapPopup()"></div>
+        <div class="tapgame-pop-card" role="dialog" aria-modal="true" aria-labelledby="tapPopTitle">
+          <p class="tapgame-pop-kicker" id="tapPopKicker">RECORD</p>
+          <h3 class="tapgame-pop-title" id="tapPopTitle"></h3>
+          <p class="tapgame-pop-score" id="tapPopScore"></p>
+          <div class="tapgame-pop-msg" id="tapPopMsg"></div>
+          <div class="tapgame-pop-image" id="tapPopImage"></div>
+          <button class="tapgame-pop-close" type="button" onclick="closeTapPopup()">閉じる</button>
+        </div>
+      </div>
+
+      <div class="history-wrap">
+        <p class="history-label">選んだ扉の記録</p>
+        <div class="history-row" id="histRow"></div>
+      </div>
+
+      <details class="door-psych">
+        <summary class="door-psych-summary">
+          <span class="door-psych-summary-main">
+            <span class="door-psych-kicker">DOOR PSYCHOLOGY</span>
+            <span class="door-psych-title">人はなぜ、扉に惹かれるのか</span>
+          </span>
+          <span class="door-psych-mark" aria-hidden="true"></span>
+        </summary>
+        <div class="door-psych-body">
+          <p class="door-psych-text">
+  扉は、ただの入口ではありません。<br>
+  心理学では、場所や場面が切り替わる境目を「イベント境界」として考えることがあります。
+  実際、部屋を移動して扉を通るだけで、直前に考えていたことを忘れやすくなる研究もあります。
+</p>
+<p class="door-psych-text">
+  それは、扉が脳にとって「ここまで」と「ここから」を分ける印になりやすいからです。
+  また、人は環境を見るとき、「分かりやすいか」だけでなく「奥に何かありそうか」にも惹かれます。
+</p>
+<div class="door-psych-notes">
+  <p class="door-psych-note">
+    <strong>明るい扉</strong>に惹かれる時は、回復・希望・分かりやすさを求めていることがあります。
+  </p>
+  <p class="door-psych-note">
+    <strong>暗い扉</strong>に惹かれる時は、まだ言葉になっていない本音や、奥にしまった感情へ近づこうとしていることがあります。
+  </p>
+  <p class="door-psych-note">
+    <strong>怪しい扉</strong>に惹かれる時は、危険そのものではなく「まだ知らない自分」を少しだけ覗きたくなっているのかもしれません。
+  </p>
+</div>
+        </div>
+      </details>
+
+      <div class="result-actions">
+        
+        <button class="btn btn-ghost" onclick="restartQuiz()">もう一度診断する</button>
+        <a class="btn btn-ghost" href="https://haisuikounozarigani.github.io/shindan/">
+          診断一覧へ戻る
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="door-transition" id="doorTransition">
+    <div class="door-panel door-panel-l"></div>
+    <div class="door-panel door-panel-r"></div>
+    <div class="door-keyhole"></div>
+    <div class="door-center-glow"></div>
+  </div>
+
+  <script>
+    /* ═══════════ DATA ═══════════ */
+
+    const ASSET_BASE = "./assets/results/truth-door/";
+
+    const DOORS = [
+      { id:"d01", file:"d01.webp", attr:"fire",     label:"赤い火の扉" },
+      { id:"d02", file:"d02.webp", attr:"fire",     label:"青い火の扉" },
+      { id:"d03", file:"d03.webp", attr:"water",    label:"水面の扉" },
+      { id:"d04", file:"d04.webp", attr:"water",    label:"深海の扉" },
+      { id:"d05", file:"d05.webp", attr:"flower",   label:"春花の扉" },
+      { id:"d06", file:"d06.webp", attr:"flower",   label:"夜花の扉" },
+      { id:"d07", file:"d07.webp", attr:"cosmic",   label:"星雲の扉" },
+      { id:"d08", file:"d08.webp", attr:"cosmic",   label:"月と重力の扉" },
+      { id:"d09", file:"d09.webp", attr:"electric", label:"白青の電気の扉" },
+      { id:"d10", file:"d10.webp", attr:"electric", label:"紫電の扉" },
+      { id:"d11", file:"d11.webp", attr:"ice",      label:"透明結晶の扉" },
+      { id:"d12", file:"d12.webp", attr:"ice",      label:"吹雪の扉" },
+      { id:"d13", file:"d13.webp", attr:"shadow",   label:"月影の扉" },
+      { id:"d14", file:"d14.webp", attr:"shadow",   label:"墨影の扉" },
+      { id:"d15", file:"d15.webp", attr:"candy",    label:"パステル菓子の扉" },
+      { id:"d16", file:"d16.webp", attr:"candy",    label:"チョコとキャラメルの扉" }
+    ];
+
+    const QUESTIONS = [
+      "回廊の入口で、三つの扉が同時に軋んだ。<br>最初に取っ手へ手をかけるなら、どの扉？",
+      "扉のすきまから、違う色の光がこぼれている。<br>あなたが少しだけ押し開けたいのはどれ？",
+      "一歩進むと、背後の入口が静かに閉じた。<br>この先へ進むために、開ける扉はどれ？",
+      "耳を近づけると、扉の奥から小さな音がする。<br>中を確かめたくなるのはどれ？",
+      "古い鍵が、あなたの手の中でひとりでに冷たくなった。<br>鍵穴に合わせるなら、どの扉？",
+      "どれか一つだけ、取っ手に触れた瞬間に脈を打つ。<br>あなたがそのまま開けてしまう扉は？",
+      "案内人が『戻るなら今だ』と笑った。<br>それでも奥へ進むために選ぶ扉はどれ？",
+      "扉の向こうで、誰かが息をひそめている気がする。<br>あなたがそっと覗くのはどれ？",
+      "床に落ちた影が、あなたの足元から扉へ伸びた。<br>影の先にある扉を開けるなら、どれ？",
+      "祝祭のような音が、遠くで一瞬だけ鳴った。<br>その音が消える前に開けたい扉は？",
+      "回廊の灯りが、ひとつずつ消えていく。<br>最後の前に、どうしても確かめたい扉はどれ？",
+      "いちばん奥の扉だけが、まだこちらを待っている。<br>最後に、あなた自身の手で開けるのはどれ？"
+    ];
+
+    const QUESTION_SETS = [
+      ["d01","d03","d05"],
+      ["d07","d09","d13"],
+      ["d11","d15","d02"],
+      ["d04","d06","d08"],
+      ["d10","d12","d14"],
+      ["d16","d03","d09"],
+      ["d05","d11","d07"],
+      ["d01","d13","d15"],
+      ["d04","d10","d06"],
+      ["d12","d08","d16"],
+      ["d02","d14","d03"],
+      ["d05","d09","d11"]
+    ];
+
+    const RESULTS = [
+      {
+        id: "spark",
+        image: "t01.webp",
+        name: "炉心都市の住人",
+        subtitle: "止まった空気に、最初の火花を落とす世界へ入りました。",
+        weights: { fire:2, electric:2, cosmic:1 },
+        world:     "炎と電光が走る炉心都市",
+        guide:     "火花を指先で鳴らす怪しい道化師のような点火役",
+        companion: "扉のそばには、火花をまとった小さな骨の生き物がいました。あなたが黙って様子を見ている間も、その子だけは先に導火線を探しているようです。",
+        tendency:  "あなたは、何も動かない時間が長すぎると、退屈より先に違和感を覚える人です。表では勢いで選んでいるように見えても、実はかなり細かく空気の変化を読んでいます。\n納得できない停滞を見ると、考えるより先に火花を投げたくなることがあります。周りには大胆に見えても、あなたの中では『このままの方が危ない』という感覚が先に来ているはずです。",
+        quote:     "あなたが急に動く時、たいてい理由はもう心の奥で燃えています。",
+        secret:    "勢いだけの人ではありません。むしろ、我慢してきた時間が長いほど、最後の一手が派手になるタイプです。"
+      },
+      {
+        id: "tide",
+        image: "t02.webp",
+        name: "水庭の住人",
+        subtitle: "こぼれた感情が、静かに花へ変わる世界へ入りました。",
+        weights: { water:2, flower:2, candy:1 },
+        world:     "水面に花が咲く静かな庭",
+        guide:     "花と波紋を操る怪しい水庭師",
+        companion: "扉のそばには、透明な角を持つ小さな骨の生き物がいました。言葉はありませんが、あなたが無理をしている日だけ、水面に小さな波紋を残します。",
+        tendency:  "あなたは、強く言い返すより先に、相手の事情や場の空気を一度受け止めてしまう人です。平気そうに見せていても、あとから一人になった時に『あれ、少し刺さってたな』と気づくことがあります。\n優しいというより、感情の細かい湿度に敏感です。だからこそ、人の言葉を拾いすぎて疲れることもありますが、誰かの小さな変化にもいち早く気づけます。",
+        quote:     "何も感じていないのではなく、感じたものを静かに沈めているだけです。",
+        secret:    "あなたが黙って整えてきたものは、誰かが思うよりずっと多いです。そろそろ自分の庭にも水をやっていい頃です。"
+      },
+      {
+        id: "ward",
+        image: "t03.webp",
+        name: "氷書庫の住人",
+        subtitle: "開けるより先に、鍵穴の形を確かめる世界へ入りました。",
+        weights: { ice:2, shadow:2, water:1 },
+        world:     "氷壁と影の書庫",
+        guide:     "閉じた本と冷たい鍵を守る、怪しい守庫人",
+        companion: "扉のそばには、霜をまとった小さな骨の生き物がいました。懐いているように見えて、知らない誰かが近づくと、静かに鍵束を鳴らします。",
+        tendency:  "あなたは、誰にでも冷たいわけではありません。ただ、近づいていい相手かどうかをかなり慎重に見ています。最初から全部見せるより、相手の言葉・距離感・約束の守り方を見て、少しずつ鍵を渡すタイプです。\n一度信じた相手には深く関わりますが、雑に扱われた記憶はなかなか消えません。だから『大丈夫』と言いながらも、心のどこかで非常口の位置を確認していることがあります。",
+        quote:     "閉じているのは拒絶ではなく、大事に扱ってほしい場所があるからです。",
+        secret:    "あなたの警戒心は欠点ではありません。ただ、全部の扉を守ろうとすると、あなた自身が外へ出られなくなります。"
+      },
+      {
+        id: "starseeker",
+        image: "t04.webp",
+        name: "星図塔の住人",
+        subtitle: "目の前にいながら、遠い可能性を見ている世界へ入りました。",
+        weights: { cosmic:2, electric:2, fire:1 },
+        world:     "星図と電光が浮かぶ観測塔",
+        guide:     "まだ存在しない道を空中に描く星図師",
+        companion: "扉のそばには、星の粒を宿した小さな骨の生き物がいました。あなたが『普通はこう』に飽きた瞬間、机の上に小さな宇宙をこぼします。",
+        tendency:  "あなたは、目の前の答えだけで満足しにくい人です。会話をしていても、頭のどこかでは『この裏には何があるんだろう』と別の層を見ています。\n周りからはぼんやりして見える瞬間があっても、内側ではかなり速く連想が飛んでいます。ただ、未来の可能性が見えすぎるぶん、今やるべき小さな作業が急に退屈に感じることもあります。",
+        quote:     "あなたが遠くを見ている時、逃げているのではなく、次の入口を探しています。",
+        secret:    "人と違う場所を見てしまうことを、毎回説明しなくて大丈夫です。その視線そのものが、あなたの道具です。"
+      },
+      {
+        id: "sweet",
+        image: "t05.webp",
+        name: "甘毒劇場の住人",
+        subtitle: "甘さと毒が、同じ皿に並ぶ世界へ入りました。",
+        weights: { candy:2, flower:2, water:1 },
+        world:     "花と砂糖菓子でできた怪しい劇場",
+        guide:     "甘い夢を売る道化師のような甘夢師",
+        companion: "扉のそばには、砂糖細工のような小さな骨の生き物がいました。かわいい顔で近づいてきますが、たまに本音の瓶を勝手に開けます。",
+        tendency:  "あなたは、重い話をそのまま重く出すより、少し冗談や可愛げで包んで渡すことがある人です。平気そうに笑っていても、実はかなり覚えている言葉があります。\n甘さは逃げではなく、心を壊さないための包装紙です。ただ、その包装が上手すぎるせいで、本当は傷ついていることまで周りに伝わりにくい時があります。",
+        quote:     "あなたの軽さは、浅さではありません。沈みすぎないための浮き輪です。",
+        secret:    "笑って流せたことと、傷つかなかったことは別です。たまには包装紙を外してもいい。"
+      },
+      {
+        id: "moonhide",
+        image: "t06.webp",
+        name: "月影回廊の住人",
+        subtitle: "少し離れた場所から、見えない本音を拾う世界へ入りました。",
+        weights: { shadow:2, cosmic:2, ice:1 },
+        world:     "月蝕の光が差す暗い回廊",
+        guide:     "影の中にある言葉を読む影読師",
+        companion: "扉のそばには、月光をまとった小さな骨の生き物がいました。近づくと逃げるのに、あなたが一人で考え込む頃には、なぜか隣にいます。",
+        tendency:  "あなたは、輪の中心にいるより、少し外側にいる時の方がよく見える人です。会話に入っていないようで、誰が何を隠したか、どこで空気が変わったかを静かに拾っています。\nただ、見えすぎるせいで、言う前に疲れてしまうことがあります。本当は分かっているのに、説明するほどでもないと思って飲み込んだことが何度もあるはずです。",
+        quote:     "あなたが黙っている時、何もないのではなく、言葉になる前の情報が多すぎるのです。",
+        secret:    "消えたい人ではありません。ただ、雑に見つけられるくらいなら、静かに隠れていたいだけです。"
+      }
+    ];
+    
+    /* ═══════════ STATE ═══════════ */
+
+    const SAVE_KEY = 'truth-door:answers:v1';
+
+    let qIndex      = 0;
+    let attrScores  = {};
+    let pickedDoors = [];
+    let pickedAttrs = [];
+    let busy        = false;
+
+    function saveDiagnosis(stage = 'quiz', resultId = null) {
+      try {
+        localStorage.setItem(SAVE_KEY, JSON.stringify({
+          stage,
+          resultId,
+          qIndex,
+          attrScores,
+          pickedDoors,
+          pickedAttrs,
+          savedAt: Date.now()
+        }));
+      } catch(e) {}
+    }
+
+    function clearDiagnosisSave() {
+      try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+    }
+
+    function restoreDiagnosis() {
+      let raw = null;
+      try { raw = localStorage.getItem(SAVE_KEY); } catch(e) {}
+      if (!raw) return;
+
+      let data = null;
+      try { data = JSON.parse(raw); } catch(e) { clearDiagnosisSave(); return; }
+      if (!data || !Array.isArray(data.pickedDoors) || !Array.isArray(data.pickedAttrs)) return;
+
+      qIndex      = Number.isFinite(data.qIndex) ? data.qIndex : 0;
+      attrScores  = data.attrScores && typeof data.attrScores === 'object' ? data.attrScores : {};
+      pickedDoors = data.pickedDoors;
+      pickedAttrs = data.pickedAttrs;
+      busy        = false;
+
+      if (data.stage === 'result' && pickedDoors.length) {
+        const r = RESULTS.find(x => x.id === data.resultId) || calcResult();
+        renderResult(r);
+        return;
+      }
+
+      if (data.stage === 'quiz' && qIndex >= 0 && qIndex < QUESTIONS.length) {
+        showSection('quiz');
+        renderQuestion(qIndex);
+      }
+    }
+
+    /* ═══════════ SECTION MANAGER ═══════════ */
+
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      const sec = document.getElementById(id);
+      // Force reflow so animation re-triggers
+      sec.style.animation = 'none';
+      void sec.offsetWidth;
+      sec.style.animation = '';
+      sec.classList.add('active');
+    }
+
+    /* ═══════════ QUIZ ═══════════ */
+
+    function openDoorAndRun(cb) {
+      const el = document.getElementById('doorTransition');
+      el.classList.remove('open');
+      el.classList.add('active');
+      void el.offsetWidth;
+      setTimeout(() => {
+        el.classList.add('open');
+        setTimeout(() => {
+          cb();
+          setTimeout(() => el.classList.remove('active', 'open'), 120);
+        }, 720);
+      }, 30);
+    }
+
+    function startQuiz() {
+      openDoorAndRun(() => {
+        qIndex      = 0;
+        attrScores  = {};
+        pickedDoors = [];
+        pickedAttrs = [];
+        busy        = false;
+        clearDiagnosisSave();
+        saveDiagnosis('quiz');
+        showSection('quiz');
+        renderQuestion(0);
+      });
+    }
+
+    function getDoor(id) {
+      return DOORS.find(d => d.id === id);
+    }
+
+    function renderQuestion(i) {
+      // Progress
+      document.getElementById('progLabel').textContent = `${i + 1} / 12`;
+      document.getElementById('progFill').style.width  = `${(i / 12) * 100}%`;
+      document.getElementById('qText').innerHTML       = QUESTIONS[i];
+
+      const backBtn = document.getElementById('quizBackBtn');
+      if (backBtn) {
+        backBtn.textContent = i === 0 ? '入口へ戻る' : 'ひとつ前の扉へ戻る';
+      }
+
+      // Cards
+      const grid = document.getElementById('doorsGrid');
+      grid.style.opacity   = '0';
+      grid.style.transform = 'translateY(14px)';
+      grid.innerHTML = '';
+
+      QUESTION_SETS[i].forEach(doorId => {
+        const d = getDoor(doorId);
+        const card = document.createElement('div');
+        card.className = 'door-card';
+        card.dataset.doorId = doorId;
+        card.innerHTML = `
+          <div class="door-card-img-wrap">
+            <img src="${ASSET_BASE}${d.file}" alt="${d.label}"
+              loading="lazy"
+              onerror="this.closest('.door-card').classList.add('img-error')">
+            <div class="door-img-fallback">${d.label}</div>
+          </div>
+          <div class="door-card-foot">${d.label}</div>
+        `;
+        card.addEventListener('click', () => pickDoor(doorId));
+        grid.appendChild(card);
+      });
+
+      requestAnimationFrame(() => {
+        grid.style.transition = 'opacity 0.38s ease, transform 0.38s ease';
+        grid.style.opacity    = '1';
+        grid.style.transform  = 'translateY(0)';
+      });
+    }
+
+    function goBackQuestion() {
+      if (busy) return;
+
+      if (qIndex <= 0) {
+        busy = false;
+        saveDiagnosis('quiz');
+        showSection('intro');
+        return;
+      }
+
+      const lastAttr = pickedAttrs.pop();
+      pickedDoors.pop();
+
+      if (lastAttr && attrScores[lastAttr]) {
+        attrScores[lastAttr]--;
+        if (attrScores[lastAttr] <= 0) delete attrScores[lastAttr];
+      }
+
+      qIndex--;
+      busy = false;
+      saveDiagnosis('quiz');
+      renderQuestion(qIndex);
+    }
+
+    function pickDoor(doorId) {
+      if (busy) return;
+      busy = true;
+
+      const d = getDoor(doorId);
+      attrScores[d.attr] = (attrScores[d.attr] || 0) + 1;
+      pickedDoors.push(doorId);
+      pickedAttrs.push(d.attr);
+
+      // Animate card
+      const card = document.querySelector(`[data-door-id="${doorId}"]`);
+      card.classList.add('selected');
+      document.querySelectorAll('.door-card').forEach(c => {
+        c.style.pointerEvents = 'none';
+      });
+
+      setTimeout(() => {
+        qIndex++;
+        if (qIndex >= QUESTIONS.length) {
+          saveDiagnosis('loading');
+          showLoading();
+        } else {
+          saveDiagnosis('quiz');
+          renderQuestion(qIndex);
+          busy = false;
+        }
+      }, 580);
+    }
+
+    /* ═══════════ LOADING ═══════════ */
+
+    function showLoading() {
+      showSection('loading');
+      const msgs = [
+        "扉が、閉じていく…",
+        "あなたの軌跡を読んでいる…",
+        "真理の型が、浮かび上がる…"
+      ];
+      let mi = 0;
+      const el = document.getElementById('loadingMsg');
+      el.textContent = msgs[0];
+      const iv = setInterval(() => {
+        mi++;
+        if (mi < msgs.length) el.textContent = msgs[mi];
+      }, 720);
+
+      setTimeout(() => {
+        clearInterval(iv);
+        const r = calcResult();
+        renderResult(r);
+        busy = false;
+      }, 2300);
+    }
+
+    /* ═══════════ SCORING ═══════════ */
+
+    function calcResult() {
+      RESULTS.forEach(r => {
+        r._score = Object.entries(r.weights)
+          .reduce((sum, [attr, w]) => sum + (attrScores[attr] || 0) * w, 0);
+      });
+
+      const best = Math.max(...RESULTS.map(r => r._score));
+      const tied = RESULTS.filter(r => r._score === best);
+      if (tied.length === 1) return tied[0];
+
+      // Tie-break 1: last picked attr
+      const lastAttr = pickedAttrs[pickedAttrs.length - 1];
+      const hasLast  = tied.filter(r => r.weights[lastAttr]);
+      if (hasLast.length === 1) return hasLast[0];
+
+      // Tie-break 2: most recent attrs in reverse
+      for (let i = pickedAttrs.length - 1; i >= 0; i--) {
+        const cands = tied.filter(r => r.weights[pickedAttrs[i]]);
+        if (cands.length === 1) return cands[0];
+      }
+
+      // Tie-break 3: first in array
+      return tied[0];
+    }
+
+    /* ═══════════ RESULT RENDER ═══════════ */
+
+    function renderResult(r) {
+      showSection('result');
+
+      document.getElementById('rName').textContent = r.name;
+      document.getElementById('rSub').textContent  = r.subtitle;
+
+      const img     = document.getElementById('rImg');
+      const imgWrap = document.getElementById('rImgWrap');
+      const imgFb   = document.getElementById('rImgFb');
+      imgFb.textContent = r.name;
+      img.alt = r.name;
+      img.src = ASSET_BASE + r.image;
+      img.onerror = () => imgWrap.classList.add('img-error');
+
+      // Body sections
+      document.getElementById('rSections').innerHTML = `
+        <div class="rsec">
+          <div class="corner corner--tl"></div>
+          <div class="corner corner--br"></div>
+          <p class="rsec-label">扉の向こうの世界</p>
+          <p class="rsec-text">
+            あなたが辿り着いたのは、${r.world}。<br>
+            そこにいた案内人は、${r.guide}です。
+          </p>
+        </div>
+        <div class="rsec">
+          <div class="corner corner--tl"></div>
+          <div class="corner corner--br"></div>
+          <p class="rsec-label">扉のそばにいたもの</p>
+<p class="rsec-text">${r.companion}</p>
+        </div>
+        <div class="rsec">
+          <div class="corner corner--tl"></div>
+          <div class="corner corner--br"></div>
+          <p class="rsec-label">このタイプの傾向</p>
+          <p class="rsec-text">${r.tendency.replace(/\n/g, '<br>')}</p>
+        </div>
+      `;
+
+      document.getElementById('rQuote').innerHTML = `
+        <p class="rsec-label">扉からの一言</p>
+        <p class="result-quote-text">「${r.quote}」</p>
+      `;
+
+      initTapGame();
+
+      saveDiagnosis('result', r.id);
+
+      // History thumbnails
+      const row = document.getElementById('histRow');
+      row.innerHTML = '';
+      pickedDoors.forEach((doorId, idx) => {
+        const d    = getDoor(doorId);
+        const div  = document.createElement('div');
+        div.className   = 'h-thumb';
+        div.title       = `${idx + 1}問目：${d.label}`;
+        div.innerHTML   = `
+          <img src="${ASSET_BASE}${d.file}" alt="${d.label}"
+            onerror="this.closest('.h-thumb').classList.add('img-error')">
+          <div class="h-thumb-fb">${idx + 1}</div>
+        `;
+        row.appendChild(div);
+      });
+    }
+
+    
+    
+
+    /* ═══════════ TAP GAME ═══════════ */
+
+    const TG_MODES = [
+  {
+    label:"EASY",
+    sub:"灯火",
+    door:"g01.webp",
+    result:"g01.webp",
+    target:45,
+    time:14,
+    cleared:false,
+    unlocked:true,
+    rewardTitle:"灯りを抱いた記録",
+    rewardText:"扉のすきまから、小さな灯りが落ちた。誰かが昔、ここで迷わないように置いていったものらしい。骨の生き物は、それを見て少しだけ近づいた。",
+    story:[
+      "＊ 扉のすきまから、小さな灯りが落ちた。",
+      "＊ 骨の生き物は、それを見て近づいた。",
+      "＊ それは、誰かに見つけてもらうための灯りだった。"
+    ],
+    failStory:[
+      "＊ 扉は閉じた。",
+      "＊ すきまから、まだ灯りが見える。",
+      "＊ 骨の生き物は、また小さく座り直した。"
+    ]
+  },
+  {
+    label:"NORMAL",
+    sub:"残響",
+    door:"g02.webp",
+    result:"g02.webp",
+    target:72,
+    time:12,
+    cleared:false,
+    unlocked:false,
+    rewardTitle:"足音だけが残る記録",
+    rewardText:"扉の向こうには、古い足音だけが残っていた。待っていた人は、もう帰ってこない。それでも骨の生き物は、ずっとここで扉を見ていた。",
+    story:[
+      "＊ 古い足音が残っていた。",
+      "＊ 近づいて、遠ざかって、また消えた。",
+      "＊ 骨の生き物は、何度も顔を上げた。",
+      "＊ でも、その扉はまだ開かなかった。"
+    ],
+    failStory:[
+      "＊ 扉は重かった。",
+      "＊ 足音は、また遠ざかった。",
+      "＊ 骨の生き物は、動かなかった。"
+    ]
+  },
+  {
+    label:"HARD",
+    sub:"終幕",
+    door:"g03.webp",
+    result:"g03.webp",
+    target:85,
+    time:10,
+    cleared:false,
+    unlocked:false,
+    rewardTitle:"ガラス越しの記録",
+    rewardText:"最後の扉が開いた。向こう側には、誰もいなかった。骨の生き物は、初めて小さく笑った。もう待たなくていいと、分かったみたいだった。",
+    story:[
+      "＊ 最後の扉が開いた。",
+      "＊ 向こう側には、誰もいなかった。",
+      "＊ 骨の生き物は、はじめてこちらを見た。",
+      "＊ ガラスの向こうに、あなたがいた。",
+      "＊ ずっと、そこに来るのを待っていた。"
+    ],
+    failStory:[
+      "＊ バタン。",
+      "＊ 最後の扉は閉じた。",
+      "＊ こちら側の気配は、まだ届かなかった。",
+      "＊ 骨の生き物は、もう少しだけ待つ。"
+    ]
+  },
+  {
+    label:"SECRET",
+    sub:"真影",
+    door:"g04.webp",
+    result:"g04.webp",
+    target:100,
+    time:10,
+    cleared:false,
+    unlocked:false,
+    rewardTitle:"真影の記録",
+    rewardText:"もうひとつ、記録が残っていた。扉でも、骨でも、影でもない。ガラスの向こうで、ほんとうの輪郭だけが静かにこちらを見ていた。",
+    story:[
+      "＊ ありえないはずの扉が、少しだけひらいた。",
+      "＊ 骨の生き物は、もう驚かなかった。",
+      "＊ ガラスの向こうに、作ったひとの影があった。",
+      "＊ でも、その影はあなたを見ていた。",
+      "＊ ここまで来たことを、知っていたみたいに。"
+    ],
+    failStory:[
+      "＊ 扉は、開いたふりをした。",
+      "＊ ほんとうの影は、まだ奥にいる。",
+      "＊ ガラスだけが、かすかに震えた。"
+    ]
+  }
+];
+
+
+
+    let tgSelected = null;
+    let tgCount    = 0;
+    let tgRunning  = false;
+    let tgReady    = false;
+    let tgInterval = null;
+    let tgRemain   = 0;
+
+    function initTapGame() {
+      TG_MODES.forEach((m, i) => {
+        m.cleared = false;
+        m.unlocked = i === 0;
+      });
+      tgSelected = null;
+      tgRunning = false;
+      clearInterval(tgInterval);
+      tgReady = false;
+      document.getElementById('tapGame')?.classList.remove('is-running');
+
+      const arena = document.getElementById('tapArena');
+      const result = document.getElementById('tapResultArea');
+      const wrap = document.getElementById('tapDoorWrap');
+      const panel = document.getElementById('tapDoorPanel');
+
+      arena.style.display = 'none';
+      result.style.display = 'none';
+
+      if (wrap) {
+        wrap.classList.remove('ready', 'tapped', 'opened', 'slammed');
+        wrap.style.opacity = '1';
+        wrap.style.pointerEvents = 'none';
+      }
+      if (panel) {
+        panel.style.transition = 'transform 0.16s ease';
+        panel.style.transform = 'rotateY(0deg)';
+      }
+
+      renderTgModes();
+      setupTapGameTouchGuard();
+    }
+
+    function renderTgModes() {
+      const wrap = document.getElementById('tapModes');
+      wrap.innerHTML = '';
+      TG_MODES.forEach((m, i) => {
+        const btn = document.createElement('button');
+        const cls = [
+          'tapgame-mode-btn',
+          m.unlocked ? 'unlocked' : 'locked',
+          m.cleared  ? 'cleared'  : '',
+          tgSelected === i ? 'selected' : ''
+        ].join(' ');
+        btn.className = cls;
+        btn.innerHTML = `
+          <span class="tapgame-mode-label">${m.label}</span>
+          <span class="tapgame-mode-sub">${m.cleared ? 'CLEARED' : m.unlocked ? m.sub : '？？？'}</span>
+          <span class="tapgame-mode-rule">${m.unlocked ? `${m.target}回 / ${m.time}秒` : 'LOCKED'}</span>
+        `;
+        if (m.unlocked) btn.onclick = () => selectTgMode(i);
+        wrap.appendChild(btn);
+      });
+
+      renderTgRewards();
+    }
+
+    function renderTgRewards() {
+      const shelf = document.getElementById('tapRewards');
+      if (!shelf) return;
+
+      shelf.innerHTML = TG_MODES.map((m, i) => {
+        const open = m.cleared;
+        return `
+          <div class="tapgame-reward ${open ? 'unlocked' : 'locked'}">
+            ${open ? `
+              <img src="${ASSET_BASE}${m.result}" alt="${m.rewardTitle}"
+                onerror="this.closest('.tapgame-reward').classList.add('img-error')">
+              <div class="tapgame-reward-fallback">${m.rewardTitle}</div>
+            ` : ``}
+            <div class="tapgame-reward-label">${open ? m.rewardTitle : `${m.sub} 未開封`}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectTgMode(i) {
+      if (!TG_MODES[i].unlocked || tgRunning) return;
+
+      tgSelected = i;
+      tgReady = true;
+
+      const m = TG_MODES[i];
+
+      document.getElementById('tapTargetLabel').textContent = `目標：${m.target}回 ／ 制限時間：${m.time}秒`;
+      document.getElementById('tapModeNow').textContent = m.label;
+      document.getElementById('tapTimeLeft').textContent = `${m.time.toFixed(1)}秒`;
+      document.getElementById('tapTimeLeft').classList.remove('danger');
+      document.getElementById('tapTargetNow').textContent = `${m.target}回`;
+      document.getElementById('tapCount').textContent = '0';
+
+      const fill = document.getElementById('tapTimerFill');
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+
+      const doorWrap = document.getElementById('tapDoorWrap');
+      const doorPanel = document.getElementById('tapDoorPanel');
+
+      doorWrap.classList.remove('tapped', 'opened', 'slammed');
+      doorWrap.classList.add('ready');
+      doorWrap.style.opacity = '1';
+      doorWrap.style.pointerEvents = 'auto';
+
+      doorPanel.style.transition = 'transform 0.16s ease';
+      doorPanel.style.transform = 'rotateY(0deg)';
+
+      document.getElementById('tapArena').style.display = 'flex';
+      document.getElementById('tapResultArea').style.display = 'flex';
+      document.getElementById('tapResultArea').innerHTML =
+        `<p class="tapgame-result-msg">難易度を選びました。扉を叩くと始まります。</p>`;
+
+      renderTgModes();
+
+      requestAnimationFrame(() => {
+        document.getElementById('tapArena').scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      });
+    }
+
+    function startTgGame() {
+      const m = TG_MODES[tgSelected];
+
+      tgCount = 0;
+      tgRemain = m.time * 10;
+      tgReady = false;
+      tgRunning = true;
+      document.getElementById('tapGame')?.classList.add('is-running');
+
+      document.getElementById('tapCount').textContent = '0';
+      document.getElementById('tapResultArea').style.display = 'none';
+
+      const doorWrap = document.getElementById('tapDoorWrap');
+      doorWrap.classList.remove('ready', 'tapped', 'opened', 'slammed');
+      doorWrap.style.opacity = '1';
+      doorWrap.style.pointerEvents = 'auto';
+
+      document.getElementById('tapDoorPanel').style.transform = 'rotateY(0deg)';
+
+      updateTgClock();
+
+      const fill = document.getElementById('tapTimerFill');
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+      void fill.offsetWidth;
+      fill.style.transition = `width ${m.time * 1000}ms linear`;
+      fill.style.width = '0%';
+
+      clearInterval(tgInterval);
+      tgInterval = setInterval(() => {
+        tgRemain--;
+        updateTgClock();
+        if (tgRemain <= 0) {
+          clearInterval(tgInterval);
+          endTgGame(false);
+        }
+      }, 100);
+    }
+
+    function updateTgClock() {
+      const el = document.getElementById('tapTimeLeft');
+      const sec = Math.max(0, tgRemain / 10);
+      el.textContent = `${sec.toFixed(1)}秒`;
+      el.classList.toggle('danger', sec <= 3 && tgRunning);
+    }
+
+    function onTapDoor() {
+      if (!tgRunning) {
+        if (!tgReady) return;
+        startTgGame();
+      }
+
+      if (!tgRunning) return;
+
+      tgCount++;
+      document.getElementById('tapCount').textContent = tgCount;
+
+      const m = TG_MODES[tgSelected];
+      const progress = Math.min(1, tgCount / m.target);
+      const angle = 4 + progress * 72;
+
+      const dw = document.getElementById('tapDoorWrap');
+      const panel = document.getElementById('tapDoorPanel');
+
+      panel.style.transition = 'transform 0.1s ease';
+      panel.style.transform = `rotateY(-${angle}deg)`;
+
+      dw.classList.remove('ready', 'tapped', 'slammed');
+      void dw.offsetWidth;
+      dw.classList.add('tapped');
+
+      if (tgCount >= m.target) {
+        clearInterval(tgInterval);
+        endTgGame(true);
+      }
+    }
+    
+    function endTgGame(forceClear = false) {
+      tgRunning = false;
+      tgReady = false;
+      document.getElementById('tapGame')?.classList.remove('is-running');
+
+      const m = TG_MODES[tgSelected];
+      const cleared = forceClear || tgCount >= m.target;
+      const leftSec = Math.max(0, tgRemain / 10).toFixed(1);
+
+      const doorWrap = document.getElementById('tapDoorWrap');
+      const doorPanel = document.getElementById('tapDoorPanel');
+
+      doorWrap.style.pointerEvents = 'none';
+      document.getElementById('tapTimeLeft').classList.remove('danger');
+
+      const fill = document.getElementById('tapTimerFill');
+      fill.style.transition = 'none';
+      fill.style.width = `${Math.max(0, (tgRemain / (m.time * 10)) * 100)}%`;
+
+      doorWrap.classList.remove('opened', 'slammed');
+
+      if (cleared) {
+        doorPanel.style.transition = 'transform 0.72s cubic-bezier(0.16,1,0.3,1)';
+        doorPanel.style.transform = 'rotateY(-92deg)';
+        doorWrap.classList.add('opened');
+      } else {
+        doorPanel.style.transition = 'transform 0.08s ease-out';
+        doorPanel.style.transform = 'rotateY(-46deg)';
+
+        setTimeout(() => {
+          doorWrap.classList.remove('tapped');
+          void doorWrap.offsetWidth;
+          doorWrap.classList.add('slammed');
+        }, 80);
+      }
+
+      if (cleared && !m.cleared) {
+        m.cleared = true;
+        if (tgSelected + 1 < TG_MODES.length) TG_MODES[tgSelected + 1].unlocked = true;
+      }
+
+      renderTgModes();
+      renderTgRewards();
+
+      const next = TG_MODES[tgSelected + 1];
+      const ra = document.getElementById('tapResultArea');
+
+      ra.style.display = 'flex';
+      ra.innerHTML = `
+        ${cleared && next ? `<p class="tapgame-unlock">— ${next.sub} が解放された —</p>` : ''}
+        <button class="tapgame-start-btn" onclick="selectTgMode(${tgSelected})">もう一度</button>
+      `;
+
+      const popupDelay = cleared ? 780 : 740;
+
+      setTimeout(() => {
+        openTapPopup({
+          cleared,
+          title: cleared ? m.rewardTitle : '記録はまだ閉じている',
+          score: `${tgCount} 回 ／ 残り ${leftSec} 秒`,
+          story: cleared ? m.story : m.failStory,
+          image: cleared ? m.result : null
+        });
+      }, popupDelay);
+    }
+
+    function setupTapGameTouchGuard() {
+      const door = document.getElementById('tapDoorWrap');
+      if (!door || door.dataset.touchGuard === '1') return;
+
+      door.dataset.touchGuard = '1';
+
+      door.addEventListener('touchmove', (e) => {
+        if (tgRunning) e.preventDefault();
+      }, { passive: false });
+    }
+
+    function openTapPopup({ cleared, title, score, story, image }) {
+      const pop = document.getElementById('tapPop');
+
+      // section内に置いたままだと fixed がズレることがあるため、表示時だけ body 直下へ移す
+      if (pop.parentElement !== document.body) {
+        document.body.appendChild(pop);
+      }
+
+      const kicker = document.getElementById('tapPopKicker');
+      const titleEl = document.getElementById('tapPopTitle');
+      const scoreEl = document.getElementById('tapPopScore');
+      const imageEl = document.getElementById('tapPopImage');
+      const msgEl = document.getElementById('tapPopMsg');
+
+      pop.classList.remove('ok', 'fail', 'show');
+      pop.classList.add(cleared ? 'ok' : 'fail');
+
+      kicker.textContent = cleared ? 'RECORD OPENED' : 'NO ENTRY';
+      titleEl.textContent = title;
+      scoreEl.textContent = score;
+
+      const lines = Array.isArray(story) && story.length
+        ? story
+       : [cleared ? '＊ 忘れものみたいな光が落ちた。' : '＊ まだ、拾えるものは落ちてこない。'];
+
+      msgEl.innerHTML = '';
+      const storyBox = document.createElement('div');
+      storyBox.className = 'tapgame-pop-story';
+
+      lines.forEach(line => {
+        const p = document.createElement('p');
+        p.textContent = line;
+        storyBox.appendChild(p);
+      });
+
+      msgEl.appendChild(storyBox);
+
+      imageEl.innerHTML = cleared && image ? `
+        <img src="${ASSET_BASE}${image}" alt="${title}"
+          onerror="this.parentElement.innerHTML='<div class=&quot;tapgame-pop-image-fallback&quot;>${title}</div>'">
+      ` : '';
+
+      pop.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+
+      requestAnimationFrame(() => {
+        pop.classList.add('show');
+        const closeBtn = pop.querySelector('.tapgame-pop-close');
+        if (closeBtn) closeBtn.focus({ preventScroll: true });
+      });
+    }
+
+    function closeTapPopup() {
+      const pop = document.getElementById('tapPop');
+      if (!pop) return;
+      pop.classList.remove('show', 'ok', 'fail');
+      pop.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeTapPopup();
+    });
+
+    /* ═══════════ RESTART ═══════════ */// History thumbnails
+
+    function restartQuiz() {
+      clearDiagnosisSave();
+      showSection('intro');
+    }
+
+    window.addEventListener('DOMContentLoaded', restoreDiagnosis);
+
+  </script>
+</body>
+</html>
