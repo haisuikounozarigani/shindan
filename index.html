@@ -821,6 +821,119 @@ button{font-family:inherit;cursor:pointer}
 .wf--vl .ws-flip-b-badge{background:rgba(167,139,250,.18);color:#6d28d9;}
 .wf--vl .ws-flip-b-btn{background:linear-gradient(90deg,#a78bfa,#6d28d9);}
 
+/* ── WORLD SWITCHER 修正：文字被り対策・読みやすさ優先 ── */
+.ws-flip-wrap{
+  height:178px;
+}
+
+.ws-flip-back{
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+}
+
+.ws-flip-b-top{
+  min-height:48px;
+  padding:9px 11px 7px;
+}
+
+.ws-flip-b-meta{
+  min-width:0;
+}
+
+.ws-flip-b-name{
+  font-size:.82rem;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}
+
+.ws-flip-b-badge{
+  font-size:.56rem;
+  line-height:1.25;
+}
+
+.ws-flip-b-desc{
+  min-height:0;
+  padding:9px 11px 5px;
+  font-size:.72rem;
+  line-height:1.55;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+}
+
+.ws-flip-b-btn{
+  margin:0 11px 11px;
+  padding:8px 10px;
+  font-size:.72rem;
+  line-height:1.25;
+  min-height:34px;
+  display:grid;
+  place-items:center;
+}
+
+.ws-flip-name{
+  font-size:.78rem;
+  line-height:1.25;
+}
+
+.ws-flip-f-badge{
+  font-size:.56rem;
+  line-height:1.25;
+}
+
+.ws-flip-hint{
+  font-size:.58rem;
+}
+
+@media(max-width:520px){
+  .ws-flip-wrap{
+    height:188px;
+  }
+
+  .ws-flip-b-name{
+    font-size:.78rem;
+  }
+
+  .ws-flip-b-desc{
+    font-size:.69rem;
+    line-height:1.55;
+    -webkit-line-clamp:3;
+  }
+
+  .ws-flip-b-btn{
+    font-size:.7rem;
+    min-height:34px;
+  }
+
+  .ws-flip-name{
+    font-size:.74rem;
+  }
+
+  .ws-flip-f-badge{
+    font-size:.54rem;
+  }
+}
+
+  .ws-flip-name{
+    font-size:.68rem;
+    line-height:1.25;
+  }
+
+  .ws-flip-f-badge{
+    font-size:.48rem;
+  }
+
+  .ws-flip-b-desc{
+    font-size:.6rem;
+    line-height:1.5;
+    -webkit-line-clamp:3;
+  }
+}
+
 @media(prefers-reduced-motion:reduce){
   .ws-flip-card{transition:none;}
   .ws-flip-icon,.ws-flip-front::before,.ws-flip-front::after{animation:none;}

@@ -350,10 +350,20 @@
     }
 
     .quiz-q-wrap {
-      width: 100%; max-width: 720px;
-      padding: 28px 8px 36px;
-      min-height: 88px;
-      display: flex; align-items: center; justify-content: center;
+      width: 100%;
+      max-width: 720px;
+      padding: 22px 6px 24px;
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (min-width: 580px) {
+      .quiz-q-wrap {
+        padding: 28px 8px 36px;
+        min-height: 88px;
+      }
     }
     .quiz-q-text {
       font-size: clamp(14px, 3.8vw, 18px);
@@ -362,14 +372,18 @@
     }
 
     .doors-grid {
-      width: 100%; max-width: 720px;
+      width: 100%;
+      max-width: 720px;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
+
     @media (min-width: 580px) {
-      .doors-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      .doors-grid {
+        gap: 18px;
+      }
     }
 
     .door-card {
@@ -416,10 +430,25 @@
     .door-card.img-error .door-img-fallback { display: flex; }
 
     .door-card-foot {
-      padding: 10px 12px;
-      font-size: 10px; letter-spacing: 0.14em;
-      color: var(--text-dim); text-align: center;
+      padding: 8px 4px;
+      font-size: 8px;
+      line-height: 1.45;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      text-align: center;
       border-top: 1px solid var(--border);
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+    }
+
+    @media (min-width: 580px) {
+      .door-card-foot {
+        padding: 10px 12px;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        min-height: auto;
+      }
     }
 
     /* Selected state */
@@ -716,6 +745,189 @@
     .door-psych-note strong {
       color: var(--gold);
       font-weight: 500;
+    }
+
+    .result-gallery {
+      width: 100%;
+      margin: 0 0 28px;
+      border: 1px solid rgba(226,185,105,0.34);
+      background:
+        radial-gradient(circle at 16% 0%, rgba(204,233,248,0.10), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%),
+        rgba(255,255,255,0.025);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-gallery::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent, rgba(204,233,248,0.07), transparent);
+      opacity: 0.9;
+    }
+    .result-gallery-summary {
+      list-style: none;
+      cursor: pointer;
+      position: relative;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .result-gallery-summary::-webkit-details-marker {
+      display: none;
+    }
+    .result-gallery-summary:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: -4px;
+    }
+    .result-gallery-summary-main {
+      position: relative;
+      display: grid;
+      gap: 5px;
+    }
+    .result-gallery-kicker {
+      font-size: 8px;
+      letter-spacing: 0.36em;
+      color: var(--ice);
+      opacity: 0.66;
+    }
+    .result-gallery-title {
+      font-size: 14px;
+      line-height: 1.6;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .result-gallery-mark {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(204,233,248,0.38);
+      display: grid;
+      place-items: center;
+      color: var(--ice);
+      flex-shrink: 0;
+    }
+    .result-gallery-mark::before {
+      content: '+';
+      font-size: 18px;
+      line-height: 1;
+      transform: translateY(-1px);
+    }
+    .result-gallery[open] .result-gallery-mark::before {
+      content: '−';
+    }
+    .result-gallery-body {
+      position: relative;
+      padding: 0 16px 18px;
+      animation: psychOpen 0.28s ease both;
+    }
+    .result-gallery-note {
+      font-size: 12px;
+      line-height: 1.85;
+      letter-spacing: 0.045em;
+      color: var(--text-dim);
+      margin: 0 2px 12px;
+    }
+    .result-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (min-width: 520px) {
+      .result-gallery-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    .result-gallery-card {
+      border: 1px solid rgba(226,185,105,0.26);
+      background: rgba(0,0,0,0.10);
+      overflow: hidden;
+      position: relative;
+      min-width: 0;
+    }
+    .result-gallery-card.current {
+      border-color: var(--gold);
+      box-shadow: 0 0 30px rgba(225,189,112,0.16);
+    }
+    .result-gallery-img {
+      width: 100%;
+      aspect-ratio: 1;
+      display: block;
+      object-fit: cover;
+      filter: saturate(0.92) brightness(0.94);
+      background: var(--surface2);
+    }
+    .result-gallery-card.current .result-gallery-img {
+      filter: saturate(1) brightness(1.02);
+    }
+    .result-gallery-caption {
+      padding: 9px 8px 10px;
+      display: grid;
+      gap: 3px;
+      border-top: 1px solid rgba(226,185,105,0.16);
+    }
+    .result-gallery-name {
+      font-size: 10px;
+      line-height: 1.45;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .result-gallery-world {
+      font-size: 8px;
+      line-height: 1.5;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .result-gallery-badge {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      padding: 3px 7px;
+      border: 1px solid rgba(255,255,255,0.34);
+      background: rgba(43,34,64,0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: var(--gold-bright);
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      line-height: 1.2;
+      z-index: 2;
+      max-width: calc(100% - 14px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .result-gallery-fallback {
+      width: 100%;
+      aspect-ratio: 1;
+      display: none;
+      place-items: center;
+      padding: 12px;
+      background: var(--surface2);
+      color: var(--text-dim);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .result-gallery-card.img-error .result-gallery-img {
+      display: none;
+    }
+    .result-gallery-card.img-error .result-gallery-fallback {
+      display: grid;
     }
 
     /* History */
@@ -1681,7 +1893,21 @@
       <div class="result-sections" id="rSections"></div>
       <blockquote class="result-quote" id="rQuote"></blockquote>
 
-      
+      <details class="result-gallery">
+        <summary class="result-gallery-summary">
+          <span class="result-gallery-summary-main">
+            <span class="result-gallery-kicker">RESULT IMAGE GALLERY</span>
+<span class="result-gallery-title">全結果画像ギャラリーを見る</span>
+          </span>
+          <span class="result-gallery-mark" aria-hidden="true"></span>
+        </summary>
+        <div class="result-gallery-body">
+          <p class="result-gallery-note">
+            今回は開かなかった扉の先にも、別の世界が眠っています。
+          </p>
+          <div class="result-gallery-grid" id="resultGalleryGrid"></div>
+        </div>
+      </details>
 
       <div class="tapgame-wrap" id="tapGame">
         <p class="tapgame-eyebrow">扉を叩き続けろ</p>
@@ -2215,6 +2441,7 @@
         <p class="result-quote-text">「${r.quote}」</p>
       `;
 
+      renderResultGallery(r.id);
       initTapGame();
 
       saveDiagnosis('result', r.id);
@@ -2238,6 +2465,28 @@
 
     
     
+
+    function renderResultGallery(currentId) {
+      const grid = document.getElementById('resultGalleryGrid');
+      if (!grid) return;
+
+      grid.innerHTML = RESULTS.map(r => {
+        const isCurrent = r.id === currentId;
+        return `
+          <div class="result-gallery-card ${isCurrent ? 'current' : ''}">
+            ${isCurrent ? '<span class="result-gallery-badge">あなたの結果</span>' : ''}
+            <img class="result-gallery-img" src="${ASSET_BASE}${r.image}" alt="${r.name}"
+              loading="lazy"
+              onerror="this.closest('.result-gallery-card').classList.add('img-error')">
+            <div class="result-gallery-fallback">${r.name}</div>
+            <div class="result-gallery-caption">
+              <span class="result-gallery-name">${r.name}</span>
+              <span class="result-gallery-world">${r.world}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
     /* ═══════════ TAP GAME ═══════════ */
 
