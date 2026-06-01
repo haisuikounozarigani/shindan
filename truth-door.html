@@ -2256,7 +2256,7 @@
 
       const backBtn = document.getElementById('quizBackBtn');
       if (backBtn) {
-        backBtn.textContent = i === 0 ? '入口へ戻る' : 'ひとつ前の扉へ戻る';
+        backBtn.textContent = i === 0 ? '最初の画面へ戻る' : 'ひとつ前の扉へ戻る';
       }
 
       // Cards
@@ -2291,28 +2291,34 @@
     }
 
     function goBackQuestion() {
-      if (busy) return;
+  if (busy) return;
 
-      if (qIndex <= 0) {
-        busy = false;
-        saveDiagnosis('quiz');
-        showSection('intro');
-        return;
-      }
+  // 1問目で戻る場合は、プロローグではなく最初のヒーロー画面へ戻す
+  if (qIndex <= 0) {
+    qIndex = 0;
+    attrScores = {};
+    pickedDoors = [];
+    pickedAttrs = [];
+    busy = false;
 
-      const lastAttr = pickedAttrs.pop();
-      pickedDoors.pop();
+    clearDiagnosisSave();
+    showSection('hero');
+    return;
+  }
 
-      if (lastAttr && attrScores[lastAttr]) {
-        attrScores[lastAttr]--;
-        if (attrScores[lastAttr] <= 0) delete attrScores[lastAttr];
-      }
+  const lastAttr = pickedAttrs.pop();
+  pickedDoors.pop();
 
-      qIndex--;
-      busy = false;
-      saveDiagnosis('quiz');
-      renderQuestion(qIndex);
-    }
+  if (lastAttr && attrScores[lastAttr]) {
+    attrScores[lastAttr]--;
+    if (attrScores[lastAttr] <= 0) delete attrScores[lastAttr];
+  }
+
+  qIndex--;
+  busy = false;
+  saveDiagnosis('quiz');
+  renderQuestion(qIndex);
+}
 
     function pickDoor(doorId) {
       if (busy) return;
