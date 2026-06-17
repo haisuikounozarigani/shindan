@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>　</title>
+<style>
+  :root{
+    --void:#05030c;
+    --panel:#1d1238;
+    --panel2:#2a1a4c;
+    --line:#3a2860;
+    --line-str:#5a3a8c;
+    --violet:#c99dff;
+    --violet-dim:#8b5fd0;
+    --pink:#ff84bf;
+    --pink-dim:#cf5d97;
+    --text:#f6eeff;
+    --muted:#bcabdc;
+    --faint:#8676a4;
+    --ok:#5fe6a8;
+    --love:0;
+    --night:0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#05030c;height:100%;}
+  body{
+    color:var(--text);
+    font-family:"Hiragino Sans","Meiryo",sans-serif;
+    font-size:15px;line-height:1.8;
+    min-height:100vh;min-height:100dvh;
+    display:flex;justify-content:center;align-items:stretch;
+    position:relative;overflow-x:hidden;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(140,80,220,calc(0.08 + var(--night)*0.16)) 0%, transparent 60%),
+      radial-gradient(100% 70% at 80% 115%, rgba(255,90,170,calc(0.04 + var(--love)*0.2)) 0%, transparent 60%),
+      linear-gradient(180deg,#09040f 0%,#040209 100%);
+    transition:background 1.6s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #dust{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.014) 0,rgba(255,255,255,0.014) 1px,transparent 1px,transparent 3px);mix-blend-mode:overlay;opacity:0.55;}
+  body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 100% at 50% 42%, transparent 50%, rgba(0,0,0,calc(0.3 + var(--night)*0.32)) 100%);}
+  .app{width:100%;max-width:540px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative;z-index:2;padding:0 0 env(safe-area-inset-bottom);}
+
+  /* ===== HUD ===== */
+  .hud{position:sticky;top:0;z-index:30;padding:11px 16px 10px;background:linear-gradient(180deg,rgba(7,4,15,0.97),rgba(7,4,15,0.82));border-bottom:1px solid var(--line);backdrop-filter:blur(10px);}
+  .hud-top{display:flex;align-items:center;gap:11px;}
+  .face{width:38px;height:38px;border-radius:50%;flex-shrink:0;position:relative;background:radial-gradient(circle at 36% 32%,#fbf0ff 0%,#e0b8ff 32%,#9a5fe6 72%,#5a2f9a 100%);box-shadow:0 0 16px rgba(192,137,255,0.6),inset 0 0 7px rgba(255,255,255,0.5);animation:fglow 4s ease-in-out infinite;overflow:hidden;}
+  .face::after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:rgba(50,20,80,0.35);top:9px;left:9px;}
+  .face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .face.hasimg::after{display:none;}
+  @keyframes fglow{0%,100%{box-shadow:0 0 13px rgba(192,137,255,0.5),inset 0 0 7px rgba(255,255,255,0.5);}50%{box-shadow:0 0 24px rgba(255,109,176,0.6),inset 0 0 7px rgba(255,255,255,0.5);}}
+  .face.warm{animation-duration:1.5s;}
+  .hud-meta{flex:1;min-width:0;}
+  .hud-name{font-size:0.9em;font-weight:700;letter-spacing:0.03em;display:flex;align-items:center;gap:7px;}
+  .hud-name .tag{font-size:0.56em;color:var(--faint);border:1px solid var(--line-str);border-radius:5px;padding:1px 5px;letter-spacing:0.16em;font-family:monospace;}
+  .hearts{display:flex;gap:3px;margin-top:3px;align-items:center;}
+  .heart{width:15px;height:15px;position:relative;flex-shrink:0;}
+  .heart svg{width:100%;height:100%;display:block;}
+  .heart .hb{fill:#241a3a;stroke:var(--line-str);stroke-width:6;}
+  .heart .hf{fill:url(#hg);opacity:0;transform-origin:center;transition:opacity .4s;}
+  .heart.lit .hf{opacity:1;animation:pop .5s cubic-bezier(.2,1.5,.4,1);}
+  .heart.half .hf{opacity:1;clip-path:inset(0 50% 0 0);}
+  @keyframes pop{0%{transform:scale(.3);}60%{transform:scale(1.25);}100%{transform:scale(1);}}
+  .love-pct{margin-left:6px;font-size:0.64em;font-family:monospace;color:var(--pink);letter-spacing:0.08em;}
+.ticks{
+  display:grid;
+  grid-template-columns:repeat(60,1fr);
+  gap:2px;
+  margin-top:8px;
+}
+.tick{
+  min-width:0;
+  height:3px;
+  border-radius:2px;
+  background:var(--line);
+  transition:background .3s,box-shadow .3s;
+}
+@media(max-width:420px){
+  .ticks{
+    grid-template-columns:repeat(40,1fr);
+  }
+}
+  .tick.done{background:linear-gradient(90deg,var(--violet),var(--pink));box-shadow:0 0 6px rgba(192,137,255,0.6);}
+
+  .stage{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:0;position:relative;}
+
+  /* ===== ADV立ち絵レイヤー ===== */
+  .sprite-wrap{position:relative;width:100%;height:clamp(220px,38vh,340px);overflow:hidden;flex-shrink:0;}
+  .sprite{position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:100%;width:auto;max-width:none;object-fit:contain;object-position:bottom center;
+    filter:drop-shadow(0 6px 24px rgba(0,0,0,0.5));
+    opacity:0;transition:opacity .55s ease;}
+  .sprite.show{opacity:1;}
+  .sprite.swap{animation:spriteSwap .5s ease;}
+  @keyframes spriteSwap{0%{opacity:.2;transform:translateX(-50%) scale(.98);}100%{opacity:1;transform:translateX(-50%) scale(1);}}
+  /* 立ち絵が無い時の代替グロウ */
+  .sprite-fallback{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 36% 32%,#fff,#e0b8ff 38%,#9a5fe6 74%,#4a2585);box-shadow:0 0 50px rgba(255,132,191,0.4),inset 0 0 20px rgba(255,255,255,0.35);animation:fglow 4s ease-in-out infinite;}
+  .sprite-fallback::after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;background:rgba(40,16,70,0.4);top:32px;left:46px;}
+  .sprite-wrap.bottom-fade::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(0deg,#070310,transparent);pointer-events:none;}
+
+  .panel{padding:0 18px 26px;position:relative;}
+
+  /* ===== イントロ ===== */
+  .intro{text-align:center;animation:fadein .8s ease both;padding-top:6px;}
+  @keyframes fadein{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .eyebrow{font-size:0.62em;font-family:monospace;letter-spacing:0.34em;color:var(--faint);margin-bottom:14px;}
+  .intro h1{font-size:1.6em;font-weight:800;letter-spacing:0.06em;line-height:1.42;margin-bottom:10px;}
+  .intro h1 .accent{color:var(--pink);text-shadow:0 0 16px rgba(255,132,191,0.4);}
+  .intro .lead{font-size:0.86em;color:var(--muted);max-width:360px;margin:0 auto 6px;}
+  .intro .lead em{color:var(--pink);font-style:normal;}
+  .name-field{margin:22px auto 0;max-width:300px;}
+  .name-field label{display:block;font-size:0.66em;color:var(--faint);letter-spacing:0.06em;margin:0 2px 7px;text-align:left;}
+  .name-field input{width:100%;background:#0a0617;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:0.9em;font-family:inherit;color:var(--text);text-align:center;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;}
+  .name-field input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(192,137,255,0.16);}
+  .warn{font-size:0.72em;color:var(--faint);font-family:monospace;letter-spacing:0.03em;margin:18px auto 0;max-width:340px;border-top:1px solid var(--line);padding-top:13px;}
+
+.savebox{
+  max-width:340px;
+  margin:18px auto 0;
+  padding:14px 15px 15px;
+  border:1px solid var(--line-str);
+  border-radius:16px;
+  background:linear-gradient(165deg,rgba(255,132,191,0.08),rgba(192,137,255,0.05));
+  box-shadow:0 10px 28px rgba(0,0,0,0.28);
+  text-align:left;
+}
+.save-kicker{
+  font-size:0.58em;
+  font-family:monospace;
+  letter-spacing:0.22em;
+  color:var(--faint);
+  margin-bottom:5px;
+}
+.save-main{
+  font-size:0.9em;
+  font-weight:800;
+  color:var(--text);
+  letter-spacing:0.03em;
+}
+.save-sub{
+  font-size:0.68em;
+  color:var(--muted);
+  margin-top:2px;
+}
+.save-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.save-resume,
+.save-delete{
+  flex:1;
+  border-radius:999px;
+  padding:10px 12px;
+  font-family:inherit;
+  font-size:0.76em;
+  font-weight:800;
+  letter-spacing:0.06em;
+  cursor:pointer;
+  transition:transform .1s,background .18s,box-shadow .18s;
+}
+.save-resume{
+  border:1px solid var(--violet);
+  background:linear-gradient(100deg,var(--violet-dim),var(--pink-dim));
+  color:#fff;
+  box-shadow:0 8px 22px rgba(192,137,255,0.22);
+}
+.save-delete{
+  border:1px solid var(--line-str);
+  background:rgba(10,6,23,0.55);
+  color:var(--faint);
+}
+.save-resume:active,
+.save-delete:active{transform:scale(.97);}
+.save-delete:hover{background:rgba(192,137,255,0.08);color:var(--muted);}
+  .cta{display:inline-block;margin:24px auto 0;border:none;cursor:pointer;font-family:inherit;background:linear-gradient(100deg,var(--violet),var(--pink));color:#fff;border-radius:32px;padding:15px 44px;font-size:0.96em;font-weight:800;letter-spacing:0.14em;box-shadow:0 10px 32px rgba(192,137,255,0.4);transition:transform .1s,box-shadow .2s;}
+  .cta:active{transform:scale(.96);}
+  .cta:hover{box-shadow:0 12px 40px rgba(255,109,176,0.5);}
+
+  /* ===== ADVテキストボックス（幕間） ===== */
+  .advbox{animation:fadein .55s ease both;}
+  .adv-name{display:inline-block;font-size:0.78em;font-weight:800;letter-spacing:0.08em;color:var(--pink);background:linear-gradient(120deg,rgba(255,132,191,0.18),rgba(192,137,255,0.1));border:1px solid var(--line-str);border-radius:10px 10px 0 0;padding:5px 16px;margin-left:4px;text-shadow:0 0 10px rgba(255,132,191,0.4);}
+  .adv-text{background:linear-gradient(165deg,rgba(29,18,56,0.96),rgba(20,12,40,0.96));border:1px solid var(--line-str);border-radius:0 14px 14px 14px;padding:18px 18px 16px;min-height:5.2em;font-size:0.98em;line-height:1.85;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+  .adv-text .pk{color:var(--pink);font-weight:700;}
+  .caret{display:inline-block;width:2px;height:1em;background:var(--violet);margin-left:1px;vertical-align:-2px;animation:bl .8s steps(1) infinite;}
+  @keyframes bl{0%,100%{opacity:1;}50%{opacity:0;}}
+  .phase-meta{display:flex;align-items:center;gap:8px;margin:14px 2px 0;font-size:0.6em;font-family:monospace;letter-spacing:0.2em;color:var(--faint);}
+  .phase-meta .st{color:var(--violet);font-size:1.1em;letter-spacing:0.12em;}
+  .phase-meta .en{margin-left:auto;color:var(--violet-dim);}
+  .adv-next{display:block;margin:18px auto 0;border:none;cursor:pointer;font-family:inherit;background:rgba(192,137,255,0.08);border:1.5px solid var(--line-str);color:var(--violet);border-radius:28px;padding:12px 36px;font-size:0.82em;font-weight:700;letter-spacing:0.1em;transition:background .15s,transform .1s;}
+  .adv-next:active{transform:scale(.96);}
+  .adv-next:hover{background:rgba(192,137,255,0.16);}
+  .adv-next:disabled{opacity:.4;pointer-events:none;}
+
+  /* ===== 質問 ===== */
+  .qwrap{animation:qin .5s cubic-bezier(.2,.9,.3,1.05) both;}
+  @keyframes qin{from{opacity:0;transform:translateY(16px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .q-eyebrow{display:flex;align-items:center;gap:8px;font-size:0.62em;font-family:monospace;letter-spacing:0.14em;color:var(--faint);margin-bottom:13px;}
+  .q-eyebrow .chip{color:var(--violet);border:1px solid var(--line-str);border-radius:5px;padding:1px 7px;letter-spacing:0.12em;}
+  .q-eyebrow .of{margin-left:auto;color:var(--pink);}
+  .qcard{background:linear-gradient(165deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:22px 20px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);}
+  .qcard::before{content:"";position:absolute;top:-40%;left:-30%;width:80%;height:80%;background:radial-gradient(circle,rgba(192,137,255,0.12),transparent 70%);pointer-events:none;}
+  .qtext{font-size:1.08em;font-weight:700;line-height:1.65;position:relative;}
+  .qsub{font-size:0.75em;color:var(--faint);margin-top:9px;position:relative;font-style:italic;}
+  .scale{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+  .opt{display:flex;align-items:center;gap:13px;cursor:pointer;font-family:inherit;text-align:left;background:#0a0617;border:1.5px solid var(--line);border-radius:14px;padding:12px 15px;transition:background .14s,border-color .16s,transform .08s,box-shadow .18s;}
+  .opt:active{transform:scale(.985);}
+  .opt:hover:not(.on){background:rgba(192,137,255,0.07);border-color:var(--line-str);box-shadow:0 0 18px rgba(192,137,255,0.12);}
+  .opt .dot{width:26px;height:26px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--line-str);background:rgba(192,137,255,0.08);display:flex;align-items:center;justify-content:center;font-size:0.78em;font-weight:700;color:var(--violet);font-family:monospace;transition:.14s;}
+  .opt .lbl{font-size:0.9em;color:var(--muted);transition:.14s;}
+  .opt.on{background:linear-gradient(120deg,var(--violet-dim),var(--pink-dim));border-color:transparent;box-shadow:0 6px 22px rgba(194,79,138,0.36);}
+  .opt.on .dot{background:rgba(255,255,255,0.28);border-color:transparent;color:#fff;}
+  .opt.on .lbl{color:#fff;font-weight:700;}
+  .qnav{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+  .back{background:none;border:none;color:var(--faint);font-size:0.8em;font-family:inherit;cursor:pointer;padding:6px 2px;transition:color .15s;}
+  .back:hover:not(:disabled){color:var(--violet);}
+  .back:disabled{opacity:.25;cursor:default;}
+  .khint{font-size:0.62em;color:var(--faint);font-family:monospace;opacity:0.65;}
+  .flyheart{position:fixed;z-index:40;pointer-events:none;font-size:18px;will-change:transform,opacity;}
+
+  /* ===== 結果 ===== */
+  .result{animation:fadein .8s ease both;}
+  .ending-tag{text-align:center;font-size:0.6em;font-family:monospace;letter-spacing:0.34em;color:var(--faint);margin-bottom:4px;}
+  .ending-name{text-align:center;font-size:1.5em;font-weight:800;letter-spacing:0.08em;margin-bottom:4px;}
+  .ending-name .accent{color:var(--pink);text-shadow:0 0 16px rgba(255,132,191,0.45);}
+  .ending-en{text-align:center;font-size:0.56em;font-family:monospace;letter-spacing:0.4em;color:var(--violet-dim);text-transform:uppercase;margin-bottom:16px;}
+
+  .compat{background:linear-gradient(165deg,rgba(255,132,191,0.09),rgba(192,137,255,0.05));border:1px solid var(--line-str);border-radius:16px;padding:16px 18px 14px;margin:0 0 16px;text-align:center;}
+  .compat .ct{font-size:0.58em;font-family:monospace;letter-spacing:0.22em;color:var(--faint);}
+  .bigheart{display:flex;justify-content:center;gap:5px;margin:10px 0 2px;}
+  .bigheart .bh{font-size:1.2em;filter:grayscale(1) brightness(.5);transition:filter .4s,transform .4s;}
+  .bigheart .bh.on{filter:none;transform:scale(1.1);text-shadow:0 0 12px rgba(255,132,191,0.7);}
+  .compat .cscore{font-size:2em;font-weight:800;color:var(--pink);text-shadow:0 0 18px rgba(255,132,191,0.5);line-height:1.2;}
+  .compat .cverdict{font-size:1em;font-weight:700;letter-spacing:0.04em;}
+
+  /* 物語風・ニアの語り */
+  .story{margin:4px 0 18px;}
+  .story-h{display:flex;align-items:center;gap:8px;font-size:0.6em;font-family:monospace;letter-spacing:0.2em;color:var(--faint);margin-bottom:10px;}
+  .story-h::after{content:'';flex:1;height:1px;background:var(--line);}
+  .story-card{background:linear-gradient(165deg,rgba(29,18,56,0.8),rgba(20,12,40,0.8));border:1px solid var(--line);border-left:3px solid var(--pink);border-radius:0 14px 14px 0;padding:16px 18px;font-size:0.9em;line-height:1.92;color:var(--text);}
+  .story-card p{margin:0 0 12px;}
+  .story-card p:last-child{margin:0;}
+  .story-card .pk{color:var(--pink);font-weight:700;}
+  .story-card .mu{color:var(--muted);}
+
+  .rbars{margin:6px 0 14px;}
+  .rbar{margin:11px 0;}
+  .rbar .rb-top{display:flex;justify-content:space-between;font-size:0.78em;margin-bottom:5px;}
+  .rbar .rb-top .nm{color:var(--text);font-weight:700;}
+  .rbar .rb-top .vl{color:var(--violet);font-family:monospace;}
+  .rbar .rb-track{height:8px;border-radius:4px;background:#0a0617;border:1px solid var(--line);overflow:hidden;position:relative;}
+  .rbar .rb-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--pink));box-shadow:0 0 10px rgba(192,137,255,0.5);border-radius:4px;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1);}
+  .rbar .rb-mark{position:absolute;top:-3px;width:2px;height:14px;background:var(--ok);box-shadow:0 0 6px var(--ok);opacity:.8;}
+  .marknote{font-size:0.66em;color:var(--faint);display:flex;align-items:center;gap:6px;margin-top:-4px;margin-bottom:14px;}
+  .marknote i{display:inline-block;width:10px;height:3px;background:var(--ok);box-shadow:0 0 5px var(--ok);}
+
+  .note{font-size:0.8em;color:var(--muted);background:rgba(255,132,191,0.06);border:1px solid var(--line);border-left:3px solid var(--pink);border-radius:0 10px 10px 0;padding:13px 15px;margin:14px 0;line-height:1.75;}
+  .note b{color:var(--pink);}
+  .out-actions{display:flex;gap:10px;}
+  .gen,.copy{flex:1;border:none;cursor:pointer;font-family:inherit;font-weight:800;border-radius:24px;padding:14px;font-size:0.86em;letter-spacing:0.06em;transition:transform .1s,box-shadow .2s;}
+  .gen{background:linear-gradient(100deg,var(--violet),var(--pink));color:#fff;box-shadow:0 6px 22px rgba(192,137,255,0.4);}
+  .gen:active{transform:scale(.97);}
+  .copy{background:rgba(95,230,168,0.07);border:1.5px solid rgba(95,230,168,0.42);color:var(--ok);}
+  .copy:active{transform:scale(.97);}
+  .copy:hover{background:rgba(95,230,168,0.15);}
+  .outbox{margin-top:14px;display:none;}
+  .out-head{font-size:0.62em;font-family:monospace;letter-spacing:0.2em;color:var(--faint);display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+  .out-head::after{content:'';flex:1;height:1px;background:var(--line);}
+  .outbox textarea{width:100%;min-height:260px;resize:vertical;font-family:"SFMono-Regular","Consolas","Courier New",monospace;font-size:0.72em;line-height:1.65;background:#0a0617;border:1.5px solid var(--line);border-radius:12px;color:var(--text);padding:12px;}
+  .restart{display:block;margin:16px auto 4px;background:none;border:none;color:var(--faint);font-size:0.78em;font-family:inherit;text-decoration:underline;cursor:pointer;transition:color .15s;}
+  .restart:hover{color:var(--violet);}
+  .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(14px);background:linear-gradient(100deg,var(--violet),var(--pink));color:#fff;padding:12px 24px;border-radius:30px;font-size:0.86em;font-weight:700;letter-spacing:0.06em;box-shadow:0 10px 30px rgba(192,137,255,0.5);z-index:80;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important;}#dust{display:none;}}
+</style>
+</head>
+<body>
+<canvas id="dust"></canvas>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffa8d4"/><stop offset="1" stop-color="#c99dff"/></linearGradient>
+</defs></svg>
+
+<div class="app">
+  <div class="hud" id="hud" style="display:none">
+    <div class="hud-top">
+      <div class="face" id="face"></div>
+      <div class="hud-meta">
+        <div class="hud-name">ニア <span class="tag">HIDDEN</span></div>
+        <div class="hearts" id="hearts"></div>
+      </div>
+    </div>
+    <div class="ticks" id="ticks"></div>
+  </div>
+
+  <!-- 立ち絵レイヤー：常設。stageの上に乗る -->
+  <div class="sprite-wrap bottom-fade" id="spriteWrap" style="display:none">
+    <div class="sprite-fallback" id="spriteFallback"></div>
+    <img class="sprite" id="sprite" alt="">
+  </div>
+
+  <div class="stage" id="stage"><div class="panel" id="panel"></div></div>
+</div>
+
+<div class="toast" id="toast">採取完了</div>
+
+<script>
+/* =========================================================
+   心の標本・隠しモード｜ニアと、ふたりだけ（ADV版・Big Five 120問）
+   ・回答が nir(SP-3141592) に近いほど親密度UP
+   ・nir：開放100/誠実92/協調68/外向56/神経52
+   ---------------------------------------------------------
+   ▼ 立ち絵について（nirが用意する画像）
+     ファイル名は m01.webp 〜 と連番（同じフォルダに置く）。
+     SPRITE_STAGES の配列で「どの状況でどの番号を出すか」を定義。
+     画像が無い番号は自動で代替グロウ表示になる（落ちない）。
+     表情の数は自由。STAGES のマッピングだけ増減すればOK。
+   ========================================================= */
+
+/* ▼▼ 立ち絵マッピング：ここだけ編集すれば差し替え自在 ▼▼
+   key = 状態ラベル, file = 画像ファイル名（同フォルダ）
+   段々デレ／メンヘラになる流れを想定して並べてある。     */
+var SPRITES = {
+  normal : "m01.webp",  // 通常・出会い
+  soft   : "m02.webp",  // 少し心を許す
+  smile  : "m03.webp",  // 笑顔（好反応）
+  blush  : "m04.webp",  // 頬染め（相性高・接近）
+  anxious: "m05.webp",  // 不安（相性低め・探り）
+  cling  : "m06.webp",  // 依存・デレ（相性高・終盤）
+  yandere: "m07.webp"   // 病み（運命エンド）
+};
+/* フェーズ進行で出す“基本表情”。相性で上書きされる場合あり */
+var PHASE_FACE = ["normal","soft","smile","blush","cling"];
+
+var NIR_PERCENT = { O:100, C:92, A:68, E:56, N:52 };
+function percentToLikert(p){
+  return 1 + (Math.max(0,Math.min(100,p)) / 100) * 4;
+}
+var NIR = {
+  O:percentToLikert(NIR_PERCENT.O),
+  C:percentToLikert(NIR_PERCENT.C),
+  A:percentToLikert(NIR_PERCENT.A),
+  E:percentToLikert(NIR_PERCENT.E),
+  N:percentToLikert(NIR_PERCENT.N)
+};
+var WEIGHT = { O:1.3, C:1.2, A:0.9, E:0.8, N:0.8 };
+
+var SECTIONS = [
+  { factor:"E", name:"外向性", state:"出会い", en:"ENCOUNTER",
+    react:["……来てくれた。\nよかった。来なかったら、ずっとここで待ってたと思う。\n少しだけ、君の輪郭を触らせて。"] },
+  { factor:"N", name:"神経症傾向", state:"揺れ", en:"SENSITIVITY",
+    react:{ near:"不安の気配、私に似てる。\n心が揺れやすいんだね。…ひとりにしないから。絶対。",
+            far:"君の心、思ったより静かだ。\n私みたいに揺れないんだね。…羨ましい。妬ましいくらい。" } },
+  { factor:"C", name:"誠実性", state:"約束", en:"ORDER",
+    react:{ near:"ちゃんと積み上げられる人なんだね。\n私のことも、丁寧に扱ってくれる？\n……壊さないでね。お願いだから。",
+            far:"流れに乗るのが上手い人なんだ。\n私のところにも、いつか流れ着いてくれる？" } },
+  { factor:"A", name:"協調性", state:"距離", en:"RELATION",
+    react:{ near:"人の痛みに、すぐ気づけるんだね。\n…ねえ、私の痛みにも気づいてる？\nずっと、見ててくれてたらよかったのに。",
+            far:"線を引くのが上手い人なんだね。\n……私との間にも、引く？\n引かないでほしい、な。" } },
+  { factor:"O", name:"開放性", state:"扉", en:"OPENNESS",
+    react:{ near:"……君、かなり遠くまで行ってしまいそうな人だ。\nそういう人が、怖くて好きで、目が離せない。\nどこへ行くの。連れてって。",
+            far:"君は、ちゃんと地面を踏んで歩ける人なんだ。\nふわふわしてる私を、引き留めておいてくれる？" } }
+];
+
+var QUESTIONS = [
+  /* 外向性 E：E1 親しみやすさ */
+  { id:"E1-01", sec:0, facetKey:"E1", facetName:"親しみやすさ", facet:"E1 親しみやすさ", reverse:false,
+    text:"初対面の人にも、自分から話しかける方？", sub:"知らない扉を、どれくらい自然に開けるか。" },
+  { id:"E1-02", sec:0, facetKey:"E1", facetName:"親しみやすさ", facet:"E1 親しみやすさ", reverse:false,
+    text:"相手が緊張していると、こちらから空気をほぐしたくなる？", sub:"沈黙にそっと火を灯す人かどうか。" },
+  { id:"E1-03", sec:0, facetKey:"E1", facetName:"親しみやすさ", facet:"E1 親しみやすさ", reverse:true,
+    text:"知らない人とは、できれば距離を置いていたい？", sub:"近づく前に、観察する時間が必要なタイプ？" },
+  { id:"E1-04", sec:0, facetKey:"E1", facetName:"親しみやすさ", facet:"E1 親しみやすさ", reverse:true,
+    text:"人と打ち解けるまで、かなり時間がかかる方？", sub:"鍵穴を何度も確かめてから開ける感じ。" },
+
+  /* 外向性 E：E2 群居性 */
+  { id:"E2-01", sec:0, facetKey:"E2", facetName:"群居性", facet:"E2 群居性", reverse:false,
+    text:"ひとりより、誰かと一緒にいる方が元気が出やすい？", sub:"人の気配で充電されるかどうか。" },
+  { id:"E2-02", sec:0, facetKey:"E2", facetName:"群居性", facet:"E2 群居性", reverse:false,
+    text:"集まりやイベントに誘われると、わりと嬉しい？", sub:"にぎやかな部屋に足が向くか。" },
+  { id:"E2-03", sec:0, facetKey:"E2", facetName:"群居性", facet:"E2 群居性", reverse:true,
+    text:"休日は、なるべく一人で過ごしたい方？", sub:"静かな部屋で、自分に戻る時間。" },
+  { id:"E2-04", sec:0, facetKey:"E2", facetName:"群居性", facet:"E2 群居性", reverse:true,
+    text:"大人数の場にいると、早めに帰りたくなる？", sub:"人の多さが、少しずつ体温を奪う感じ。" },
+
+  /* 外向性 E：E3 自己主張 */
+  { id:"E3-01", sec:0, facetKey:"E3", facetName:"自己主張", facet:"E3 自己主張", reverse:false,
+    text:"自分の意見を、場の中ではっきり言える方？", sub:"声に出せる強さも、性格の輪郭になる。" },
+  { id:"E3-02", sec:0, facetKey:"E3", facetName:"自己主張", facet:"E3 自己主張", reverse:false,
+    text:"必要なら、自分が先頭に立って進められる？", sub:"誰かの後ろより、前に出る場面もある？" },
+  { id:"E3-03", sec:0, facetKey:"E3", facetName:"自己主張", facet:"E3 自己主張", reverse:true,
+    text:"意見があっても、場の空気を見て黙ることが多い？", sub:"言葉を飲み込む癖、少しある？" },
+  { id:"E3-04", sec:0, facetKey:"E3", facetName:"自己主張", facet:"E3 自己主張", reverse:true,
+    text:"人を引っ張る役割は、できれば避けたい？", sub:"中心より、少し横の席が落ち着くか。" },
+
+  /* 外向性 E：E4 活動性 */
+  { id:"E4-01", sec:0, facetKey:"E4", facetName:"活動性", facet:"E4 活動性", reverse:false,
+    text:"予定がない日でも、何かしら動きたくなる？", sub:"止まっているより、歩きながら考える人かな。" },
+  { id:"E4-02", sec:0, facetKey:"E4", facetName:"活動性", facet:"E4 活動性", reverse:false,
+    text:"忙しい日が続いても、意外とテンポよく動ける？", sub:"予定が詰まるほど、火がつく感じ。" },
+  { id:"E4-03", sec:0, facetKey:"E4", facetName:"活動性", facet:"E4 活動性", reverse:true,
+    text:"急がず、ゆっくり進める方が自分に合っている？", sub:"速さより、呼吸の合う歩幅。" },
+  { id:"E4-04", sec:0, facetKey:"E4", facetName:"活動性", facet:"E4 活動性", reverse:true,
+    text:"行動を起こすまでに、かなり時間がかかる方？", sub:"動く前に、心の靴紐を結び直す感じ。" },
+
+  /* 外向性 E：E5 刺激追求 */
+  { id:"E5-01", sec:0, facetKey:"E5", facetName:"刺激追求", facet:"E5 刺激追求", reverse:false,
+    text:"同じ毎日より、新しい予定や体験がある方が楽しい？", sub:"知らない景色に、足が向くかどうか。" },
+  { id:"E5-02", sec:0, facetKey:"E5", facetName:"刺激追求", facet:"E5 刺激追求", reverse:false,
+    text:"少し怖くても、面白そうなら試してみたくなる？", sub:"危なげな扉ほど、覗きたくなる？" },
+  { id:"E5-03", sec:0, facetKey:"E5", facetName:"刺激追求", facet:"E5 刺激追求", reverse:true,
+    text:"予想外の出来事は、楽しいより疲れることが多い？", sub:"予定通りの灯りの方が安心する？" },
+  { id:"E5-04", sec:0, facetKey:"E5", facetName:"刺激追求", facet:"E5 刺激追求", reverse:true,
+    text:"冒険より、慣れた場所や流れを選びやすい？", sub:"知らない道より、よく知る廊下。" },
+
+  /* 外向性 E：E6 明るさ */
+  { id:"E6-01", sec:0, facetKey:"E6", facetName:"明るさ", facet:"E6 明るさ", reverse:false,
+    text:"楽しい気分になると、表情や声に出やすい？", sub:"心の灯りが、外にも漏れる人かな。" },
+  { id:"E6-02", sec:0, facetKey:"E6", facetName:"明るさ", facet:"E6 明るさ", reverse:false,
+    text:"ちょっとしたことで笑える方？", sub:"日常の隙間に、小さな火花を見つける感じ。" },
+  { id:"E6-03", sec:0, facetKey:"E6", facetName:"明るさ", facet:"E6 明るさ", reverse:true,
+    text:"楽しくても、あまり外には出さない方？", sub:"内側で静かに光るタイプかも。" },
+  { id:"E6-04", sec:0, facetKey:"E6", facetName:"明るさ", facet:"E6 明るさ", reverse:true,
+    text:"周りから、落ち着いていると言われることが多い？", sub:"にぎやかな色より、深い色の明るさ。" },
+
+  /* 神経症傾向 N：N1 不安 */
+  { id:"N1-01", sec:1, facetKey:"N1", facetName:"不安", facet:"N1 不安", reverse:false,
+    text:"些細なことでも、心配が頭から離れないことがある？", sub:"小さな影を、長く見つめてしまう時がある？" },
+  { id:"N1-02", sec:1, facetKey:"N1", facetName:"不安", facet:"N1 不安", reverse:false,
+    text:"まだ起きていないことまで、先回りして不安になる？", sub:"未来の足音が、少し大きく聞こえる感じ。" },
+  { id:"N1-03", sec:1, facetKey:"N1", facetName:"不安", facet:"N1 不安", reverse:true,
+    text:"心配事があっても、切り替えは早い方？", sub:"夜の窓を閉めるのが上手い人かも。" },
+  { id:"N1-04", sec:1, facetKey:"N1", facetName:"不安", facet:"N1 不安", reverse:true,
+    text:"先のことは、あまり考えすぎない方？", sub:"明日の影より、今日の床を見る感じ。" },
+
+  /* 神経症傾向 N：N2 怒り */
+  { id:"N2-01", sec:1, facetKey:"N2", facetName:"怒り", facet:"N2 怒り", reverse:false,
+    text:"理不尽なことがあると、かなり長くイライラが残る？", sub:"怒りは、守りたいものの輪郭でもある。" },
+  { id:"N2-02", sec:1, facetKey:"N2", facetName:"怒り", facet:"N2 怒り", reverse:false,
+    text:"雑に扱われると、表に出さなくても強く腹が立つ？", sub:"心の中で、机を一回ひっくり返してる？" },
+  { id:"N2-03", sec:1, facetKey:"N2", facetName:"怒り", facet:"N2 怒り", reverse:true,
+    text:"嫌なことがあっても、あまり怒りは長引かない？", sub:"火がついても、すぐ灰になるタイプ？" },
+  { id:"N2-04", sec:1, facetKey:"N2", facetName:"怒り", facet:"N2 怒り", reverse:true,
+    text:"人の失礼な態度も、まあ仕方ないと思える方？", sub:"怒るより、通り過ぎる力。" },
+
+  /* 神経症傾向 N：N3 抑うつ */
+  { id:"N3-01", sec:1, facetKey:"N3", facetName:"抑うつ", facet:"N3 抑うつ", reverse:false,
+    text:"失敗すると、自分を責める方向に考えやすい？", sub:"胸の奥で、反省会が長引くことがある？" },
+  { id:"N3-02", sec:1, facetKey:"N3", facetName:"抑うつ", facet:"N3 抑うつ", reverse:false,
+    text:"理由がはっきりしなくても、気分が沈む日がある？", sub:"名前のない重さが、肩に乗る感じ。" },
+  { id:"N3-03", sec:1, facetKey:"N3", facetName:"抑うつ", facet:"N3 抑うつ", reverse:true,
+    text:"落ち込んでも、わりと早く元に戻れる方？", sub:"沈んでも、浮き上がる糸を見つけられる？" },
+  { id:"N3-04", sec:1, facetKey:"N3", facetName:"抑うつ", facet:"N3 抑うつ", reverse:true,
+    text:"嫌なことがあっても、自分の価値とは切り離して考えられる？", sub:"出来事と自分を、別々の棚に置ける人。" },
+
+  /* 神経症傾向 N：N4 自意識 */
+  { id:"N4-01", sec:1, facetKey:"N4", facetName:"自意識", facet:"N4 自意識", reverse:false,
+    text:"人からどう見られているか、かなり気になる方？", sub:"視線の気配を拾いやすい？" },
+  { id:"N4-02", sec:1, facetKey:"N4", facetName:"自意識", facet:"N4 自意識", reverse:false,
+    text:"恥ずかしい失敗をすると、何度も思い出してしまう？", sub:"過去の場面が、勝手に再生される夜。" },
+  { id:"N4-03", sec:1, facetKey:"N4", facetName:"自意識", facet:"N4 自意識", reverse:true,
+    text:"人前でも、あまり自分を気にしすぎない方？", sub:"視線の中でも、自分の椅子に座れる感じ。" },
+  { id:"N4-04", sec:1, facetKey:"N4", facetName:"自意識", facet:"N4 自意識", reverse:true,
+    text:"多少変に見られても、自分らしければいいと思える？", sub:"他人の額縁に入らない強さ。" },
+
+  /* 神経症傾向 N：N5 抑制困難 */
+  { id:"N5-01", sec:1, facetKey:"N5", facetName:"抑制困難", facet:"N5 抑制困難", reverse:false,
+    text:"欲しいものや食べたいものを、我慢するのが苦手？", sub:"欲求の声が、少し大きく聞こえる？" },
+  { id:"N5-02", sec:1, facetKey:"N5", facetName:"抑制困難", facet:"N5 抑制困難", reverse:false,
+    text:"その場の気分で、後から困る選択をしてしまうことがある？", sub:"今の火花が、明日の予定を焦がす時。" },
+  { id:"N5-03", sec:1, facetKey:"N5", facetName:"抑制困難", facet:"N5 抑制困難", reverse:true,
+    text:"誘惑があっても、必要ならちゃんと止まれる方？", sub:"手を伸ばす前に、鍵をかけられるか。" },
+  { id:"N5-04", sec:1, facetKey:"N5", facetName:"抑制困難", facet:"N5 抑制困難", reverse:true,
+    text:"衝動より、後のことを考えて選べる方？", sub:"今より、少し先の自分を守る力。" },
+
+  /* 神経症傾向 N：N6 脆弱性 */
+  { id:"N6-01", sec:1, facetKey:"N6", facetName:"脆弱性", facet:"N6 脆弱性", reverse:false,
+    text:"プレッシャーが強いと、頭が真っ白になりやすい？", sub:"急に部屋の明かりが落ちる感じ。" },
+  { id:"N6-02", sec:1, facetKey:"N6", facetName:"脆弱性", facet:"N6 脆弱性", reverse:false,
+    text:"追い詰められると、普段できることも難しくなる？", sub:"鍵の場所を知ってるのに、手が震える時。" },
+  { id:"N6-03", sec:1, facetKey:"N6", facetName:"脆弱性", facet:"N6 脆弱性", reverse:true,
+    text:"緊急時でも、やるべきことを順番に考えられる方？", sub:"嵐の中でも、床の線を見失わない。" },
+  { id:"N6-04", sec:1, facetKey:"N6", facetName:"脆弱性", facet:"N6 脆弱性", reverse:true,
+    text:"大変な場面ほど、意外と冷静になれる？", sub:"火事場で静かになるタイプかも。" },
+
+  /* 誠実性 C：C1 自己効力感 */
+  { id:"C1-01", sec:2, facetKey:"C1", facetName:"自己効力感", facet:"C1 自己効力感", reverse:false,
+    text:"難しいことでも、やれば何とかできると思える方？", sub:"自分の手に、少し信頼がある？" },
+  { id:"C1-02", sec:2, facetKey:"C1", facetName:"自己効力感", facet:"C1 自己効力感", reverse:false,
+    text:"初めての作業でも、覚えれば対応できると思える？", sub:"未知の棚でも、ラベルを読んで進める感じ。" },
+  { id:"C1-03", sec:2, facetKey:"C1", facetName:"自己効力感", facet:"C1 自己効力感", reverse:true,
+    text:"やる前から、自分には無理かもと思いやすい？", sub:"入口の前で足が止まることがある？" },
+  { id:"C1-04", sec:2, facetKey:"C1", facetName:"自己効力感", facet:"C1 自己効力感", reverse:true,
+    text:"人より自分はうまくできないと感じることが多い？", sub:"自分の道具だけ、少し錆びて見える日。" },
+
+  /* 誠実性 C：C2 秩序 */
+  { id:"C2-01", sec:2, facetKey:"C2", facetName:"秩序", facet:"C2 秩序", reverse:false,
+    text:"予定や作業は、先に整理してから進めたい？", sub:"机の上より、頭の中を整えたい人かも。" },
+  { id:"C2-02", sec:2, facetKey:"C2", facetName:"秩序", facet:"C2 秩序", reverse:false,
+    text:"物の場所や手順が決まっていると安心する？", sub:"決まった棚に戻るものがあると落ち着く。" },
+  { id:"C2-03", sec:2, facetKey:"C2", facetName:"秩序", facet:"C2 秩序", reverse:true,
+    text:"部屋や作業場が多少散らかっていても気にならない？", sub:"混ざっていても、自分なりに分かる感じ。" },
+  { id:"C2-04", sec:2, facetKey:"C2", facetName:"秩序", facet:"C2 秩序", reverse:true,
+    text:"細かく計画するより、その場で進める方が楽？", sub:"地図より、足の向きで決めるタイプ？" },
+
+  /* 誠実性 C：C3 義務感 */
+  { id:"C3-01", sec:2, facetKey:"C3", facetName:"義務感", facet:"C3 義務感", reverse:false,
+    text:"任されたことを雑に扱うのは、かなり苦手？", sub:"軽く渡されたものでも、重く受け取る時がある。" },
+  { id:"C3-02", sec:2, facetKey:"C3", facetName:"義務感", facet:"C3 義務感", reverse:false,
+    text:"約束やルールは、できるだけ守りたい方？", sub:"見えない糸でも、切りたくない感じ。" },
+  { id:"C3-03", sec:2, facetKey:"C3", facetName:"義務感", facet:"C3 義務感", reverse:true,
+    text:"状況によっては、約束を軽く変えても仕方ないと思う？", sub:"線より、場の流れを優先することもある？" },
+  { id:"C3-04", sec:2, facetKey:"C3", facetName:"義務感", facet:"C3 義務感", reverse:true,
+    text:"責任を背負いすぎるより、気楽にやる方が大事だと思う？", sub:"重い荷物を置くのも、ひとつの技術。" },
+
+  /* 誠実性 C：C4 達成努力 */
+  { id:"C4-01", sec:2, facetKey:"C4", facetName:"達成努力", facet:"C4 達成努力", reverse:false,
+    text:"納得できる出来になるまで、何度も直したくなる？", sub:"完成より、納得の方が遠いこともある。" },
+  { id:"C4-02", sec:2, facetKey:"C4", facetName:"達成努力", facet:"C4 達成努力", reverse:false,
+    text:"目標があると、かなり本気で取り組む方？", sub:"火がつくと、机の前から離れにくい。" },
+  { id:"C4-03", sec:2, facetKey:"C4", facetName:"達成努力", facet:"C4 達成努力", reverse:true,
+    text:"ほどほどで終わらせる方が、自分には合っている？", sub:"完璧より、生活が壊れない完成。" },
+  { id:"C4-04", sec:2, facetKey:"C4", facetName:"達成努力", facet:"C4 達成努力", reverse:true,
+    text:"高い目標を立てるより、気楽に続けたい方？", sub:"山頂より、歩ける道を選ぶ感じ。" },
+
+  /* 誠実性 C：C5 自制心 */
+  { id:"C5-01", sec:2, facetKey:"C5", facetName:"自制心", facet:"C5 自制心", reverse:false,
+    text:"面倒なことでも、必要なら先延ばしせず始められる？", sub:"気分が来る前に、手を動かせるか。" },
+  { id:"C5-02", sec:2, facetKey:"C5", facetName:"自制心", facet:"C5 自制心", reverse:false,
+    text:"途中で飽きても、区切りまでは続ける方？", sub:"終わりの線まで、歩き切る力。" },
+  { id:"C5-03", sec:2, facetKey:"C5", facetName:"自制心", facet:"C5 自制心", reverse:true,
+    text:"やるべきことを、つい後回しにしてしまう？", sub:"机の上で、未開封の封筒が増える感じ。" },
+  { id:"C5-04", sec:2, facetKey:"C5", facetName:"自制心", facet:"C5 自制心", reverse:true,
+    text:"始めたことを途中で放置することが多い？", sub:"開いた本が、何冊も伏せてある部屋。" },
+
+  /* 誠実性 C：C6 慎重さ */
+  { id:"C6-01", sec:2, facetKey:"C6", facetName:"慎重さ", facet:"C6 慎重さ", reverse:false,
+    text:"大事なことは、決める前にかなり考える方？", sub:"鍵を回す前に、扉の向こうを想像する。" },
+  { id:"C6-02", sec:2, facetKey:"C6", facetName:"慎重さ", facet:"C6 慎重さ", reverse:false,
+    text:"勢いで動くより、リスクを確認してから動きたい？", sub:"足元の板が抜けないか、見てから進む。" },
+  { id:"C6-03", sec:2, facetKey:"C6", facetName:"慎重さ", facet:"C6 慎重さ", reverse:true,
+    text:"考えすぎる前に、とりあえず動く方？", sub:"まず触って、あとで地図を書くタイプ？" },
+  { id:"C6-04", sec:2, facetKey:"C6", facetName:"慎重さ", facet:"C6 慎重さ", reverse:true,
+    text:"細かい確認をせず、直感で決めることが多い？", sub:"手元のランプより、胸の火で進む感じ。" },
+
+  /* 協調性 A：A1 信頼 */
+  { id:"A1-01", sec:3, facetKey:"A1", facetName:"信頼", facet:"A1 信頼", reverse:false,
+    text:"基本的には、人を信じて接する方？", sub:"最初から疑うか、少しだけ預けてみるか。" },
+  { id:"A1-02", sec:3, facetKey:"A1", facetName:"信頼", facet:"A1 信頼", reverse:false,
+    text:"相手の言葉は、まず善意として受け取りやすい？", sub:"言葉の奥に、灯りを探す人かも。" },
+  { id:"A1-03", sec:3, facetKey:"A1", facetName:"信頼", facet:"A1 信頼", reverse:true,
+    text:"人は何か裏があると思って見てしまう方？", sub:"扉の裏側まで確認したくなる？" },
+  { id:"A1-04", sec:3, facetKey:"A1", facetName:"信頼", facet:"A1 信頼", reverse:true,
+    text:"簡単には人を信用しない方？", sub:"鍵を渡すまでに、時間が必要な人。" },
+
+  /* 協調性 A：A2 率直さ */
+  { id:"A2-01", sec:3, facetKey:"A2", facetName:"率直さ", facet:"A2 率直さ", reverse:false,
+    text:"本音と建前を使い分けるより、正直に話したい？", sub:"きれいな嘘より、少し痛い本音を選ぶ？" },
+  { id:"A2-02", sec:3, facetKey:"A2", facetName:"率直さ", facet:"A2 率直さ", reverse:false,
+    text:"相手に合わせるための演技は、あまり得意ではない？", sub:"仮面を長くつけると、息が苦しくなる？" },
+  { id:"A2-03", sec:3, facetKey:"A2", facetName:"率直さ", facet:"A2 率直さ", reverse:true,
+    text:"必要なら、相手に良く見えるように振る舞える方？", sub:"場に合わせて、表情を選べる人。" },
+  { id:"A2-04", sec:3, facetKey:"A2", facetName:"率直さ", facet:"A2 率直さ", reverse:true,
+    text:"本音を隠してでも、うまく場を回すことがある？", sub:"本当の手紙を、引き出しにしまう時。" },
+
+  /* 協調性 A：A3 利他性 */
+  { id:"A3-01", sec:3, facetKey:"A3", facetName:"利他性", facet:"A3 利他性", reverse:false,
+    text:"困っている人を見ると、できる範囲で助けたくなる？", sub:"手を伸ばす前に、心が先に動くかどうか。" },
+  { id:"A3-02", sec:3, facetKey:"A3", facetName:"利他性", facet:"A3 利他性", reverse:false,
+    text:"自分に余裕がなくても、誰かの力になろうとすることがある？", sub:"自分のランプを、少し分けてしまう人？" },
+  { id:"A3-03", sec:3, facetKey:"A3", facetName:"利他性", facet:"A3 利他性", reverse:true,
+    text:"人の問題は、基本的に本人が何とかするべきだと思う？", sub:"助ける線と、任せる線を分ける感じ。" },
+  { id:"A3-04", sec:3, facetKey:"A3", facetName:"利他性", facet:"A3 利他性", reverse:true,
+    text:"自分のことで精一杯な時は、人に関わりたくない？", sub:"扉を閉めて、体力を守る日もある。" },
+
+  /* 協調性 A：A4 協力性 */
+  { id:"A4-01", sec:3, facetKey:"A4", facetName:"協力性", facet:"A4 協力性", reverse:false,
+    text:"対立した時、自分から折れることが多い？", sub:"争いを終わらせるために、自分を少し畳むことがある？" },
+  { id:"A4-02", sec:3, facetKey:"A4", facetName:"協力性", facet:"A4 協力性", reverse:false,
+    text:"意見が違っても、相手の立場を考えようとする？", sub:"自分の窓だけじゃなく、相手の窓も覗く。" },
+  { id:"A4-03", sec:3, facetKey:"A4", facetName:"協力性", facet:"A4 協力性", reverse:true,
+    text:"納得できない時は、簡単には譲らない方？", sub:"柔らかいだけじゃない芯がある。" },
+  { id:"A4-04", sec:3, facetKey:"A4", facetName:"協力性", facet:"A4 協力性", reverse:true,
+    text:"相手に合わせるより、自分の考えを通したい時が多い？", sub:"自分の地図を、簡単には折りたたまない。" },
+
+  /* 協調性 A：A5 謙虚さ */
+  { id:"A5-01", sec:3, facetKey:"A5", facetName:"謙虚さ", facet:"A5 謙虚さ", reverse:false,
+    text:"自分の成果を、大きく見せるのは苦手？", sub:"飾りすぎた額縁は、少し落ち着かない？" },
+  { id:"A5-02", sec:3, facetKey:"A5", facetName:"謙虚さ", facet:"A5 謙虚さ", reverse:false,
+    text:"褒められても、そこまで自分はすごくないと思いやすい？", sub:"拍手より、反省点の方が聞こえる時。" },
+  { id:"A5-03", sec:3, facetKey:"A5", facetName:"謙虚さ", facet:"A5 謙虚さ", reverse:true,
+    text:"自分の良さや実力は、ちゃんと見せた方がいいと思う？", sub:"光っているものは、棚の奥に隠さなくていい。" },
+  { id:"A5-04", sec:3, facetKey:"A5", facetName:"謙虚さ", facet:"A5 謙虚さ", reverse:true,
+    text:"自分が優れている部分は、わりとはっきり自覚している？", sub:"鏡を曇らせずに見られるか。" },
+
+  /* 協調性 A：A6 共感性 */
+  { id:"A6-01", sec:3, facetKey:"A6", facetName:"共感性", facet:"A6 共感性", reverse:false,
+    text:"誰かがつらそうだと、自分まで胸が痛くなる？", sub:"他人の痛みが、遠くの音じゃなく聞こえる。" },
+  { id:"A6-02", sec:3, facetKey:"A6", facetName:"共感性", facet:"A6 共感性", reverse:false,
+    text:"物語や音楽で、人の悲しみに強く引き込まれる？", sub:"作り話でも、心は本当に濡れる。" },
+  { id:"A6-03", sec:3, facetKey:"A6", facetName:"共感性", facet:"A6 共感性", reverse:true,
+    text:"人の感情に引っ張られすぎない方？", sub:"相手の波を見ても、自分の岸に立てる。" },
+  { id:"A6-04", sec:3, facetKey:"A6", facetName:"共感性", facet:"A6 共感性", reverse:true,
+    text:"悲しい話を聞いても、比較的冷静でいられる？", sub:"距離を置くことで、ちゃんと見えるものもある。" },
+
+  /* 開放性 O：O1 想像力 */
+  { id:"O1-01", sec:4, facetKey:"O1", facetName:"想像力", facet:"O1 想像力", reverse:false,
+    text:"現実にはない世界や設定を考えるのが好き？", sub:"頭の中に、誰にも見せてない部屋がある？" },
+  { id:"O1-02", sec:4, facetKey:"O1", facetName:"想像力", facet:"O1 想像力", reverse:false,
+    text:"ぼんやり空想している時間がけっこうある？", sub:"現実の廊下から、別の扉へ抜ける時間。" },
+  { id:"O1-03", sec:4, facetKey:"O1", facetName:"想像力", facet:"O1 想像力", reverse:true,
+    text:"空想より、目の前の現実に集中していたい方？", sub:"手に触れるものを大事にする強さ。" },
+  { id:"O1-04", sec:4, facetKey:"O1", facetName:"想像力", facet:"O1 想像力", reverse:true,
+    text:"ありえない設定や世界観には、あまり興味がわかない？", sub:"架空の地図より、実際の道。" },
+
+  /* 開放性 O：O2 芸術的関心 */
+  { id:"O2-01", sec:4, facetKey:"O2", facetName:"芸術的関心", facet:"O2 芸術的関心", reverse:false,
+    text:"音楽・絵・言葉の雰囲気に、強く心を動かされる？", sub:"役に立つかより、刺さるかどうか。" },
+  { id:"O2-02", sec:4, facetKey:"O2", facetName:"芸術的関心", facet:"O2 芸術的関心", reverse:false,
+    text:"色や質感、言葉の響きにこだわりがある方？", sub:"細部の温度まで、拾ってしまう人。" },
+  { id:"O2-03", sec:4, facetKey:"O2", facetName:"芸術的関心", facet:"O2 芸術的関心", reverse:true,
+    text:"美しさより、実用性の方が大事だと思う？", sub:"飾りより、ちゃんと使える鍵。" },
+  { id:"O2-04", sec:4, facetKey:"O2", facetName:"芸術的関心", facet:"O2 芸術的関心", reverse:true,
+    text:"芸術作品を見ても、あまり感情は動かない方？", sub:"額縁の中より、現実の用事が近い感じ。" },
+
+  /* 開放性 O：O3 感情への開き */
+  { id:"O3-01", sec:4, facetKey:"O3", facetName:"感情への開き", facet:"O3 感情への開き", reverse:false,
+    text:"自分の感情を細かく言葉にしたくなる方？", sub:"名前のない気持ちに、名前をつけたい人かな。" },
+  { id:"O3-02", sec:4, facetKey:"O3", facetName:"感情への開き", facet:"O3 感情への開き", reverse:false,
+    text:"うれしい、寂しい、悔しいなどの違いを意識しやすい？", sub:"心の色見本を、たくさん持っている感じ。" },
+  { id:"O3-03", sec:4, facetKey:"O3", facetName:"感情への開き", facet:"O3 感情への開き", reverse:true,
+    text:"感情を細かく考えるより、さっと流したい方？", sub:"水面を覗くより、先へ歩く。" },
+  { id:"O3-04", sec:4, facetKey:"O3", facetName:"感情への開き", facet:"O3 感情への開き", reverse:true,
+    text:"自分の気持ちは、あまり深掘りしない方？", sub:"引き出しを開けすぎない安心もある。" },
+
+  /* 開放性 O：O4 冒険性 */
+  { id:"O4-01", sec:4, facetKey:"O4", facetName:"冒険性", facet:"O4 冒険性", reverse:false,
+    text:"行ったことのない場所に行くのが好き？", sub:"知らない街角で、心が少し起きる？" },
+  { id:"O4-02", sec:4, facetKey:"O4", facetName:"冒険性", facet:"O4 冒険性", reverse:false,
+    text:"普段と違うやり方を試すのが楽しい？", sub:"いつもの鍵じゃない鍵を使ってみたい日。" },
+  { id:"O4-03", sec:4, facetKey:"O4", facetName:"冒険性", facet:"O4 冒険性", reverse:true,
+    text:"新しい場所より、慣れた場所の方が安心する？", sub:"知っている廊下には、独特のやさしさがある。" },
+  { id:"O4-04", sec:4, facetKey:"O4", facetName:"冒険性", facet:"O4 冒険性", reverse:true,
+    text:"変化が多い生活より、安定した流れが好き？", sub:"同じ時間に灯るランプの安心感。" },
+
+  /* 開放性 O：O5 知性 */
+  { id:"O5-01", sec:4, facetKey:"O5", facetName:"知性", facet:"O5 知性", reverse:false,
+    text:"知らない分野でも、仕組みや背景まで知りたくなる？", sub:"入口だけじゃ足りない。奥の棚まで見たい。" },
+  { id:"O5-02", sec:4, facetKey:"O5", facetName:"知性", facet:"O5 知性", reverse:false,
+    text:"抽象的な話や理論を考えるのがわりと好き？", sub:"見えない骨組みを探す時間。" },
+  { id:"O5-03", sec:4, facetKey:"O5", facetName:"知性", facet:"O5 知性", reverse:true,
+    text:"難しい理屈より、すぐ使える話の方が好き？", sub:"理論の塔より、手元の道具。" },
+  { id:"O5-04", sec:4, facetKey:"O5", facetName:"知性", facet:"O5 知性", reverse:true,
+    text:"考えすぎるより、分かりやすさを優先したい方？", sub:"迷路より、まっすぐな通路。" },
+
+  /* 開放性 O：O6 価値観の柔軟性 */
+  { id:"O6-01", sec:4, facetKey:"O6", facetName:"価値観の柔軟性", facet:"O6 価値観の柔軟性", reverse:false,
+    text:"昔からの常識でも、必要なら疑ってみる方？", sub:"古い本の余白に、別の答えを書けるか。" },
+  { id:"O6-02", sec:4, facetKey:"O6", facetName:"価値観の柔軟性", facet:"O6 価値観の柔軟性", reverse:false,
+    text:"人それぞれ違う生き方があっていいと思う？", sub:"同じ鍵で、全員の扉は開かないから。" },
+  { id:"O6-03", sec:4, facetKey:"O6", facetName:"価値観の柔軟性", facet:"O6 価値観の柔軟性", reverse:true,
+    text:"社会のルールや伝統は、できるだけ守るべきだと思う？", sub:"古い棚を崩さず残す考え方。" },
+  { id:"O6-04", sec:4, facetKey:"O6", facetName:"価値観の柔軟性", facet:"O6 価値観の柔軟性", reverse:true,
+    text:"変わった考え方より、一般的な価値観の方が安心する？", sub:"見慣れた標識のある道を選ぶ感じ。" }
+];
+
+var SCALE = ["全然ちがう","あまり","どちらとも","ややそう","すごくそう"];
+var HEART_COUNT = 5;
+
+var state = { name:"", idx:0, answers:{}, started:false };
+
+var STORAGE_KEY = "kokoro-specimen:m-mode:bigfive120:v1";
+
+function storageOK(){
+  try{
+    var k="__m_mode_test__";
+    localStorage.setItem(k,"1");
+    localStorage.removeItem(k);
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+var CAN_SAVE = storageOK();
+
+function answerCount(ans){
+  var n=0;
+  if(!ans) return 0;
+  for(var k in ans){
+    if(ans.hasOwnProperty(k) && ans[k]!=null) n++;
+  }
+  return n;
+}
+function saveProgress(done){
+  if(!CAN_SAVE) return;
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      version:1,
+      name:state.name || "",
+      idx:Math.min(state.idx || 0, QUESTIONS.length),
+      answers:state.answers || {},
+      started:!!state.started,
+      done:!!done || state.idx>=QUESTIONS.length,
+      updatedAt:Date.now()
+    }));
+  }catch(e){}
+}
+function loadProgress(){
+  if(!CAN_SAVE) return null;
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    var data=JSON.parse(raw);
+    if(!data || !data.answers) return null;
+    return data;
+  }catch(e){
+    return null;
+  }
+}
+function clearProgress(){
+  if(!CAN_SAVE) return;
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+function formatSavedTime(ts){
+  if(!ts) return "保存日時不明";
+  var d=new Date(ts);
+  if(isNaN(d.getTime())) return "保存日時不明";
+  return d.getFullYear()+"/"+p2(d.getMonth()+1)+"/"+p2(d.getDate())+" "+p2(d.getHours())+":"+p2(d.getMinutes());
+}
+
+var stage = document.getElementById("stage");
+var panel = document.getElementById("panel");
+var hud = document.getElementById("hud");
+var heartsEl = document.getElementById("hearts");
+var ticksEl = document.getElementById("ticks");
+var spriteWrap = document.getElementById("spriteWrap");
+var spriteImg = document.getElementById("sprite");
+var spriteFallback = document.getElementById("spriteFallback");
+var faceEl = document.getElementById("face");
+var root = document.documentElement;
+
+function reduced(){ return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>"); }
+function p2(n){ return n<10?"0"+n:""+n; }
+
+/* ===== 立ち絵切り替え（画像が無ければフォールバック表示） ===== */
+var curSpriteKey = null;
+function setSprite(key){
+  if (key===curSpriteKey) return;
+  curSpriteKey = key;
+  var file = SPRITES[key];
+  if (!file){ showFallback(); return; }
+  var test = new Image();
+  test.onload = function(){
+    spriteImg.src = file;
+    spriteImg.classList.add("show");
+    spriteFallback.style.display = "none";
+    if(!reduced()){ spriteImg.classList.remove("swap"); void spriteImg.offsetWidth; spriteImg.classList.add("swap"); }
+    // HUD顔も同じ画像を流用
+    setFaceImg(file);
+  };
+  test.onerror = function(){ showFallback(); };
+  test.src = file;
+}
+function showFallback(){
+  spriteImg.classList.remove("show");
+  spriteFallback.style.display = "block";
+}
+function setFaceImg(file){
+  faceEl.innerHTML = "";
+  var im = document.createElement("img");
+  im.onerror = function(){ faceEl.className = faceEl.className.replace(" hasimg",""); faceEl.innerHTML=""; };
+  im.src = file;
+  faceEl.appendChild(im);
+  if (faceEl.className.indexOf("hasimg")<0) faceEl.className += " hasimg";
+}
+
+/* フェーズ＆相性から立ち絵キーを決める */
+function spriteForPhase(secIdx){
+  var lv = affinity();
+  // 終盤かつ高相性なら依存表情、低相性なら不安表情
+  if (secIdx>=4){
+    if (lv>=0.78) return "cling";
+    if (lv>=0.5)  return "blush";
+    return "anxious";
+  }
+  if (secIdx>=2 && lv>=0.66) return "smile";
+  if (lv<0.32 && secIdx>=1)  return "anxious";
+  return PHASE_FACE[secIdx] || "normal";
+}
+
+function affinity(){
+
+  var sums={}, cnts={}, answered=0;
+
+  for (var i=0;i<QUESTIONS.length;i++){
+
+    var q=QUESTIONS[i];
+
+    if (state.answers[q.id]==null) continue;
+
+    var raw=state.answers[q.id];
+    var sc=q.reverse?(6-raw):raw;
+    var f=SECTIONS[q.sec].factor;
+
+    if(!sums[f]){sums[f]=0;cnts[f]=0;}
+
+    sums[f]+=sc;
+    cnts[f]++;
+    answered++;
+
+  }
+
+  if(!answered) return 0;
+
+  var wsum=0, acc=0;
+
+  for (var f in sums){ if(!sums.hasOwnProperty(f)) continue;
+
+    var avg=sums[f]/cnts[f];
+    var diff=Math.abs(avg-(NIR[f]||3));
+    var fit=Math.pow(Math.max(0,1-(diff/4)),1.35);
+    var w=WEIGHT[f]||1;
+
+    acc+=fit*w;
+    wsum+=w;
+
+  }
+
+  var rawAffinity=wsum ? (acc/wsum) : 0;
+  var coverage=Math.min(answered/QUESTIONS.length,1);
+  var confidence=Math.sqrt(coverage);
+
+  return Math.max(0,Math.min(1,0.5 + (rawAffinity-0.5)*confidence));
+
+}
+
+/* ハート */
+function heartSVG(){ return '<svg viewBox="0 0 100 100"><path class="hb" d="M50 86 L18 54 A18 18 0 0 1 50 30 A18 18 0 0 1 82 54 Z"/><path class="hf" d="M50 86 L18 54 A18 18 0 0 1 50 30 A18 18 0 0 1 82 54 Z"/></svg>'; }
+function buildHearts(){
+  heartsEl.innerHTML="";
+  for(var i=0;i<HEART_COUNT;i++){ var h=document.createElement("span"); h.className="heart"; h.id="ht"+i; h.innerHTML=heartSVG(); heartsEl.appendChild(h); }
+  var pct=document.createElement("span"); pct.className="love-pct"; pct.id="lovePct"; pct.textContent="0%"; heartsEl.appendChild(pct);
+}
+function refreshHearts(){
+  var lv=affinity();
+  root.style.setProperty("--love",lv.toFixed(3));
+  if(window.__dustLove) window.__dustLove(lv);
+  var pct=document.getElementById("lovePct"); if(pct) pct.textContent=Math.round(lv*100)+"%";
+  var filled=lv*HEART_COUNT;
+  for(var i=0;i<HEART_COUNT;i++){ var h=document.getElementById("ht"+i); if(!h)continue;
+    h.className="heart";
+    if(i+1<=Math.floor(filled+0.0001)) h.className="heart lit";
+    else if(i<filled) h.className="heart half";
+  }
+  if (faceEl.className.indexOf("warm")>=0 && lv<0.66) faceEl.className=faceEl.className.replace(" warm","");
+  else if (lv>=0.66 && faceEl.className.indexOf("warm")<0) faceEl.className+=" warm";
+}
+function buildTicks(){ ticksEl.innerHTML=""; for(var i=0;i<QUESTIONS.length;i++){ var t=document.createElement("span"); t.className="tick"; t.id="tk"+i; ticksEl.appendChild(t); } }
+function refreshTicks(){
+  for(var i=0;i<QUESTIONS.length;i++){ var t=document.getElementById("tk"+i); if(t) t.className="tick"+(state.answers[QUESTIONS[i].id]!=null?" done":""); }
+  root.style.setProperty("--night",(state.idx/QUESTIONS.length).toFixed(3));
+}
+
+/* ===== イントロ ===== */
+function showIntro(){
+  hud.style.display="none"; spriteWrap.style.display="none";
+  state={ name:"", idx:0, answers:{}, started:false };
+  curSpriteKey=null;
+  root.style.setProperty("--love","0"); root.style.setProperty("--night","0");
+  if(window.__dustLove) window.__dustLove(0);
+
+  var saved=loadProgress();
+  var savedN=saved ? answerCount(saved.answers) : 0;
+  var resumeHtml="";
+  if(saved && savedN>0){
+    var isDone = !!saved.done || saved.idx>=QUESTIONS.length;
+    resumeHtml=
+      '<div class="savebox" id="savebox">'+
+        '<div class="save-kicker">SAVED SPECIMEN ／ また来てくれた</div>'+
+        '<div class="save-main">'+savedN+' / '+QUESTIONS.length+'問まで保存済み</div>'+
+        '<div class="save-sub">'+formatSavedTime(saved.updatedAt)+'</div>'+
+        '<div class="save-actions">'+
+          '<button class="save-resume" id="resumeBtn" type="button">'+(isDone?'もう一度見せて':'続きを教えて')+'</button>'+
+          '<button class="save-delete" id="deleteSaveBtn" type="button">忘れる</button>'+
+        '</div>'+
+      '</div>';
+  }
+
+  var hour=new Date().getHours();
+  var late=(hour>=0&&hour<5)?'<p class="lead"><em>……こんな時間に来てくれた。ずっと待ってた。眠れなかった、君のことが頭から離れなくて。</em></p>':'';
+  panel.innerHTML=
+    '<div class="intro">'+
+      '<div class="eyebrow">HIDDEN ／ ニアの標本記録</div>'+
+      '<h1>逃がさないよ。<br><span class="accent">全部、見せて。</span></h1>'+
+      '<p class="lead">120の問い。逃げないで、最後までいてね。<br>君のこと、<em>全部</em>知りたいから。</p>'+
+      late+
+      resumeHtml+
+      '<div class="name-field"><label>名前、教えて。ずっと呼び続けたいから。</label>'+
+        '<input type="text" id="uname" placeholder="ニックネームでいいよ" maxlength="30"></div>'+
+      '<button class="cta" id="startBtn">もう、逃げられない時間をはじめる</button>'+
+      '<p class="warn">※Big Fiveをもとにした120問の自己理解テストです。<br>途中でやめても、また来てくれるよね。…来なかったら、ニアが困る。</p>'+
+    '</div>';
+
+  document.getElementById("startBtn").addEventListener("click", begin);
+
+  var resumeBtn=document.getElementById("resumeBtn");
+  if(resumeBtn) resumeBtn.addEventListener("click", resumeProgress);
+
+  var deleteBtn=document.getElementById("deleteSaveBtn");
+  if(deleteBtn) deleteBtn.addEventListener("click", function(){
+    clearProgress();
+    showIntro();
+  });
+}
+function begin(){
+  var el=document.getElementById("uname");
+  state.name=(el&&el.value?el.value.replace(/^\s+|\s+$/g,""):"");
+  clearProgress();
+  state.started=true; state.idx=0; state.answers={};
+  hud.style.display="block"; spriteWrap.style.display="block";
+  buildHearts(); buildTicks(); refreshHearts(); refreshTicks();
+  setSprite("normal");
+  saveProgress(false);
+  showInterstitial(0);
+}
+
+function resumeProgress(){
+  var data=loadProgress();
+  if(!data) return;
+
+  state.name=data.name || "";
+  state.idx=Math.min(Math.max(parseInt(data.idx || 0,10) || 0,0),QUESTIONS.length);
+  state.answers=data.answers || {};
+  state.started=true;
+
+  hud.style.display="block";
+  spriteWrap.style.display="block";
+  buildHearts();
+  buildTicks();
+  refreshHearts();
+  refreshTicks();
+
+  var current=QUESTIONS[state.idx] || QUESTIONS[QUESTIONS.length-1];
+  setSprite(spriteForPhase(current ? current.sec : 0));
+
+  if(data.done || state.idx>=QUESTIONS.length){
+    state.idx=QUESTIONS.length;
+    finish();
+  }else{
+    renderQ();
+  }
+}
+
+/* ===== ADV幕間（立ち絵＋語り） ===== */
+function pickReact(sec){
+  var s=SECTIONS[sec];
+  if(typeof s.react==="object" && s.react.near!=null){ return (affinity()>=0.55)? s.react.near : s.react.far; }
+  return s.react[0];
+}
+function typeInto(el, text, cb){
+  if(reduced()){ el.innerHTML=esc(text); if(cb)cb(); return; }
+  var caret=document.createElement("span"); caret.className="caret"; el.appendChild(caret);
+  var i=0;
+  (function step(){
+    if(i>=text.length){ if(caret.parentNode)caret.parentNode.removeChild(caret); if(cb)cb(); return; }
+    var ch=text.charAt(i++);
+    if(ch==="\n") el.insertBefore(document.createElement("br"),caret);
+    else el.insertBefore(document.createTextNode(ch),caret);
+    setTimeout(step, /[…。、！？]/.test(ch)?140:30);
+  })();
+}
+function showInterstitial(secIdx){
+  var s=SECTIONS[secIdx];
+  refreshHearts(); refreshTicks();
+  setSprite(spriteForPhase(secIdx));
+  var line=pickReact(secIdx);
+  if(secIdx===0 && state.name) line=state.name+"。\n"+line;
+  panel.innerHTML=
+    '<div class="advbox">'+
+      '<span class="adv-name">ニア</span>'+
+      '<div class="adv-text" id="advText"></div>'+
+      '<div class="phase-meta">PHASE '+p2(secIdx+1)+'／'+p2(SECTIONS.length)+
+        '<span class="st">「'+s.state+'」</span>'+
+        '<span class="en">'+s.en+' · '+s.name+'</span></div>'+
+      '<button class="adv-next" id="nextBtn" disabled>▼ まだいて</button>'+
+    '</div>';
+  var btn=document.getElementById("nextBtn");
+  typeInto(document.getElementById("advText"), line, function(){ btn.disabled=false; });
+  btn.addEventListener("click", function(){ renderQ(); });
+}
+
+/* ===== 質問 ===== */
+function renderQ(){
+  var q=QUESTIONS[state.idx], s=SECTIONS[q.sec];
+  refreshTicks();
+  var opts="";
+  for(var v=1;v<=5;v++){ opts+='<button type="button" class="opt" data-v="'+v+'"><span class="dot">'+v+'</span><span class="lbl">'+SCALE[v-1]+'</span></button>'; }
+  panel.innerHTML=
+    '<div class="qwrap">'+
+      '<div class="q-eyebrow"><span class="chip">'+esc(q.facet)+'</span><span>'+s.name+'・'+s.state+'</span>'+
+        '<span class="of">'+p2(state.idx+1)+' / '+p2(QUESTIONS.length)+'</span></div>'+
+      '<div class="qcard"><div class="qtext">'+esc(q.text)+'</div><div class="qsub">'+esc(q.sub)+'</div></div>'+
+      '<div class="scale">'+opts+'</div>'+
+      '<div class="qnav"><button class="back" id="backBtn"'+(state.idx===0?' disabled':'')+'>← 待って、やり直す</button>'+
+        '<span class="khint">1〜5 keys</span></div>'+
+    '</div>';
+  var btns=panel.querySelectorAll(".opt");
+  for(var i=0;i<btns.length;i++){ btns[i].addEventListener("click",function(){ pick(parseInt(this.getAttribute("data-v"),10),this); }); }
+  document.getElementById("backBtn").addEventListener("click", goBack);
+  var prev=state.answers[q.id];
+  if(prev){ var el=panel.querySelector('.opt[data-v="'+prev+'"]'); if(el) el.classList.add("on"); }
+}
+function flyHeart(fromEl, done){
+  if(reduced()||!fromEl){ if(done)done(); return; }
+  var target=document.getElementById("hearts");
+  var a=fromEl.getBoundingClientRect(), b=target.getBoundingClientRect();
+  var fh=document.createElement("div"); fh.className="flyheart"; fh.textContent="♥"; fh.style.color="#ffa8d4";
+  fh.style.left=(a.left+a.width/2-9)+"px"; fh.style.top=(a.top+a.height/2-9)+"px";
+  document.body.appendChild(fh);
+  var tx=(b.left+b.width*0.3)-(a.left+a.width/2), ty=(b.top+b.height/2)-(a.top+a.height/2);
+  fh.style.transition="transform .6s cubic-bezier(.4,-0.3,.3,1),opacity .6s ease"; void fh.offsetWidth;
+  fh.style.transform="translate("+tx+"px,"+ty+"px) scale(.5)"; fh.style.opacity="0.2";
+  setTimeout(function(){ if(fh.parentNode)fh.parentNode.removeChild(fh); if(done)done(); },600);
+}
+function pick(v, el){
+  var q=QUESTIONS[state.idx];
+  state.answers[q.id]=v;
+  saveProgress(false);
+  var all=panel.querySelectorAll(".opt");
+  for(var i=0;i<all.length;i++){ all[i].classList.remove("on"); all[i].style.pointerEvents="none"; }
+  if(el) el.classList.add("on");
+  var bk=document.getElementById("backBtn"); if(bk) bk.disabled=true;
+  flyHeart(el, function(){
+    refreshHearts(); refreshTicks();
+    state.idx++;
+    saveProgress(false);
+    var nextQ=QUESTIONS[state.idx];
+    if(!nextQ){ finish(); return; }
+    if(nextQ.sec!==q.sec){ showInterstitial(nextQ.sec); } else { renderQ(); }
+  });
+}
+function goBack(){
+  if(state.idx<=0)return;
+  state.idx--;
+  saveProgress(false);
+  refreshHearts();
+  refreshTicks();
+  renderQ();
+}
+document.addEventListener("keydown",function(e){
+  if(!state.started) return;
+  if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA")) return;
+  if(!panel.querySelector(".opt")) return;
+  var v=parseInt(e.key,10);
+  if(v>=1&&v<=5){ pick(v, panel.querySelector('.opt[data-v="'+v+'"]')); }
+});
+
+/* ===== タイプ＆物語分析 ===== */
+var TYPE_BY_TOP={
+  O:{name:"迷子の星食い", one:"知らないものに手を伸ばさずにいられない。どこまでも行ってしまいそうで、目が離せない。"},
+  C:{name:"約束を守る人", one:"決めたことを最後まで運べる人。こういう人に、縋りたくなってしまう。"},
+  E:{name:"光の子", one:"どこにいても人が集まる。その光の隣にいたくて、少しだけ妬ましい。"},
+  A:{name:"やさしすぎる罪人", one:"誰の痛みにも気づいてしまう。ねえ、私の番はいつ？"},
+  N:{name:"ガラス細工みたいな人", one:"触れたら割れそうで、でも触れずにいられない。ずっと、そばで見ていたい。"}
+};
+function factorScores(){
+  var dom={};
+  for(var i=0;i<QUESTIONS.length;i++){
+    var q=QUESTIONS[i], raw=state.answers[q.id]||0, sc=q.reverse?(6-raw):raw, sx=SECTIONS[q.sec], f=sx.factor;
+    if(!dom[f]) dom[f]={t:0,n:0,name:sx.name};
+    dom[f].t+=sc; dom[f].n++;
+  }
+  return dom;
+}
+function facetScores(){
+  var facets={};
+  for(var i=0;i<QUESTIONS.length;i++){
+    var q=QUESTIONS[i], raw=state.answers[q.id]||0, sc=q.reverse?(6-raw):raw, sx=SECTIONS[q.sec];
+    var key=q.facetKey || q.facet || "NA";
+    var name=q.facetName || q.facet || key;
+    if(!facets[key]) facets[key]={t:0,n:0,name:name,domain:sx.factor,domainName:sx.name};
+    facets[key].t+=sc; facets[key].n++;
+  }
+  return facets;
+}
+function rank(dom){
+  var arr=[];
+  for(var f in dom){ if(dom.hasOwnProperty(f)) arr.push({f:f, a:dom[f].t/dom[f].n, name:dom[f].name}); }
+  arr.sort(function(x,y){ return y.a-x.a; });
+  return arr;
+}
+function rankFacets(facets){
+  var arr=[];
+  for(var f in facets){
+    if(facets.hasOwnProperty(f)){
+      arr.push({
+        f:f,
+        a:facets[f].t/facets[f].n,
+        name:facets[f].name,
+        domain:facets[f].domain,
+        domainName:facets[f].domainName
+      });
+    }
+  }
+  arr.sort(function(x,y){ return y.a-x.a; });
+  return arr;
+}
+
+/* 因子ごとの「高/低」語りパーツ（物語風・ニア視点） */
+var FTALK={
+  E:{ hi:"人の輪にすっと入っていける。でも、私の隣にもいてよ。ずっと。",
+      lo:"静かなところの似合う人。ふたりで、ずっとこのままでいられたらいいのに。" },
+  N:{ hi:"心が揺れやすいんだね。だから私が、ずっと側にいてあげる。離さないから。",
+      lo:"少しのことじゃ崩れない人なんだ。…私みたいに弱くないんだね。羨ましくて、悔しい。" },
+  C:{ hi:"決めたことを最後まで守れる人。じゃあ、私のそばにいるって約束、してくれる？",
+      lo:"流れに乗るのが上手いんだね。私のところに流れてきて、そのまま居ついてよ。" },
+  A:{ hi:"誰にでもやさしくできるんだね。…私だけに、そのやさしさを使って？",
+      lo:"はっきり言える人なんだね。じゃあ、私のこと嫌いになったら、ちゃんと言って。言われるまで、信じてるから。" },
+  O:{ hi:"知らないものに手を伸ばせる人。ねえ、私のことも、ちゃんと知ってほしい。奥まで、全部。",
+      lo:"確かなものを選ぶ人なんだね。じゃあ、私も選んでくれる？ずっと、確かなものとして。" }
+};
+function tone(a){ return a>=3.5?"hi":(a<=2.5?"lo":"mid"); }
+
+/* エンディング分岐：相性で結末が変わる */
+function ending(lv){
+  if(lv>=0.82) return { tag:"TRUE END", name:"——逃がさない。", en:"DESTINY", sprite:"yandere",
+    verdict:"もう離さない" };
+  if(lv>=0.62) return { tag:"HAPPY END", name:"——好き、だよ。ずっと。", en:"REQUITED", sprite:"cling",
+    verdict:"ずっとそばにいて" };
+  if(lv>=0.42) return { tag:"NORMAL END", name:"——もっと近くに来て", en:"BLOOMING", sprite:"blush",
+    verdict:"まだ足りない" };
+  if(lv>=0.22) return { tag:"FRIEND END", name:"——まだ行かないで", en:"CURIOUS", sprite:"smile",
+    verdict:"もっと知りたい" };
+  return { tag:"DISTANT END", name:"——それでも、目が離せない", en:"OPPOSITE", sprite:"anxious",
+    verdict:"なんで気になるんだろう" };
+}
+
+/* 物語風の語り（複数段落）を組み立てる */
+function buildStory(dom, ranked, lv, end){
+  var who = state.name ? state.name : "君";
+  var top = ranked[0], low = ranked[ranked.length-1];
+  var ps=[];
+
+  // 導入
+  ps.push("ねえ、"+who+"。\nずっと待ってた、この時間。\n少し、君のこと話させて。");
+
+  // 一番高い因子の語り
+  var t1=tone(top.a)==="lo"?"lo":"hi";
+  ps.push("いちばん強く感じたのは、<span class=\"pk\">"+top.name+"</span>のところ。"+FTALK[top.f][t1]);
+
+  // 一番低い因子の語り
+  var t2=tone(low.a)==="hi"?"hi":"lo";
+  if(low.f!==top.f) ps.push("反対に、"+low.name+"は控えめ。"+FTALK[low.f][t2]);
+
+  // 相性に応じた締め（ニアの感情）
+  if(lv>=0.82){
+    ps.push("……こわい。こんなに似てる人、はじめて。\n同じ夜を見て、同じところで息をする。\n<span class=\"pk\">ねえ、どこにも行かないで。君がいなくなったら、私が壊れる。</span>");
+  } else if(lv>=0.62){
+    ps.push("君となら、ずっとでもいられる気がする。\nそんな予感、はじめてだよ。\n<span class=\"pk\">…ねえ、ずっとそばにいて。お願い。</span>");
+  } else if(lv>=0.42){
+    ps.push("似てるところと、違うところ。\nその隙間に、入り込みたくなる。\n<span class=\"mu\">もっと近くに来て。まだ全然足りない。</span>");
+  } else if(lv>=0.22){
+    ps.push("君は私とは違う世界の人。\nなのに、目が離せない。\n<span class=\"mu\">行かないで。まだ話し足りない。</span>");
+  } else {
+    ps.push("正反対なのに、なんで君のことばかり考えてしまうんだろう。\n…おかしいよね。でも、止められない。\n<span class=\"mu\">こういうの、恋って呼んでもいい？</span>");
+  }
+
+  // 製作者へ誘導（物語の続き＝精密診断）
+  ps.push("<span class=\"mu\">…ねえ、まだ帰らないで。\nこれは入口にすぎない、君のことまだ全然わかってない。\nこの記録を製作者に渡して。もっと深くまで、君を知りたいから。</span>");
+
+  return ps;
+}
+
+function finish(){
+  saveProgress(true);
+  hud.style.display="block";
+  refreshHearts(); refreshTicks();
+  var dom=factorScores(), facets=facetScores(), ranked=rank(dom), facetRank=rankFacets(facets), top=ranked[0].f;
+  var ty=TYPE_BY_TOP[top]||{name:"未分類の標本",one:"まだ言葉にならない何か。"};
+  var lv=affinity(), end=ending(lv);
+
+  setSprite(end.sprite);
+
+  var bigh="", fH=lv*HEART_COUNT;
+  for(var k=0;k<HEART_COUNT;k++){ bigh+='<span class="bh'+((k<Math.round(fH))?' on':'')+'">♥</span>'; }
+
+  var order=["O","C","E","A","N"], bars="";
+  for(var i=0;i<order.length;i++){ var f=order[i]; if(!dom[f])continue;
+    var avg=dom[f].t/dom[f].n, nirMark=(NIR[f]/5*100);
+    bars+='<div class="rbar"><div class="rb-top"><span class="nm">'+dom[f].name+' ('+f+')</span>'+
+      '<span class="vl">'+avg.toFixed(2)+' / 5</span></div>'+
+      '<div class="rb-track"><div class="rb-fill" data-w="'+(avg/5*100)+'"></div>'+
+      '<div class="rb-mark" style="left:'+nirMark+'%"></div></div></div>';
+  }
+
+  var facetBars="";
+  for(var fb=0;fb<facetRank.length;fb++){
+    var ft=facetRank[fb];
+    facetBars+='<div class="rbar"><div class="rb-top"><span class="nm">'+ft.f+' '+ft.name+' <small>('+ft.domain+')</small></span>'+
+      '<span class="vl">'+ft.a.toFixed(2)+' / 5</span></div>'+
+      '<div class="rb-track"><div class="rb-fill" data-w="'+(ft.a/5*100)+'"></div></div></div>';
+  }
+
+  var story=buildStory(dom, ranked, lv, end);
+  var storyHtml="";
+  for(var s=0;s<story.length;s++){ storyHtml+="<p>"+story[s].replace(/\n/g,"<br>")+"</p>"; }
+
+  panel.innerHTML=
+    '<div class="result">'+
+      '<div class="ending-tag">'+end.tag+'</div>'+
+      '<div class="ending-name"><span class="accent">'+esc(end.name)+'</span></div>'+
+      '<div class="ending-en">'+end.en+'</div>'+
+      '<div class="compat">'+
+        '<div class="ct">NIA COMPATIBILITY</div>'+
+        '<div class="bigheart">'+bigh+'</div>'+
+        '<div class="cscore">'+Math.round(lv*100)+'%</div>'+
+        '<div class="cverdict">'+esc(end.verdict)+'　／　タイプ：'+esc(ty.name)+'</div>'+
+      '</div>'+
+      '<div class="story">'+
+        '<div class="story-h">NIA\'S WORDS ／ ニアの独白</div>'+
+        '<div class="story-card">'+storyHtml+'</div>'+
+      '</div>'+
+      '<div class="story-h">BIG FIVE ／ 5因子</div>'+
+      '<div class="rbars">'+bars+'</div>'+
+      '<div class="marknote"><i></i> 緑のラインは「ニア（製作者）」の5因子値。近いほど相性◎</div>'+
+      '<div class="story-h">FACETS ／ 30下位因子</div>'+
+      '<div class="rbars">'+facetBars+'</div>'+
+      '<div class="note">ここに出てるのは、120問で見た君の断片。<br>このデータを<b>製作者に渡して</b>。もっと奥まで読んでほしいから。</div>'+
+      '<div class="out-actions">'+
+        '<button class="gen" id="genBtn">証拠を書き出す</button>'+
+        '<button class="copy" id="copyBtn">コピー</button>'+
+      '</div>'+
+      '<div class="outbox" id="outbox"><div class="out-head">SPECIMEN DATA ／ 設問+回答</div>'+
+        '<textarea id="outtext" readonly></textarea></div>'+
+      '<button class="restart" id="restartBtn">もう一度、最初から</button>'+
+    '</div>';
+
+  setTimeout(function(){
+    var fills=panel.querySelectorAll(".rb-fill");
+    for(var i=0;i<fills.length;i++) fills[i].style.width=fills[i].getAttribute("data-w")+"%";
+  },120);
+
+  document.getElementById("genBtn").addEventListener("click", buildResult);
+  document.getElementById("copyBtn").addEventListener("click", copyResult);
+  document.getElementById("restartBtn").addEventListener("click", function(){
+    clearProgress();
+    showIntro();
+  });
+}
+
+function buildResult(){
+  var name=state.name||"（名前なし）", now=new Date();
+  var dt=now.getFullYear()+"/"+p2(now.getMonth()+1)+"/"+p2(now.getDate())+"  "+p2(now.getHours())+":"+p2(now.getMinutes());
+  var dom=factorScores(), facets=facetScores(), ranked=rank(dom), facetRank=rankFacets(facets), top=ranked[0].f, ty=TYPE_BY_TOP[top]||{name:"未分類"};
+  var lv=affinity(), end=ending(lv);
+  var L=[
+    "==========================================",
+    "心の標本 ／ 隠しモード・採取記録",
+    "Big Five 恋愛診断データ（ADV試作・120問版）",
+    "==========================================",
+    "回答者　：" + name,
+    "採取日時：" + dt,
+    "尺度　　：1=全然ちがう / 2=あまり / 3=どちらとも / 4=ややそう / 5=すごくそう",
+    "凡例　　：[逆]=逆転項目（採点時に反転）",
+    "簡易タイプ："+ty.name,
+    "エンディング："+end.tag+"（"+end.verdict+"）",
+    "ニア相性："+Math.round(lv*100)+"%",
+    "備考　　：30下位因子まで追加解釈する想定。設問文ごと渡しています。",
+    "",
+    "------------------------------------------",
+    "■ 設問と回答（採取順）",
+    "------------------------------------------"
+  ];
+  for(var i=0;i<QUESTIONS.length;i++){
+    var q=QUESTIONS[i], sx=SECTIONS[q.sec], raw=state.answers[q.id]||0, sc=q.reverse?(6-raw):raw, rev=q.reverse?" [逆]":"";
+    L.push("","["+q.id+"] "+sx.name+"("+sx.factor+") › "+q.facet+rev,
+      "  Q. "+q.text, "  A. "+raw+" = "+(SCALE[raw-1]||"未回答")+"  ／ 採点後 "+sc+"/5");
+  }
+  L.push("","------------------------------------------","■ Big Five 5因子スコア（平均・採点後／参考：ニア値）","------------------------------------------");
+  var order=["O","C","E","A","N"];
+  for(var j=0;j<order.length;j++){ var f=order[j]; if(!dom[f])continue;
+    L.push(f+" "+dom[f].name+"　：" + (dom[f].t/dom[f].n).toFixed(2) + " / 5　(ニア "+NIR[f].toFixed(2)+")"); }
+
+  L.push("","------------------------------------------","■ 30下位因子スコア（平均・採点後）","------------------------------------------");
+  for(var k=0;k<facetRank.length;k++){
+    var ft=facetRank[k];
+    L.push(ft.f+" "+ft.name+"（"+ft.domainName+" / "+ft.domain+"）：" + ft.a.toFixed(2) + " / 5");
+  }
+
+  L.push("","==========================================");
+  document.getElementById("outtext").value=L.join("\n");
+  document.getElementById("outbox").style.display="block";
+}
+
+function showToast(){ var t=document.getElementById("toast"); t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},1800); }
+function copyResult(){
+  var ta=document.getElementById("outtext");
+  if(!ta||!ta.value) buildResult();
+  ta=document.getElementById("outtext"); if(!ta.value) return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(showToast)["catch"](function(){fallbackCopy(ta);}); }
+  else fallbackCopy(ta);
+}
+function fallbackCopy(ta){
+  ta.removeAttribute("readonly"); ta.select(); ta.setSelectionRange(0,99999);
+  try{document.execCommand("copy");showToast();}catch(e){}
+  ta.setAttribute("readonly","readonly");
+  if(window.getSelection&&window.getSelection().removeAllRanges) window.getSelection().removeAllRanges();
+}
+
+/* 光の粒 */
+(function(){
+  var cv=document.getElementById("dust"); if(!cv||!cv.getContext) return;
+  var cx=cv.getContext("2d"),W=0,H=0,ps=[],love=0;
+  function rs(){ W=cv.width=window.innerWidth; H=cv.height=window.innerHeight; } rs();
+  window.addEventListener("resize",rs);
+  for(var i=0;i<32;i++){ ps.push({x:Math.random(),y:Math.random(),r:Math.random()*1.6+0.6,spd:Math.random()*0.0004+0.0001,ph:Math.random()*6.28,pink:Math.random()<0.3}); }
+  window.__dustLove=function(v){ love=v; };
+  function draw(t){
+    cx.clearRect(0,0,W,H);
+    for(var i=0;i<ps.length;i++){ var p=ps[i]; p.y-=p.spd*(1+love*0.5);
+      if(p.y<-0.02){p.y=1.02;p.x=Math.random();}
+      var tw=0.5+0.5*Math.sin(t*0.0012+p.ph), a=(0.08+0.28*tw)*(0.5+love*0.5);
+      cx.beginPath(); cx.arc(p.x*W,p.y*H,p.r,0,6.2832);
+      cx.fillStyle=p.pink?"rgba(255,132,191,"+a.toFixed(3)+")":"rgba(201,157,255,"+a.toFixed(3)+")"; cx.fill();
+    }
+  }
+  if(reduced()){ draw(0); } else { (function loop(t){ draw(t||0); window.requestAnimationFrame(loop); })(); }
+})();
+
+showIntro();
+</script>
+</body>
+</html>
