@@ -214,13 +214,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   .photo{
     aspect-ratio:4 / 5;
-    background-size:cover;
+    background-size:contain;
+    background-position:center top;
   }
 
   .photo-note{
     padding:13px 14px 12px;
   }
 }
+
 
 /* ══ AI所見バナー ══ */
 .ai-summary{margin:0;padding:14px 18px;background:var(--chip);border-bottom:1px solid var(--line2);font-size:.86rem;line-height:1.95;color:var(--ink2);}
