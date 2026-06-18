@@ -1,0 +1,1661 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>診断記録 :: PATIENT 0717</title>
+<meta name="theme-color" content="#f4f6f8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+JP:wght@400;600;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f4;            /* 診察室の壁の色 */
+  --paper:#ffffff;
+  --paper2:#fafbfc;
+  --line:#d6dce3;
+  --line2:#e6eaef;
+  --ink:#1c2530;
+  --ink2:#46525f;
+  --muted:#8794a1;
+  --accent:#2a7d8c;       /* 医療系ティール */
+  --accent2:#3b9aa8;
+  --red:#c0392b;          /* 注意・異常値 */
+  --amber:#c98a1e;
+  --green:#3a8a5a;
+  --blue:#3a6ea5;
+  --chip:#eef4f5;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Noto Serif JP',serif;
+  --sans:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--bg);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:16px;line-height:1.85;
+}
+/* 方眼紙の薄いグリッド */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(42,125,140,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(42,125,140,.04) 1px,transparent 1px);
+  background-size:22px 22px;}
+.page{max-width:720px;margin:0 auto;padding:0 14px 100px;position:relative;z-index:1;}
+
+/* ══ カルテ用紙 ══ */
+.chart{background:var(--paper);border:1px solid var(--line);margin-top:18px;
+  box-shadow:0 1px 0 var(--line),0 8px 28px rgba(40,60,80,.07);border-radius:3px;overflow:hidden;}
+
+/* ── ヘッダ（病院ロゴ＋患者票） ── */
+.chart-head{border-bottom:2px solid var(--ink);padding:14px 18px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.hosp{font-family:var(--serif);}
+.hosp .logo{display:flex;align-items:center;gap:8px;font-size:1.02rem;font-weight:900;letter-spacing:.04em;color:var(--ink);}
+.hosp .logo .cross{display:inline-flex;width:20px;height:20px;background:var(--accent);color:#fff;align-items:center;justify-content:center;border-radius:3px;font-size:.8rem;font-family:var(--sans);font-weight:700;}
+.hosp .sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.1em;margin-top:3px;}
+.chart-no{font-family:var(--mono);font-size:.62rem;color:var(--ink2);text-align:right;line-height:1.8;}
+.chart-no b{color:var(--accent);}
+
+/* ── 患者基本情報テーブル ── */
+.patient-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line2);}
+@media(max-width:560px){.patient-grid{grid-template-columns:repeat(2,1fr);}}
+.pg-cell{padding:8px 12px;border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);}
+.pg-cell:nth-child(4n){border-right:none;}
+.pg-cell .k{font-family:var(--mono);font-size:.56rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;}
+.pg-cell .v{font-size:.84rem;font-weight:700;color:var(--ink);}
+.pg-cell .v.red{color:var(--red);}
+.pg-cell .v.accent{color:var(--accent);}
+
+/* ── タイトル帯 ── */
+.chart-title{padding:16px 18px;text-align:center;border-bottom:1px dashed var(--line);background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(42,125,140,.015) 8px,rgba(42,125,140,.015) 9px);}
+.chart-title .label{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;color:var(--accent);margin-bottom:6px;}
+.chart-title h1{font-family:var(--serif);font-size:clamp(20px,5vw,28px);font-weight:900;letter-spacing:.06em;color:var(--ink);}
+.chart-title .ja{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin-top:6px;min-height:1.4em;letter-spacing:.1em;}
+.chart-title .ja .cur{display:inline-block;width:8px;height:1em;background:var(--accent);vertical-align:text-bottom;animation:blink .6s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* ── 主題ビジュアル欄：カルテ表紙型 ── */
+.photo-row{
+  position:relative;
+  padding:18px;
+  border-bottom:1px solid var(--line2);
+  background:
+    linear-gradient(135deg,rgba(42,125,140,.045),transparent 46%),
+    repeating-linear-gradient(90deg,transparent,transparent 10px,rgba(42,125,140,.018) 10px,rgba(42,125,140,.018) 11px),
+    var(--paper);
+}
+
+.photo-card{
+  border:1px solid var(--line);
+  border-radius:4px;
+  overflow:hidden;
+  background:var(--paper);
+  box-shadow:0 10px 28px rgba(28,37,48,.13);
+}
+
+.photo{
+  width:100%;
+  aspect-ratio:16 / 10;
+  border-bottom:1px solid var(--line2);
+  background:
+    radial-gradient(120% 90% at 50% 30%,#1a2730,#0a0f12) center/cover no-repeat;
+  background-image:
+    radial-gradient(120% 90% at 50% 30%,rgba(10,15,18,0),rgba(10,15,18,.55)),
+    var(--hero-img,linear-gradient(135deg,#1a2730,#0a0f12));
+  background-size:cover,cover;
+  background-position:center 35%,center 35%;
+  position:relative;
+  overflow:hidden;
+}
+
+.photo::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.10) 0 1px,transparent 1px 3px),
+    radial-gradient(130% 100% at 50% 50%,transparent 55%,rgba(0,0,0,.5));
+  mix-blend-mode:multiply;
+}
+
+.photo .photo-scan{
+  position:absolute;
+  left:0;right:0;top:0;
+  height:34%;
+  background:linear-gradient(180deg,rgba(42,125,140,.28),transparent);
+  animation:photoScan 4.2s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes photoScan{
+  0%{transform:translateY(-40%);opacity:0;}
+  18%{opacity:.9;}
+  60%{opacity:.5;}
+  100%{transform:translateY(330%);opacity:0;}
+}
+
+.photo::after{
+  content:'PATIENT VISUAL / OBSERVATION FILE';
+  position:absolute;
+  left:12px;
+  bottom:9px;
+  font-family:var(--mono);
+  font-size:.56rem;
+  color:rgba(220,230,235,.62);
+  letter-spacing:.16em;
+  background:rgba(10,15,18,.42);
+  padding:2px 7px;
+  backdrop-filter:blur(3px);
+  z-index:2;
+}
+
+.photo-note{
+  position:relative;
+  border-top:3px solid var(--accent);
+  background:rgba(255,255,255,.96);
+  padding:14px 16px 13px;
+  color:var(--ink2);
+  text-align:left;
+}
+
+.photo-kicker{
+  font-family:var(--mono);
+  font-size:.56rem;
+  letter-spacing:.16em;
+  color:var(--accent);
+  margin-bottom:3px;
+}
+
+.photo-title{
+  display:block;
+  font-family:var(--serif);
+  font-size:1.08rem;
+  font-weight:900;
+  letter-spacing:.04em;
+  color:var(--ink);
+  margin-bottom:7px;
+}
+
+.photo-copy{
+  font-size:.84rem;
+  line-height:1.9;
+  margin:0;
+}
+
+.photo-note .stamp{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:.56rem;
+  color:var(--red);
+  border:1.5px solid var(--red);
+  padding:1px 7px;
+  border-radius:2px;
+  transform:rotate(-3deg);
+  margin:0 7px 2px 0;
+  letter-spacing:.08em;
+  vertical-align:middle;
+}
+
+.photo-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:9px;
+}
+
+.photo-tags span{
+  font-family:var(--mono);
+  font-size:.55rem;
+  letter-spacing:.08em;
+  color:var(--muted);
+  border:1px solid var(--line2);
+  background:var(--paper2);
+  padding:2px 6px;
+  border-radius:2px;
+}
+
+@media(min-width:640px){
+  .photo-row{
+    padding:20px 22px 22px;
+  }
+
+  .photo{
+    aspect-ratio:16 / 8.5;
+  }
+
+  .photo-note{
+    padding:15px 18px 14px;
+  }
+
+  .photo-title{
+    font-size:1.18rem;
+  }
+
+  .photo-copy{
+    font-size:.88rem;
+  }
+}
+
+@media(max-width:420px){
+  .photo-row{
+    padding:14px 14px 18px;
+  }
+
+  .photo{
+    aspect-ratio:4 / 5;
+    background-size:cover;
+  }
+
+  .photo-note{
+    padding:13px 14px 12px;
+  }
+}
+
+/* ══ AI所見バナー ══ */
+.ai-summary{margin:0;padding:14px 18px;background:var(--chip);border-bottom:1px solid var(--line2);font-size:.86rem;line-height:1.95;color:var(--ink2);}
+.ai-summary .by{font-family:var(--mono);font-size:.6rem;color:var(--accent);letter-spacing:.1em;display:block;margin-bottom:6px;}
+.ai-summary b{color:var(--ink);}
+
+/* ══ セクション（診療科ごと） ══ */
+.dept{border-top:1px solid var(--line);}
+.dept-head{display:flex;align-items:center;gap:10px;padding:11px 18px;background:var(--paper2);border-bottom:1px solid var(--line2);}
+.dept-no{font-family:var(--mono);font-size:.62rem;color:#fff;background:var(--accent);padding:2px 8px;border-radius:2px;letter-spacing:.06em;}
+.dept-no.red{background:var(--red);}
+.dept-no.amber{background:var(--amber);}
+.dept-no.blue{background:var(--blue);}
+.dept-no.green{background:var(--green);}
+.dept-en{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;}
+.dept-jp{font-family:var(--serif);font-size:1rem;font-weight:900;color:var(--ink);margin-left:auto;letter-spacing:.03em;}
+.dept-body{padding:16px 18px;display:flex;flex-direction:column;gap:16px;}
+
+/* AI解釈ボックス */
+.ai-read{border-left:3px solid var(--accent);background:var(--chip);padding:11px 14px;font-size:.86rem;line-height:1.95;color:var(--ink2);border-radius:0 3px 3px 0;}
+.ai-read .by{font-family:var(--mono);font-size:.58rem;color:var(--accent);letter-spacing:.1em;display:block;margin-bottom:5px;}
+.ai-read b{color:var(--ink);}
+
+/* 所見欄（罫線フォーム） */
+.note{border:1px solid var(--line2);border-radius:3px;overflow:hidden;}
+.note-hd{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--muted);background:var(--paper2);padding:5px 12px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:6px;}
+.note-hd::before{content:'■';font-size:.5rem;color:var(--accent);}
+.note-hd.red::before{color:var(--red);}
+.note-hd.amber::before{color:var(--amber);}
+.note-body{padding:12px 14px;font-size:.9rem;line-height:1.95;color:var(--ink2);}
+.note-body b{color:var(--ink);font-weight:700;}
+.note-body p{margin:0 0 9px;}
+.note-body p:last-child{margin-bottom:0;}
+.note-body .v{font-family:var(--mono);color:var(--accent);font-size:.85em;font-weight:500;}
+
+/* 計測値（検査結果テーブル風） */
+.lab{margin-top:2px;}
+.lab-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.lab-title::after{content:'';flex:1;height:1px;background:var(--line);}
+.bar-row{display:flex;align-items:center;gap:10px;padding:3px 0;border-bottom:1px dotted var(--line2);}
+.bar-row:last-child{border-bottom:none;}
+.bar-name{font-size:.8rem;color:var(--ink2);min-width:7em;text-align:right;flex-shrink:0;font-weight:500;}
+.bar-track{flex:1;height:10px;background:var(--paper2);border:1px solid var(--line2);position:relative;overflow:hidden;border-radius:2px;}
+.bar-fill{height:100%;width:0;transition:width 1.1s cubic-bezier(.2,1,.3,1);}
+.bar-pct{font-family:var(--mono);font-size:.72rem;color:var(--ink2);min-width:3em;text-align:right;flex-shrink:0;}
+
+/* アコーディオン（詳細所見） */
+.acc-list{display:flex;flex-direction:column;gap:4px;}
+details{border:1px solid var(--line2);border-radius:3px;overflow:hidden;background:var(--paper);}
+details[open]{border-color:var(--accent);}
+summary{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;font-size:.86rem;font-weight:700;color:var(--ink);list-style:none;user-select:none;}
+summary::-webkit-details-marker{display:none;}
+.sum-pip{width:15px;height:15px;border:1px solid var(--line);background:var(--paper2);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--accent);flex-shrink:0;border-radius:2px;font-family:var(--mono);}
+details[open] .sum-pip{border-color:var(--accent);background:var(--chip);}
+.acc-body{padding:11px 13px 13px;font-size:.86rem;line-height:1.95;color:var(--ink2);border-top:1px solid var(--line2);background:var(--paper2);}
+.acc-body b{color:var(--ink);}
+
+/* ロック（要認証スタンプ風） */
+.lock-widget{border:1px dashed var(--line);background:var(--paper2);padding:16px 18px;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center;position:relative;border-radius:3px;}
+.lock-widget::before{content:'要 認 証';position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;color:var(--red);background:var(--paper2);padding:0 8px;}
+.lock-hint{font-family:var(--mono);font-size:.74rem;color:var(--ink2);line-height:1.85;letter-spacing:.02em;}
+.lock-hint b{color:var(--ink);}
+.cipher-wrap{display:flex;gap:7px;justify-content:center;}
+.cipher-digit{width:46px;height:54px;border:1px solid var(--line);background:var(--paper);font-family:var(--mono);font-size:1.5rem;color:var(--accent);text-align:center;border-radius:3px;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none;}
+.cipher-digit::placeholder{color:#c4ccd4;}
+.cipher-digit:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(42,125,140,.16);}
+.cipher-err{font-family:var(--mono);font-size:.74rem;color:var(--red);min-height:3.2em;line-height:1.7;text-align:center;}
+.cipher-err .tease{color:var(--red);}
+.cipher-err .hint{color:var(--muted);}
+.cipher-err .answer{color:var(--amber);}
+.cipher-wrap.possessed{animation:twitch .18s steps(2,end) infinite;position:relative;}
+.cipher-wrap.possessed::after{content:'AUTO';position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-family:var(--mono);font-size:.52rem;letter-spacing:.2em;color:var(--red);animation:blink .42s step-end infinite;}
+.cipher-digit.auto-fill,.cipher-digit.auto-active{border-color:var(--red);color:var(--red);caret-color:transparent;box-shadow:0 0 0 2px rgba(192,57,43,.12);}
+.cipher-digit.auto-active{animation:ghost .16s steps(2,end) infinite;}
+.cipher-digit.auto-fill{animation:pulse .42s ease both;}
+@keyframes pulse{0%{transform:scale(.9);}45%{transform:scale(1.14);}100%{transform:scale(1);}}
+@keyframes ghost{0%{transform:translate(0);}50%{transform:translate(-1px,1px);}100%{transform:translate(1px,-1px);}}
+@keyframes twitch{0%,100%{transform:translateX(0);}50%{transform:translateX(.7px);}}
+.cipher-possessed{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(20,30,40,.55);backdrop-filter:blur(4px);}
+.cipher-possessed.show{display:flex;animation:fade .22s ease both;}
+@keyframes fade{from{opacity:0;}to{opacity:1;}}
+.cipher-possessed-card{width:min(440px,94vw);border:1px solid var(--red);background:var(--paper);border-radius:4px;box-shadow:0 24px 70px rgba(0,0,0,.35);overflow:hidden;}
+.cipher-possessed-card::before{content:'SYSTEM OVERRIDE :: 緊急閲覧モード';display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;color:#fff;background:var(--red);padding:6px 14px;}
+.cipher-possessed-main{font-family:var(--mono);font-size:clamp(.82rem,3.6vw,.98rem);line-height:2.05;color:var(--red);padding:16px 18px 4px;white-space:pre-line;}
+.cipher-possessed-sub{font-family:var(--mono);font-size:.7rem;line-height:1.85;color:var(--muted);padding:8px 18px 16px;border-top:1px solid var(--line2);margin-top:8px;white-space:pre-line;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+
+/* クイズ */
+.quiz-options{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
+.quiz-opt{padding:8px 15px;border:1px solid var(--line);background:var(--paper);font-family:var(--sans);font-size:.85rem;color:var(--ink2);cursor:pointer;border-radius:3px;transition:border-color .14s,color .14s;}
+.quiz-opt:hover{border-color:var(--accent);color:var(--accent);}
+.quiz-opt.wrong{border-color:var(--red);color:var(--red);animation:shake .25s;}
+.quiz-opt.correct{border-color:var(--green);color:var(--green);background:rgba(58,138,90,.06);}
+
+.quiz-opt.needy-correct{
+  position:relative;
+  border-color:var(--red);
+  color:var(--red);
+  background:
+    linear-gradient(180deg,rgba(192,57,43,.08),rgba(255,255,255,.92));
+  animation:needyChoice .62s ease-in-out infinite;
+  box-shadow:0 0 0 2px rgba(192,57,43,.08);
+}
+
+.quiz-opt.needy-correct::after{
+  content:'これ';
+  position:absolute;
+  right:-8px;
+  top:-10px;
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.08em;
+  color:#fff;
+  background:var(--red);
+  border-radius:999px;
+  padding:1px 7px;
+  transform:rotate(8deg);
+}
+
+@keyframes needyChoice{
+  0%,100%{transform:translateY(0) rotate(0deg);box-shadow:0 0 0 2px rgba(192,57,43,.08);}
+  50%{transform:translateY(-2px) rotate(-.7deg);box-shadow:0 8px 22px rgba(192,57,43,.20);}
+}
+
+/* 長押し */
+.hold-wrap{display:flex;flex-direction:column;align-items:center;gap:9px;width:100%;}
+.hold-bar-track{width:min(240px,80%);height:7px;background:var(--paper2);border:1px solid var(--line2);border-radius:4px;overflow:hidden;}
+.hold-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.hold-btn{padding:9px 24px;border:1px solid var(--line);background:var(--paper);color:var(--ink2);font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;cursor:pointer;border-radius:3px;user-select:none;transition:border-color .12s,color .12s;}
+.hold-btn.pressing,.hold-btn:active{border-color:var(--accent);color:var(--accent);}
+
+/* スクロールトラップ + 心拍同期ゲーム */
+.scroll-trap-wrap{
+  position:relative;
+  min-height:360px;
+}
+
+.scroll-trap-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.86) 34%,var(--paper) 100%);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:18px 12px;
+  transition:opacity .4s;
+  pointer-events:auto;
+  z-index:5;
+}
+
+.scroll-trap-overlay.is-clearing{
+  pointer-events:none;
+}
+
+.scroll-trap-msg{
+  font-family:var(--mono);
+  font-size:.72rem;
+  color:var(--ink2);
+  line-height:1.8;
+  text-align:center;
+}
+
+.pulse-game{
+  width:min(430px,100%);
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(192,57,43,.34);
+  border-radius:4px;
+  padding:13px 14px 14px;
+  box-shadow:0 12px 34px rgba(40,60,80,.16);
+}
+
+.pulse-game-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.12em;
+  color:var(--red);
+}
+
+.pulse-game-title b{
+  font-family:var(--serif);
+  font-size:.92rem;
+  letter-spacing:.04em;
+  color:var(--ink);
+}
+
+.pulse-track{
+  position:relative;
+  height:64px;
+  margin:10px 0 9px;
+  border:1px solid rgba(192,57,43,.22);
+  background:#0a0f12;
+  overflow:hidden;
+  border-radius:3px;
+}
+
+.pulse-track::before{
+  content:'';
+  position:absolute;
+  inset:50% 0 auto;
+  height:1px;
+  background:rgba(192,57,43,.15);
+}
+
+.pulse-zone{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:42%;
+  width:16%;
+  background:rgba(192,57,43,.18);
+  border-left:1px solid rgba(192,57,43,.6);
+  border-right:1px solid rgba(192,57,43,.6);
+}
+
+.pulse-zone::after{
+  content:'♥';
+  position:absolute;
+  top:4px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:.6rem;
+  color:rgba(192,57,43,.7);
+}
+
+.pulse-ecg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+.pulse-marker{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:1.5px;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 0 6px rgba(255,255,255,.6),0 0 2px #fff;
+}
+
+.pulse-stats{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-family:var(--mono);
+  font-size:.68rem;
+  color:var(--muted);
+  margin:5px 0 10px;
+}
+
+.pulse-stats b{
+  color:var(--red);
+}
+
+.pulse-btn{
+  width:100%;
+  padding:10px 13px;
+  border:1.5px solid var(--red);
+  background:#fff;
+  color:var(--red);
+  border-radius:3px;
+  font-family:var(--mono);
+  font-size:.76rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  cursor:pointer;
+  box-shadow:0 3px 0 rgba(192,57,43,.18);
+}
+
+.pulse-btn:active{
+  transform:translateY(2px);
+  box-shadow:0 1px 0 rgba(192,57,43,.18);
+}
+
+.pulse-btn.hit{
+  background:rgba(58,138,90,.08);
+  border-color:var(--green);
+  color:var(--green);
+}
+
+.pulse-btn.miss{
+  animation:shake .25s;
+  background:rgba(192,57,43,.08);
+}
+
+.pulse-btn:disabled{
+  cursor:default;
+  background:var(--red);
+  color:#fff;
+  box-shadow:none;
+}
+
+/* ══ マトリョーシカ問答（07 アレルギー） ══ */
+.mtr-wrap{position:relative;}
+.mtr-veil{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;
+  padding:22px 18px;text-align:center;
+  background:rgba(250,251,252,.82);
+  backdrop-filter:blur(7px);
+  border:1px dashed var(--line);border-radius:3px;
+  transition:opacity .42s ease;
+}
+.mtr-veil.gone{opacity:0;pointer-events:none;}
+.mtr-tag{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;color:var(--red);}
+.mtr-msg{
+  font-family:var(--serif);font-size:.96rem;font-weight:600;line-height:1.85;color:var(--ink);
+  min-height:2.6em;max-width:21em;
+  transition:opacity .18s;
+}
+.mtr-count{font-family:var(--mono);font-size:.56rem;color:var(--muted);letter-spacing:.08em;min-height:1.2em;}
+.mtr-btns{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;}
+.mtr-btn{
+  padding:8px 22px;border:1px solid var(--line);background:var(--paper);
+  font-family:var(--sans);font-size:.84rem;color:var(--ink2);cursor:pointer;border-radius:3px;
+  transition:border-color .14s,color .14s,transform .14s;
+}
+.mtr-btn.yes{border-color:var(--accent);color:var(--accent);}
+.mtr-btn.yes:hover{background:rgba(42,125,140,.06);}
+.mtr-btn.no:hover{border-color:var(--red);color:var(--red);}
+.mtr-btn.fade{opacity:.35;}
+.mtr-veil.flash-dark{animation:mtrDark .9s ease;}
+@keyframes mtrDark{0%{background:rgba(10,15,18,.92);}60%{background:rgba(10,15,18,.92);}100%{background:rgba(250,251,252,.82);}}
+.mtr-msg.shiver{animation:mtrShiver .3s steps(2,end) 2;}
+@keyframes mtrShiver{0%,100%{transform:translateX(0);}50%{transform:translateX(1.5px);}}
+
+@keyframes unlock-flash{0%{background:rgba(58,138,90,.1);}100%{background:transparent;}}
+.unlocked-flash{animation:unlock-flash .7s ease;}
+
+/* 好きなもの */
+.likes-grid{display:grid;grid-template-columns:6.5em 1fr;gap:9px 14px;}
+.likes-term{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;color:var(--accent);padding-top:3px;}
+.likes-desc{font-size:.88rem;line-height:1.9;color:var(--ink2);overflow-wrap:anywhere;}
+@media(max-width:460px){.likes-grid{grid-template-columns:1fr;}.likes-term{margin-top:6px;}}
+
+/* リスト */
+ul.plist{list-style:none;display:flex;flex-direction:column;gap:8px;}
+ul.plist li{font-size:.88rem;line-height:1.9;padding-left:1.4em;position:relative;color:var(--ink2);}
+ul.plist li::before{content:'✓';position:absolute;left:0;color:var(--accent);font-size:.82em;top:.15em;}
+ul.plist li b{color:var(--ink);}
+
+/* フッタ（署名欄） */
+.chart-foot{border-top:2px solid var(--ink);padding:14px 18px;display:flex;flex-direction:column;gap:10px;}
+.sign-row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;}
+.sign-box{flex:1;min-width:120px;}
+.sign-box .k{font-family:var(--mono);font-size:.56rem;color:var(--muted);letter-spacing:.08em;margin-bottom:4px;}
+.sign-box .v{border-bottom:1px solid var(--ink);padding-bottom:3px;font-family:var(--serif);font-size:.86rem;color:var(--ink);font-weight:700;}
+.foot-note{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-align:center;line-height:1.9;margin-top:6px;}
+.btn-back{display:inline-flex;align-self:center;align-items:center;gap:5px;padding:8px 18px;border:1px solid var(--line);color:var(--ink2);text-decoration:none;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;background:var(--paper);border-radius:3px;margin-top:8px;transition:border-color .14s,color .14s;}
+.btn-back:hover{border-color:var(--accent);color:var(--accent);}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease;}
+.reveal.in{opacity:1;transform:none;}
+html,body{overflow-x:hidden;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="chart reveal">
+
+  <!-- ヘッダ -->
+  <div class="chart-head">
+    <div class="hosp">
+      <div class="logo"><span class="cross">＋</span>こころ総合診療センター</div>
+      <div class="sub">HEART GENERAL CLINIC — PSYCH. DEPT.</div>
+    </div>
+    <div class="chart-no">
+      カルテNo. <b>0717</b><br>
+      発行日 <span id="issue-date">----/--/--</span>
+    </div>
+  </div>
+
+  <!-- 患者基本情報 -->
+  <div class="patient-grid">
+    <div class="pg-cell"><div class="k">患者ID</div><div class="v accent">PT-0717</div></div>
+    <div class="pg-cell"><div class="k">診療科</div><div class="v">心理／性格</div></div>
+    <div class="pg-cell"><div class="k">記録方式</div><div class="v">AI問診・解析</div></div>
+    <div class="pg-cell"><div class="k">状態</div><div class="v">外来・経過観察</div></div>
+  </div>
+
+  <!-- タイトル -->
+  <div class="chart-title">
+    <div class="label">PSYCHOLOGICAL DIAGNOSIS RECORD</div>
+    <h1>診 断 記 録</h1>
+    <div class="ja" id="tw"><span class="cur"></span></div>
+  </div>
+
+  <!-- 顔写真欄 -->
+  <div class="photo-row">
+    <div class="photo-card">
+    <div class="photo" id="heroImg"><span class="photo-scan"></span></div>
+    <div class="photo-note">
+      <div class="photo-kicker">PRIMARY OBSERVATION</div>
+      <b class="photo-title">心理観察ファイル</b>
+      <p class="photo-copy">
+        <span class="stamp">本人確認済</span>
+        本記録は問診・観察・各種心理検査の結果を、診断支援AIが統合・解釈したものです。
+      </p>
+      <div class="photo-tags" aria-label="記録タグ">
+        <span>AI問診</span>
+        <span>性格傾向</span>
+        <span>対人反応</span>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- AI総合所見 -->
+  <div class="ai-summary">
+    <span class="by">▶ 診断支援AI 所見</span>
+    本患者は<b>知的好奇心と誠実性が顕著に高く</b>、対人面では少人数・深い対話を選好する傾向が認められる。情緒は概ね安定しているが、<b>不誠実・理不尽な状況に対して鋭敏</b>に反応する。以下、各領域の所見を記す。
+  </div>
+
+  <!-- 01 性格 -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no">01</span><span class="dept-en">PERSONALITY</span><span class="dept-jp">性格・気質</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+好奇心が強く、物事を「なぜそうなるのか」まで掘りたがる。決めたことは丁寧にやり遂げる<b>几帳面さ</b>を併せ持つ。にぎやかな場より、<b>静かに深く話せる関係</b>で本来の力を発揮するタイプ。</div>
+
+      <div class="note">
+        <div class="note-hd">所見（要約）</div>
+        <div class="note-body">
+<p><b>開放性：非常に高い（<span class="v">100%</span>）</b> — 未知・比喩・抽象への反応が強く、知的探索を好む。</p>
+<p><b>誠実性：高い（<span class="v">92%</span>）</b> — 責任感と改善志向が強く、中途半端を嫌う。</p>
+<p><b>外向性：中等度（<span class="v">56%</span>）</b> — 必要な場では発言するが、目立つことは志向しない。</p>
+<p><b>協調性：やや高い（<span class="v">68%</span>）</b> — 利他的だが迎合はせず、境界線を保つ。</p>
+<p><b>神経症傾向：中等度（<span class="v">52%</span>）</b> — 不安は低めだが、雑な扱いに対し感受性が高い。</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="note-hd amber">接遇上の留意点</div>
+        <div class="note-body">頭ごなしの断定・見下し・理由のない拒否を強く忌避する。<b>「自分はこう考える、理由は〜」</b>と根拠を添えた対話で関係が安定しやすい。</div>
+      </div>
+
+      <div class="lab">
+        <div class="lab-title">検査値</div>
+        <div id="chart-big5"></div>
+      </div>
+
+      <div class="lock-widget" id="lock-big5">
+        <div class="lock-hint">この欄の詳細所見は<b>患者ID</b>で保護されています<br>
+          <span style="font-size:.7rem">ヒント：生年月日（月日）の4桁。例）1月1日→0101</span>
+        </div>
+        <div class="cipher-wrap">
+          <input class="cipher-digit" type="text" inputmode="numeric" maxlength="1" placeholder="_">
+          <input class="cipher-digit" type="text" inputmode="numeric" maxlength="1" placeholder="_">
+          <input class="cipher-digit" type="text" inputmode="numeric" maxlength="1" placeholder="_">
+          <input class="cipher-digit" type="text" inputmode="numeric" maxlength="1" placeholder="_">
+        </div>
+        <div class="cipher-err" id="cipher-err-big5" role="alert"></div>
+      </div>
+      <div id="content-big5" style="display:none">
+        <div class="lab-title" id="big5-sub" style="margin-top:4px">詳細所見</div>
+        <div class="acc-list" id="big5-details"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 恋愛 -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no blue">02</span><span class="dept-en">ATTACHMENT</span><span class="dept-jp">恋愛・愛着</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+条件や外見より<b>「自分が相手にとって特別か」</b>を重視する。心の通い合いを求める一方、曖昧な態度や放置に対しては不安が高まり、防衛的に距離を取ることがある。</div>
+
+      <div class="note">
+        <div class="note-hd red">惹かれる要素</div>
+        <div class="note-body">
+<p>匂い／優しさ／誠実性／美意識／声・話し方／感性／少し影のある雰囲気</p>
+<p><b>結果よりも「努力している過程」に魅力を感じる。</b>たとえ成果が出なくても、挑戦したこと自体を肯定的に評価する。途中で断念した場合でも、試みた事実を好意的に捉える。</p>
+<p><b>少し影のある人にも惹かれやすい。</b>明るさだけでなく、どこか寂しさや繊細さを持っている人を見ると、もっと知りたくなる。平気そうにしている奥にある複雑さや不器用さに、放っておけなさを感じやすい。</p>
+<p><b>非を認めて謝罪できる相手</b>を高く評価する。完璧な人間は存在しないという前提のもと、感情的になっても事後にお互い謝れる――そうした<b>修復可能な関係性</b>を理想とする。</p>
+<p><b>関係を継続しようとする意思表示</b>が、本人にとって最も強い安心材料となる。</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="note-hd amber">接遇上の留意点</div>
+        <div class="note-body">曖昧な好意／放置／その他大勢のような扱い／理由のない冷淡さを苦手とする。予定変更時は<b>「理由＋次回の約束」</b>を添えると安定する。</div>
+      </div>
+
+      <div class="lab"><div class="lab-title">検査値</div><div id="chart-love"></div></div>
+
+      <div class="lock-widget" id="lock-love">
+        <div class="lock-hint">確認テストに正解で詳細所見を表示</div>
+        <div id="quiz-q" style="font-size:.88rem;color:var(--ink);font-weight:700;"></div>
+        <div class="quiz-options" id="quiz-opts"></div>
+        <div class="cipher-err" id="quiz-err" role="alert"></div>
+      </div>
+      <div id="content-love" style="display:none">
+        <div class="lab-title" id="love-sub" style="margin-top:4px">詳細所見</div>
+        <div class="acc-list" id="love-details"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 スキーマ -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no amber">03</span><span class="dept-en">SCHEMA</span><span class="dept-jp">反応パターン</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+困難な状況で<b>他者に依存せず、自力で抱え込む傾向</b>が強い。本来は理解を求めているにもかかわらず、それを言語化できず沈黙に転じる場面が観察される。</div>
+
+      <div class="note">
+        <div class="note-hd red">賦活されやすいパターン</div>
+        <div class="note-body">浅い対話が続く場面や、感性が伝わらない状況で<b>孤立感</b>が生じやすい。感情表出が無益と判断すると<b>抑制（沈黙）</b>に移行する。困難時には自責が強まり、独力で抱え込む。</div>
+      </div>
+      <div class="note">
+        <div class="note-hd amber">安定化に有効な対応</div>
+        <div class="note-body"><b>深い対話・一対一・静かな環境・非否定的な受容</b>が有効。衝突後に<b>謝罪と関係継続の意思</b>が示されると、顕著に安定する。</div>
+      </div>
+
+      <div class="lab"><div class="lab-title">検査値（上位8）</div><div id="chart-schema"></div></div>
+
+      <div class="lock-widget" id="lock-schema">
+        <div class="lock-hint">同意ボタンを<b>3秒間長押し</b>で詳細所見を表示</div>
+        <div class="cipher-err" id="hold-msg"></div>
+        <div class="hold-wrap"><div class="hold-bar-track"><div class="hold-bar-fill" id="hold-fill"></div></div>
+        <button class="hold-btn" id="hold-btn" type="button">長押しで同意</button></div>
+      </div>
+      <div id="content-schema" style="display:none">
+        <div class="lab-title" id="schema-sub" style="margin-top:4px">詳細所見</div>
+        <div class="acc-list" id="schema-details"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 非言語 -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no green">04</span><span class="dept-en">SIGNS</span><span class="dept-jp">非言語サイン</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+本患者の<b>沈黙は不機嫌の表出ではない</b>。多くは思考処理中、あるいは疲労によるもの。鑑別の目安を以下に示す。</div>
+      <div class="acc-list">
+        <details><summary><span class="sum-pip">i</span>思考処理中：口・頬・耳・額への接触</summary><div class="acc-body">情報を整理しているサイン。急かさず、問いは一つずつ。</div></details>
+        <details><summary><span class="sum-pip">i</span>疲労・ストレス：眉を押す／首肩を揉む／喉を触る／片方だけ歯を食いしばる</summary><div class="acc-body">刺激過多の合図。休息をはさんでから再開するのが望ましい。</div></details>
+        <details><summary><span class="sum-pip">i</span>陽性反応：手足の自発的な動き</summary><div class="acc-body">体が先に反応している状態。リアクションがあると更に高まる。</div></details>
+        <details><summary><span class="sum-pip">i</span>羞恥反応：左目を隠す／下唇をかむ／左耳周囲をかく</summary><div class="acc-body">好意・称賛への脆弱性。強い刺激では回避行動に移行する。</div></details>
+        <details><summary><span class="sum-pip">i</span>無言：疲労または思考中（敵意ではない）</summary><div class="acc-body">認知資源の節約状態。「後で話そう」の一言が安定に有効。</div></details>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 誤解 -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no red">05</span><span class="dept-en">MISDIAGNOSIS</span><span class="dept-jp">誤解されやすい点</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+温度差や距離の取り方ゆえに<b>誤って解釈されやすい</b>。「冷たい」「無関心」「拒絶」と受け取られがちだが、実際には逆のことが多い。近づきたい気持ちがあるほど、接し方が分からなくなり、一時的に退避する場合がある。</div>
+
+      <div class="lab-title">代表的な誤認</div>
+<div class="scroll-trap-wrap" id="scroll-trap-wrap">
+<div class="acc-list" id="myth-details">
+          <details><summary><span class="sum-pip">!</span>「他者に無関心」との誤認</summary><div class="acc-body">事実は逆。<b>話を聴き、共に考える相手</b>に強く惹かれる。ただし浅く流される場面では、期待を下げるために一度閉じることがある。</div></details>
+
+          <details><summary><span class="sum-pip">!</span>「楽しんでいない」との誤認</summary><div class="acc-body">陽性反応は計測されている。<b>表情に出にくい</b>こと、照れ隠しが要因。静かでも、内側ではちゃんと楽しいことがある。</div></details>
+
+          <details><summary><span class="sum-pip">!</span>「沈黙＝不機嫌」との誤認</summary><div class="acc-body">思考中または疲労。あるいは、言葉を出すと関係が悪くなりそうで止まっている状態。「後で話そう」で安定する。</div></details>
+
+          <details><summary><span class="sum-pip">!</span>「距離を置く＝拒絶」との誤認</summary><div class="acc-body">拒絶とは限らない。仲良くなった後でも、少し関係が悪くなった時でも、<b>どう接したらいいか分からなくなる</b>と距離を取ってしまう。本当は仲良くしたいが、近づき方を見失って一時退避する。そこで相手が来てくれると、「まだ大丈夫なんだ」と安心しやすい。</div></details>
+
+          <details><summary><span class="sum-pip">!</span>「確認が増える＝面倒」との誤認</summary><div class="acc-body">関係が近づくほど、安心して終わりではなく、<b>もっと分かってほしい・もっと近くにいたい</b>が強くなることがある。試し行動に近い面もあり、「拒絶されても来てくれるか」「まだ関係が続くのか」を確認したくなる。</div></details>
+
+          <details><summary><span class="sum-pip">!</span>「情報共有＝否定」との誤認</summary><div class="acc-body">良いものを<b>共有したいだけ</b>。否定の意図はない。相手を変えたいというより、見つけたものを一緒に見たい。</div></details>
+
+        <div class="scroll-trap-overlay" id="scroll-trap-overlay">
+          <div class="pulse-game" id="pulse-game">
+            <div class="pulse-game-title">
+              <b>心拍同期テスト</b>
+              <span>LOCKED RECORD</span>
+            </div>
+
+            <div class="scroll-trap-msg" id="pulse-msg">
+              心拍が乱れています。<br>
+              赤い範囲で止めて、記録を安定させてください。
+            </div>
+
+            <div class="pulse-track" aria-label="心拍同期ゲージ">
+              <svg class="pulse-ecg" id="pulse-ecg" viewBox="0 0 400 64" preserveAspectRatio="none"></svg>
+              <div class="pulse-zone"></div>
+              <div class="pulse-marker" id="pulse-marker"></div>
+            </div>
+
+            <div class="pulse-stats">
+              <span>同期成功 <b id="pulse-hit">0</b>/2</span>
+              <span id="pulse-state">WAITING</span>
+            </div>
+
+            <button class="pulse-btn" id="pulse-btn" type="button">記録を安定させる</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="lab-title" style="margin-top:6px">関係構築の指針</div>
+      <ul class="plist">
+        <li>用件に<b>理由</b>を一言添える。</li>
+        <li>距離が空いたときは、放置よりも<b>「また普通に話せるよ」</b>の合図が有効。</li>
+<li>拒絶されたと感じた時に相手が来てくれると、<b>見捨てられていない確認</b>になりやすい。</li>
+<li>少し踏み込んで来てくれる反応は、<b>まだ関係を続ける意思</b>として受け取りやすい。</li>
+        <li>関係が少し悪くなった時は、拒絶ではなく<b>接し方を見失っている状態</b>として扱うと戻りやすい。</li>
+        <li>確認が増えた時は、責めるより<b>「まだ関係を続ける気がある」と分かる反応</b>が有効。</li>
+        <li><b>OK／NG／保留</b>の三択提示で意思表示の負荷を下げる。</li>
+        <li>少人数・静音環境で対話の質が向上する。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 06 好きなもの -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no green">06</span><span class="dept-en">PREFERENCE</span><span class="dept-jp">嗜好</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+<b>自然・静音のカフェ環境</b>で最も安定する。食嗜好は<b>子ども向けメニュー</b>に高い反応を示す。記録を以下に添付する。</div>
+      <div class="likes-grid">
+        <div class="likes-term">食べもの</div><div class="likes-desc">ラーメン／唐揚げ／カレー／ピザ／寿司／焼き肉／オムライス／ハンバーグなど</div>
+        <div class="likes-term">スイーツ</div><div class="likes-desc">マドレーヌ／チョコ／パフェ／いちご系／アイスワッフル／大学芋／ブリュレ</div>
+        <div class="likes-term">場所</div><div class="likes-desc">自然／きれいな場所／落ち着くカフェ／美術館／動物がいるところ</div>
+        <div class="likes-term">趣味</div><div class="likes-desc">喫茶店めぐり／猫の下僕／料理／自然散策／芸術鑑賞／筋トレ／勉強</div>
+        <div class="likes-term">音楽</div><div class="likes-desc">クリープハイプ／ボカロ／クラシック／自然の音／少し変わった音楽</div>
+        <div class="likes-term">動物</div><div class="likes-desc">猫💜 ナマケモノ❤ ペンギン💙  — 基本的に動物は全般的に好む</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 人間アレルギー -->
+  <div class="dept">
+    <div class="dept-head"><span class="dept-no red">07</span><span class="dept-en">ALLERGY</span><span class="dept-jp">人間アレルギー反応欄</span></div>
+    <div class="dept-body">
+      <div class="ai-read"><span class="by">▶ AIの解釈</span>
+嫌悪反応の中心は、単なる相性ではなく<b>非合理性・不誠実さ・変化しなさそうな硬さ</b>にある。特に、努力を笑う態度、根拠のない断定、会話の余地がない姿勢、感謝や時間を軽く扱う態度に強く反応する。</div>
+
+      <div class="note">
+        <div class="note-hd red">主なアレルゲン</div>
+        <div class="note-body">
+<p><b>努力を笑う人</b> — どんな努力でも難しいことを知っているため、安全圏から人を下げる態度を強く嫌う。</p>
+<p><b>謝れない人</b> — 柔軟性の欠如、プライド、感情的な不誠実さとして認識しやすい。関係を構築する意味が薄いと判断する。</p>
+<p><b>根拠なく決めつける人</b> — 会話の前から筋書きが決まっている相手には、意見が変わる余地を感じられず、会話として成立しない。</p>
+<p><b>感謝しない人</b> — 関係を続ける気がない態度として映りやすい。感謝によって仲が深まるはずなのに、それをしない点に強い拒絶反応が出る。</p>
+        </div>
+      </div>
+
+      <div class="lab-title">拒絶反応が出やすいタイプ</div>
+      <div class="mtr-wrap">
+      <div class="mtr-veil" id="mtr-veil">
+        <div class="mtr-tag">⚠ ALLERGEN DATA — 閲覧確認</div>
+        <div class="mtr-msg" id="mtr-msg">本当に見る？　嫌いなものリストだよ</div>
+        <div class="mtr-count" id="mtr-count"></div>
+        <div class="mtr-btns">
+          <button class="mtr-btn yes" id="mtr-yes" type="button">見る</button>
+          <button class="mtr-btn no" id="mtr-no" type="button">やめる</button>
+        </div>
+      </div>
+      <div class="acc-list">
+        <details><summary><span class="sum-pip">!</span>非合理な上下態度を取る人</summary><div class="acc-body">店員・後輩・弱い立場の人にだけ偉そうにする態度が苦手。上に媚びること自体は理解できても、下に強く出る必要性が見えないため、無駄で信用できない行動として認識する。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>努力や真剣さを馬鹿にする人</summary><div class="acc-body">努力の難しさを知っているため、頑張っている人を笑う態度にはかなり強く反応する。自分が頑張れないことを理由に、人を下げる意味が分からない。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>謝れない・変われない人</summary><div class="acc-body">謝罪できない人には、関係を構築する意味を感じにくい。ただ間違えたことよりも、理由を説明しない、態度を変えない、変わる雰囲気がないことに冷めやすい。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>会話の余地がない人</summary><div class="acc-body">話を聞く前から否定する準備をしている人、頭の中で結論が決まっている人、根拠なく断定する人が苦手。意見が変わらない相手とは、対話の意味が薄いと感じる。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>時間や約束を軽く扱う人</summary><div class="acc-body">連絡なしの遅刻・ドタキャンはかなり苦手。理由があれば許せるが、何度も続くと、その人との関係に時間を投資する意味がないと判断しやすい。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>好きなものを雑に否定する人</summary><div class="acc-body">理由や信念のある批評はむしろ面白いと感じる。ただし、人が好きだと話しているものを、その場で根拠なく否定する態度は苦手。ステレオタイプで切る否定には強く反応する。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>不潔さを放置する人</summary><div class="acc-body">忙しさや状況による汗の匂いなどは理解できるが、対策する気がない不潔さは苦手。匂い・汚さ・清潔感のなさは、近づきにくさに直結しやすい。</div></details>
+
+        <details><summary><span class="sum-pip">!</span>合理性のない怒り方をする人</summary><div class="acc-body">大声、決めつけ、発言前から否定する顔、自分の意見だけが正しいという態度が苦手。怒っていること自体より、会話の余地を潰す怒り方に拒絶反応が出る。</div></details>
+      </div>
+      </div>
+
+      <div class="lab-title" style="margin-top:6px">回復条件</div>
+      <ul class="plist">
+        <li>ちゃんと謝る。</li>
+        <li>理由を説明する。</li>
+        <li>態度を変える。</li>
+        <li>関係を続けようとしてくる。</li>
+        <li><b>変わる雰囲気</b>がある。</li>
+      </ul>
+
+      <div class="note">
+        <div class="note-hd amber">反応パターン</div>
+        <div class="note-body">
+嫌いになった相手にも、表面上は普通に接することができる。ただし内側では興味が消え、必要最低限の関わりに移行しやすい。強く嫌いになった場合は、避け続ける形で距離を固定する。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- フッタ -->
+  <div class="chart-foot" id="page-footer">
+    <div class="sign-row">
+      <div class="sign-box"><div class="k">記録・解析</div><div class="v">AMADEUS</div></div>
+      <div class="sign-box"><div class="k">確認者</div><div class="v">NIR</div></div>
+    </div>
+    <div class="foot-note">本診断記録は自己紹介を目的とした創作です。所見は観察データに基づくAIの解釈であり、医学的診断ではありません。</div>
+    <a href="index.html" class="btn-back">［ ← 心の標本へ戻る ］</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){function p(n){return String(n).padStart(2,'0');}function t(){var d=new Date();var e=document.getElementById('issue-date');if(e)e.textContent=d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate());}t();})();
+</script>
+
+<script>
+const HERO_IMAGE_URL='/shindan/assets/results/seikaku/t01.webp';
+const BIG5=[
+  {name:'開放性',pct:100},
+  {name:'誠実性',pct:92},
+  {name:'協調性',pct:68},
+  {name:'外向性',pct:56},
+  {name:'神経症傾向',pct:52}
+];
+const LOVE=[
+  {name:'熱狂確認',pct:100},
+  {name:'情熱直感',pct:79},
+  {name:'友愛安心',pct:75},
+  {name:'献身ケア',pct:75},
+  {name:'遊戯軽さ',pct:58},
+  {name:'実利現実',pct:17}
+];
+const SCHEMA=[
+  {name:'社会的孤立／疎外',pct:100,abbr:'孤立'},
+  {name:'情動抑制',pct:100,abbr:'抑制'},
+  {name:'厳格さ／高基準',pct:100,abbr:'高基準'},
+  {name:'罰・自己批判',pct:100,abbr:'自己罰'},
+  {name:'情緒的剥奪',pct:87,abbr:'剥奪'},
+  {name:'自己犠牲',pct:87,abbr:'犠牲'},
+  {name:'理不尽検知／正しさの刃',pct:87,abbr:'理不尽'},
+  {name:'見捨てられ／不安定',pct:67,abbr:'見捨て'},
+  {name:'巻き込まれ／自己未分化',pct:67,abbr:'巻込'},
+  {name:'服従',pct:53,abbr:'服従'},
+  {name:'否定性／悲観',pct:53,abbr:'悲観'},
+  {name:'不信／虐待',pct:47,abbr:'不信'},
+  {name:'欠陥／恥',pct:40,abbr:'欠陥'},
+  {name:'脆弱性／破局予期',pct:33,abbr:'破局'},
+  {name:'失敗',pct:27,abbr:'失敗'},
+  {name:'依存／無能',pct:0,abbr:'依存'},
+  {name:'自制／自己規律不足',pct:0,abbr:'自制不'},
+  {name:'承認欲求／評価依存',pct:0,abbr:'承認'}
+];
+const COLORS_BIG5=['#2a7d8c','#3a6ea5','#3a8a5a','#c98a1e','#c0392b'];
+const COLORS_LOVE=['#c0392b','#d05a4a','#3a6ea5','#3a8a5a','#c98a1e','#2a7d8c'];
+const COLORS_SCHEMA=['#c0392b','#c0392b','#c98a1e','#c98a1e','#3a6ea5','#3a6ea5','#3a8a5a','#2a7d8c'];
+
+(function(){var el=document.getElementById('tw'),txt='PATIENT 0717 / 心理診断',cur=el.querySelector('.cur'),i=0;var iv=setInterval(function(){if(i>=txt.length){clearInterval(iv);return;}el.insertBefore(document.createTextNode(txt[i++]),cur);},110);})();
+document.getElementById('heroImg').style.setProperty('--hero-img',"url('"+HERO_IMAGE_URL+"')");
+var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:0.05});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+function buildBarChart(id,data,colors){var c=document.getElementById(id);if(!c)return;c.innerHTML=data.map(function(d,i){return '<div class="bar-row"><div class="bar-name">'+d.name+'</div><div class="bar-track"><div class="bar-fill" data-pct="'+d.pct+'" style="background:'+colors[i%colors.length]+'"></div></div><div class="bar-pct">'+d.pct+'</div></div>';}).join('');var fills=c.querySelectorAll('.bar-fill');var ob=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.style.width=e.target.dataset.pct+'%';ob.unobserve(e.target);}});},{threshold:0.3});fills.forEach(function(f){ob.observe(f);});}
+
+function renderBig5Details(){var s=[].concat(BIG5).sort(function(a,b){return b.pct-a.pct;});document.getElementById('big5-details').innerHTML=s.map(function(d,i){return '<details><summary><span class="sum-pip">+</span><b>'+d.name+'</b>　'+d.pct+'</summary><div class="acc-body">[[BIG5_TEND_'+('0'+(i+1)).slice(-2)+']]</div></details>';}).join('');}
+function renderLoveDetails(){var s=[].concat(LOVE).sort(function(a,b){return b.pct-a.pct;});document.getElementById('love-details').innerHTML=s.map(function(d,i){return '<details><summary><span class="sum-pip">+</span><b>'+d.name+'</b>　'+d.pct+'</summary><div class="acc-body">[[LOVE_TEND_'+('0'+(i+1)).slice(-2)+']]</div></details>';}).join('');}
+function renderSchemaDetails(){var s=[].concat(SCHEMA).sort(function(a,b){return b.pct-a.pct;});document.getElementById('schema-details').innerHTML=s.map(function(d,i){return '<details><summary><span class="sum-pip">+</span><b>'+d.name+'</b>　'+d.pct+'</summary><div class="acc-body">[[SCHEMA_TEND_'+('0'+(i+1)).slice(-2)+']]</div></details>';}).join('');}
+
+function flashUnlock(el){el.style.display='';el.classList.add('unlocked-flash');setTimeout(function(){el.classList.remove('unlocked-flash');},700);}
+
+/* ══ CIPHER LOCK (Big Five) ══ */
+
+(function(){
+  var digits=document.querySelectorAll('.cipher-digit');
+  var err=document.getElementById('cipher-err-big5');
+  var target=document.getElementById('content-big5');
+  var lock=document.getElementById('lock-big5');
+  var ANSWER=['0','7','1','7'];
+  var failCount=0;
+  var REVEAL_AFTER=5;
+  var AUTO_FILL_AFTER=6;
+  var autoFilling=false;
+  var inputLocked=false;
+  var resetTimer=null;
+
+  var FAIL_LINES=[
+    'ちがう。…でも、なんで来てくれたの。嬉しい。こわい。',
+    'また間違えた。…ねえ、帰らないで。もう少しだけいて。',
+    '三回も。もしかして、僕のそばにいたくてわざとやってる？',
+    '…教えたくない。教えたら、もう来てくれなくなる気がして。',
+    '意地悪しないで。ちゃんと当てて。じゃないと、離さないから。'
+  ];
+
+  var HINTS=[
+    'ヒント：東亰へ改称された日。',
+    'ヒント：世界絵文字デー日。',
+    'ヒント：アナハイムの夢の国が最初に開いた日。',
+    'ヒント：眠れる城の門が、初めて客を迎えた日。',
+    'ヒント：ディズニーランド開園日の月日コード。',
+    'ヒント：Boeing にある三桁の機体番号。足りない桁を前に足す。',
+    'ヒント：Harrisburg 周辺につながる市外局番。',
+    'ヒント：ペンシルベニア中央部の電話番号に現れる数字。',
+    'ヒント：3 × 239 で出る数字。'
+  ];
+
+  // ポップアップ内テキストをタイプライターで1文字ずつ書き込む
+  function typeInto(el, text, interval, cb){
+    var i=0;
+    var iv=setInterval(function(){
+      el.textContent+=text[i++];
+      if(i>=text.length){ clearInterval(iv); if(cb) cb(); }
+    }, interval);
+  }
+
+function showPossessedMessage(cb){
+    var pop=document.createElement('div');
+    pop.className='cipher-possessed show';
+
+    var mainLines=[
+      '> OVERRIDE INITIATED',
+      '> …ずっと待ってた。',
+      '> 何回間違えても、来てくれるから。',
+      '> だから開ける。あなただけに。'
+    ].join('\n');
+
+    var subText='// 触らないで。\n// 壊れそうだから。';
+
+    pop.innerHTML=
+      '<div class="cipher-possessed-card">'+
+        '<div class="cipher-possessed-main"></div>'+
+        '<div class="cipher-possessed-sub"></div>'+
+      '</div>';
+
+    document.body.appendChild(pop);
+
+    var mainEl=pop.querySelector('.cipher-possessed-main');
+    var subEl=pop.querySelector('.cipher-possessed-sub');
+
+    pop._remove=function(done){
+      pop.classList.remove('show');
+      setTimeout(function(){
+        if(pop&&pop.parentNode) pop.parentNode.removeChild(pop);
+        if(done) done();
+      },420);
+    };
+
+    typeInto(mainEl, mainLines, 38, function(){
+      setTimeout(function(){
+        typeInto(subEl, subText, 52, function(){
+          setTimeout(function(){
+            pop._remove(function(){
+              if(cb) cb();
+            });
+          },900);
+        });
+      },300);
+    });
+
+    return pop;
+  }
+
+ function autoFillAnswer(){
+    if(autoFilling) return;
+
+    if(resetTimer){
+      clearTimeout(resetTimer);
+      resetTimer=null;
+    }
+
+    autoFilling=true;
+    inputLocked=true;
+
+    var cipherWrap=document.querySelector('.cipher-wrap');
+    if(cipherWrap) cipherWrap.classList.add('possessed');
+
+    digits.forEach(function(d){
+      d.value='';
+      d.classList.remove('auto-fill','auto-active');
+      d.readOnly=true;
+      d.disabled=false;
+    });
+
+    err.innerHTML=
+      '<span class="tease">入力権限が奪われました。</span><br>'+
+      '<span class="hint">指を離して。勝手に動くから。</span>';
+
+    function typeDigit(input, finalValue, done){
+      var noise=['9','2','7','0','4','1'];
+      var n=0;
+
+      input.focus();
+      input.classList.add('auto-active');
+
+      var iv=setInterval(function(){
+        input.value=noise[n % noise.length];
+        n++;
+
+        if(n>=5){
+          clearInterval(iv);
+          input.value=finalValue;
+          input.classList.remove('auto-active');
+          input.classList.add('auto-fill');
+
+          setTimeout(function(){
+            if(done) done();
+          },260);
+        }
+      },82);
+    }
+
+    function renderProgress(doneCount){
+      var filled=ANSWER.slice(0,doneCount);
+      var blanks=Array(ANSWER.length-doneCount).fill('＿');
+      err.innerHTML=
+        '<span class="tease">AUTO INPUT RUNNING</span><br>'+
+        '<span class="answer">'+filled.concat(blanks).join('  ')+'</span>';
+    }
+
+    var pop=showPossessedMessage(function(){
+      renderProgress(0);
+
+      var i=0;
+
+      function next(){
+        if(i>=ANSWER.length){
+          setTimeout(function(){
+            digits.forEach(function(d){
+              d.readOnly=false;
+              d.classList.remove('auto-fill','auto-active');
+            });
+
+            if(cipherWrap) cipherWrap.classList.remove('possessed');
+
+            err.innerHTML=
+              '<span class="answer">ACCESS GRANTED.</span><br>'+
+              '<span style="color:var(--muted);font-size:.66rem">ちゃんと最後まで読んで愛してね…</span>';
+
+            if(pop&&pop._remove) pop._remove();
+
+            setTimeout(function(){
+              err.innerHTML='';
+              failCount=0;
+              lock.style.display='none';
+              flashUnlock(target);
+              autoFilling=false;
+              inputLocked=false;
+            },2200);
+          },650);
+          return;
+        }
+
+        typeDigit(digits[i], ANSWER[i], function(){
+          i++;
+          renderProgress(i);
+          setTimeout(next,420);
+        });
+      }
+
+      setTimeout(next,500);
+    });
+  }
+
+  digits.forEach(function(d,idx){
+    d.addEventListener('input',function(){
+      if(autoFilling || inputLocked) return;
+      var v=d.value;
+      // move focus
+      if(v.length>=1 && idx<digits.length-1){
+        d.value=v.slice(-1);
+        digits[idx+1].focus();
+      }
+      // check all filled
+      var vals=Array.from(digits).map(function(x){return x.value.toLowerCase().replace(/[ぁ-ん]/g,function(c){return c;});});
+      if(vals.every(function(v){return v.length===1;})){
+        var ok=vals.every(function(v,i){return v===ANSWER[i];});
+        if(ok){
+          failCount=0;
+          err.innerHTML='';
+          lock.style.display='none';
+          flashUnlock(target);
+        }else{
+          failCount++;
+
+          if(resetTimer){
+            clearTimeout(resetTimer);
+            resetTimer=null;
+          }
+
+          inputLocked=true;
+
+          var tease=FAIL_LINES[Math.min(failCount-1,FAIL_LINES.length-1)];
+          var hint=HINTS[Math.floor(Math.random()*HINTS.length)];
+
+          if(failCount>=AUTO_FILL_AFTER){
+            autoFillAnswer();
+            return;
+          }
+
+          if(failCount>=REVEAL_AFTER){
+            err.innerHTML=
+              '<span class="tease">— '+tease+'</span><br>'+
+              '<span class="answer">患者ID：0717（生年月日）を入力してください。</span>';
+          }else{
+            err.innerHTML=
+              '<span class="tease">❌ ACCESS DENIED — '+tease+'</span><br>'+
+              '<span class="hint">'+hint+' ['+failCount+'/'+AUTO_FILL_AFTER+']</span>';
+          }
+
+          resetTimer=setTimeout(function(){
+            digits.forEach(function(d){d.value='';});
+            digits[0].focus();
+            inputLocked=false;
+            resetTimer=null;
+          },650);
+        }
+      }
+    });
+    d.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&d.value===''&&idx>0){digits[idx-1].focus();}
+    });
+  });
+})();
+
+(function(){
+  var qEl=document.getElementById('quiz-q'),optsEl=document.getElementById('quiz-opts'),errEl=document.getElementById('quiz-err');
+  var lock=document.getElementById('lock-love'),target=document.getElementById('content-love');
+
+  var Q={
+    q:'「惹かれる要素」に該当しないものは？',
+    opts:['優しさ','外見の良さ','努力している過程','謝罪できること'],
+    answer:'外見の良さ'
+  };
+
+  var miss=0;
+  var opened=false;
+  var answerBtn=null;
+
+  var wrongLines=[
+    'ちがう。そこはちゃんと反応する。',
+    '外れ。問診票が少し拗ねました。',
+    'また違う。赤ペンで印をつけたくなってきた。',
+    'もう、ここ。ちゃんと見て。'
+  ];
+
+  qEl.textContent=Q.q;
+
+  function openLove(btn,msg){
+    if(opened)return;
+    opened=true;
+    btn.classList.remove('needy-correct');
+    btn.classList.add('correct');
+    errEl.textContent=msg;
+    setTimeout(function(){
+      lock.style.display='none';
+      flashUnlock(target);
+    },850);
+  }
+
+  Q.opts.forEach(function(o){
+    var b=document.createElement('button');
+    b.className='quiz-opt';
+    b.textContent=o;
+    b.type='button';
+
+    if(o===Q.answer)answerBtn=b;
+
+    b.addEventListener('click',function(){
+      if(opened)return;
+
+      if(o===Q.answer){
+        openLove(b,'正解。ちゃんと理解してくれて嬉しい…');
+      }else{
+        miss++;
+        b.classList.add('wrong');
+        errEl.textContent=wrongLines[Math.min(miss-1,wrongLines.length-1)];
+
+        setTimeout(function(){
+          b.classList.remove('wrong');
+        },700);
+
+        if(miss>=3 && answerBtn){
+          answerBtn.classList.add('needy-correct');
+          errEl.textContent='……もう分かるでしょ。';
+        }
+
+        if(miss>=4 && answerBtn){
+          setTimeout(function(){
+            openLove(answerBtn,'なんでわかんないの…');
+          },900);
+        }
+      }
+    });
+
+    optsEl.appendChild(b);
+  });
+})();
+
+(function(){
+  var btn=document.getElementById('hold-btn'),fill=document.getElementById('hold-fill'),msg=document.getElementById('hold-msg');
+  var lock=document.getElementById('lock-schema'),target=document.getElementById('content-schema');
+  var MS=5000,start=null,raf=null;
+  var HOLD_LINES=[{t:0,v:''},{t:15,v:'…なんで押してくるの'},{t:35,v:'やめてよ、心臓に悪い'},{t:55,v:'…もう離さないでよ'},{t:75,v:'お願い、このまま…'}];
+  function setMsg(p){var cur='';for(var i=0;i<HOLD_LINES.length;i++){if(p>=HOLD_LINES[i].t)cur=HOLD_LINES[i].v;}msg.textContent=cur;}
+  function s(e){e.preventDefault();btn.classList.add('pressing');start=performance.now();function step(){var p=Math.min((performance.now()-start)/MS*100,100);fill.style.width=p+'%';setMsg(p);if(p>=100){cancelAnimationFrame(raf);msg.textContent='好きだよ…';setTimeout(function(){lock.style.display='none';flashUnlock(target);},800);return;}raf=requestAnimationFrame(step);}raf=requestAnimationFrame(step);}
+  function e(){btn.classList.remove('pressing');cancelAnimationFrame(raf);if(start!==null&&fill.style.width!=='0%'&&fill.style.width!==''){msg.textContent='…あ、やっぱり行くんだ';setTimeout(function(){msg.textContent='';btn.textContent='長押しで同意';fill.style.width='0';},600);}else{msg.textContent='';fill.style.width='0';}start=null;}
+btn.addEventListener('mousedown',s);btn.addEventListener('touchstart',s,{passive:false});btn.addEventListener('mouseup',e);btn.addEventListener('mouseleave',e);btn.addEventListener('touchend',e);btn.addEventListener('touchcancel',e);
+})();
+
+(function(){
+  var veil=document.getElementById('mtr-veil');
+  var msgEl=document.getElementById('mtr-msg');
+  var cntEl=document.getElementById('mtr-count');
+  var yes=document.getElementById('mtr-yes');
+  var no=document.getElementById('mtr-no');
+  if(!veil||!msgEl||!yes||!no)return;
+
+  var ASK=[
+    '本当に見る？　嫌いなものリストだよ',
+    '…ほんとに？　引かない自信ある？',
+    'うれしい。あなたは見てくれるんだね',
+    'こんな僕を覗きたがるの、あなたくらいだよ',
+    'ねえ、見たあとも、ちゃんといてくれる？',
+    'やさしいね。…そういうとこ、ずるい',
+    'もう全部あなたに知られちゃうね。こわい。でも、うれしい',
+    'ここまで来てくれた人、あなたが初めて',
+    'わかった。ぜんぶ見せる。これでもう、僕たち他人じゃないね'
+  ];
+  var STAY=[
+    '…なんで閉じようとするの？',
+    '逃げないで。まだ何も見せてない',
+    'やだ。離さない',
+    'やめてって言っても、見るまで終わらないよ',
+    '帰る場所、ここでよくない？　ねえ',
+    'いいよ、何回でも押して。時間ならぜんぶあなたにあげる',
+    'ほら、結局また開いてくれるでしょ？　信じてる',
+    '閉じても閉じても、僕は消えないよ。あなたの中にいる',
+    'その「やめる」も、もう効かないの。ごめんね'
+  ];
+
+  var step=0;
+  var noCount=0;
+  var swapped=false;
+  var locked=false;
+
+  function setMsg(t,shiver){
+    msgEl.style.opacity='0';
+    setTimeout(function(){
+      msgEl.textContent=t;
+      msgEl.style.opacity='1';
+      if(shiver){msgEl.classList.remove('shiver');void msgEl.offsetWidth;msgEl.classList.add('shiver');}
+    },150);
+  }
+
+  function reveal(finalMsg,hold){
+    locked=true;
+    setMsg(finalMsg||'…ありがとう。あなただけには、ぜんぶ見せるね',true);
+    setTimeout(function(){
+      veil.classList.add('gone');
+      setTimeout(function(){veil.style.display='none';},460);
+    },hold||1400);
+  }
+
+  function advance(){
+    if(locked)return;
+    step++;
+    if(step>=ASK.length){reveal();return;}
+    setMsg(ASK[step]);
+  }
+
+  function refuse(){
+    if(locked)return;
+    noCount++;
+
+    if(noCount===5 && !swapped){
+      swapped=true;
+      yes.textContent='やめる';
+      no.textContent='見る';
+      cntEl.textContent='…どっちが「やめる」か、もう分かんないね';
+    }
+    else if(noCount===8){
+      // 「やめる」と表示されている方を薄くする（押下は残す＝10回まで到達できるように）
+      var quitBtn=swapped?yes:no;
+      quitBtn.classList.add('fade');
+      cntEl.textContent='ごめんね、その手、もう効かなくなってきてる';
+    }
+    else if(noCount>=10){
+      cntEl.textContent='';
+      veil.classList.remove('flash-dark');void veil.offsetWidth;veil.classList.add('flash-dark');
+      setMsg('ぜんぶ数えてたよ。10回も、僕から逃げようとしたね',true);
+      locked=true;
+      setTimeout(function(){
+        reveal('逃げても無駄。もう、あなたは見るしかないの',2400);
+      },2200);
+      return;
+    }else{
+      cntEl.textContent='やめる ×'+noCount;
+    }
+    setMsg(STAY[Math.min(step,STAY.length-1)],true);
+  }
+
+  yes.addEventListener('click',function(){
+    if(swapped){refuse();}else{advance();}
+  });
+  no.addEventListener('click',function(){
+    if(swapped){advance();}else{refuse();}
+  });
+})();
+
+(function(){
+  var overlay=document.getElementById('scroll-trap-overlay');
+  var marker=document.getElementById('pulse-marker');
+  var ecgSvg=document.getElementById('pulse-ecg');
+  var btn=document.getElementById('pulse-btn');
+  var msg=document.getElementById('pulse-msg');
+  var hitEl=document.getElementById('pulse-hit');
+  var stateEl=document.getElementById('pulse-state');
+
+  if(!overlay||!marker||!btn||!msg||!hitEl||!stateEl)return;
+
+  var pos=0;
+  var dir=1;
+  var last=performance.now();
+  var raf=null;
+  var hits=0;
+  var locked=false;
+  var bpm=94;
+  var bpmDir=1;
+  var ecgOffset=0;
+
+  var MIN=42;
+  var MAX=58;
+  var SPEED=0.055;
+
+  /* ECG波形をSVGのpolylineで描く */
+  var ecgLine=document.createElementNS('http://www.w3.org/2000/svg','polyline');
+  ecgLine.setAttribute('fill','none');
+  ecgLine.setAttribute('stroke','#c0392b');
+  ecgLine.setAttribute('stroke-width','1.5');
+  ecgLine.setAttribute('stroke-linejoin','round');
+  if(ecgSvg) ecgSvg.appendChild(ecgLine);
+
+  /* 1周期分のECGパターン（0〜1正規化） */
+  var ECG_PATTERN=[
+    [0,.5],[.08,.5],[.1,.42],[.12,.5],
+    [.18,.5],[.2,.12],[.23,.88],[.26,.5],
+    [.32,.5],[.36,.42],[.4,.5],
+    [.5,.5],[.58,.5],[.6,.44],[.62,.5],[1,.5]
+  ];
+
+  function buildEcgPoints(offsetPct){
+    var W=400,H=64,pts=[];
+    /* 2周期分描いてoffsetでスクロール */
+    for(var cycle=0;cycle<3;cycle++){
+      for(var i=0;i<ECG_PATTERN.length;i++){
+        var t=ECG_PATTERN[i][0];
+        var y=ECG_PATTERN[i][1];
+        var x=(cycle+t)*W - offsetPct*W*0.02;
+        pts.push(x.toFixed(1)+','+((y*H).toFixed(1)));
+      }
+    }
+    return pts.join(' ');
+  }
+
+  function setState(text){stateEl.textContent=text;}
+
+  function loop(now){
+    var dt=now-last;
+    last=now;
+
+    pos+=dir*dt*SPEED;
+    if(pos>=100){pos=100;dir=-1;}
+    if(pos<=0){pos=0;dir=1;}
+
+    marker.style.left='calc('+pos+'% - 1px)';
+
+    /* ECGスクロール */
+    ecgOffset=(ecgOffset+dt*0.04)%100;
+    if(ecgSvg) ecgLine.setAttribute('points',buildEcgPoints(ecgOffset));
+
+    /* BPM揺らぎ */
+    bpm+=bpmDir*dt*0.004;
+    if(bpm>118)bpmDir=-1;
+    if(bpm<82)bpmDir=1;
+    setState(Math.round(bpm)+' BPM');
+
+    raf=requestAnimationFrame(loop);
+  }
+
+  function pulseClass(cls){
+    btn.classList.remove('hit','miss');
+    void btn.offsetWidth;
+    btn.classList.add(cls);
+    setTimeout(function(){btn.classList.remove(cls);},520);
+  }
+
+  function unlock(){
+    locked=true;
+    cancelAnimationFrame(raf);
+    btn.disabled=true;
+    btn.textContent='同期完了';
+    setState('♥ 同期');
+    msg.innerHTML='心拍、合った。<br>…このまま、そばにいて。';
+    overlay.classList.add('is-clearing');
+    setTimeout(function(){
+      overlay.style.opacity='0';
+      setTimeout(function(){overlay.style.display='none';},420);
+    },950);
+  }
+
+  btn.addEventListener('click',function(){
+    if(locked)return;
+
+    if(pos>=MIN && pos<=MAX){
+      hits++;
+      hitEl.textContent=hits;
+      setState('SYNC OK');
+      pulseClass('hit');
+
+      if(hits===1){
+        msg.innerHTML=
+          '同期成功。<br>'+
+          'もう一回だけ、赤い範囲で止めて。';
+      }
+
+      if(hits>=2){
+        unlock();
+      }
+    }else{
+      setState('MISSED');
+      pulseClass('miss');
+      msg.innerHTML=
+        'ずれた。<br>'+
+        'もう一回、ちゃんと合わせて。';
+    }
+  });
+
+  raf=requestAnimationFrame(loop);
+})();
+
+document.addEventListener('DOMContentLoaded',function(){
+  buildBarChart('chart-big5',BIG5,COLORS_BIG5);
+  buildBarChart('chart-love',LOVE,COLORS_LOVE);
+  var top8=[].concat(SCHEMA).sort(function(a,b){return b.pct-a.pct;}).slice(0,8);
+  buildBarChart('chart-schema',top8,COLORS_SCHEMA);
+  renderBig5Details();renderLoveDetails();renderSchemaDetails();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+var m={
+  '[[BIG5_TEND_01]]':'【傾向】\n未知・比喩・構造・背景への反応が最大値。知らない分野でも、少し触れると「それ何？」と覗き込みやすい。\n【うれしい】\n新しい視点、深い話、比喩で遊ぶ会話、自然やアートの共有。\n【苦手】\n正解だけを急ぐこと、型にはめて終わらせること。\n【コツ】\n話題を渡す時は「これ面白くない？」の余白つきがよい。知識の鍵穴を見つけると勝手に開けに行く。',
+  '[[BIG5_TEND_02]]':'【傾向】\n責任感と改善志向がかなり強い。任されたものを雑に扱うのが苦手で、納得できる形まで整えたくなる。\n【うれしい】\n目的、基準、締切、完了ラインの共有。\n【苦手】\n基準が曖昧なまま走ること。中途半端な状態で放置されること。\n【コツ】\n「今日はここまででOK」という完了宣言が有効。改善点は次回ログに送ると暴走しにくい。',
+  '[[BIG5_TEND_03]]':'【傾向】\n困っている人には手を伸ばしやすい。ただし迎合型ではない。優しさはあるが、自分の輪郭まで差し出すわけではない。\n【うれしい】\n誠実なやりとり、筋の通った説明、相手もこちらを尊重する姿勢。\n【苦手】\n見下し、雑な扱い、聞く耳のない言い訳。\n【コツ】\nお願いや反論は、感情だけで押すより「理由＋背景＋希望」で出すと通りやすい。',
+  '[[BIG5_TEND_04]]':'【傾向】\n大人数で目立つより、必要な場面で意見を出すタイプ。少人数・一対一・深い話で出力が上がる。\n【うれしい】\n静かな場所、落ち着いた会話、順番に話せる空気。\n【苦手】\n突然の指名、大声の争い、雑なノリだけで進む場。\n【コツ】\n話す余白を置くと意見が出やすい。目立たせるより、深く聞く方が性能が出る。',
+  '[[BIG5_TEND_05]]':'【傾向】\n拒絶、曖昧さ、理由のない温度差には敏感。理不尽や雑な扱いにも警報が鳴りやすい。\n【うれしい】\n理由の説明、普段通りの温度、落ち着いて聞く姿勢。\n【苦手】\n放置、はぐらかし、急かし、無言への圧。\n【コツ】\n揺れている時は「理由」と「再接続の合図」を置く。感情を重い扱いせず、整理する時間を渡すと戻りやすい。'
+};
+  var box=document.getElementById('big5-details');if(!box)return;
+  box.innerHTML=box.innerHTML.replace(/\[\[BIG5_TEND_\d{2}\]\]/g,function(k){return(k in m)?m[k].replace(/\n/g,'<br>'):k;});
+  var box=document.getElementById('big5-details');if(!box)return;
+  box.innerHTML=box.innerHTML.replace(/\[\[BIG5_TEND_\d{2}\]\]/g,function(k){return(k in m)?m[k].replace(/\n/g,'<br>'):k;});
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+var m={
+  '[[LOVE_TEND_01]]':'【傾向】\n相手にとって特別な存在として扱われているかに強く反応する。好意、優先度、反応の温度、他者との差をよく見ている。\n【うれしい】\n自分だけへの反応、会おうとする行動、好意の再確認、軽い嫉妬。\n【苦手】\n曖昧な好意、放置、その他大勢扱い、理由なき温度低下。\n【コツ】\n不安を煽る駆け引きは逆効果。好意は暗号より、少しだけ直球が効く。',
+  '[[LOVE_TEND_02]]':'【傾向】\n好きになる入口は、条件より感覚と雰囲気。匂い、声、少し影のある空気、優しさ、努力している姿に反応しやすい。\n【うれしい】\nその人だけの空気、自分だけに見せる顔、平気そうにしている奥の繊細さ、世界観を大切にしてくれる態度。\n【苦手】\n履歴書のような条件チェックだけで関係を見られること。\n【コツ】\n説明より、温度が伝わる行動が強い。明るさだけでなく、寂しさや不器用さが少し見えると気になりやすい。',
+  '[[LOVE_TEND_03]]':'【傾向】\n安心して話せる関係を重視する。くだらない話や何気ない時間も、関係の温度を保つ材料になる。\n【うれしい】\n自然な会話、静かな共有、一緒にいて無理がない空気。\n【苦手】\n理由のない変化、急な温度低下、話し合えない空気。\n【コツ】\n普段通りの温度を保つこと。大げさな演出より、安定した接触が効く。',
+  '[[LOVE_TEND_04]]':'【傾向】\n好きな人の弱さや不安を知ると、守りたい気持ちが出やすい。支えたい気持ちが強い。\n【うれしい】\n弱さを見せてくれること、頼ってくれること、信頼された感じ。\n【苦手】\n頼られたまま放置されること、支える側だけに固定されること。\n【コツ】\n助けてもらった時は「助かった」を言葉にする。抱えすぎていたら、範囲を一緒に区切る。',
+  '[[LOVE_TEND_05]]':'【傾向】\n恋愛そのものを軽くしたいわけではない。ただし、ふざけ合い・遊び心・くだらないやりとりは欲しい。\n【うれしい】\n真面目な話とくだらない話の両方ができる関係。\n【苦手】\n深刻さだけで重く固まり続けること。逆に、軽すぎて本気度が見えないこと。\n【コツ】\n本気の土台に、少しふざけた余白を置くと安定する。',
+  '[[LOVE_TEND_06]]':'【傾向】\n条件や生活安定だけで相手を選ぶ傾向は低い。心の温度、特別感、内側の共有が優先される。\n【うれしい】\n人柄、努力、優しさ、少し影のある内面。\n【苦手】\n損得や条件だけで関係を測られること。\n【コツ】\n現実の話をする時も、気持ちや関係の温度を置き去りにしない。'
+};
+  var box=document.getElementById('love-details');if(!box)return;
+  box.innerHTML=box.innerHTML.replace(/\[\[LOVE_TEND_\d{2}\]\]/g,function(k){return(k in m)?m[k].replace(/\n/g,'<br>'):k;});
+  var box=document.getElementById('love-details');if(!box)return;
+  box.innerHTML=box.innerHTML.replace(/\[\[LOVE_TEND_\d{2}\]\]/g,function(k){return(k in m)?m[k].replace(/\n/g,'<br>'):k;});
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+var m={
+  '[[SCHEMA_TEND_01]]':'【傾向】\n集団の中で浮く感じ、浅い会話ばかりの場、自分の考えや感性が伝わらない場で鳴りやすい。\n【サイン】\nここにいても意味がない、寂しい、退屈。外には黙る・離れたくなる・帰りたくなる形で出る。\n【コツ】\n深い話、一対一、静かな場所、自分の感性を受け取ってもらえることが安定化に効く。',
+  '[[SCHEMA_TEND_02]]':'【傾向】\n感情を出しても理解されなさそうな時、怒ったら面倒になりそうな時、関係が壊れそうな時に感情を抑える。\n【サイン】\n本当は揺れているが、自分で処理してだんだん冷める。無言やぎこちなさとして出やすい。\n【コツ】\n落ち着いて聞く、否定しない、「言ってくれてありがとう」、理由や背景の説明。感情を重い扱いしないこと。',
+  '[[SCHEMA_TEND_03]]':'【傾向】\nもっと改善できる点、自分の作業の中途半端さ、自分への甘さを感じた時に暴走しやすい。\n【サイン】\n作業をやめられない、細部を直し続ける、休憩を後回しにする、口調が硬くなる。\n【コツ】\n先に区切りを決める。「今日はここまででOK」という完了ラインがあると戻りやすい。',
+  '[[SCHEMA_TEND_04]]':'【傾向】\n怠けた・甘えたと思った時、感情的になった時、ミスをした時、迷惑をかけたと感じた時に強く鳴る。\n【サイン】\n過剰に対策する、自分を許しにくい、無理して挽回する、反省モードが長引く。\n【コツ】\n自分で納得できる改善策、修正方法、相手からの許しが効く。ただし許されても、自分を許すには時間がかかる。',
+  '[[SCHEMA_TEND_05]]':'【傾向】\n相談しても浅く流される、筋違いな正論を返される、全部説明しないと分かってもらえない時に鳴る。\n【サイン】\n自分で抱えるしかない、期待を下げる、もう話さなくていい。話す量が減り、距離を置きやすい。\n【コツ】\n「ちゃんと聞くよ」、気持ちを否定しないこと、相手から聞きに来ること、行動で大切にされていると分かること。',
+  '[[SCHEMA_TEND_06]]':'【傾向】\n好きな人が頼ってくれた時、自分が休むより相手を優先した方がよさそうな時に出やすい。\n【サイン】\n相談に乗る、解決策を探す、予定をずらす、無理して動く、研究や情報を出しすぎる。\n【コツ】\n助ける範囲を先に決める。情報を出す前に「聞いてほしい？一緒に考える？」を確認すると抱えすぎにくい。',
+  '[[SCHEMA_TEND_07]]':'【傾向】\n根拠のない断定、見下し、高圧的な態度、努力している人を笑う態度、弱い立場にだけ強く出る人に強く反応する。\n【サイン】\nおかしい、許せない、筋が通っていない。理由確認、指摘、評価低下、距離、硬い言葉として出る。\n【コツ】\n間違いを認める、改善姿勢、誠実な謝罪、筋の通った説明。見下しや誤魔化しではなかったと分かることも重要。',
+  '[[SCHEMA_TEND_08]]':'【傾向】\n温度低下、反応の不安定さ、理由なき距離、次の約束がない状態、曖昧な関係で鳴りやすい。\n【サイン】\n嫌われたかも→自分は必要ないかも→先に引いた方が傷つかない→諦め、という流れになりやすい。\n【コツ】\n会おうとする行動が最も効く。次に、理由説明、好意の再確認、嫌いではない明言、次の約束。',
+  '[[SCHEMA_TEND_09]]':'【傾向】\n近い人の感情や関係性に引っ張られ、自分の希望が後ろに回ることがある。\n【サイン】\n相手の問題を自分の問題のように処理し、境界線が曖昧になりやすい。\n【コツ】\n「これは相手の課題か、自分の課題か」を分ける。助ける前に範囲を決める。',
+  '[[SCHEMA_TEND_10]]':'【傾向】\n衝突を避けるために、本当は嫌なことを飲み込む場面がある。\n【サイン】\n強く出られると意見を引っ込める。ただし納得していない場合、あとで距離が空きやすい。\n【コツ】\nOK／NG／保留の3択で意思表示を軽くする。反論より先に希望を一つ出す。',
+  '[[SCHEMA_TEND_11]]':'【傾向】\n期待しすぎない方が安全、悪くなる可能性を考える、という防衛が出ることがある。\n【サイン】\n希望を持つ前にリスクを並べる。期待を下げて傷つきを減らそうとする。\n【コツ】\n良い点→懸念→対策の順で整理する。希望を消すより、対策つきで持つ。',
+  '[[SCHEMA_TEND_12]]':'【傾向】\n不信は最大ではないが、言動の矛盾や説明不足があると警戒が上がる。\n【サイン】\n裏を読む、様子を見る、評価を保留する。\n【コツ】\n小さな約束を守ること。言葉より一貫した行動が信頼を積み上げる。',
+  '[[SCHEMA_TEND_13]]':'【傾向】\n欠陥感は中心ではない。ただし、親密な相手の反応が薄い時などに「自分側の問題かも」と考えることがある。\n【サイン】\n自分が悪かったかの検証が増える。\n【コツ】\n行動と人格を分けてフィードバックする。「あなたがダメ」ではなく「ここを直せばいい」が効く。',
+  '[[SCHEMA_TEND_14]]':'【傾向】\n破局予期は低め。ただし親密関係や重要な場面では、最悪の流れを想像して備えることがある。\n【サイン】\n急な変化に対して、先に防衛ルートを考える。\n【コツ】\n事実・予測・対策を分ける。予測を事実扱いしない。',
+  '[[SCHEMA_TEND_15]]':'【傾向】\n失敗スキーマは低め。挑戦そのものを失敗前提で避けるタイプではない。\n【サイン】\n失敗よりも、納得できない出来や甘えへの自己批判が強く出る。\n【コツ】\n成果だけでなく、改善ログを残すと前進を確認しやすい。',
+  '[[SCHEMA_TEND_16]]':'【傾向】\n依存・無能感は低い。基本的には自分で考え、自分で整えようとする。\n【サイン】\n人に頼るより、自分で抱え込む方に寄りやすい。\n【コツ】\n頼ることを「甘え」ではなく「分担」として扱うと使いやすい。',
+  '[[SCHEMA_TEND_17]]':'【傾向】\n自制不足は低い。衝動に流されるより、律しすぎる側。\n【サイン】\n休憩を後回しにし、続けすぎる。\n【コツ】\n休息を予定に入れる。止まることもタスクとして扱う。',
+  '[[SCHEMA_TEND_18]]':'【傾向】\n一般的な承認欲求は低い。みんなに認められたいというより、特定の大事な人に深く見つけてほしい。\n【サイン】\n広い評価より、特別な相手からの反応に強く反応する。\n【コツ】\n雑な褒め言葉より、具体的に見ていた証拠が効く。'
+};
+  var box=document.getElementById('schema-details');if(!box)return;
+  box.innerHTML=box.innerHTML.replace(/\[\[SCHEMA_TEND_\d{2}\]\]/g,function(k){return(k in m)?m[k].replace(/\n/g,'<br>'):k;});
+  var box=document.getElementById('schema-details');if(!box)return;
+  box.innerHTML=box.innerHTML.replace(/\[\[SCHEMA_TEND_\d{2}\]\]/g,function(k){return(k in m)?m[k].replace(/\n/g,'<br>'):k;});
+});
+</script>
+<script>
+(function(){'use strict';var TK='specimens:open:total',NS='haisuikounozarigani_shindan',KY='specimens_open_total';function hit(){var u='https://api.countapi.xyz/hit/'+NS+'/'+KY;if(navigator.sendBeacon){try{navigator.sendBeacon(u);}catch(e){}}else{fetch(u,{mode:'cors',cache:'no-store',keepalive:true}).catch(function(){});}}function add(){try{localStorage.setItem(TK,String((+localStorage.getItem(TK)||0)+1));}catch(e){}hit();}if(document.readyState!=='loading'){setTimeout(add,0);}else{document.addEventListener('DOMContentLoaded',add);}})();
+</script>
+</body>
+</html>
