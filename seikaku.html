@@ -1767,6 +1767,221 @@ button:focus-visible,a:focus-visible,summary:focus-visible,.mtr-btn:focus-visibl
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
 
 }
+/* === スマホ見切れ防止パッチ ===
+   画像は切り抜かず全体表示、長い見出し・スコア・開閉ボタンは縦に逃がす。 */
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+.page,
+.chart,
+.dept,
+.dept-body,
+.note,
+.note-body,
+.photo-card,
+.ai-read,
+.ai-summary,
+.acc-list,
+.love-acc,
+.schema-acc,
+.lab,
+.scroll-trap-wrap,
+.mtr-wrap{
+  min-width:0;
+  max-width:100%;
+}
+
+.page{
+  width:100%;
+}
+
+img,
+svg,
+canvas{
+  max-width:100%;
+}
+
+.chart,
+.note,
+details,
+summary,
+.score-item,
+.score-text,
+.bar-row,
+.love-summary-main,
+.schema-main,
+.rx-case,
+.acc-body,
+.likes-desc,
+ul.plist li{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+
+/* 文字入り画像が切れるのを防ぐ */
+.photo{
+  aspect-ratio:2 / 3;
+  max-height:none;
+  background-size:contain !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  background-color:#fff;
+}
+
+.photo::after{
+  max-width:calc(100% - 24px);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+@media (max-width:520px){
+  .page{padding:0 8px 88px;}
+  .chart{margin-top:10px;border-radius:4px;}
+
+  .chart-head,
+  .dept-head,
+  .dept-body,
+  .note-body,
+  .ai-summary,
+  .ai-read{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .photo-row{padding:12px;}
+
+  .chart-head{gap:8px;}
+  .hosp .logo{font-size:1rem;}
+  .chart-no{text-align:left;}
+
+  .chart-title{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .chart-title h1{
+    font-size:clamp(22px,8vw,30px);
+  }
+
+  .score-grid{padding:8px;}
+
+  .score-head{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto auto auto;
+  }
+
+  .score-pct{
+    grid-column:1;
+    grid-row:auto;
+    justify-self:start;
+    text-align:left;
+    min-width:0;
+    margin-top:6px;
+  }
+
+  .bar-row{
+    grid-template-columns:minmax(0,1fr) 3.5em;
+    grid-template-areas:"name name" "track pct";
+    gap:5px 8px;
+  }
+
+  .bar-name{min-width:0;}
+  .bar-pct{min-width:3.2em;}
+
+  .love-acc summary{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:6px;
+    align-items:start;
+    padding:12px 10px 12px 34px;
+  }
+
+  .love-sigil{
+    left:8px;
+    top:14px;
+    transform:none;
+  }
+
+  .love-summary-main{
+    min-width:0;
+    max-width:100%;
+  }
+
+  .love-score{
+    justify-self:start;
+    font-size:.88rem;
+    white-space:nowrap;
+  }
+
+  .love-acc summary::after{
+    grid-column:auto;
+    justify-self:start;
+    margin-top:0;
+  }
+
+  .schema-acc{padding:8px;}
+
+  .schema-acc summary{
+    display:grid;
+    grid-template-columns:30px minmax(0,1fr);
+    gap:8px;
+    padding:11px 10px;
+    align-items:start;
+  }
+
+  .schema-crack{
+    width:27px;
+    height:34px;
+  }
+
+  .schema-level{
+    grid-column:2;
+    justify-self:start;
+    font-size:.86rem;
+  }
+
+  .schema-acc summary::after{
+    grid-column:2;
+    justify-self:start;
+    margin-top:0;
+  }
+
+  .love-alert-item-head{
+    grid-template-columns:22px minmax(0,1fr);
+  }
+
+  .love-alert-pct{
+    grid-column:2;
+    justify-self:start;
+  }
+
+  .pulse-game{
+    width:100%;
+    padding:12px;
+  }
+
+  .pulse-game-title{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .quiz-opt{max-width:100%;}
+}
+
+@media (min-width:521px){
+  .photo{
+    aspect-ratio:2 / 3;
+    max-height:74vh;
+  }
+}
+
 html,body{overflow-x:hidden;}
 </style>
 </head>
@@ -2380,9 +2595,11 @@ html,body{overflow-x:hidden;}
         
         <div class="note-hd red">揺れやすい場面</div>
 <div class="note-body">浅く流される、分かってもらえない、謝られない、努力を雑に扱われる。こういう場面で<b>心の地面がずれる</b>。外からは無言や距離に見えるが、内側ではかなり処理が走っている。</div>
+      </div>
       <div class="note">
         <div class="note-hd amber">戻りやすい対応</div>
 <div class="note-body"><b>深く聞く、一対一で話す、否定せず受け取る、理由を説明する</b>ことが効く。揉めた後は、謝罪だけでなく<b>また関係を続けたいという合図</b>があると戻りやすい。</div>
+      </div>
 
       <div class="lab"><div class="lab-title">検査値（上位8）</div><div id="chart-schema"></div></div>
 
@@ -2463,6 +2680,7 @@ html,body{overflow-x:hidden;}
             <button class="pulse-btn" id="pulse-btn" type="button">記録を安定させる</button>
           </div>
         </div>
+      </div>
       </div>
 
       <div class="lab-title" style="margin-top:6px">誤解された時の扱い方</div>
